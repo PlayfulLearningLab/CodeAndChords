@@ -18,30 +18,26 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*
-  
-  This version of the class used in the July 8 workshop.
-  
-   ** Watch for that NullPointerException -- add a try-catch? **
-   
-   (Why doesn't it need jna-jack__.jar in the code folder?  B/c it's in the old one?)
-   
-   Emily Meuer
-   07/06 Update: works with both the Behringer and Motu interfaces
-   to get more than 4 inputs!
-   
-   06/29/2016
-   
-   Updating InputClass_EMM to communicate with Jack;
-   based on BeadsJNA.
-   
-   To change in classes that implement this:
-   - size()/settings() can be in main tab.
-   - getFund() etc. takes an int parameter specifying which input is in question.
-   
-   TODO:  
-   - Skip input lines 5-8 more elegantly.
-   - Make a folder in lib for this - can it then be imported?
-   */
+    This version is adapted from the version used in the July 8 show
+    to be able to be used with or without Jack.
+    
+     ** Watch for that NullPointerException -- add a try-catch? **
+     
+    (Why doesn't it need jna-jack__.jar in the code folder?  B/c it's in the old one?)
+     
+    Emily Meuer
+    07/06 Update: works with both the Behringer and Motu interfaces
+    to get more than 4 inputs!
+     
+    06/29/2016
+     
+    Updating InputClass_EMM to communicate with Jack;
+    based on BeadsJNA.
+     
+    To change in classes that implement this:
+     - size()/settings() can be in main tab.
+     - getFund() etc. takes an int parameter specifying which input is in question
+  */
 
   AudioContext           ac;
   float                  adjustedFund;
@@ -65,7 +61,6 @@ class Input
   Input(int numInputs)
   {
     this.numInputs  = numInputs;
-    //this.numInputs  = numInputs + 4;
     
     // Jack is always used as the AudioServer:
     this.ac = new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs));
@@ -431,14 +426,13 @@ class Input
   } // getAverageAmp
 
   /**
+   *  @param   inputNum  number of input whose fundamental is to be returned;
+   *  NB: numbering starts at 1, not 0.
+   *
    * @return  amplitude of the Frequency instance var.
    */
   float getAmplitude(int inputNum) {
     inputNumErrorCheck(inputNum, "getAmplitude(int)");
-
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
-      inputNum  = inputNum + 4;
-    } // if
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude
