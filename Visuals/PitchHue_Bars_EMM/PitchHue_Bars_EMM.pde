@@ -12,8 +12,9 @@
  * (Adapted from Examples => Color => Hue.)
  */
  
-int    barWidth = 20;
+int    barWidth = 10;
 int    lastBar = -1;
+int    howManyBars;
 
 int    hue;
 float  saturation;
@@ -43,8 +44,9 @@ void setup()
   
   delay  = millis();
   
+  howManyBars    = width / barWidth;
+  bars   = new color[howManyBars];
   // fills the color[] with white to start:
-  bars   = new color[32];
   for(int i = 0; i < bars.length; i++) 
   {
     bars[i]  = color(0, 0, brightnessMax);
@@ -97,9 +99,9 @@ void fillBars()
   
   // The mapping isn't strictly necessary, since we could just set a higher saturationMax.
   // The hope is that it will allow it to be more intuitive and look less random.
-  saturation  = Math.min(input.getAmplitude(1), 100);
+//  saturation  = Math.min(input.getAmplitude(1), 100);
 //  saturation  = map(saturation, 0, 200, 0, 100);
-//  saturation  = saturationMax;
+  saturation  = saturationMax;
   println("saturation = " + saturation);
   
   bars[bars.length - 1] = color(hue, saturation, brightnessMax);
