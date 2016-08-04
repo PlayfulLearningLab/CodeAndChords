@@ -16,15 +16,21 @@ Input  input;
 int  hue;
 int  saturation;
 
-int  newHue;
-int  goalHue;
-int  curHue;
+float[]  newHue;
+float[]  goalHue;
+float[]  curHue;
 int  changeInHue;
+
+int  newHuePos;
+int  goalHuePos;
+int  curHuePos;
 
 int  newSaturation;
 int  goalSaturation;
 int  curSaturation;
 int  changeInSaturation;
+
+float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 
 void setup() 
 {
@@ -34,15 +40,38 @@ void setup()
   saturationMax  = 300;
   brightnessMax  = 100;
   
-  colorMode(HSB, hueMax, saturationMax, brightnessMax);
+//  colorMode(HSB, hueMax, saturationMax, brightnessMax);
+  colors  = new float[][] {
+    { 255, 0, 0 },
+    { 255, 127.5, 0 },
+    { 255, 255, 0 },
+    { 127.5, 255, 0 },
+    { 0, 255, 0 },
+    { 0, 255, 127.5 },
+    { 0, 255, 255 },
+    { 0, 127.5, 255 },
+    { 0, 0, 255 },
+    { 127.5, 0, 255 },
+    { 255, 0, 255 },
+    { 255, 0, 127.5 },
+    { 255, 0, 0 }
+  };
+  
+  for(int i = 0; i < colors.length; i++)
+  {
+    fill(colors[i][0], colors[i][1], colors[i][2]);
+    rect((width / colors.length) * i, 0, (width / colors.length), height);
+  } // for
   
   input          = new Input();
   
   noStroke();
   background(0);
   
-  curHue       = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
-  changeInHue  = 5;
+  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
+  curHue       = colors[curHuePos];
+  // would like to change more quickly, but there's a weird flicker if changeInHue gets bigger:
+  changeInHue  = 10;
   
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
@@ -52,21 +81,27 @@ void draw()
 {
   // if want something other than C to be the "tonic" (i.e., red),
   // add some number before multiplying.
-  newHue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
-  newHue  = newHue * 30;
-  
-  if(newHue != goalHue)
+  newHuePos  = round(input.getAdjustedFundAsMidiNote(1) % 12);
+  newHue  = colors[newHuePos];
+//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
+
+  // set goalHue to the color indicated by the current pitch:
+  if(newHuePos != goalHuePos)
   {
-    goalHue  = newHue;
+    goalHuePos  = newHuePos;
   } // if
+  goalHue  = colors[goalHuePos];
   
-  if(curHue > (goalHue + changeInHue))
+  for(int i = 0; i < 3; i++)
   {
-    curHue = curHue - changeInHue;
-  } else if(curHue < (goalHue - changeInHue))
-  {
-    curHue  = curHue + changeInHue;
-  } // if
+    if(curHue[i] > (goalHue[i] - changeInHue))
+    {
+      curHue[i] = curHue[i] - changeInHue;
+    } else if(curHue[i] < (goalHue[i] + changeInHue))
+    {
+      curHue[i]  = curHue[i] + changeInHue;
+    } // if
+  } // for
   
   // Adjust saturation with amplitude by uncommenting the following lines and 
   // commenting the "curSaturation = saturationMax" line.
@@ -86,6 +121,6 @@ void draw()
   
   curSaturation  = saturationMax;
   
-  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
-  background(curHue, curSaturation, brightnessMax);
+//  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
+  background(curHue[0], curHue[1], curHue[2]);
 }
