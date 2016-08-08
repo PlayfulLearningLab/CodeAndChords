@@ -75,7 +75,7 @@ void setup()
   
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
-}
+} // setup()
 
 void draw() 
 {
