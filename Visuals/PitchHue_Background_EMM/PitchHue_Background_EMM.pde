@@ -123,4 +123,4 @@ void draw()
   
 //  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
   background(curHue[0], curHue[1], curHue[2]);
-}
+} // draw()
