@@ -4,24 +4,33 @@
  *  
  *  Template for shapes that will respond to sound.
  *
- *
+ *  TODO:
+ *    - uneven shapes?
  */
-abstract class SoundShape
+class SoundShape
 {
   int  centerX;      // x coordinate of the shape's center
   int  centerY;      // y coordinate of the shape's center
   int  radius;       // the shape's radius
   int  numPoints;    // the number of points a shape has
 
-  // What benefit will this bring us?  -- We can call super! :)
+  /**
+   *  Constructor; allows children to call super to simplify their constructor.
+   */
   public SoundShape(int centerX, int centerY, int radius, int numPoints)
   {
     this.centerX    = centerX;
     this.centerY    = centerY;
     this.radius     = radius;
     this.numPoints  = numPoints;
+    
+    this.drawShape();
   } //
 
+  /**
+   *  Draws a shape at centerX and centerY with numPoints points,
+   *  each one radius distance from (centerX, centerY).
+   */
   void drawShape()
   {
     float angle = TWO_PI / this.numPoints;
@@ -34,6 +43,25 @@ abstract class SoundShape
     } // for
     endShape(CLOSE);
   } // drawShape
+  
+  void moveTo(int xCoordinate, int yCoordinate)
+  {
+    int  delta  = 7;
+    
+    if(this.centerX > (xCoordinate + delta)) {
+      this.centerX = this.centerX - delta;
+    } else if(centerX < (xCoordinate - delta)) {
+      this.centerX = this.centerX + delta;
+    }
+    
+    if(this.centerY > (yCoordinate + delta)) {
+      this.centerY = this.centerY - delta;
+    } else if(this.centerY < (yCoordinate - delta)) {
+      this.centerY = this.centerY + delta;
+    }
+    
+    this.drawShape();
+  } // moveTo(int,int)
 
   /**
    *  Method from an example; draws a polygon at x and y, with the given radius and num points.
