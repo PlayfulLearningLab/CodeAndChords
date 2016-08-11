@@ -84,8 +84,8 @@ void barsMoveOnDelayMajorScale()
 
   if (millis() > delay && (arrayContains(majorScaleDegrees, scaleDegree)))
   {
-    println("Yes! This scale degree is in the major scale!");
-    fillAndDrawBars(scaleDegree * 30, saturationMax, brightnessMax);
+    saturation  = Math.min(input.getAmplitude(1), 100);
+    fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
 
     delay = millis() + 100;
   } // if - delay && contains
@@ -116,9 +116,9 @@ void barsMoveOnPitchChange()
   int hue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
   hue = hue * 30;
 
-  //  saturation  = Math.min(input.getAmplitude(1), 100);
+    saturation  = Math.min(input.getAmplitude(1), 100);
   //  saturation  = map(saturation, 0, 200, 0, 100);
-  saturation  = saturationMax;
+//  saturation  = saturationMax;
 
   if (color(hue, saturation, brightnessMax) != bars[bars.length - 1])
   {
@@ -139,6 +139,7 @@ void barsMoveOnDelay(int millisDelay)
   {
     //    drawBars();
 
+    saturation  = Math.min(input.getAmplitude(1), 100);
     fillAndDrawBars(round(input.getAdjustedFundAsMidiNote(1) % 12) * 30, saturationMax, brightnessMax);
 
     delay += millisDelay;

@@ -44,6 +44,9 @@ class SoundShape
     endShape(CLOSE);
   } // drawShape
   
+  /**
+   *  Moves the shape to the coordinates specified as parameters.
+   */
   void moveTo(int xCoordinate, int yCoordinate)
   {
     int  delta  = 7;

@@ -105,8 +105,10 @@ void draw()
   
   // Adjust saturation with amplitude by uncommenting the following lines and 
   // commenting the "curSaturation = saturationMax" line.
+  // ** This no longer works because of RGB! :(
   /*
   newSaturation  = (int)Math.min(input.getAmplitude(1), 300);
+  println("input.getAmplitude(1) = " + input.getAmplitude(1));
   
   if(newSaturation != goalSaturation) {
     goalSaturation  = newSaturation;
@@ -117,7 +119,7 @@ void draw()
   } else if(curSaturation < goalSaturation) {
     curSaturation = curSaturation + changeInSaturation;
   } // if
-  */
+*/
   
   curSaturation  = saturationMax;
   
