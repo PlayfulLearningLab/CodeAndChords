@@ -18585,6 +18585,8 @@ p5.prototype.setShakeThreshold = function(val){
  */
 
 /**
+ * 08/13/2016:  Commented out the _ondevicemotion function to avoid console errors in pitchChangeColor.
+ * 
  * The deviceShaken() function is called when the device total acceleration
  * changes of accelerationX and accelerationY values is more than
  * the threshold value. The default threshold is set to 30.
@@ -18617,6 +18619,8 @@ p5.prototype._ondeviceorientation = function (e) {
   this._setProperty('rotationZ', e.alpha);
   this._handleMotion();
 };
+// Commented this to avoid an error:
+/*
 p5.prototype._ondevicemotion = function (e) {
   this._updatePAccelerations();
   this._setProperty('accelerationX', e.acceleration.x * 2);
@@ -18624,6 +18628,7 @@ p5.prototype._ondevicemotion = function (e) {
   this._setProperty('accelerationZ', e.acceleration.z * 2);
   this._handleMotion();
 };
+*/
 p5.prototype._handleMotion = function() {
   if (window.orientation === 90 || window.orientation === -90) {
     this._setProperty('deviceOrientation', 'landscape');

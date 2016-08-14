@@ -1,5 +1,8 @@
 /**
- *  Visualize the frequency spectrum of live audio input
+ *  Visualize the frequency spectrum of live audio input\
+ * 
+ * NB - warning from Chrome: Remove support for the MediaStreamTrack.getSources() method. 
+ *    This method was removed from the spec in favor of MediaDevices.enumerateDevices().
  */
 
 var mic, fft;
@@ -26,4 +29,13 @@ function draw() {
    }
    endShape();
 
+//   findFund(spectrum);
 }
+
+function findFund(spectrum)
+{
+    for(i = 0; i < spectrum.length; i++)
+    {
+        print("spectrum[" + i + "] = " + spectrum[i]);
+    } // for
+} // findFund
