@@ -43,7 +43,7 @@ void setup() {
   ps = new PowerSpectrum();
   // connect the PowerSpectrum to the FFT
   fft.addListener(ps);
-  // the SpectralPeaks object sotres the N hightest peaks
+  // the SpectralPeaks object stores the N hightest peaks
   sp = new SpectralPeaks(ac, numPeaks);
   //connect the PowerSpectrum to the Frequency object
   ps.addListener(sp);
@@ -57,13 +57,13 @@ void draw() {
   background(0);
 // finding the strongest frequencies
   float pitchAndFormants[][] = sp.getFeatures();
-  //if(millis() > wait){
-  //    //printArray(features);
-  //    wait = wait+1000;
-  //    for(int j = 0; j < pitchAndFormants.length; j++){
-  //        println(j, pitchAndFormants[j][0],", ", pitchAndFormants[j][1]);
-  //      }
-  //  }
+  if(millis() > wait){
+   //   printArray(features);
+      wait = wait+1000;
+      for(int j = 0; j < pitchAndFormants.length; j++){
+          println(j, pitchAndFormants[j][0],", ", pitchAndFormants[j][1]);
+        }
+    }
 // finding I ("ee")
   for(int i=0; i<pitchAndFormants.length; i++){
     if(pitchAndFormants[i][0] > 2000 && pitchAndFormants[i][1] > 0.001)

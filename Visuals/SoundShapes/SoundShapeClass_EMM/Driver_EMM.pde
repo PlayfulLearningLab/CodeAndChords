@@ -20,4 +20,8 @@ void draw()
 //  sShape.drawShape();
 
   sShape.moveTo(mouseX,mouseY);
+  
+  println("this = " + this);
+  
+//  println("is draw repeating?");
 } // draw()

@@ -4,6 +4,9 @@
  *  
  *  Template for shapes that will respond to sound.
  *
+ *  NB:
+ *    - although Processing allows it, the Shape's centerX and centerY will stay within the sketch boundaries.
+ *
  *  TODO:
  *    - uneven shapes?
  */
@@ -17,8 +20,31 @@ class SoundShape
   /**
    *  Constructor; allows children to call super to simplify their constructor.
    */
-  public SoundShape(int centerX, int centerY, int radius, int numPoints)
+  SoundShape(int centerX, int centerY, int radius, int numPoints)
   {
+    if(centerX < 0) {
+      centerX  = 0;
+//      throw new IllegalArgumentException("SoundShape.constructor: centerX parameter is " + centerX + "; must be between 0 and " + width);
+    }
+    if(centerX > width) {
+      centerX  = width;
+//      throw new IllegalArgumentException("SoundShape.constructor: centerX parameter is " + centerX + "; must be between 0 and " + width);
+    }
+    if(centerY < 0) {
+      centerY  = 0;
+//      throw new IllegalArgumentException("SoundShape.constructor: centerX parameter is " + centerY + "; must be between 0 and " + height);
+    }
+    if(centerY > height) {
+      centerY  = height;
+//      throw new IllegalArgumentException("SoundShape.constructor: centerX parameter is " + centerY + "; must be between 0 and " + height);
+    }
+    if(radius < 0) {
+      throw new IllegalArgumentException("SoundShape.constructor: radius is " + radius + "; must be greater than or equal to 0.");
+    }
+    if(numPoints < 0) {
+      throw new IllegalArgumentException("SoundShape.constructor: numPoints is " + numPoints + "; must be greater than or equal to 0.");
+    }
+    
     this.centerX    = centerX;
     this.centerY    = centerY;
     this.radius     = radius;
@@ -49,19 +75,27 @@ class SoundShape
    */
   void moveTo(int xCoordinate, int yCoordinate)
   {
-    int  delta  = 7;
     
-    if(this.centerX > (xCoordinate + delta)) {
-      this.centerX = this.centerX - delta;
-    } else if(centerX < (xCoordinate - delta)) {
-      this.centerX = this.centerX + delta;
-    }
+    int  delta  = 5;
     
-    if(this.centerY > (yCoordinate + delta)) {
-      this.centerY = this.centerY - delta;
-    } else if(this.centerY < (yCoordinate - delta)) {
-      this.centerY = this.centerY + delta;
-    }
+    println("xCoordinate = " + xCoordinate + "; yCoordinate = " + yCoordinate + "; centerX = " + centerX + "; centerY = " + centerY);
+    while(xCoordinate > (this.centerX + delta) || xCoordinate < (this.centerX- delta))
+    {
+      if(this.centerX > (xCoordinate + delta)) {
+        this.centerX = this.centerX - delta;
+      } else if(centerX < (xCoordinate - delta)) {
+        this.centerX = this.centerX + delta;
+      }
+    } // while - x
+    
+    while(yCoordinate > (this.centerY + delta) || yCoordinate < (this.centerY - delta))
+    {
+      if(this.centerY > (yCoordinate + delta)) {
+        this.centerY = this.centerY - delta;
+      } else if(this.centerY < (yCoordinate - delta)) {
+        this.centerY = this.centerY + delta;
+      }
+    } // while - y
     
     this.drawShape();
   } // moveTo(int,int)
