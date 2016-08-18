@@ -163,7 +163,7 @@ class Input
     } // for - addDependent
 
     // Pitches with amplitudes below this number will be ignored by adjustedFreq:
-    this.sensitivity  = 3;
+    this.sensitivity  = 10;
 
     // Starts the AudioContext (and everything connected to it):
     this.ac.start();
@@ -183,7 +183,6 @@ class Input
    */
   Input()
   {
-    // Could just call this(1) if I add a way to specify the AudioContext as well.
     this(1, new AudioContext());
   } // constructor()
 
@@ -214,23 +213,27 @@ class Input
    */
   void setFund()
   { 
-    for (int i = 0; i < this.numInputs; i++)
+    // catching a NullPointer because I'm not sure why it happens and fear a crash during a concert.
+    try
     {
-      //     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
-
-      // want to assign the value of .getFeatures() to a variable and check for null,
-      // but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
-      if (this.frequencyArray[i].getFeatures() != null) {
-        //       println("i = " + i);
-        //       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
-        this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-
-        // ignores pitches with amplitude lower than "sensitivity":
-        if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
-          this.adjustedFundArray[i]  = this.fundamentalArray[i];
-        } // if: amp > sensitivity
-      } // if: features() != null
-    } // if: > numInputs
+      for (int i = 0; i < this.numInputs; i++)
+      {
+        //     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
+  
+        // want to assign the value of .getFeatures() to a variable and check for null,
+        // but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
+        if (this.frequencyArray[i].getFeatures() != null) {
+          //       println("i = " + i);
+          //       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
+          this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
+  
+          // ignores pitches with amplitude lower than "sensitivity":
+          if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
+            this.adjustedFundArray[i]  = this.fundamentalArray[i];
+          } // if: amp > sensitivity
+        } // if: features() != null
+      } // if: > numInputs
+    } catch(NullPointerException npe)  {}
   } // setFund
 
   /**
@@ -298,6 +301,48 @@ class Input
 
     setFund();
     return Pitch.ftom(this.fundamentalArray[inputNum - 1]);
+  } // getFundAsMidiNote()
+  
+  /**
+   *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
+   */
+  float  getAdjustedFund() {
+    return getAdjustedFund(1);
+  } // getAdjustedFund()
+
+  /**
+   *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
+   */
+  float  getAdjustedFundAsHz() {
+    return getAdjustedFundAsHz(1);
+  } // getAdjustedFundAsHz()
+  
+  /**
+   *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
+   */
+  float  getAdjustedFundAsMidiNote() {
+    return getAdjustedFundAsMidiNote(1);
+  } // getAdjustedFundAsMidiNote()
+
+  /**
+   *  @return  pitch (in Hertz) of the first Input.
+   */
+  float  getFund() {
+    return getFund(1);
+  } // getFund()
+
+  /**
+   *  @return  pitch (in Hertz) of the first Input.
+   */
+  float getFundAsHz() {
+    return getFundAsHz(1);
+  } // getFundAsHz()
+
+  /**
+   *  @return  pitch of the first Input as a MIDI note.
+   */
+  float  getFundAsMidiNote() {
+    return getFundAsMidiNote(1);
   } // getFundAsMidiNote()
 
   /**
@@ -425,6 +470,20 @@ class Input
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude
+  
+  /**
+   *  Applies a 1:8 compressor for amp's over 400 and returns the resulting amplitude.
+   *
+   *  @return  float     amplitude of the first input line.
+   */
+  float getAmplitude()  
+  {
+    float  amp  = this.frequencyArray[0].getAmplitude();
+    
+    if(amp > 400)  {  amp = amp + ((amp - 400) / 8);  }
+    
+    return amp;
+  }
 
   /**
    *  Error checker for ints sent to methods such as getFund, getAmplitude, etc.;

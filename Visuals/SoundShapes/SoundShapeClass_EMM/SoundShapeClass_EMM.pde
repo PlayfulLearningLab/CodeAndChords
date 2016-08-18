@@ -12,15 +12,15 @@
  */
 class SoundShape
 {
-  int  centerX;      // x coordinate of the shape's center
-  int  centerY;      // y coordinate of the shape's center
-  int  radius;       // the shape's radius
+  float  centerX;      // x coordinate of the shape's center
+  float  centerY;      // y coordinate of the shape's center
+  float  radius;       // the shape's radius
   int  numPoints;    // the number of points a shape has
 
   /**
-   *  Constructor; allows children to call super to simplify their constructor.
+   *  Constructor;  error checking automatically corrects centerX and centerY if out of sketch bounds.
    */
-  SoundShape(int centerX, int centerY, int radius, int numPoints)
+  SoundShape(float centerX, float centerY, float radius, int numPoints)
   {
     if(centerX < 0) {
       centerX  = 0;
@@ -73,12 +73,16 @@ class SoundShape
   /**
    *  Moves the shape to the coordinates specified as parameters.
    */
-  void moveTo(int xCoordinate, int yCoordinate)
+  void moveTo(float xCoordinate, float yCoordinate)
   {
+    if(xCoordinate < 0)      {  xCoordinate  = 0;  }
+    if(xCoordinate > width)  {  xCoordinate  = width;  }
     
-    int  delta  = 5;
+    if(yCoordinate < 0)      {  yCoordinate  = 0;  }
+    if(yCoordinate > height)  {  yCoordinate  = height;  }
     
-    println("xCoordinate = " + xCoordinate + "; yCoordinate = " + yCoordinate + "; centerX = " + centerX + "; centerY = " + centerY);
+    int  delta  = 3;
+    
     while(xCoordinate > (this.centerX + delta) || xCoordinate < (this.centerX- delta))
     {
       if(this.centerX > (xCoordinate + delta)) {
