@@ -61,7 +61,8 @@ void draw() {
    //   printArray(features);
       wait = wait+1000;
       for(int j = 0; j < pitchAndFormants.length; j++){
-          println(j, pitchAndFormants[j][0],", ", pitchAndFormants[j][1]);
+          //println(j, pitchAndFormants[j][0],", ", pitchAndFormants[j][1]);
+          println(pitchAndFormants[j][0]);
         }
     }
 // finding I ("ee")
