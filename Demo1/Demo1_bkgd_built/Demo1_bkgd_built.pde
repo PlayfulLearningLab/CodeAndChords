@@ -2,7 +2,7 @@
  * Amanda Tenhoff
  * 8/25/2016
  * Adjusting 'Daft Punk' code for 4 inputs
- * WITHOUT background balls
+ * WITH background balls
  * ALL BUILT-IN INPUTS
  * Input Method: MultipleInputsClass_EMM, InputClassPitch_EMM
  *
