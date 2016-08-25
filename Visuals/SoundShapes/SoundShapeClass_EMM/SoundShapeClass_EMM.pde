@@ -15,7 +15,7 @@ class SoundShape
   float  centerX;      // x coordinate of the shape's center
   float  centerY;      // y coordinate of the shape's center
   float  radius;       // the shape's radius
-  int  numPoints;    // the number of points a shape has
+  int    numPoints;    // the number of points a shape has
 
   /**
    *  Constructor;  error checking automatically corrects centerX and centerY if out of sketch bounds.
