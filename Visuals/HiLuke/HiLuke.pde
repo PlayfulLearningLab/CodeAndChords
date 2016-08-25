@@ -2,7 +2,7 @@ void setup()
 {
   fullScreen();
   
-  background(250, 50, 250);
+  background(150, 150, 350);
   stroke(255);
   text("Hi, Luke!", width/2, height/2);
 } // setup()
