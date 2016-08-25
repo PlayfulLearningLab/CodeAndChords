@@ -4,7 +4,7 @@
  * Adjusting 'Daft Punk' code for 4 inputs
  * WITH background balls
  * ALL REALTIME
- * Input Method: InputClassJack_EMM
+ * Input Method: InputClassJack_EMM, InputClassPitch_EMM
  *
  */
 
