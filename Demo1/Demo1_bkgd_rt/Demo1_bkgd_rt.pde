@@ -323,7 +323,7 @@ void draw()
   rectMode(CORNERS);
   int pitchPink = round(rppit / allPitchAdjust);
   int volPink  = round(rpvol);
-  if (volPink>stackheight);
+  if (volPink>stackheight)
   {
     volPink=stackheight;
   }
