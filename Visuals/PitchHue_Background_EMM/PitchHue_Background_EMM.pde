@@ -12,6 +12,7 @@ int  saturationMax;
 int  brightnessMax;
 
 Input  input;
+int  threshold;      // when amp is below this, the background will be black.
 
 int  hue;
 int  saturation;
@@ -35,94 +36,146 @@ float[][]  colors;          // holds the RGB values for the colors responding to
 void setup() 
 {
   size(640, 360);
-  
+
   hueMax         = 360;
   saturationMax  = 300;
   brightnessMax  = 100;
-  
-//  colorMode(HSB, hueMax, saturationMax, brightnessMax);
+
+  //  colorMode(HSB, hueMax, saturationMax, brightnessMax);
   colors  = new float[][] {
-    { 255, 0, 0 },
-    { 255, 127.5, 0 },
-    { 255, 255, 0 },
-    { 127.5, 255, 0 },
-    { 0, 255, 0 },
-    { 0, 255, 127.5 },
-    { 0, 255, 255 },
-    { 0, 127.5, 255 },
-    { 0, 0, 255 },
-    { 127.5, 0, 255 },
-    { 255, 0, 255 },
-    { 255, 0, 127.5 },
+    { 255, 0, 0 }, 
+    { 255, 127.5, 0 }, 
+    { 255, 255, 0 }, 
+    { 127.5, 255, 0 }, 
+    { 0, 255, 0 }, 
+    { 0, 255, 127.5 }, 
+    { 0, 255, 255 }, 
+    { 0, 127.5, 255 }, 
+    { 0, 0, 255 }, 
+    { 127.5, 0, 255 }, 
+    { 255, 0, 255 }, 
+    { 255, 0, 127.5 }, 
     { 255, 0, 0 }
   };
-  
-  for(int i = 0; i < colors.length; i++)
+
+  for (int i = 0; i < colors.length; i++)
   {
     fill(colors[i][0], colors[i][1], colors[i][2]);
     rect((width / colors.length) * i, 0, (width / colors.length), height);
   } // for
-  
-  input          = new Input();
-  
+
+  input        = new Input();
+  threshold    = 15;
+
   noStroke();
   background(0);
-  
+
   curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
   curHue       = colors[curHuePos];
   // would like to change more quickly, but there's a weird flicker if changeInHue gets bigger:
   changeInHue  = 10;
-  
+
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
+  
+  // draws the legend
+  legend();
 } // setup()
 
 void draw() 
 {
-  // if want something other than C to be the "tonic" (i.e., red),
-  // add some number before multiplying.
-  newHuePos  = round(input.getAdjustedFundAsMidiNote(1) % 12);
-  newHue  = colors[newHuePos];
-//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
+  if (input.getAmplitude() > threshold)
+  {
+    // if want something other than C to be the "tonic" (i.e., red),
+    // add some number before multiplying.
+    newHuePos  = round(input.getAdjustedFundAsMidiNote(1) % 12);
+    newHue  = colors[newHuePos];
+    //  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
+  } else {
+    newHue  = new float[] { 0, 0, 0 };
+  } // else
 
   // set goalHue to the color indicated by the current pitch:
-  if(newHuePos != goalHuePos)
+  if (newHuePos != goalHuePos)
   {
     goalHuePos  = newHuePos;
   } // if
   goalHue  = colors[goalHuePos];
-  
-  for(int i = 0; i < 3; i++)
+
+  for (int i = 0; i < 3; i++)
   {
-    if(curHue[i] > (goalHue[i] - changeInHue))
+    if (curHue[i] > (goalHue[i] - changeInHue))
     {
       curHue[i] = curHue[i] - changeInHue;
-    } else if(curHue[i] < (goalHue[i] + changeInHue))
+    } else if (curHue[i] < (goalHue[i] + changeInHue))
     {
       curHue[i]  = curHue[i] + changeInHue;
     } // if
   } // for
-  
+
   // Adjust saturation with amplitude by uncommenting the following lines and 
   // commenting the "curSaturation = saturationMax" line.
   // ** This no longer works because of RGB! :(
+  // ^ Chillax and change the color mode.
   /*
   newSaturation  = (int)Math.min(input.getAmplitude(1), 300);
-  println("input.getAmplitude(1) = " + input.getAmplitude(1));
-  
-  if(newSaturation != goalSaturation) {
-    goalSaturation  = newSaturation;
-  } //if
-  
-  if(curSaturation > goalSaturation) {
-    curSaturation = curSaturation - changeInSaturation;
-  } else if(curSaturation < goalSaturation) {
-    curSaturation = curSaturation + changeInSaturation;
-  } // if
-*/
-  
+   println("input.getAmplitude(1) = " + input.getAmplitude(1));
+   
+   if(newSaturation != goalSaturation) {
+   goalSaturation  = newSaturation;
+   } //if
+   
+   if(curSaturation > goalSaturation) {
+   curSaturation = curSaturation - changeInSaturation;
+   } else if(curSaturation < goalSaturation) {
+   curSaturation = curSaturation + changeInSaturation;
+   } // if
+   */
+
   curSaturation  = saturationMax;
+
+  //  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
+//  background(curHue[0], curHue[1], curHue[2]);
   
-//  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
-  background(curHue[0], curHue[1], curHue[2]);
+  // draws the legend along the right side:
+  legend();
+//  rect(613, 270, 27, 27);
+  
+  float  side = height / colors.length;
+  
+  for(int i = 0; i < colors.length; i++)
+  {
+    fill(colors[i][0], colors[i][1], colors[i][2]);
+    rect(width - side, side * height, side, side);
+    println("  color is " + colors[i][0] +", " + colors[i][1] + ", " + colors[i][2]);
+    println("trying to draw at " + (width - side) + ", " + (side * i) + ", " + side + ", " + side);
+  } // for
 } // draw()
+
+void legend()
+{
+  String[] notes = new String[] {
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B"
+  }; // notes
+  
+  float  side = height / colors.length;
+  
+  for(int i = 0; i < colors.length; i++)
+  {
+    fill(colors[i][0], colors[i][1], colors[i][2]);
+    rect(width - side, side * height, side, side);
+    println("  color is " + colors[i][0] +", " + colors[i][1] + ", " + colors[i][2]);
+    println("trying to draw at " + (width - side) + ", " + (side * i) + ", " + side + ", " + side);
+  } // for
+} // legend
