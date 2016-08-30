@@ -14,6 +14,8 @@ int stackheight            = 15;       //easily adjusting number of stacks for b
 
 Input myIns;   //this is for the new input class
 
+int  volAdjust  = 100;
+
 int b1VolAdjust = 100;  //multiplier for volume calibration for Bass 1
 int b2VolAdjust = 100;
 int t1VolAdjust = 100;
@@ -283,7 +285,7 @@ void draw()
   rectMode(CORNERS);
   int pitchPink = round(rppit / allPitchAdjust);
   int volPink  = round(rpvol);
-  if (volPink>stackheight);
+  if (volPink>stackheight)
   {
     volPink=stackheight;
   }
