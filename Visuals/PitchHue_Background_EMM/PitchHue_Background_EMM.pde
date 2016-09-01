@@ -1,3 +1,5 @@
+import interfascia.*;
+
 /**
  * 08/01/2016
  * Emily Meuer
@@ -6,6 +8,11 @@
  *
  * (Adapted from Examples => Color => Hue.)
  */
+
+// Lable for the scrollbar:
+GUIController controller;
+IFTextField   textField;
+IFLabel       label;
 
 int  hueMax;
 int  saturationMax;
@@ -20,7 +27,7 @@ int  saturation;
 float[]  newHue;
 float[]  goalHue;
 float[]  curHue;
-int  changeInHue;
+float    hueDelta;
 
 int  newHuePos;
 int  goalHuePos;
@@ -34,6 +41,9 @@ int  changeInSaturation;
 float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 
 HScrollbar  scrollbar;
+float       scrollbarPos;
+float       hueDeltaMax  = 20;
+float       hueDeltaMin  = 1;
 
 void setup() 
 {
@@ -77,10 +87,9 @@ void setup()
 
 //  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
   curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
-  println("curHuePos = " + curHuePos);
   curHue       = colors[curHuePos];
-  // would like to change more quickly, but there's a weird flicker if changeInHue gets bigger:
-  changeInHue  = 10;
+  // would like to change more quickly, but there's a weird flicker if hueDelta gets bigger:
+  hueDelta  = 10;
 
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
@@ -92,7 +101,16 @@ void setup()
   // draws the legend
   legend();
   
-  scrollbar = new HScrollbar(10, 40, (width / 2) - 10, 16, 5);
+  scrollbar = new HScrollbar(10, 45, (width / 2) - 10, 18, 5);
+
+  controller = new GUIController(this);
+  textField  = new IFTextField("Text Field", 10, 10, 150);
+  label      = new IFLabel("hueDelta: " + hueDelta, 15, 15);
+  
+  controller.add(textField);
+  controller.add(label);
+  
+  textField.addActionListener(this);
 } // setup()
 
 void draw() 
@@ -116,16 +134,14 @@ void draw()
   } // if
   goalHue  = colors[goalHuePos];
   
-  println("goalHuePos = " + goalHuePos);
-
   for (int i = 0; i < 3; i++)
   {
-    if (curHue[i] > (goalHue[i] - changeInHue))
+    if (curHue[i] > (goalHue[i] - hueDelta))
     {
-      curHue[i] = curHue[i] - changeInHue;
-    } else if (curHue[i] < (goalHue[i] + changeInHue))
+      curHue[i] = curHue[i] - hueDelta;
+    } else if (curHue[i] < (goalHue[i] + hueDelta))
     {
-      curHue[i]  = curHue[i] + changeInHue;
+      curHue[i]  = curHue[i] + hueDelta;
     } // if
   } // for
 
@@ -159,7 +175,11 @@ void draw()
   
   scrollbar.update();
   scrollbar.display();
-  println("scrollbar.getPos() = " + scrollbar.getPos());
+  
+  scrollbarPos  = scrollbar.getPos();
+  hueDelta      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, hueDeltaMin, hueDeltaMax);
+  
+  label.setLabel("hueDelta: " + hueDelta);
 
 /*
   // ellipse for testing different colors - for my benefit, but could be cool.
@@ -203,3 +223,10 @@ void legend()
     text(notes[i], (side * i) + side/2 - 10, height - (side / 3));
   } // for
 } // legend
+
+// Not sure that this really does anything right now:
+void actionPerformed(GUIEvent e) {
+  if (e.getMessage().equals("Completed")) {
+    label.setLabel(textField.getValue());
+  }
+} // actionPerformed
