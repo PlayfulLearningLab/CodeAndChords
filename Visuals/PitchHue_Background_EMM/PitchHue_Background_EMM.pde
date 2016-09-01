@@ -33,9 +33,11 @@ int  changeInSaturation;
 
 float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 
+HScrollbar  scrollbar;
+
 void setup() 
 {
-  size(640, 360);
+  size(638, 360);
 
   hueMax         = 360;
   saturationMax  = 300;
@@ -58,11 +60,14 @@ void setup()
     { 255, 0, 0 }
   };
 
-  for (int i = 0; i < colors.length; i++)
-  {
-    fill(colors[i][0], colors[i][1], colors[i][2]);
-    rect((width / colors.length) * i, 0, (width / colors.length), height);
-  } // for
+  /*
+  // this draws rectangles of the colors across the screen:
+   for (int i = 0; i < colors.length; i++)
+   {
+   fill(colors[i][0], colors[i][1], colors[i][2]);
+   rect((width / colors.length) * i, 0, (width / colors.length), height);
+   } // for
+   */
 
   input        = new Input();
   threshold    = 15;
@@ -70,20 +75,29 @@ void setup()
   noStroke();
   background(0);
 
-  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
+//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
+  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
+  println("curHuePos = " + curHuePos);
   curHue       = colors[curHuePos];
   // would like to change more quickly, but there's a weird flicker if changeInHue gets bigger:
   changeInHue  = 10;
 
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
+
+  
+  // sets the text size used to display note names:
+  textSize(24);
   
   // draws the legend
   legend();
+  
+  scrollbar = new HScrollbar(10, 40, (width / 2) - 10, 16, 5);
 } // setup()
 
 void draw() 
 {
+  stroke(255);
   if (input.getAmplitude() > threshold)
   {
     // if want something other than C to be the "tonic" (i.e., red),
@@ -101,6 +115,8 @@ void draw()
     goalHuePos  = newHuePos;
   } // if
   goalHue  = colors[goalHuePos];
+  
+  println("goalHuePos = " + goalHuePos);
 
   for (int i = 0; i < 3; i++)
   {
@@ -135,47 +151,55 @@ void draw()
   curSaturation  = saturationMax;
 
   //  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
-//  background(curHue[0], curHue[1], curHue[2]);
-  
-  // draws the legend along the right side:
+  background(curHue[0], curHue[1], curHue[2]);
+
+  stroke(255);
+  // draws the legend along the bottom of the screen:
   legend();
-//  rect(613, 270, 27, 27);
   
-  float  side = height / colors.length;
-  
-  for(int i = 0; i < colors.length; i++)
-  {
-    fill(colors[i][0], colors[i][1], colors[i][2]);
-    rect(width - side, side * height, side, side);
-    println("  color is " + colors[i][0] +", " + colors[i][1] + ", " + colors[i][2]);
-    println("trying to draw at " + (width - side) + ", " + (side * i) + ", " + side + ", " + side);
-  } // for
+  scrollbar.update();
+  scrollbar.display();
+  println("scrollbar.getPos() = " + scrollbar.getPos());
+
+/*
+  // ellipse for testing different colors - for my benefit, but could be cool.
+  fill(255, 127.5, 0);
+//  fill(colors[0][0], colors[0][1], colors[0][2]);
+  ellipse(width / 2, height / 2, 100, 100);
+*/
 } // draw()
 
 void legend()
 {
   String[] notes = new String[] {
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-    "A",
-    "A#",
-    "B"
+    "C", 
+    "C#", 
+    "D", 
+    "D#", 
+    "E", 
+    "F", 
+    "F#", 
+    "G", 
+    "G#", 
+    "A", 
+    "A#", 
+    "B",
+    "C"
   }; // notes
-  
-  float  side = height / colors.length;
-  
-  for(int i = 0; i < colors.length; i++)
+
+  float  side = width / colors.length;
+
+  stroke(255);
+
+  for (int i = 0; i < colors.length; i++)
   {
     fill(colors[i][0], colors[i][1], colors[i][2]);
-    rect(width - side, side * height, side, side);
-    println("  color is " + colors[i][0] +", " + colors[i][1] + ", " + colors[i][2]);
-    println("trying to draw at " + (width - side) + ", " + (side * i) + ", " + side + ", " + side);
+    if(i == goalHuePos) {
+      rect((side * i), height - (side * 1.5), side, side * 1.5);
+    } else {
+      rect((side * i), height - side, side, side);
+    }
+    fill(0);
+    text(notes[i], (side * i) + side/2 - 10, height - (side / 3));
   } // for
 } // legend
