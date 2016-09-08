@@ -30,7 +30,7 @@ void setup()
   fill(0, 150, 25);
   stroke(255);
   
-  sShape  = new SoundShape(width/4, height - height/4, 100, 4, 0, 1);
+  sShape  = new SoundShape(width/4, height - height/4, 100, 4, 0, 0);
   input   = new Input();
   /*
   x  = input.getAdjustedFundAsHz();

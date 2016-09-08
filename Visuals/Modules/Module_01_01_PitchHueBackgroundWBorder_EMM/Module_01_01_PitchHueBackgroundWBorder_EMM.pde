@@ -39,6 +39,9 @@ int  curHuePos;
 float  curNote;
 float  newNote;
 
+float[]  newHueBorder;
+float[]  goalHueBorder;
+float[]  curHueBorder;
 
 int  newSaturation;
 int  goalSaturation;
@@ -118,6 +121,8 @@ void setup()
   controller.add(label);
   
   textField.addActionListener(this);
+  
+  curNote  = input.getAdjustedFundAsMidiNote();
 } // setup()
 
 void draw() 
@@ -127,9 +132,18 @@ void draw()
   
   if (input.getAmplitude() > threshold)
   {
+    newNote = input.getAdjustedFundAsMidiNote();
+    if(newNote == curNote) {
+      println("  Note was held.");
+    } else {
+      println("New note! curNote = " + curNote + "; newNote = " + newNote);
+      curNote = newNote;
+    } // else - set curNote
+    
+    // The following finds the color from the particular note.
     // if want something other than C to be the "tonic" (i.e., red),
     // add some number before multiplying.
-    newHuePos  = round(input.getAdjustedFundAsMidiNote(1) % 12);
+    newHuePos  = round(curNote % 12);
     newHue  = colors[newHuePos];
     //  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
   } else {
@@ -166,9 +180,7 @@ void draw()
 
   curSaturation  = saturationMax;
 
-  //  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
-
-
+// Switched from setting the background to drawing a rectangle, to allow Turrell border.
 //  background(curHue[0], curHue[1], curHue[2]);
   fill(curHue[0], curHue[1], curHue[2]);
   rect(20, 20, width - 40, height - 90, 10);

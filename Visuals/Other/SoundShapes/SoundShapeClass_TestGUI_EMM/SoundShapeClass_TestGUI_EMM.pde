@@ -149,7 +149,7 @@ class SoundShape
     if(yCoordinate < 0)      {  yCoordinate  = 0;  }
     if(yCoordinate > height)  {  yCoordinate  = height;  }
     
-    int  delta  = 3;
+    int  delta  = 20;
     
     while(xCoordinate > (this.centerX + delta) || xCoordinate < (this.centerX- delta))
     {
