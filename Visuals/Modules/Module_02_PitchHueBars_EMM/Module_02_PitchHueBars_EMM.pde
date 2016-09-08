@@ -1,4 +1,6 @@
-/** //<>// //<>//
+import interfascia.*; //<>//
+
+/** //<>//
  * 08/01/2016
  * Emily Meuer
  *
@@ -10,6 +12,10 @@
  *                      so could map to allow more control.
  *
  * (Adapted from Examples => Color => Hue.)
+ *
+ *  09/08: Could try to do some cool enum case thing (see this example - 
+ *  https://schneide.wordpress.com/2010/12/13/avoid-switch-use-enum/)
+ *  but running into too much static weirdness to mess with it at this point.
  */
 
 int    barWidth = 10;
@@ -18,6 +24,7 @@ int    howManyBars;
 
 //int    hue;
 float  saturation;
+boolean  saturationBool  = false;  // determines whether or not saturation is determined by amp.
 
 int    hueMax;
 int    saturationMax;
@@ -29,6 +36,20 @@ int    delay;
 color[]  bars;
 
 int[]  majorScaleDegrees;
+
+GUIController  controller;
+IFButton       timeButton;
+IFButton       pitchButton;
+IFButton       majorScaleButton;
+IFButton       saturationButton;
+
+int  buttonX = 20;
+
+/*
+  0 - time
+  1 - pitch
+*/
+int    controlledBy  = 0;
 
 void setup() 
 {
@@ -62,15 +83,42 @@ void setup()
     11, 
     12
   };
+  
+  controller   = new GUIController(this);
+  timeButton   = new IFButton("Time-based", buttonX, height - 80);
+  pitchButton  = new IFButton("Pitch-based", buttonX, height - 60);
+  majorScaleButton  = new IFButton("Major scale (time-based)", buttonX, height - 40);
+  saturationButton  = new IFButton("Saturation", buttonX + timeButton.getWidth(), height - 40);
+  
+  timeButton.addActionListener(this);
+  pitchButton.addActionListener(this);
+  majorScaleButton.addActionListener(this);
+  saturationButton.addActionListener(this);
+  
+  controller.add(timeButton);
+  controller.add(pitchButton);
+  controller.add(majorScaleButton);
+  controller.add(saturationButton);
 
   delay  = millis();
 }
 
 void draw() 
 {
-  //  barsMoveOnDelay(150);
-  //  barsMoveOnPitchChange();
-  barsMoveOnDelayMajorScale();
+  if(controlledBy == 0)
+  {
+    barsMoveOnDelay(150);
+  } else if(controlledBy == 1)
+  {
+    barsMoveOnPitchChange();
+  } else if(controlledBy == 2)
+  {
+    barsMoveOnDelayMajorScale();
+  } else {
+    controlledBy = 0;
+  } // else
+
+//  barsMoveOnDelayMajorScale();
 } // draw()
 
 /**
@@ -80,11 +128,15 @@ void draw()
 void barsMoveOnDelayMajorScale()
 {
   int  scaleDegree  = round(input.getAdjustedFundAsMidiNote(1) % 12);
-  println("scaleDegree = " + scaleDegree);
 
   if (millis() > delay && (arrayContains(majorScaleDegrees, scaleDegree)))
   {
-    saturation  = Math.min(input.getAmplitude(1), 100);
+    if(saturationBool) {
+      saturation  = Math.min(input.getAmplitude(1), 100);
+    } else {
+      saturation = saturationMax;
+    }
+    
     fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
 
     delay = millis() + 100;
@@ -116,7 +168,11 @@ void barsMoveOnPitchChange()
   int hue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
   hue = hue * 30;
 
-    saturation  = Math.min(input.getAmplitude(1), 100);
+    if(saturationBool) {
+      saturation  = Math.min(input.getAmplitude(1), 100);
+    } else {
+      saturation = saturationMax;
+    }
   //  saturation  = map(saturation, 0, 200, 0, 100);
 //  saturation  = saturationMax;
 
@@ -139,8 +195,12 @@ void barsMoveOnDelay(int millisDelay)
   {
     //    drawBars();
 
-    saturation  = Math.min(input.getAmplitude(1), 100);
-    fillAndDrawBars(round(input.getAdjustedFundAsMidiNote(1) % 12) * 30, saturationMax, brightnessMax);
+    if(saturationBool) {
+      saturation  = Math.min(input.getAmplitude(1), 100);
+    } else {
+      saturation = saturationMax;
+    }
+    fillAndDrawBars(round(input.getAdjustedFundAsMidiNote(1) % 12) * 30, saturation, brightnessMax);
 
     delay += millisDelay;
   } // if
@@ -193,7 +253,6 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
   //  saturation  = saturationMax;
   //  println("saturation = " + saturation);
 
-  println("hue = " + hue);
 
   bars[bars.length - 1] = color(hue, saturation, brightness);
 
@@ -206,3 +265,30 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
     rect(barX, 0, barWidth, height);
   } // for
 } // fillBars
+
+void actionPerformed(GUIEvent e)
+{
+  if(e.getSource() == timeButton)
+  {
+    println("timeButton was clicked.");
+    controlledBy = 0;
+  } // if - timeButton
+  
+  if(e.getSource() == pitchButton)
+  {
+    println("pitchButton was clicked.");
+    controlledBy = 1;
+  } // if - pitchButton
+  
+  if(e.getSource() == majorScaleButton)
+  {
+    println("majorScaleButton was clicked.");
+    controlledBy = 2;
+  } // if - majorScaleButton
+  
+  if(e.getSource() == saturationButton)
+  {
+    println("saturationButton was clicked.");
+    saturationBool = !saturationBool;
+  } // if  - saturationButton
+} // actionPerformed

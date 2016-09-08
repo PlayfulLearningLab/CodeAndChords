@@ -12,6 +12,7 @@ import beads.FFT;
 import beads.PowerSpectrum;
 import beads.Frequency;
 import beads.Pitch;
+import beads.Compressor;
 
 import javax.sound.sampled.AudioFormat;
 
@@ -21,7 +22,8 @@ class Input
   Notate bene: inputNum passed to constructor must be 4 greater
   than the actual desired number of inputs.
   
-   ** Watch for that NullPointerException -- add a try-catch? **
+   ** Watch for that NullPointerException -- add a try-catch? ** 
+       - 8/17: added try/catch
    
    (Why doesn't it need jna-jack__.jar in the code folder?  B/c it's in the old one?)
    
@@ -45,9 +47,11 @@ class Input
 
   AudioContext           ac;
   float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
+  Compressor             compressor;
 //  UGen                   inputsUGen;           // initialized with the input from the AudioContext.
   UGen[]                 uGenArray;
   Gain                   g;
+  Gain                   mute;
   FFT[]                  fftArray;             // holds the FFT for each input.
   FrequencyEMM[]         frequencyArray;       // holds the FrequencyEMM objects connected to each input.
   float[]                fundamentalArray;     // holds the current pitch, in hertz, of each input.
@@ -104,9 +108,23 @@ class Input
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
 
-    // Create a Gain, add each of the UGens from uGenArray to it, and add it to the AudioContext
-    // (sonifying Processing and George P. do this -- I believe it keeps the volume from getting out of control):
+    /*
+    Default compressor values:
+      threshold - .5
+      attack - 1
+      decay - .5
+      knee - .5
+      ratio - 2
+      side-chain - the input audio
+    */
+    // Create a compressor w/standard values:
+    this.compressor  = new Compressor(this.ac, 1);
+    this.compressor.setRatio(8.0);
+
+    // Create a Gain, add the Compressor to the Gain,
+    // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
     g = new Gain(this.ac, 1, 0.5);
+    g.addInput(this.compressor);
     for (int i = 0; i < this.numInputs; i++)
     {
       g.addInput(uGenArray[i]);
@@ -163,7 +181,14 @@ class Input
     } // for - addDependent
 
     // Pitches with amplitudes below this number will be ignored by adjustedFreq:
-    this.sensitivity  = 3;
+    this.sensitivity  = 10;
+    
+/*
+    // trying to mute the output:
+    mute = new Gain(this.ac, 1, 0);
+    mute.addInput(this.ac.out);
+    ac.out.addInput(mute);
+*/
 
     // Starts the AudioContext (and everything connected to it):
     this.ac.start();
@@ -171,7 +196,7 @@ class Input
     // Initializes the arrays that will hold the pitches:
     this.fundamentalArray = new float[this.numInputs];
     this.adjustedFundArray = new float[this.numInputs];
-
+    
     // Gets the ball rolling on analysis:
     this.setFund();
   } // constructor(int)
@@ -213,23 +238,27 @@ class Input
    */
   void setFund()
   { 
-    for (int i = 0; i < this.numInputs; i++)
+    // catching a NullPointer because I'm not sure why it happens and fear a crash during a concert.
+    try
     {
-      //     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
-
-      // want to assign the value of .getFeatures() to a variable and check for null,
-      // but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
-      if (this.frequencyArray[i].getFeatures() != null) {
-        //       println("i = " + i);
-        //       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
-        this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-
-        // ignores pitches with amplitude lower than "sensitivity":
-        if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
-          this.adjustedFundArray[i]  = this.fundamentalArray[i];
-        } // if: amp > sensitivity
-      } // if: features() != null
-    } // if: > numInputs
+      for (int i = 0; i < this.numInputs; i++)
+      {
+        //     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
+  
+        // want to assign the value of .getFeatures() to a variable and check for null,
+        // but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
+        if (this.frequencyArray[i].getFeatures() != null) {
+          //       println("i = " + i);
+          //       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
+          this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
+  
+          // ignores pitches with amplitude lower than "sensitivity":
+          if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
+            this.adjustedFundArray[i]  = this.fundamentalArray[i];
+          } // if: amp > sensitivity
+        } // if: features() != null
+      } // if: > numInputs
+    } catch(NullPointerException npe)  {}
   } // setFund
 
   /**
@@ -297,6 +326,48 @@ class Input
 
     setFund();
     return Pitch.ftom(this.fundamentalArray[inputNum - 1]);
+  } // getFundAsMidiNote()
+  
+  /**
+   *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
+   */
+  float  getAdjustedFund() {
+    return getAdjustedFund(1);
+  } // getAdjustedFund()
+
+  /**
+   *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
+   */
+  float  getAdjustedFundAsHz() {
+    return getAdjustedFundAsHz(1);
+  } // getAdjustedFundAsHz()
+  
+  /**
+   *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
+   */
+  float  getAdjustedFundAsMidiNote() {
+    return getAdjustedFundAsMidiNote(1);
+  } // getAdjustedFundAsMidiNote()
+
+  /**
+   *  @return  pitch (in Hertz) of the first Input.
+   */
+  float  getFund() {
+    return getFund(1);
+  } // getFund()
+
+  /**
+   *  @return  pitch (in Hertz) of the first Input.
+   */
+  float getFundAsHz() {
+    return getFundAsHz(1);
+  } // getFundAsHz()
+
+  /**
+   *  @return  pitch of the first Input as a MIDI note.
+   */
+  float  getFundAsMidiNote() {
+    return getFundAsMidiNote(1);
   } // getFundAsMidiNote()
 
   /**
@@ -424,6 +495,20 @@ class Input
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude
+  
+  /**
+   *  Applies a 1:8 compressor for amp's over 400 and returns the resulting amplitude.
+   *
+   *  @return  float     amplitude of the first input line.
+   */
+  float getAmplitude()  
+  {
+    float  amp  = this.frequencyArray[0].getAmplitude();
+    
+ //   if(amp > 400)  {  amp = amp + ((amp - 400) / 8);  }
+    
+    return amp;
+  }
 
   /**
    *  Error checker for ints sent to methods such as getFund, getAmplitude, etc.;
