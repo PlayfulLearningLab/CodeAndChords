@@ -87,7 +87,7 @@ void setup()
   controller   = new GUIController(this);
   timeButton   = new IFButton("Time-based", buttonX, height - 80);
   pitchButton  = new IFButton("Pitch-based", buttonX, height - 60);
-  majorScaleButton  = new IFButton("Major scale (time-based)", buttonX, height - 40);
+  majorScaleButton  = new IFButton("C Maj scale (time-based)", buttonX, height - 40);
   saturationButton  = new IFButton("Saturation", buttonX + timeButton.getWidth(), height - 40);
 
   timeButton.addActionListener(this);
