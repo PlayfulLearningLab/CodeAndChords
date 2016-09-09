@@ -255,6 +255,8 @@ void legend()
 } // legend
 
 // Not sure that this really does anything right now:
+// ^ No, it doesn't, but this is where we will put things that we want to happen
+// when the button is pressed, etc.
 void actionPerformed(GUIEvent e) {
   if (e.getMessage().equals("Completed")) {
     label.setLabel(textField.getValue());

@@ -43,6 +43,8 @@ IFButton       pitchButton;
 IFButton       majorScaleButton;
 IFButton       saturationButton;
 
+IFLookAndFeel  darkGrayClicked;
+
 int  buttonX = 20;
 
 /*
@@ -51,9 +53,15 @@ int  buttonX = 20;
  */
 int    controlledBy  = 0;
 
+// Used by the legend:
+int  newHuePos;
+int  goalHuePos;
+int  curHuePos;
+int  goalHue;
+
 void setup() 
 {
-  size(640, 360);
+  size(640, 380);
 
   hueMax         = 360;
   saturationMax  = 100;
@@ -85,10 +93,10 @@ void setup()
   };
 
   controller   = new GUIController(this);
-  timeButton   = new IFButton("Time-based", buttonX, height - 80);
-  pitchButton  = new IFButton("Pitch-based", buttonX, height - 60);
-  majorScaleButton  = new IFButton("C Maj scale (time-based)", buttonX, height - 40);
-  saturationButton  = new IFButton("Saturation", buttonX + timeButton.getWidth(), height - 40);
+  timeButton   = new IFButton("Time-based", buttonX, height - 140);
+  pitchButton  = new IFButton("Pitch-based", buttonX, height - 120);
+  majorScaleButton  = new IFButton("C Maj scale (time-based)", buttonX, height - 100);
+  saturationButton  = new IFButton("Saturation", buttonX + timeButton.getWidth(), height - 100);
 
   timeButton.addActionListener(this);
   pitchButton.addActionListener(this);
@@ -99,17 +107,27 @@ void setup()
   controller.add(pitchButton);
   controller.add(majorScaleButton);
   controller.add(saturationButton);
+  
+  darkGrayClicked = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
+  darkGrayClicked.baseColor = color(240, saturationMax, 30);
+  darkGrayClicked.textColor = color(255);
 
   delay  = millis();
 }
 
 void draw() 
 {
+  noStroke();
+  
   if (saturationBool) {
     saturation  = Math.min(input.getAmplitude(1), 100);
   } else {
     saturation = saturationMax;
   } // else - saturation
+  
+  
+//  newHuePos  = round(curNote % 12);
+  // set goalHue to the color indicated by the current pitch:
 
   if (controlledBy == 0)
   {
@@ -123,8 +141,16 @@ void draw()
   } else {
     controlledBy = 0;
   } // else
+  
+  
+  if (newHuePos != goalHuePos)
+  {
+    goalHuePos  = newHuePos;
+  } // if
+  goalHue  = goalHuePos * 30;
+  
+  legend();
 
-  //  barsMoveOnDelayMajorScale();
 } // draw()
 
 /**
@@ -134,7 +160,8 @@ void draw()
 void barsMoveOnDelayMajorScale()
 {
   int  scaleDegree  = round(input.getAdjustedFundAsMidiNote(1) % 12);
-
+  newHuePos  = scaleDegree;
+  
   if (millis() > delay)
   {
     /*
@@ -178,6 +205,7 @@ boolean  arrayContains(int[] array, int element)
 void barsMoveOnPitchChange()
 {
   int hue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
+  newHuePos = hue;
   hue = hue * 30;
 
   if (saturationBool) {
@@ -202,7 +230,7 @@ void barsMoveOnPitchChange()
  *  the longer this is, the fewer false whites come in (basically, it's less sensitive).
  */
 void barsMoveOnDelay(int millisDelay)
-{ 
+{
   if (millis() > delay)
   {
     //    drawBars();
@@ -212,11 +240,49 @@ void barsMoveOnDelay(int millisDelay)
     } else {
       saturation = saturationMax;
     }
-    fillAndDrawBars(round(input.getAdjustedFundAsMidiNote(1) % 12) * 30, saturation, brightnessMax);
+    
+    // round moves this to the nearest midi note:
+    newHuePos = round(input.getAdjustedFundAsMidiNote()) % 12;
+    fillAndDrawBars(newHuePos * 30, saturation, brightnessMax);
 
     delay += millisDelay;
   } // if
 } // barsMoveInTime
+
+void legend()
+{
+  String[] notes = new String[] {
+    "C", 
+    "C#", 
+    "D", 
+    "D#", 
+    "E", 
+    "F", 
+    "F#", 
+    "G", 
+    "G#", 
+    "A", 
+    "A#", 
+    "B",
+    "C"
+  }; // notes
+
+  float  side = width / 13;
+
+  stroke(255);
+
+  for (int i = 0; i < 13; i++)
+  {
+    fill(i * 30, saturationMax, brightnessMax);
+    if(i == goalHuePos) {
+      rect((side * i), height - (side * 1.5), side, side * 1.5);
+    } else {
+      rect((side * i), height - side, side, side);
+    }
+    fill(0);
+    text(notes[i], (side * i) + side/2 - 10, height - (side / 3));
+  } // for
+} // legend
 
 /**
  *  Loops through the bars array and draws rectangles across the screen
