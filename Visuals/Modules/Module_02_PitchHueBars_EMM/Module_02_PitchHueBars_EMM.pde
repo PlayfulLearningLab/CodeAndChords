@@ -1,6 +1,6 @@
-import interfascia.*; //<>//
+import interfascia.*; //<>// //<>//
 
-/** //<>//
+/**
  * 08/01/2016
  * Emily Meuer
  *
@@ -47,8 +47,8 @@ int  buttonX = 20;
 
 /*
   0 - time
-  1 - pitch
-*/
+ 1 - pitch
+ */
 int    controlledBy  = 0;
 
 void setup() 
@@ -83,18 +83,18 @@ void setup()
     11, 
     12
   };
-  
+
   controller   = new GUIController(this);
   timeButton   = new IFButton("Time-based", buttonX, height - 80);
   pitchButton  = new IFButton("Pitch-based", buttonX, height - 60);
   majorScaleButton  = new IFButton("Major scale (time-based)", buttonX, height - 40);
   saturationButton  = new IFButton("Saturation", buttonX + timeButton.getWidth(), height - 40);
-  
+
   timeButton.addActionListener(this);
   pitchButton.addActionListener(this);
   majorScaleButton.addActionListener(this);
   saturationButton.addActionListener(this);
-  
+
   controller.add(timeButton);
   controller.add(pitchButton);
   controller.add(majorScaleButton);
@@ -105,20 +105,26 @@ void setup()
 
 void draw() 
 {
-  if(controlledBy == 0)
+  if (saturationBool) {
+    saturation  = Math.min(input.getAmplitude(1), 100);
+  } else {
+    saturation = saturationMax;
+  } // else - saturation
+
+  if (controlledBy == 0)
   {
     barsMoveOnDelay(150);
-  } else if(controlledBy == 1)
+  } else if (controlledBy == 1)
   {
     barsMoveOnPitchChange();
-  } else if(controlledBy == 2)
+  } else if (controlledBy == 2)
   {
     barsMoveOnDelayMajorScale();
   } else {
     controlledBy = 0;
   } // else
 
-//  barsMoveOnDelayMajorScale();
+  //  barsMoveOnDelayMajorScale();
 } // draw()
 
 /**
@@ -129,15 +135,21 @@ void barsMoveOnDelayMajorScale()
 {
   int  scaleDegree  = round(input.getAdjustedFundAsMidiNote(1) % 12);
 
-  if (millis() > delay && (arrayContains(majorScaleDegrees, scaleDegree)))
+  if (millis() > delay)
   {
+    /*
     if(saturationBool) {
-      saturation  = Math.min(input.getAmplitude(1), 100);
+     saturation  = Math.min(input.getAmplitude(1), 100);
+     } else {
+     saturation = saturationMax;
+     } // else - saturation
+     */
+
+    if (arrayContains(majorScaleDegrees, scaleDegree)) {
+      fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
     } else {
-      saturation = saturationMax;
-    }
-    
-    fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
+      fillAndDrawBars(0, 0, 0);
+    } // else
 
     delay = millis() + 100;
   } // if - delay && contains
@@ -168,13 +180,13 @@ void barsMoveOnPitchChange()
   int hue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
   hue = hue * 30;
 
-    if(saturationBool) {
-      saturation  = Math.min(input.getAmplitude(1), 100);
-    } else {
-      saturation = saturationMax;
-    }
+  if (saturationBool) {
+    saturation  = Math.min(input.getAmplitude(1), 100);
+  } else {
+    saturation = saturationMax;
+  }
   //  saturation  = map(saturation, 0, 200, 0, 100);
-//  saturation  = saturationMax;
+  //  saturation  = saturationMax;
 
   if (color(hue, saturation, brightnessMax) != bars[bars.length - 1])
   {
@@ -195,7 +207,7 @@ void barsMoveOnDelay(int millisDelay)
   {
     //    drawBars();
 
-    if(saturationBool) {
+    if (saturationBool) {
       saturation  = Math.min(input.getAmplitude(1), 100);
     } else {
       saturation = saturationMax;
@@ -268,25 +280,25 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
 
 void actionPerformed(GUIEvent e)
 {
-  if(e.getSource() == timeButton)
+  if (e.getSource() == timeButton)
   {
     println("timeButton was clicked.");
     controlledBy = 0;
   } // if - timeButton
-  
-  if(e.getSource() == pitchButton)
+
+  if (e.getSource() == pitchButton)
   {
     println("pitchButton was clicked.");
     controlledBy = 1;
   } // if - pitchButton
-  
-  if(e.getSource() == majorScaleButton)
+
+  if (e.getSource() == majorScaleButton)
   {
     println("majorScaleButton was clicked.");
     controlledBy = 2;
   } // if - majorScaleButton
-  
-  if(e.getSource() == saturationButton)
+
+  if (e.getSource() == saturationButton)
   {
     println("saturationButton was clicked.");
     saturationBool = !saturationBool;
