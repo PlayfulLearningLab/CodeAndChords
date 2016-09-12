@@ -1,6 +1,10 @@
 import interfascia.*; //<>// //<>//
 
 /**
+ * 09/11/2016: Question about changing on/off state:
+ *  Should I make a boolean for each button, or just keep track of how many times
+ *  each has been pushed?  -- Probably just a boolean.  More obvious.
+ *
  * 08/01/2016
  * Emily Meuer
  *
@@ -26,11 +30,16 @@ int    howManyBars;
 float  saturation;
 boolean  saturationBool  = false;  // determines whether or not saturation is determined by amp.
 
+boolean  timeBool  = true;
+boolean  pitchBool = false;
+boolean  scaleBool = false;
+
 int    hueMax;
 int    saturationMax;
 int    brightnessMax;
 
 Input  input;
+int    threshold = 5;      // This is the amplitude below which color will be black.
 
 int    delay;
 color[]  bars;
@@ -43,7 +52,12 @@ IFButton       pitchButton;
 IFButton       majorScaleButton;
 IFButton       saturationButton;
 
+// Won't go at it this way.  Change the default one, if accessible.
 IFLookAndFeel  darkGrayClicked;
+IFLookAndFeel  defaultLAF; // = new IFLookAndFeel(IFLookAndFeel.DEFAULT);
+
+color  offState;
+color  onState;
 
 int  buttonX = 20;
 
@@ -107,26 +121,32 @@ void setup()
   controller.add(pitchButton);
   controller.add(majorScaleButton);
   controller.add(saturationButton);
-  
+
   darkGrayClicked = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
   darkGrayClicked.baseColor = color(240, saturationMax, 30);
   darkGrayClicked.textColor = color(255);
-
+  darkGrayClicked.highlightColor = color(240, saturationMax, 15);
+  
+  defaultLAF = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
+  
+  // set the timeButton's LAF because it is the default mode:
+  timeButton.setLookAndFeel(darkGrayClicked);
+  
   delay  = millis();
 }
 
 void draw() 
 {
   noStroke();
-  
+
   if (saturationBool) {
     saturation  = Math.min(input.getAmplitude(1), 100);
   } else {
     saturation = saturationMax;
   } // else - saturation
-  
-  
-//  newHuePos  = round(curNote % 12);
+
+
+  //  newHuePos  = round(curNote % 12);
   // set goalHue to the color indicated by the current pitch:
 
   if (controlledBy == 0)
@@ -141,16 +161,15 @@ void draw()
   } else {
     controlledBy = 0;
   } // else
-  
-  
+
+
   if (newHuePos != goalHuePos)
   {
     goalHuePos  = newHuePos;
   } // if
   goalHue  = goalHuePos * 30;
-  
-  legend();
 
+  legend();
 } // draw()
 
 /**
@@ -161,7 +180,7 @@ void barsMoveOnDelayMajorScale()
 {
   int  scaleDegree  = round(input.getAdjustedFundAsMidiNote(1) % 12);
   newHuePos  = scaleDegree;
-  
+
   if (millis() > delay)
   {
     /*
@@ -172,11 +191,14 @@ void barsMoveOnDelayMajorScale()
      } // else - saturation
      */
 
-    if (arrayContains(majorScaleDegrees, scaleDegree)) {
-      fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
+    if (input.getAmplitude() > threshold)
+    {
+      if (arrayContains(majorScaleDegrees, scaleDegree)) {
+        fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
+      } // else: do something for non-diatonic here
     } else {
       fillAndDrawBars(0, 0, 0);
-    } // else
+    } // else - 
 
     delay = millis() + 100;
   } // if - delay && contains
@@ -204,21 +226,32 @@ boolean  arrayContains(int[] array, int element)
  */
 void barsMoveOnPitchChange()
 {
-  int hue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
-  newHuePos = hue;
-  hue = hue * 30;
+  int  hue;
+  int  brightness;
 
-  if (saturationBool) {
-    saturation  = Math.min(input.getAmplitude(1), 100);
-  } else {
-    saturation = saturationMax;
-  }
-  //  saturation  = map(saturation, 0, 200, 0, 100);
-  //  saturation  = saturationMax;
-
-  if (color(hue, saturation, brightnessMax) != bars[bars.length - 1])
+  if (input.getAmplitude() > threshold)
   {
-    fillAndDrawBars(hue, saturation, brightnessMax);
+    hue = round(input.getAdjustedFundAsMidiNote(1) % 12);
+    newHuePos = hue;
+    hue = hue * 30;
+
+    if (saturationBool) {
+      saturation  = Math.min(input.getAmplitude(1), 100);
+      //  saturation  = map(saturation, 0, 200, 0, 100);
+    } else {
+      saturation = saturationMax;
+    }
+
+    brightness = brightnessMax;
+  } else {
+    hue = 0;
+    saturation = 0;
+    brightness = 0;
+  } // else - rule
+
+  if (color(hue, saturation, brightness) != bars[bars.length - 1])
+  {
+    fillAndDrawBars(hue, saturation, brightness);
   }
 } // barsMoveOnPitchChange
 
@@ -233,17 +266,15 @@ void barsMoveOnDelay(int millisDelay)
 {
   if (millis() > delay)
   {
-    //    drawBars();
 
-    if (saturationBool) {
-      saturation  = Math.min(input.getAmplitude(1), 100);
+    if (input.getAmplitude() > threshold) 
+    {
+      // round moves this to the nearest midi note:
+      newHuePos = round(input.getAdjustedFundAsMidiNote()) % 12;
+      fillAndDrawBars(newHuePos * 30, saturation, brightnessMax);
     } else {
-      saturation = saturationMax;
-    }
-    
-    // round moves this to the nearest midi note:
-    newHuePos = round(input.getAdjustedFundAsMidiNote()) % 12;
-    fillAndDrawBars(newHuePos * 30, saturation, brightnessMax);
+      fillAndDrawBars(0, 0, 0);
+    } // else - silence is black
 
     delay += millisDelay;
   } // if
@@ -263,7 +294,7 @@ void legend()
     "G#", 
     "A", 
     "A#", 
-    "B",
+    "B", 
     "C"
   }; // notes
 
@@ -274,7 +305,7 @@ void legend()
   for (int i = 0; i < 13; i++)
   {
     fill(i * 30, saturationMax, brightnessMax);
-    if(i == goalHuePos) {
+    if (i == goalHuePos) {
       rect((side * i), height - (side * 1.5), side, side * 1.5);
     } else {
       rect((side * i), height - side, side, side);
@@ -350,6 +381,14 @@ void actionPerformed(GUIEvent e)
   {
     println("timeButton was clicked.");
     controlledBy = 0;
+    
+    timeBool = !timeBool;
+    
+    if(timeBool) {
+      timeButton.setLookAndFeel(darkGrayClicked);
+    } else {
+      timeButton.setLookAndFeel(defaultLAF);
+    } // else
   } // if - timeButton
 
   if (e.getSource() == pitchButton)
@@ -368,5 +407,11 @@ void actionPerformed(GUIEvent e)
   {
     println("saturationButton was clicked.");
     saturationBool = !saturationBool;
+    
+    if(saturationBool) {
+      saturationButton.setLookAndFeel(darkGrayClicked);
+    } else {
+      saturationButton.setLookAndFeel(defaultLAF);
+    } // else
   } // if  - saturationButton
 } // actionPerformed
