@@ -27,7 +27,7 @@ int    lastBar = -1;
 int    howManyBars;
 
 //int    hue;
-float  saturation;
+float    saturation;
 boolean  saturationBool  = false;  // determines whether or not saturation is determined by amp.
 
 boolean  timeBool  = true;
@@ -41,8 +41,11 @@ int    brightnessMax;
 Input  input;
 int    threshold = 5;      // This is the amplitude below which color will be black.
 
-int    delay;
-color[]  bars;
+int        delay;
+float[][]  bars;            // bars[i][0], bars[i][1], bars[i][2] denote the color; 
+                          // bars[i][3] is 0 to signify solid color and 1 for gradient.
+//color[]  bars;
+
 
 int[]  majorScaleDegrees;
 
@@ -87,12 +90,17 @@ void setup()
   noStroke();
   background(0);
 
-  howManyBars    = width / barWidth;
-  bars   = new color[howManyBars];
+  howManyBars  = width / barWidth;
+  bars         = new float[howManyBars][4];
+//  bars   = new color[howManyBars];
   // fills the color[] with white to start:
   for (int i = 0; i < bars.length; i++) 
   {
-    bars[i]  = color(0, 0, brightnessMax);
+    bars[i][0]  = 0;
+    bars[i][1]  = 0;
+    bars[i][2]  = brightnessMax;
+    bars[i][3]  = 0;
+//    bars[i]  = color(0, 0, brightnessMax);
   } // for
 
   majorScaleDegrees  = new int[]  {
@@ -249,7 +257,7 @@ void barsMoveOnPitchChange()
     brightness = 0;
   } // else - rule
 
-  if (color(hue, saturation, brightness) != bars[bars.length - 1])
+  if (color(hue, saturation, brightness) != color(bars[bars.length - 1][0], bars[bars.length - 1][1], bars[bars.length - 1][2]))
   {
     fillAndDrawBars(hue, saturation, brightness);
   }
@@ -327,10 +335,26 @@ void drawBars()
   {
     int barX = i * barWidth;
 
-    fill(bars[i]);
+    fill(bars[i][0], bars[i][1], bars[i][2]);
     rect(barX, 0, barWidth, height);
   } // for
 } // drawBars()
+
+/**
+ *  Moves each color in the bars array up on position, and fills the last position
+ *  with a color whose hue is derived from pitch earlier in the program
+ *  and passed in as a parameter here.
+ *  
+ *  Oh dear... I need to pass this color through the array, so I need to denote that.
+ *  Make it 2d, perhaps?
+ *
+ *  @param  hue         an int, from 0 to 11, denoting the current scale degree of the input.
+ *  @param  saturation  a float that will be used to determine the saturation of the HSB color.
+ *  @param  brightness  an int that will be used to determine the brightness of the HSB color.
+ */
+void fillAndDrawBarsGradient(int hue, float saturation, int brightness)
+{
+} // fillAndDrawBarsGradient
 
 /**
  *  Moves each color in the bars array up on position, and fills the last position
@@ -346,7 +370,12 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
   // move each color in the array up one position:
   for (int i = 0; i < bars.length - 1; i++)
   {
-    bars[i] = bars[i+1];
+//    bars[i] = bars[i+1];
+
+    bars[i][0]  = bars[i+1][0];
+    bars[i][1]  = bars[i+1][1];
+    bars[i][2]  = bars[i+1][2];
+    bars[i][3]  = bars[i+1][3];
   } // for
 
   /*
@@ -363,14 +392,17 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
   //  println("saturation = " + saturation);
 
 
-  bars[bars.length - 1] = color(hue, saturation, brightness);
+  bars[bars.length - 1][0] = hue;
+  bars[bars.length - 1][1] = saturation;
+  bars[bars.length - 1][2] = brightness;
+  bars[bars.length - 1][3] = 0;
 
   // Draw bars:
   for (int i = 0; i < bars.length; i++)
   {
     int barX = i * barWidth;
 
-    fill(bars[i]);
+    fill(bars[i][0], bars[i][1], bars[i][2]);
     rect(barX, 0, barWidth, height);
   } // for
 } // fillBars
