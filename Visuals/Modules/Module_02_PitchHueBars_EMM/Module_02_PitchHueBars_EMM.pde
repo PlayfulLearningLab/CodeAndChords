@@ -301,7 +301,7 @@ void barsMoveOnDelay(int millisDelay)
       // round moves this to the nearest midi note:
       newHuePos = round(input.getAdjustedFundAsMidiNote()) % 12;
       //      fillAndDrawBars(newHuePos * 30, saturation, brightnessMax);
-      fillBars(newHuePos * 30, saturation, brightnessMax, 1);
+      fillBars(newHuePos * 30, saturation, brightnessMax, 0);
     } else {
       fillBars(0, 0, 0, 0);
     } // else - silence is black
