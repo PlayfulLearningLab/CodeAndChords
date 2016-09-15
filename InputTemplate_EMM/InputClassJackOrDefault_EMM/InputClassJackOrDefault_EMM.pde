@@ -19,8 +19,9 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*
-  Notate bene: inputNum passed to constructor must be 4 greater
-  than the actual desired number of inputs.
+   ** As of mid-July, 2016, the following is NOT true:
+    "Notate bene: inputNum passed to constructor must be 4 greater
+    than the actual desired number of inputs."
   
    ** Watch for that NullPointerException -- add a try-catch? ** 
        - 8/17: added try/catch

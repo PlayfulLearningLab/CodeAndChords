@@ -33,6 +33,11 @@ boolean  saturationBool  = false;  // determines whether or not saturation is de
 boolean  timeBool  = true;
 boolean  pitchBool = false;
 boolean  scaleBool = false;
+boolean[] bools = {
+  timeBool, 
+  pitchBool, 
+  scaleBool
+};
 
 int    hueMax;
 int    saturationMax;
@@ -54,6 +59,11 @@ IFButton       timeButton;
 IFButton       pitchButton;
 IFButton       majorScaleButton;
 IFButton       saturationButton;
+IFButton[]     buttons = new IFButton[] {
+  timeButton, 
+  pitchButton, 
+  majorScaleButton
+} ;                // includes all but saturationButton, since this needs to not.
 
 // Won't go at it this way.  Change the default one, if accessible.
 IFLookAndFeel  darkGrayClicked;
@@ -115,19 +125,20 @@ void setup()
   };
 
   controller   = new GUIController(this);
-  timeButton   = new IFButton("Time-based", buttonX, height - 140);
-  pitchButton  = new IFButton("Pitch-based", buttonX, height - 120);
-  majorScaleButton  = new IFButton("C Maj scale (time-based)", buttonX, height - 100);
-  saturationButton  = new IFButton("Saturation", buttonX + timeButton.getWidth(), height - 100);
+//  timeButton   = new IFButton("Time-based", buttonX, height - 140);
+  buttons[0]   = new IFButton("Time-based", buttonX, height - 140);
+  buttons[1]  = new IFButton("Pitch-based", buttonX, height - 120);
+  buttons[2]  = new IFButton("C Maj scale (time-based)", buttonX, height - 100);
+  saturationButton  = new IFButton("Saturation", buttonX + buttons[0].getWidth(), height - 100);
 
-  timeButton.addActionListener(this);
-  pitchButton.addActionListener(this);
-  majorScaleButton.addActionListener(this);
+  buttons[0].addActionListener(this);
+  buttons[1].addActionListener(this);
+  buttons[2].addActionListener(this);
   saturationButton.addActionListener(this);
 
-  controller.add(timeButton);
-  controller.add(pitchButton);
-  controller.add(majorScaleButton);
+  controller.add(buttons[0]);
+  controller.add(buttons[1]);
+  controller.add(buttons[2]);
   controller.add(saturationButton);
 
   darkGrayClicked = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
@@ -138,7 +149,7 @@ void setup()
   defaultLAF = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
 
   // set the timeButton's LAF because it is the default mode:
-  timeButton.setLookAndFeel(darkGrayClicked);
+  buttons[0].setLookAndFeel(darkGrayClicked);
 
   delay  = millis();
 }
@@ -194,26 +205,38 @@ void barsMoveOnDelayMajorScale()
     if (input.getAmplitude() > threshold)
     {
       if (arrayContains(majorScaleDegrees, scaleDegree)) {
-        fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
+        // these pitches are diatonic:
+          fillBars(scaleDegree * 30, saturation, brightnessMax, 0);
       } // else: do something for non-diatonic here
       else
       {
-        // these are the non-diatonic pitches:
-      }
+        // these pitches are non-diatonic:
+        
+        if(saturationBool) {
+          // saturationButton is on:          
+          fillBars(scaleDegree * 30, saturation, brightnessMax, 1);
+        } else {
+          // saturationButton is off:
+          fillBars(scaleDegree * 30, (saturation * 0.5), brightnessMax, 0);
+        }
+        //       fillBars(scaleDegree * 30,
+      } // else -- diatonic or not
     } else {
-      fillAndDrawBars(0, 0, 0);
+      // this is for no sound:
+      fillBars(0, 0, 0, 0);
     } // else - 
 
+    drawBarsGradient();
     delay = millis() + 100;
   } // if - delay && contains
 } // barsMoveOnDelayMajorScale
 
 boolean  arrayContains(int[] array, int element)
 {
-  println("array.length = " + array.length);
+  //  println("array.length = " + array.length);
   for (int i = 0; i < array.length; i++)
   {
-    println("array[i] = " + array[i]);
+    //    println("array[i] = " + array[i]);
     if (array[i] == element) {
       return true;
     } // if
@@ -255,7 +278,9 @@ void barsMoveOnPitchChange()
 
   if (color(hue, saturation, brightness) != color(bars[bars.length - 1][0], bars[bars.length - 1][1], bars[bars.length - 1][2]))
   {
-    fillAndDrawBars(hue, saturation, brightness);
+    fillBars(hue, saturation, brightness, 0);
+    drawBarsGradient();
+//    fillAndDrawBars(hue, saturation, brightness);
   }
 } // barsMoveOnPitchChange
 
@@ -394,11 +419,10 @@ void drawBarsGradient()
         line(x, j, x+w, j);
       } // for
     } // else
-    
+
     // avoids colored outline of black "silence" bars:
     noStroke();
   } // for
-  
 } // drawBars()
 
 /**
@@ -440,34 +464,61 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
 
 void actionPerformed(GUIEvent e)
 {
-  if (e.getSource() == timeButton)
+  if (e.getSource() != saturationButton)
   {
-    println("timeButton was clicked.");
-    controlledBy = 0;
 
-    timeBool = !timeBool;
+    if (e.getSource() == buttons[0])
+    {
+      println("timeButton was clicked.");
+      controlledBy = 0;
+      //      timeBool = !timeBool;
 
-    if (timeBool) {
-      timeButton.setLookAndFeel(darkGrayClicked);
+      /*
+      if (timeBool) {
+       timeButton.setLookAndFeel(darkGrayClicked);
+       } else {
+       timeButton.setLookAndFeel(defaultLAF);
+       } // else
+       */
+    } // if - timeButton
+
+    if (e.getSource() == buttons[1])
+    {
+      println("pitchButton was clicked.");
+      controlledBy = 1;
+      //     pitchBool    = !pitchBool;
+    } // if - pitchButton
+
+    if (e.getSource() == buttons[2])
+    {
+      println("majorScaleButton was clicked.");
+      controlledBy = 2;
+      //     scaleBool = !scaleBool;
+    } // if - majorScaleButton
+
+
+    // whichever button was just clicked is turned on or off:
+    bools[controlledBy] = !bools[controlledBy];
+    println("bools[controlledBy] = " + bools[controlledBy]);
+
+    for (int i = 0; i < bools.length; i++)
+    {
+      if (i != controlledBy) {
+        // all buttons not currently clicked are set to false:
+        bools[i] = false;
+        buttons[i].setLookAndFeel(defaultLAF);
+      } // if
+    } // for
+    
+    if (bools[controlledBy]) {
+      // if the button was turned on, set to clicked:
+      buttons[controlledBy].setLookAndFeel(darkGrayClicked);
     } else {
-      timeButton.setLookAndFeel(defaultLAF);
+      // if the button was turned off, set to unclicked:
+      buttons[controlledBy].setLookAndFeel(defaultLAF);
     } // else
-  } // if - timeButton
-
-  if (e.getSource() == pitchButton)
-  {
-    println("pitchButton was clicked.");
-    controlledBy = 1;
-  } // if - pitchButton
-
-  if (e.getSource() == majorScaleButton)
-  {
-    println("majorScaleButton was clicked.");
-    controlledBy = 2;
-  } // if - majorScaleButton
-
-  if (e.getSource() == saturationButton)
-  {
+  } // not saturationButton
+  else {
     println("saturationButton was clicked.");
     saturationBool = !saturationBool;
 
