@@ -39,11 +39,11 @@ int    saturationMax;
 int    brightnessMax;
 
 Input  input;
-int    threshold = 5;      // This is the amplitude below which color will be black.
+int    threshold = 5;     // This is the amplitude below which color will be black.
 
 int        delay;
-float[][]  bars;            // bars[i][0], bars[i][1], bars[i][2] denote the color; 
-                          // bars[i][3] is 0 to signify solid color and 1 for gradient.
+float[][]  bars;          // bars[i][0], bars[i][1], bars[i][2] denote the color; 
+// bars[i][3] is 0 to signify solid color and 1 for gradient.
 //color[]  bars;
 
 
@@ -92,7 +92,7 @@ void setup()
 
   howManyBars  = width / barWidth;
   bars         = new float[howManyBars][4];
-//  bars   = new color[howManyBars];
+  //  bars   = new color[howManyBars];
   // fills the color[] with white to start:
   for (int i = 0; i < bars.length; i++) 
   {
@@ -100,7 +100,7 @@ void setup()
     bars[i][1]  = 0;
     bars[i][2]  = brightnessMax;
     bars[i][3]  = 0;
-//    bars[i]  = color(0, 0, brightnessMax);
+    //    bars[i]  = color(0, 0, brightnessMax);
   } // for
 
   majorScaleDegrees  = new int[]  {
@@ -134,12 +134,12 @@ void setup()
   darkGrayClicked.baseColor = color(240, saturationMax, 30);
   darkGrayClicked.textColor = color(255);
   darkGrayClicked.highlightColor = color(240, saturationMax, 15);
-  
+
   defaultLAF = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
-  
+
   // set the timeButton's LAF because it is the default mode:
   timeButton.setLookAndFeel(darkGrayClicked);
-  
+
   delay  = millis();
 }
 
@@ -191,19 +191,15 @@ void barsMoveOnDelayMajorScale()
 
   if (millis() > delay)
   {
-    /*
-    if(saturationBool) {
-     saturation  = Math.min(input.getAmplitude(1), 100);
-     } else {
-     saturation = saturationMax;
-     } // else - saturation
-     */
-
     if (input.getAmplitude() > threshold)
     {
       if (arrayContains(majorScaleDegrees, scaleDegree)) {
         fillAndDrawBars(scaleDegree * 30, saturation, brightnessMax);
       } // else: do something for non-diatonic here
+      else
+      {
+        // these are the non-diatonic pitches:
+      }
     } else {
       fillAndDrawBars(0, 0, 0);
     } // else - 
@@ -279,11 +275,14 @@ void barsMoveOnDelay(int millisDelay)
     {
       // round moves this to the nearest midi note:
       newHuePos = round(input.getAdjustedFundAsMidiNote()) % 12;
-      fillAndDrawBars(newHuePos * 30, saturation, brightnessMax);
+      //      fillAndDrawBars(newHuePos * 30, saturation, brightnessMax);
+      fillBars(newHuePos * 30, saturation, brightnessMax, 1);
     } else {
-      fillAndDrawBars(0, 0, 0);
+      fillBars(0, 0, 0, 0);
     } // else - silence is black
 
+
+    drawBarsGradient();
     delay += millisDelay;
   } // if
 } // barsMoveInTime
@@ -324,10 +323,33 @@ void legend()
 } // legend
 
 /**
+ *  Moves each color in the bars array up on position, and fills the last position
+ *  with a color whose hue is derived from pitch earlier in the program
+ *  and passed in as a parameter here.
+ */
+void fillBars(float hue, float saturation, float brightness, float diatonic)
+{
+  // move each color in the array up one position:
+  for (int i = 0; i < bars.length - 1; i++)
+  {
+    //    bars[i] = bars[i+1];
+
+    bars[i][0]  = bars[i+1][0];
+    bars[i][1]  = bars[i+1][1];
+    bars[i][2]  = bars[i+1][2];
+    bars[i][3]  = bars[i+1][3];
+  } // for
+
+  // set the last position of the array to the current, pitch/amp-derived color:
+  bars[bars.length - 1][0] = hue;
+  bars[bars.length - 1][1] = saturation;
+  bars[bars.length - 1][2] = brightness;
+  bars[bars.length - 1][3] = diatonic;
+} // fillBars(int, int, int, int)
+
+/**
  *  Loops through the bars array and draws rectangles across the screen
  *  in the colors that are in their respective positions in the array;
- *  
- *  ** Prob. not necessary, now that fillAndDrawBars combines both into one. **
  */
 void drawBars()
 {
@@ -341,20 +363,43 @@ void drawBars()
 } // drawBars()
 
 /**
- *  Moves each color in the bars array up on position, and fills the last position
- *  with a color whose hue is derived from pitch earlier in the program
- *  and passed in as a parameter here.
- *  
- *  Oh dear... I need to pass this color through the array, so I need to denote that.
- *  Make it 2d, perhaps?
- *
- *  @param  hue         an int, from 0 to 11, denoting the current scale degree of the input.
- *  @param  saturation  a float that will be used to determine the saturation of the HSB color.
- *  @param  brightness  an int that will be used to determine the brightness of the HSB color.
+ *  Loops through the bars array and draws rectangles across the screen
+ *  in the colors that are in their respective positions in the array,
+ *  drawing those whose [i][3] position is 1 in a gradient from white to that color.
  */
-void fillAndDrawBarsGradient(int hue, float saturation, int brightness)
+void drawBarsGradient()
 {
-} // fillAndDrawBarsGradient
+  for (int i = 0; i < bars.length; i++)
+  {
+    int barX = i * barWidth;
+
+    // color the rectangle normally for diatonic tones:
+    if (bars[i][3] == 0) {
+      fill(bars[i][0], bars[i][1], bars[i][2]);
+      rect(barX, 0, barWidth, height);
+    } else {
+      // color with a gradient for non-diatonic tones:
+      // adapted from the Linear Gradient example here: https://processing.org/examples/lineargradient.html
+      int y = 0;
+      int x = barX;
+      int h = height;
+      int w = barWidth;
+      color c1 = color(0, 0, brightnessMax);
+      color c2 = color(bars[i][0], bars[i][1], bars[i][2]);
+
+      for (int j = y; j <= y+h; j++) {
+        float inter = map(j, y, y+h, 0, 1);
+        color c = lerpColor(c1, c2, inter);
+        stroke(c);
+        line(x, j, x+w, j);
+      } // for
+    } // else
+    
+    // avoids colored outline of black "silence" bars:
+    noStroke();
+  } // for
+  
+} // drawBars()
 
 /**
  *  Moves each color in the bars array up on position, and fills the last position
@@ -370,27 +415,13 @@ void fillAndDrawBars(int hue, float saturation, int brightness)
   // move each color in the array up one position:
   for (int i = 0; i < bars.length - 1; i++)
   {
-//    bars[i] = bars[i+1];
+    //    bars[i] = bars[i+1];
 
     bars[i][0]  = bars[i+1][0];
     bars[i][1]  = bars[i+1][1];
     bars[i][2]  = bars[i+1][2];
     bars[i][3]  = bars[i+1][3];
   } // for
-
-  /*
-  hue  = round(input.getAdjustedFundAsMidiNote(1) % 12);
-   println("hue = " + hue);
-   hue  = hue * 30;
-   */
-
-  // The mapping isn't strictly necessary, since we could just set a higher saturationMax.
-  // The hope is that it will allow it to be more intuitive and look less random.
-  //  saturation  = Math.min(input.getAmplitude(1), 100);
-  //  saturation  = map(saturation, 0, 200, 0, 100);
-  //  saturation  = saturationMax;
-  //  println("saturation = " + saturation);
-
 
   bars[bars.length - 1][0] = hue;
   bars[bars.length - 1][1] = saturation;
@@ -413,10 +444,10 @@ void actionPerformed(GUIEvent e)
   {
     println("timeButton was clicked.");
     controlledBy = 0;
-    
+
     timeBool = !timeBool;
-    
-    if(timeBool) {
+
+    if (timeBool) {
       timeButton.setLookAndFeel(darkGrayClicked);
     } else {
       timeButton.setLookAndFeel(defaultLAF);
@@ -439,8 +470,8 @@ void actionPerformed(GUIEvent e)
   {
     println("saturationButton was clicked.");
     saturationBool = !saturationBool;
-    
-    if(saturationBool) {
+
+    if (saturationBool) {
       saturationButton.setLookAndFeel(darkGrayClicked);
     } else {
       saturationButton.setLookAndFeel(defaultLAF);
