@@ -69,15 +69,16 @@ IFButton[]     buttons = new IFButton[] {
 IFLookAndFeel  darkGrayClicked;
 IFLookAndFeel  defaultLAF; // = new IFLookAndFeel(IFLookAndFeel.DEFAULT);
 
-color  offState;
-color  onState;
-
 int  buttonX = 20;
 
-/*
-  0 - time
- 1 - pitch
- */
+HScrollbar   scrollbar;
+float        scrollbarPos;
+IFTextField  textField;
+IFLabel      label;
+int          bpmMin  = 20;
+int          bpmMax  = 600;
+int          bpm;
+
 int    controlledBy  = 0;
 
 // Used by the legend:
@@ -150,6 +151,14 @@ void setup()
 
   // set the timeButton's LAF because it is the default mode:
   buttons[0].setLookAndFeel(darkGrayClicked);
+  
+  
+  scrollbar = new HScrollbar(width - 200, height - 90, 150, 18, 5);
+  textField = new IFTextField("Text Field", width - 200, height - 125, 75);
+  label     = new IFLabel("BPM: " + bpm, width - 197, height - 120);
+  
+  controller.add(textField);
+  controller.add(label);
 
   delay  = millis();
 }
@@ -189,6 +198,16 @@ void draw()
   goalHue  = goalHuePos * 30;
 
   legend();
+  
+  scrollbar.update();
+  scrollbar.display();
+  
+  scrollbarPos  = scrollbar.getPos();
+  bpm      = round(map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, bpmMin, bpmMax));
+  println("scrollbarPos = " + scrollbarPos + "; scrollbar.sposMin = " + scrollbar.sposMin + "; scrollbar.sposMax = " + scrollbar.sposMax);
+  println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
+  
+  label.setLabel("BPM: " + bpm);
 } // draw()
 
 /**
