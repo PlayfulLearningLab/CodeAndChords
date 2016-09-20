@@ -159,7 +159,7 @@ void draw()
   noStroke();
 
   if (saturationBool) {
-    saturation  = Math.min(input.getAmplitude(1), 100);
+    saturation  = Math.min(input.getAmplitude(1)/ 2, 100);
   } else {
     saturation = saturationMax;
   } // else - saturation
