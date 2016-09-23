@@ -111,6 +111,8 @@ void setup()
   controller.add(label);
   
   textField.addActionListener(this);
+  
+  println("scrollbar.ratio = " + scrollbar.ratio);
 } // setup()
 
 void draw() 

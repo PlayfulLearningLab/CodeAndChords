@@ -1,4 +1,4 @@
-import interfascia.*; //<>// //<>//
+import interfascia.*; //<>// //<>// //<>//
 
 /**
  * 09/11/2016: Question about changing on/off state:
@@ -159,6 +159,8 @@ void setup()
   
   controller.add(textField);
   controller.add(label);
+  
+  textField.addActionListener(this);
 
   delay  = millis();
 }
@@ -202,9 +204,11 @@ void draw()
   scrollbar.update();
   scrollbar.display();
   
+  // I think scrollbar.getPos() is confused.
   scrollbarPos  = scrollbar.getPos();
   bpm      = round(map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, bpmMin, bpmMax));
   println("scrollbarPos = " + scrollbarPos + "; scrollbar.sposMin = " + scrollbar.sposMin + "; scrollbar.sposMax = " + scrollbar.sposMax);
+  println("  scrollbar.ratio = " + scrollbar.ratio);
   println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
   
   label.setLabel("BPM: " + bpm);
@@ -236,7 +240,7 @@ void barsMoveOnDelayMajorScale()
           fillBars(scaleDegree * 30, saturation, brightnessMax, 1);
         } else {
           // saturationButton is off:
-          fillBars(scaleDegree * 30, (saturation * 0.5), brightnessMax, 0);
+          fillBars(scaleDegree * 30, (saturation * 0.25), brightnessMax, 0);
         }
         //       fillBars(scaleDegree * 30,
       } // else -- diatonic or not
