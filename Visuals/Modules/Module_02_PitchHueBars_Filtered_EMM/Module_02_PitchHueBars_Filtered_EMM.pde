@@ -89,7 +89,7 @@ int  goalHue;
 
 void setup() 
 {
-  size(640, 380);
+  size(800, 640);
 
   hueMax         = 360;
   saturationMax  = 100;
@@ -245,9 +245,13 @@ void barsMoveOnDelayMajorScale()
         //       fillBars(scaleDegree * 30,
       } // else -- diatonic or not
     } else {
-      // this is for no sound:
-      fillBars(0, 0, 0, 0);
-    } // else - 
+      // if saturationBool, fill white on no sound; else, fill black.
+      if (saturationBool) {
+        fillBars(0, 0, 100, 0);
+      } else {
+        fillBars(0, 0, 0, 0);
+      } // else - saturation
+    } // else - no sound
 
     drawBarsGradient();
     delay = millis() + 100;
