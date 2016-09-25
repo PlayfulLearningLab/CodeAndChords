@@ -198,6 +198,8 @@ void draw()
     goalHuePos  = newHuePos;
   } // if
   goalHue  = goalHuePos * 30;
+  
+  println("input.getTimeAverageFundAsHz(1, 500) = " + input.getTimeAverageFundAsHz(1, 500));
 
   legend();
   
@@ -207,9 +209,9 @@ void draw()
   // I think scrollbar.getPos() is confused.
   scrollbarPos  = scrollbar.getPos();
   bpm      = round(map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, bpmMin, bpmMax));
-  println("scrollbarPos = " + scrollbarPos + "; scrollbar.sposMin = " + scrollbar.sposMin + "; scrollbar.sposMax = " + scrollbar.sposMax);
-  println("  scrollbar.ratio = " + scrollbar.ratio);
-  println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
+//  println("scrollbarPos = " + scrollbarPos + "; scrollbar.sposMin = " + scrollbar.sposMin + "; scrollbar.sposMax = " + scrollbar.sposMax);
+//  println("  scrollbar.ratio = " + scrollbar.ratio);
+//  println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
   
   label.setLabel("BPM: " + bpm);
 } // draw()

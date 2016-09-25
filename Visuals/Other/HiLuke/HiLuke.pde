@@ -9,4 +9,6 @@ void setup()
 
 void draw()
 {
+  background(150, 150, 255);
+  ellipse(mouseX, mouseY, 100, 100);
 } // draw()

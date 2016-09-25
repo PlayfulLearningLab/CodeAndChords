@@ -20,6 +20,9 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*  
+  
+  9/24: Needs mp3 (String) constructor.
+  
    ** Watch for that NullPointerException -- add a try-catch? ** 
        - 8/17: added try/catch
    
