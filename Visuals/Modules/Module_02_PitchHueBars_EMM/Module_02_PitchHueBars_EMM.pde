@@ -1,4 +1,4 @@
-import interfascia.*; //<>// //<>//
+import interfascia.*; //<>// //<>// //<>//
 
 /**
  * 09/11/2016: Question about changing on/off state:
@@ -89,7 +89,7 @@ int  goalHue;
 
 void setup() 
 {
-  size(640, 380);
+  size(800, 640);
 
   hueMax         = 360;
   saturationMax  = 100;
@@ -126,7 +126,7 @@ void setup()
   };
 
   controller   = new GUIController(this);
-//  timeButton   = new IFButton("Time-based", buttonX, height - 140);
+  //  timeButton   = new IFButton("Time-based", buttonX, height - 140);
   buttons[0]   = new IFButton("Time-based", buttonX, height - 140);
   buttons[1]  = new IFButton("Pitch-based", buttonX, height - 120);
   buttons[2]  = new IFButton("C Maj scale (time-based)", buttonX, height - 100);
@@ -151,14 +151,16 @@ void setup()
 
   // set the timeButton's LAF because it is the default mode:
   buttons[0].setLookAndFeel(darkGrayClicked);
-  
-  
+
+
   scrollbar = new HScrollbar(width - 200, height - 90, 150, 18, 5);
   textField = new IFTextField("Text Field", width - 200, height - 125, 75);
   label     = new IFLabel("BPM: " + bpm, width - 197, height - 120);
-  
+
   controller.add(textField);
   controller.add(label);
+
+  textField.addActionListener(this);
 
   delay  = millis();
 }
@@ -198,15 +200,17 @@ void draw()
   goalHue  = goalHuePos * 30;
 
   legend();
-  
+
   scrollbar.update();
   scrollbar.display();
-  
+
+  // I think scrollbar.getPos() is confused.
   scrollbarPos  = scrollbar.getPos();
   bpm      = round(map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, bpmMin, bpmMax));
   println("scrollbarPos = " + scrollbarPos + "; scrollbar.sposMin = " + scrollbar.sposMin + "; scrollbar.sposMax = " + scrollbar.sposMax);
+  println("  scrollbar.ratio = " + scrollbar.ratio);
   println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
-  
+
   label.setLabel("BPM: " + bpm);
 } // draw()
 
@@ -225,25 +229,23 @@ void barsMoveOnDelayMajorScale()
     {
       if (arrayContains(majorScaleDegrees, scaleDegree)) {
         // these pitches are diatonic:
-          fillBars(scaleDegree * 30, saturation, brightnessMax, 0);
+        fillBars(scaleDegree * 30, saturation, brightnessMax, 0);
       } // else: do something for non-diatonic here
       else
       {
         // these pitches are non-diatonic:
-        
-        if(saturationBool) {
+
+        if (saturationBool) {
           // saturationButton is on:          
           fillBars(scaleDegree * 30, saturation, brightnessMax, 1);
         } else {
           // saturationButton is off:
-          fillBars(scaleDegree * 30, (saturation * 0.5), brightnessMax, 0);
+          fillBars(scaleDegree * 30, (saturation * 0.25), brightnessMax, 0);
         }
         //       fillBars(scaleDegree * 30,
       } // else -- diatonic or not
-    } else {
-      // this is for no sound:
-      fillBars(0, 0, 0, 0);
-    } // else - 
+    } else { 
+    } // else - no sound
 
     drawBarsGradient();
     delay = millis() + 100;
@@ -299,7 +301,7 @@ void barsMoveOnPitchChange()
   {
     fillBars(hue, saturation, brightness, 0);
     drawBarsGradient();
-//    fillAndDrawBars(hue, saturation, brightness);
+    //    fillAndDrawBars(hue, saturation, brightness);
   }
 } // barsMoveOnPitchChange
 
@@ -528,7 +530,7 @@ void actionPerformed(GUIEvent e)
         buttons[i].setLookAndFeel(defaultLAF);
       } // if
     } // for
-    
+
     if (bools[controlledBy]) {
       // if the button was turned on, set to clicked:
       buttons[controlledBy].setLookAndFeel(darkGrayClicked);
