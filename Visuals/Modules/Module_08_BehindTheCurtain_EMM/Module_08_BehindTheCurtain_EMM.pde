@@ -23,7 +23,7 @@ void setup()
   size(800, 500);
   
   input  = new Input();
-  amplitudeRain  = new RainingNumbers(75, "Amplitude:", 10, 200);
+  amplitudeRain  = new RainingNumbers(75, "Amplitude:", 10, 100);
   frequencyRain  = new RainingNumbers(260, "Frequency:", 13, 200);
   avgFreqRain  = new RainingNumbers(445, "Avg Freq:", 11, 200);
 //  background(amplitudeRain.background[0], amplitudeRain.background[1], amplitudeRain.background[2]);
