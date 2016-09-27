@@ -13,15 +13,14 @@ import beads.PowerSpectrum;
 import beads.Frequency;
 import beads.Pitch;
 import beads.Compressor;
-import beads.BiquadFilter;
 
 import javax.sound.sampled.AudioFormat;
 
 class Input
 {
-  /*  
-  
-  9/24: Needs mp3 (String) constructor.
+  /*
+  Notate bene: inputNum passed to constructor must be 4 greater
+  than the actual desired number of inputs.
   
    ** Watch for that NullPointerException -- add a try-catch? ** 
        - 8/17: added try/catch
@@ -49,7 +48,6 @@ class Input
   AudioContext           ac;
   float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
   Compressor             compressor;
-  BiquadFilter           biquadFilter;
 //  UGen                   inputsUGen;           // initialized with the input from the AudioContext.
   UGen[]                 uGenArray;
   Gain                   g;
@@ -109,18 +107,7 @@ class Input
       // getAudioInput needs an int[] with the number of the particular line.
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
-    
-    // Create a BiquadFilter and add each of the uGens to it.
-    this.biquadFilter =  new  BiquadFilter(ac, BiquadFilter.BP_SKIRT, 2000.0f, 0.5f);
-    for(int i = 0; i < this.numInputs; i++)
-    {
-      this.biquadFilter.addInput(this.uGenArray[i]);
-    } // for
 
-    // Create a Gain and add the BiquadFilter to it:
-    g = new Gain(this.ac, 1, 0.5);
-    g.addInput(this.biquadFilter);
-    
     /*
     Default compressor values:
       threshold - .5
@@ -133,17 +120,15 @@ class Input
     // Create a compressor w/standard values:
     this.compressor  = new Compressor(this.ac, 1);
     this.compressor.setRatio(8.0);
-    
-    // Add the Compressor the Gain:
+
+    // Create a Gain, add the Compressor to the Gain,
+    // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
+    g = new Gain(this.ac, 1, 0.5);
     g.addInput(this.compressor);
-    
-    /*
     for (int i = 0; i < this.numInputs; i++)
     {
       g.addInput(uGenArray[i]);
     } // for
-    */
-    
     ac.out.addInput(g);
 
     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
@@ -239,6 +224,9 @@ class Input
   } // constructor(String)
 
   /**
+   * Subtracts 4 from the numInputs variable because I added 4
+   * to account for the fact that the two interfaces together skip lines 5-8.l
+   *
    * @return  int  number of input channels.
    */
   int  getNumInputs() {
@@ -381,37 +369,7 @@ class Input
   float  getFundAsMidiNote() {
     return getFundAsMidiNote(1);
   } // getFundAsMidiNote()
-  
-  /**
-   *  @return  average pitch of the given input over the next given milliseconds, in Hz.
-   */
-  float getTimeAverageFundAsHz(int inputNum, int millis)
-  {
-    float sum      = 0;
-    int   endTime  = millis() + millis;
-    int   count    = 0;
-    
-    while(millis() < endTime)
-    {
-      sum = sum + this.getAdjustedFundAsHz(inputNum);
-      count++;
-    } // while
-    
-    println("sum = " + sum + "; count = " + count + "; sum/count = " + (sum/count));
-    // the Math.min eliminates potential divide by 0 errors:
-    return (sum / (Math.max(count, 1)));
-  } // getTimeAverageFund
-  
-  /**
-   *  @return  average pitch of the given input over the next given milliseconds, as a midi note.
-   */
-/*  float getTimeAverageFundAsMidiNote(int input, int millis)
-  {
-    // Should I do this by calling getTimeAverageFundAsHz and converting it,
-    // or repeating the logic, but w/getAdjustedFundAsMidiNote()?
-//    return ;
-  } // getTimeAverageFund
-*/
+
   /**
    *  Calculates the average frequency of multiple input lines.
    *
@@ -675,4 +633,4 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
   public float getAmplitude() {  
     return this.amplitude;
   }
-}
+} // class FrequencyEMM

@@ -55,6 +55,8 @@ float       scrollbarPos;
 float       hueDeltaMax  = 20;
 float       hueDeltaMin  = 1;
 
+PitchHueSquares  phSquares;
+
 void setup() 
 {
   size(700, 600);
@@ -103,6 +105,8 @@ void setup()
 
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
+  
+  phSquares    = new PitchHueSquares(9);
 
   
   // sets the text size used to display note names:
@@ -130,13 +134,18 @@ void draw()
   background(0);
   stroke(255);
   
+  for(int i = 1; i <= phSquares.numSquares; i++)
+  {
+    phSquares.run(i);
+  } // for
+  
   if (input.getAmplitude() > threshold)
   {
     newNote = input.getAdjustedFundAsMidiNote();
     if(newNote == curNote) {
-      println("  Note was held.");
+//      println("  Note was held.");
     } else {
-      println("New note! curNote = " + curNote + "; newNote = " + newNote);
+//      println("New note! curNote = " + curNote + "; newNote = " + newNote);
       curNote = newNote;
     } // else - set curNote
     
@@ -182,8 +191,10 @@ void draw()
 
 // Switched from setting the background to drawing a rectangle, to allow Turrell border.
 //  background(curHue[0], curHue[1], curHue[2]);
-  fill(curHue[0], curHue[1], curHue[2]);
-  rect(20, 20, width - 40, height - 90, 10);
+
+//** Here's where the Turrel rectangle happens: 
+//  fill(curHue[0], curHue[1], curHue[2]);
+//  rect(20, 20, width - 40, height - 90, 10);
   
   stroke(255);
   // draws the legend along the bottom of the screen:
