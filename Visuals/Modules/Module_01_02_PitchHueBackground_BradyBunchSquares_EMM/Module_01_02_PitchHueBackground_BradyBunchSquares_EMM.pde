@@ -27,33 +27,15 @@ int  threshold;      // when amp is below this, the background will be black.
 int  hue;
 int  saturation;
 
-float[]  newHue;
-float[]  goalHue;
-float[]  curHue;
-float    hueDelta;
-
-int  newHuePos;
-int  goalHuePos;
-int  curHuePos;
-
-float  curNote;
-float  newNote;
-
-float[]  newHueBorder;
-float[]  goalHueBorder;
-float[]  curHueBorder;
-
 int  newSaturation;
 int  goalSaturation;
 int  curSaturation;
 int  changeInSaturation;
 
-float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
-
 HScrollbar  scrollbar;
 float       scrollbarPos;
-float       hueDeltaMax  = 20;
-float       hueDeltaMin  = 1;
+float       attackTimeMax  = 20;
+float       attackTimeMin  = 1;
 
 PitchHueSquares  phSquares;
 
@@ -65,48 +47,17 @@ void setup()
   saturationMax  = 300;
   brightnessMax  = 100;
 
-  //  colorMode(HSB, hueMax, saturationMax, brightnessMax);
-  colors  = new float[][] {
-    { 255, 0, 0 }, 
-    { 255, 127.5, 0 }, 
-    { 255, 255, 0 }, 
-    { 127.5, 255, 0 }, 
-    { 0, 255, 0 }, 
-    { 0, 255, 127.5 }, 
-    { 0, 255, 255 }, 
-    { 0, 127.5, 255 }, 
-    { 0, 0, 255 }, 
-    { 127.5, 0, 255 }, 
-    { 255, 0, 255 }, 
-    { 255, 0, 127.5 }, 
-    { 255, 0, 0 }
-  };
-
-  /*
-  // this draws rectangles of the colors across the screen:
-   for (int i = 0; i < colors.length; i++)
-   {
-   fill(colors[i][0], colors[i][1], colors[i][2]);
-   rect((width / colors.length) * i, 0, (width / colors.length), height);
-   } // for
-   */
-
-  input        = new Input();
+  input        = new Input(9);
+  println("input = " + input);
   threshold    = 15;
 
   noStroke();
   background(0);
-
-//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
-  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
-  curHue       = colors[curHuePos];
-  // would like to change more quickly, but there's a weird flicker if hueDelta gets bigger:
-  hueDelta  = 10;
-
+  
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
   
-  phSquares    = new PitchHueSquares(8);
+  phSquares    = new PitchHueSquares(9);
 
   
   // sets the text size used to display note names:
@@ -119,14 +70,14 @@ void setup()
 
   controller = new GUIController(this);
   textField  = new IFTextField("Text Field", 10, height - 127, 130);
-  label      = new IFLabel("hueDelta: " + hueDelta, 13, height - 122);
+//  label      = new IFLabel("attackTime: " + attackTime, 13, height - 122);
   
   controller.add(textField);
-  controller.add(label);
+//  controller.add(label);
   
   textField.addActionListener(this);
   
-  curNote  = input.getAdjustedFundAsMidiNote();
+//  curNote  = input.getAdjustedFundAsMidiNote();
 } // setup()
 
 void draw() 
@@ -139,63 +90,7 @@ void draw()
     phSquares.run(i);
   } // for
   
-  /*
-  if (input.getAmplitude() > threshold)
-  {
-    newNote = input.getAdjustedFundAsMidiNote();
-    if(newNote == curNote) {
-//      println("  Note was held.");
-    } else {
-//      println("New note! curNote = " + curNote + "; newNote = " + newNote);
-      curNote = newNote;
-    } // else - set curNote
-    
-    // The following finds the color from the particular note.
-    // if want something other than C to be the "tonic" (i.e., red),
-    // add some number before multiplying.
-    newHuePos  = round(curNote % 12);
-    newHue  = colors[newHuePos];
-    //  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
-  } else {
-    newHue  = new float[] { 0, 0, 0 };
-  } // else
-
-  // set goalHue to the color indicated by the current pitch:
-  if (newHuePos != goalHuePos)
-  {
-    goalHuePos  = newHuePos;
-  } // if
-  goalHue  = colors[goalHuePos];
-  
-  blur(curHue, goalHue, hueDelta);
-
-  // Adjust saturation with amplitude by uncommenting the following lines and 
-  // commenting the "curSaturation = saturationMax" line.
-  // ** This no longer works because of RGB! :(
-  // ^ Chillax and change the color mode.
-  /*
-  newSaturation  = (int)Math.min(input.getAmplitude(1), 300);
-   println("input.getAmplitude(1) = " + input.getAmplitude(1));
-   
-   if(newSaturation != goalSaturation) {
-   goalSaturation  = newSaturation;
-   } //if
-   
-   if(curSaturation > goalSaturation) {
-   curSaturation = curSaturation - changeInSaturation;
-   } else if(curSaturation < goalSaturation) {
-   curSaturation = curSaturation + changeInSaturation;
-   } // if
-   */
-/*
-  curSaturation  = saturationMax;
-  */
-// Switched from setting the background to drawing a rectangle, to allow Turrell border.
-//  background(curHue[0], curHue[1], curHue[2]);
-
-//** Here's where the Turrel rectangle happens: 
-//  fill(curHue[0], curHue[1], curHue[2]);
-//  rect(20, 20, width - 40, height - 90, 10);
+//  phSquares.run();
   
   stroke(255);
   // draws the legend along the bottom of the screen:
@@ -205,29 +100,23 @@ void draw()
   scrollbar.display();
   
   scrollbarPos  = scrollbar.getPos();
-  hueDelta      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, hueDeltaMin, hueDeltaMax);
+//  attackTime      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, attackTimeMin, attackTimeMax);
   
-  label.setLabel("hueDelta: " + hueDelta);
+//  label.setLabel("attackTime: " + attackTime);
 
-/*
-  // ellipse for testing different colors - for my benefit, but could be cool.
-  fill(255, 127.5, 0);
-//  fill(colors[0][0], colors[0][1], colors[0][2]);
-  ellipse(width / 2, height / 2, 100, 100);
-*/
 } // draw()
 
 /*
-void blur(float[] curHueArray, float[] goalHueArray, float hueDelta)
+void blur(float[] curHueArray, float[] goalHueArray, float attackTime)
 {
   for (int i = 0; i < 3; i++)
   {
-    if (curHueArray[i] > (goalHueArray[i] - hueDelta))
+    if (curHueArray[i] > (goalHueArray[i] - attackTime))
     {
-      curHueArray[i] = curHueArray[i] - hueDelta;
-    } else if (curHueArray[i] < (goalHueArray[i] + hueDelta))
+      curHueArray[i] = curHueArray[i] - attackTime;
+    } else if (curHueArray[i] < (goalHueArray[i] + attackTime))
     {
-      curHueArray[i]  = curHueArray[i] + hueDelta;
+      curHueArray[i]  = curHueArray[i] + attackTime;
     } // if
   } // for
 } // blur
@@ -235,6 +124,8 @@ void blur(float[] curHueArray, float[] goalHueArray, float hueDelta)
 
 void legend()
 {
+  int  inputControllingLegend = 0;
+  
   String[] notes = new String[] {
     "C", 
     "C#", 
@@ -251,14 +142,14 @@ void legend()
     "C"
   }; // notes
 
-  float  side = width / colors.length;
+  float  side = width / phSquares.colors.length;
 
   stroke(255);
 
-  for (int i = 0; i < colors.length; i++)
+  for (int i = 0; i < phSquares.colors.length; i++)
   {
-    fill(colors[i][0], colors[i][1], colors[i][2]);
-    if(i == goalHuePos) {
+    fill(phSquares.colors[i][0], phSquares.colors[i][1], phSquares.colors[i][2]);
+    if(i == phSquares.goalHuePos[inputControllingLegend]) {
       rect((side * i), height - (side * 1.5), side, side * 1.5);
     } else {
       rect((side * i), height - side, side, side);
