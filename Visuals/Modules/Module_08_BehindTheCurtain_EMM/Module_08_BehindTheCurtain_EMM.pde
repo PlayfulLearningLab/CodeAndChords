@@ -9,6 +9,8 @@
    - Get average freq. over time, not just whatever second happens.
    - Silence holds the last number; probably don't want that?
    
+   - Plotting points
+   
    thoughts: maybe we don't want to start over until they're all gone?
              or start another column next to that, and start back at the first one when the second one finishes?
 */

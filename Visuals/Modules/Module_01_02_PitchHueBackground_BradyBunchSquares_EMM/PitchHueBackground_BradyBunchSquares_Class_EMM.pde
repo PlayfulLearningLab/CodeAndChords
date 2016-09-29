@@ -12,8 +12,9 @@ class PitchHueSquares extends BradyBunchSquares
     int  xPos  = this.squarePos[inputNum - 1][0];
     int  yPos  = this.squarePos[inputNum - 1][1];
     
-    fill(inputNum * 10, 100, 255 - (inputNum * 10));
+    stroke(255);
+    fill(inputNum * 20, 100, 255 - (inputNum * 20));
     rect(xPos, yPos, this.squareSize[0], this.squareSize[1]);
-    println("xPos = " + xPos + "; yPos = " + yPos + "; this.squareSize[0] = " + this.squareSize[0] + " ; this.squareSize[1] = " + this.squareSize[1]);
+//    println("xPos = " + xPos + "; yPos = " + yPos + "; this.squareSize[0] = " + this.squareSize[0] + " ; this.squareSize[1] = " + this.squareSize[1]);
   } // run
 } // class
