@@ -139,6 +139,7 @@ void draw()
     phSquares.run(i);
   } // for
   
+  /*
   if (input.getAmplitude() > threshold)
   {
     newNote = input.getAdjustedFundAsMidiNote();
@@ -186,9 +187,9 @@ void draw()
    curSaturation = curSaturation + changeInSaturation;
    } // if
    */
-
+/*
   curSaturation  = saturationMax;
-
+  */
 // Switched from setting the background to drawing a rectangle, to allow Turrell border.
 //  background(curHue[0], curHue[1], curHue[2]);
 
@@ -216,6 +217,7 @@ void draw()
 */
 } // draw()
 
+/*
 void blur(float[] curHueArray, float[] goalHueArray, float hueDelta)
 {
   for (int i = 0; i < 3; i++)
@@ -229,6 +231,7 @@ void blur(float[] curHueArray, float[] goalHueArray, float hueDelta)
     } // if
   } // for
 } // blur
+*/
 
 void legend()
 {
