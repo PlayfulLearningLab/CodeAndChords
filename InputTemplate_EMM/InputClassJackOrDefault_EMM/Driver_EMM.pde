@@ -18,16 +18,14 @@ void setup()
 {
   size(400, 400);
   
-//  input  = new Input(12, new AudioContext());
-  input  = new Input();
+  input  = new Input(4);
   wide   = 4;
   high   = 4;
 } // setup()
 
 void draw()
 {
-//  background(100);
-  background(input.getAdjustedFund(1) / 2, 50, input.getAdjustedFund(1) / 2);
+  background(100);
   color  curColor;
   
   for(int i = 1; i < input.getNumInputs(); i++)
