@@ -397,7 +397,9 @@ class Input
       count++;
     } // while
     
-    return sum / count;
+ //   println("sum = " + sum + "; count = " + count + "; sum/count = " + (sum/count));
+    // the Math.min eliminates potential divide by 0 errors:
+    return (sum / (Math.max(count, 1)));
   } // getTimeAverageFund
   
   /**

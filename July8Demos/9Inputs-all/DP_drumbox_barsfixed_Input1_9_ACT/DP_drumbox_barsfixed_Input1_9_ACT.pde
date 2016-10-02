@@ -98,7 +98,7 @@ void setup()
   fullScreen();
 
   // Current janky fix: parameter must be 4 > actually desired num of inputs.
-  this.myIns = new Input(14);
+  this.myIns = new Input(9);
 
   // setup for background balls:
   myLeadBall = new LeadBall();
@@ -182,7 +182,7 @@ void draw()
   float  periwinkleVol  = myIns.getAmplitude(6) / volAdjust;
   float  purpleVol  = myIns.getAmplitude(7) / volAdjust;
   float  fuchsiaVol  = myIns.getAmplitude(8) / volAdjust;
-  float  pinkVol  = myIns.getAmplitude(8) / volAdjust;
+  float  pinkVol  = myIns.getAmplitude(9) / volAdjust;
 
   float  redPitch  = myIns.getAdjustedFund(1);
   float  orangePitch  = myIns.getAdjustedFund(2);
@@ -192,7 +192,7 @@ void draw()
   float  periwinklePitch  = myIns.getAdjustedFund(6);
   float  purplePitch  = myIns.getAdjustedFund(7);
   float  fuchsiaPitch  = myIns.getAdjustedFund(8);
-  float  pinkPitch  = myIns.getAdjustedFund(8);
+  float  pinkPitch  = myIns.getAdjustedFund(9);
 
   //realistically there will be ten of these
   //and I'm thinking about naming them after
@@ -387,15 +387,15 @@ void draw()
   }
   oldb1 = pitchb1/(volb1+1);
   */
-/*
+
   //PINK
   stroke(255);
   rectMode(CORNERS);
 //  int pitchPink = round(pinkPitch / allPitchAdjust);
 //  int volPink  = round(pinkVol);
-  int pitchPink = round(redPitch / allPitchAdjust);
-   int volPink  = round(redVol);
-  if (volPink>stackheight);
+  int pitchPink = round(pinkPitch / allPitchAdjust);
+   int volPink  = round(pinkVol);
+  if (volPink>stackheight)
   {
     volPink=stackheight;
   }
@@ -408,7 +408,7 @@ void draw()
     oldPink=oldPink+pitchb1/(volb1+1);
   }
   oldb1=pitchb1/(volb1+1);
-  */
+  
   }
   catch (NullPointerException npe)  {}
 } // draw()

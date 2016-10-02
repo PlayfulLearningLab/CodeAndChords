@@ -57,7 +57,7 @@ float       hueDeltaMin  = 1;
 
 void setup() 
 {
-  size(638, 460);
+  size(700, 600);
 
   hueMax         = 360;
   saturationMax  = 300;
