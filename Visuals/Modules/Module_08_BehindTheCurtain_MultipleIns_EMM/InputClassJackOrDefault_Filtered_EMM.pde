@@ -144,10 +144,10 @@ class Input
     for (int i = 0; i < this.numInputs; i++)
     {
       g.addInput(uGenArray[i]);
-      println("i = " + i);
+      println("uGenArray[" + i + "] = " + uGenArray[i]);
     } // for
     
-    ac.out.addInput(g);
+    ac.out.addInput(g); //<>//
 
     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
     // this creates an array of SFS's and adds the UGens to them:
@@ -158,6 +158,8 @@ class Input
       while (this.sfsArray[i] == null) {
       }
       this.sfsArray[i].addInput(uGenArray[i]);
+      
+      println("this.sfsArray[" + i + "] = " + this.sfsArray[i]);
     }
 
     // Creates an array of FFTs and adds them to the SFSs:
@@ -167,7 +169,7 @@ class Input
       this.fftArray[i] = new FFT();
       while (this.fftArray[i] == null) {
       }
-      this.sfsArray[i].addListener(this.fftArray[i]);
+      this.sfsArray[i].addListener(this.fftArray[i]); //<>//
     } // for
 
     // Creates an array of PowerSpectrum's and adds them to the FFTs
@@ -212,7 +214,7 @@ class Input
 */
 
     // Starts the AudioContext (and everything connected to it):
-    this.ac.start();
+    this.ac.start(); //<>//
 
     // Initializes the arrays that will hold the pitches:
     this.fundamentalArray = new float[this.numInputs];
@@ -270,8 +272,6 @@ class Input
     {
       for (int i = 0; i < this.numInputs; i++)
       {
-        
-        this.uGenArray[i].printInBuffers();
         //     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
   
         // want to assign the value of .getFeatures() to a variable and check for null,
