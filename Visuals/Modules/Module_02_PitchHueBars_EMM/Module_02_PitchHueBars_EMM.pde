@@ -89,7 +89,7 @@ int  goalHue;
 
 void setup() 
 {
-  size(800, 640);
+  size(800, 400);
 
   hueMax         = 360;
   saturationMax  = 100;

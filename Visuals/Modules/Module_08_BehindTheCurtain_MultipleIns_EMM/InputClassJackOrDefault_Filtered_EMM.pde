@@ -1,4 +1,5 @@
-import org.jaudiolibs.jnajack.*;
+// May need to uncomment this:
+//import org.jaudiolibs.jnajack.*;
 
 import org.jaudiolibs.beads.AudioServerIO;
 import org.jaudiolibs.beads.*;
@@ -149,7 +150,7 @@ class Input
       g.addInput(uGenArray[i]);
       println("uGenArray[" + i + "] = " + uGenArray[i]);
     } // for
-    
+     //<>//
     ac.out.addInput(g); //<>//
 
     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
@@ -171,7 +172,7 @@ class Input
     {
       this.fftArray[i] = new FFT();
       while (this.fftArray[i] == null) {
-      }
+      } //<>//
       this.sfsArray[i].addListener(this.fftArray[i]); //<>//
     } // for
 
@@ -216,7 +217,7 @@ class Input
     ac.out.addInput(mute);
 */
 
-    // Starts the AudioContext (and everything connected to it):
+    // Starts the AudioContext (and everything connected to it): //<>//
     this.ac.start(); //<>//
 
     // Initializes the arrays that will hold the pitches:
