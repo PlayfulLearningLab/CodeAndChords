@@ -44,7 +44,7 @@ int    saturationMax;
 int    brightnessMax;
 
 Input  input;
-int    threshold = 5;     // This is the amplitude below which color will be black.
+int    threshold = 1;     // This is the amplitude below which color will be black.
 
 int        delay;
 float[][]  bars;          // bars[i][0], bars[i][1], bars[i][2] denote the color; 
