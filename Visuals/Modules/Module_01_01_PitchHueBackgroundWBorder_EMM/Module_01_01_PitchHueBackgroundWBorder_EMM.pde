@@ -30,7 +30,7 @@ int  saturation;
 float[]  newHue;
 float[]  goalHue;
 float[]  curHue;
-float    hueDelta;
+float    attackTime;
 
 int  newHuePos;
 int  goalHuePos;
@@ -52,8 +52,8 @@ float[][]  colors;          // holds the RGB values for the colors responding to
 
 HScrollbar  scrollbar;
 float       scrollbarPos;
-float       hueDeltaMax  = 20;
-float       hueDeltaMin  = 1;
+float       attackTimeMax  = 20;
+float       attackTimeMin  = 1;
 
 void setup() 
 {
@@ -98,8 +98,8 @@ void setup()
 //  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
   curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
   curHue       = colors[curHuePos];
-  // would like to change more quickly, but there's a weird flicker if hueDelta gets bigger:
-  hueDelta  = 10;
+  // would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
+  attackTime  = 10;
 
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
@@ -115,7 +115,7 @@ void setup()
 
   controller = new GUIController(this);
   textField  = new IFTextField("Text Field", 10, height - 127, 130);
-  label      = new IFLabel("hueDelta: " + hueDelta, 13, height - 122);
+  label      = new IFLabel("attackTime: " + attackTime, 13, height - 122);
   
   controller.add(textField);
   controller.add(label);
@@ -157,7 +157,7 @@ void draw()
   } // if
   goalHue  = colors[goalHuePos];
   
-  blur(curHue, goalHue, hueDelta);
+  blur(curHue, goalHue, attackTime);
 
   // Adjust saturation with amplitude by uncommenting the following lines and 
   // commenting the "curSaturation = saturationMax" line.
@@ -193,9 +193,9 @@ void draw()
   scrollbar.display();
   
   scrollbarPos  = scrollbar.getPos();
-  hueDelta      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, hueDeltaMin, hueDeltaMax);
+  attackTime      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, attackTimeMin, attackTimeMax);
   
-  label.setLabel("hueDelta: " + hueDelta);
+  label.setLabel("attackTime: " + attackTime);
 
 /*
   // ellipse for testing different colors - for my benefit, but could be cool.
@@ -205,16 +205,16 @@ void draw()
 */
 } // draw()
 
-void blur(float[] curHueArray, float[] goalHueArray, float hueDelta)
+void blur(float[] curHueArray, float[] goalHueArray, float attackTime)
 {
   for (int i = 0; i < 3; i++)
   {
-    if (curHueArray[i] > (goalHueArray[i] - hueDelta))
+    if (curHueArray[i] > (goalHueArray[i] - attackTime))
     {
-      curHueArray[i] = curHueArray[i] - hueDelta;
-    } else if (curHueArray[i] < (goalHueArray[i] + hueDelta))
+      curHueArray[i] = curHueArray[i] - attackTime;
+    } else if (curHueArray[i] < (goalHueArray[i] + attackTime))
     {
-      curHueArray[i]  = curHueArray[i] + hueDelta;
+      curHueArray[i]  = curHueArray[i] + attackTime;
     } // if
   } // for
 } // blur
