@@ -1,6 +1,3 @@
-// May need to uncomment this:
-//import org.jaudiolibs.jnajack.*;
-
 import org.jaudiolibs.beads.AudioServerIO;
 import org.jaudiolibs.beads.*;
 
@@ -16,24 +13,20 @@ import beads.PowerSpectrum;
 import beads.Frequency;
 import beads.Pitch;
 import beads.Compressor;
-import beads.BiquadFilter;
 
 import javax.sound.sampled.AudioFormat;
 
 class Input
 {
-  /* 
-  
-  10/1:  Remember ternary condition:
-    condition ? evaluated-when-true : evaluated-when-false
-  
-  9/24: Needs mp3 (String) constructor.
+  /*
+   ** As of mid-July, 2016, the following is NOT true:
+    "Notate bene: inputNum passed to constructor must be 4 greater
+    than the actual desired number of inputs."
   
    ** Watch for that NullPointerException -- add a try-catch? ** 
        - 8/17: added try/catch
    
    (Why doesn't it need jna-jack__.jar in the code folder?  B/c it's in the old one?)
-   ^ Figured this out: I put it in the /libraries/beads/library folder, in the Processing (default sketchbook) folder.
    
    Emily Meuer
    07/06 Update: works with both the Behringer and Motu interfaces
@@ -56,7 +49,6 @@ class Input
   AudioContext           ac;
   float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
   Compressor             compressor;
-  BiquadFilter           biquadFilter;
 //  UGen                   inputsUGen;           // initialized with the input from the AudioContext.
   UGen[]                 uGenArray;
   Gain                   g;
@@ -104,6 +96,7 @@ class Input
     for (int i = 0; i < this.numInputs; i++)
     {
       inputNums[i]  = i + 1;
+      println("inputNums[" + i + "] = " + inputNums[i]);
     } // for
 
     // get the audio lines from the AudioContext:
@@ -116,18 +109,7 @@ class Input
       // getAudioInput needs an int[] with the number of the particular line.
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
-    
-    // Create a BiquadFilter and add each of the uGens to it.
-    this.biquadFilter =  new  BiquadFilter(ac, BiquadFilter.BP_SKIRT, 2000.0f, 0.5f);
-    for(int i = 0; i < this.numInputs; i++)
-    {
-      this.biquadFilter.addInput(this.uGenArray[i]);
-    } // for
 
-    // Create a Gain and add the BiquadFilter to it:
-    g = new Gain(this.ac, 1, 0.5);
-//    g.addInput(this.biquadFilter);
-    
     /*
     Default compressor values:
       threshold - .5
@@ -140,18 +122,16 @@ class Input
     // Create a compressor w/standard values:
     this.compressor  = new Compressor(this.ac, 1);
     this.compressor.setRatio(8.0);
-    
-    // Add the Compressor the Gain:
-//    g.addInput(this.compressor);
-    
-    
+
+    // Create a Gain, add the Compressor to the Gain,
+    // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
+    g = new Gain(this.ac, 1, 0.5);
+    g.addInput(this.compressor);
     for (int i = 0; i < this.numInputs; i++)
     {
-      g.addInput(uGenArray[i]);
-      println("uGenArray[" + i + "] = " + uGenArray[i]);
+      g.addInput(uGenArray[i]); //<>//
     } // for
-    
-    ac.out.addInput(g);
+    ac.out.addInput(g); //<>//
 
     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
     // this creates an array of SFS's and adds the UGens to them:
@@ -161,9 +141,7 @@ class Input
       this.sfsArray[i] = new ShortFrameSegmenter(ac);
       while (this.sfsArray[i] == null) {
       }
-      this.sfsArray[i].addInput(uGenArray[i]);
-      
-      println("this.sfsArray[" + i + "] = " + this.sfsArray[i]);
+      this.sfsArray[i].addInput(uGenArray[i]); //<>//
     }
 
     // Creates an array of FFTs and adds them to the SFSs:
@@ -173,7 +151,7 @@ class Input
       this.fftArray[i] = new FFT();
       while (this.fftArray[i] == null) {
       }
-      this.sfsArray[i].addListener(this.fftArray[i]);
+      this.sfsArray[i].addListener(this.fftArray[i]); //<>//
     } // for
 
     // Creates an array of PowerSpectrum's and adds them to the FFTs
@@ -184,7 +162,7 @@ class Input
       this.psArray[i] = new PowerSpectrum();
       while (this.psArray[i] == null) {
       }
-      this.fftArray[i].addListener(psArray[i]);
+      this.fftArray[i].addListener(psArray[i]); //<>//
     } // for
 
     // Creates an array of FrequencyEMMs and adds them to the PSs
@@ -195,16 +173,13 @@ class Input
       this.frequencyArray[i] = new FrequencyEMM(44100);
       while (this.frequencyArray[i] == null) {
       }
-      
-      println("this.frequencyArray[" + i + "] = " + this.frequencyArray[i]);
-      
-      this.psArray[i].addListener(frequencyArray[i]);
+      this.psArray[i].addListener(frequencyArray[i]); //<>//
     } // for
 
     // Adds the SFSs (and everything connected to them) to the AudioContext:
     for (int i = 0; i < this.numInputs; i++)
     {
-      ac.out.addDependent(sfsArray[i]);
+      ac.out.addDependent(sfsArray[i]); //<>//
     } // for - addDependent
 
     // Pitches with amplitudes below this number will be ignored by adjustedFreq:
@@ -222,15 +197,6 @@ class Input
 
     // Initializes the arrays that will hold the pitches:
     this.fundamentalArray = new float[this.numInputs];
-
-// 10/1: the following prints all 0's
-/*
-    for(int i = 0; i < this.fundamentalArray.length; i++)
-    {
-      println("this.fundamentalArray[" + i + "] = " + this.fundamentalArray[i]);
-    } // for
-*/
-    
     this.adjustedFundArray = new float[this.numInputs];
     
     // Gets the ball rolling on analysis:
@@ -260,6 +226,9 @@ class Input
   } // constructor(String)
 
   /**
+   * Subtracts 4 from the numInputs variable because I added 4
+   * to account for the fact that the two interfaces together skip lines 5-8.l
+   *
    * @return  int  number of input channels.
    */
   int  getNumInputs() {
@@ -281,12 +250,9 @@ class Input
         // want to assign the value of .getFeatures() to a variable and check for null,
         // but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
         if (this.frequencyArray[i].getFeatures() != null) {
-          
           //       println("i = " + i);
           //       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
           this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-//      println("this.frequencyArray[" + i + "] = " + this.frequencyArray[i]);
-//          println("this.fundamentalArray[" + i + "] = " + this.fundamentalArray[i]);
   
           // ignores pitches with amplitude lower than "sensitivity":
           if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
@@ -405,37 +371,7 @@ class Input
   float  getFundAsMidiNote() {
     return getFundAsMidiNote(1);
   } // getFundAsMidiNote()
-  
-  /**
-   *  @return  average pitch of the given input over the next given milliseconds, in Hz.
-   */
-  float getTimeAverageFundAsHz(int inputNum, int millis)
-  {
-    float sum      = 0;
-    int   endTime  = millis() + millis;
-    int   count    = 0;
-    
-    while(millis() < endTime)
-    {
-      sum = sum + this.getAdjustedFundAsHz(inputNum);
-      count++;
-    } // while
-    
- //   println("sum = " + sum + "; count = " + count + "; sum/count = " + (sum/count));
-    // the Math.min eliminates potential divide by 0 errors:
-    return (sum / (Math.max(count, 1)));
-  } // getTimeAverageFund
-  
-  /**
-   *  @return  average pitch of the given input over the next given milliseconds, as a midi note.
-   */
-/*  float getTimeAverageFundAsMidiNote(int input, int millis)
-  {
-    // Should I do this by calling getTimeAverageFundAsHz and converting it,
-    // or repeating the logic, but w/getAdjustedFundAsMidiNote()?
-//    return ;
-  } // getTimeAverageFund
-*/
+
   /**
    *  Calculates the average frequency of multiple input lines.
    *
@@ -660,7 +596,6 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
       bufferSize = powerSpectrum.length;
       bin2hz = sampleRate / (2 * bufferSize);
     }
-
     features = null;
     // now pick best peak from linspec
     double pmax = -1;
@@ -678,31 +613,10 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
 
     // cubic interpolation
     double yz = powerSpectrum[maxbin];
-    
-//    println("FrequencyEMM.process: yz = " + yz);
-    
-    // replaced the following ternary with this if-then, for clarity:
-//    double ym = maxbin <= 0? powerSpectrum[maxbin] : powerSpectrum[maxbin - 1];
-    double ym;
-    if(maxbin < 0) {
-      ym = powerSpectrum[maxbin];
-    } else {
-      ym = powerSpectrum[maxbin - 1];
-    } // else
-//    println("FrequencyEMM.process: ym = " + ym);
-    
-//    double yp = maxbin < powerSpectrum.length - 1 ? powerSpectrum[maxbin + 1] : powerSpectrum[maxbin];
-    double yp;
-    if(maxbin < powerSpectrum.length - 1) {
-      yp  = powerSpectrum[maxbin + 1];
-    } else {
-      yp  = powerSpectrum[maxbin];
-    } // else
-//    println("FrequencyEMM.process: yp = " + yp);
-    
+    double ym = maxbin <= 0? powerSpectrum[maxbin] : powerSpectrum[maxbin - 1];
+    double yp = maxbin < powerSpectrum.length - 1 ? powerSpectrum[maxbin + 1] : powerSpectrum[maxbin];
     double k = (yp + ym) / 2 - yz;
     double x0 = (ym - yp) / (4 * k);
-//    println("FrequencyEMM.process: yz = " + yz);
     features = (float)(bin2hz * (maxbin + x0));
 
     forward(startTime, endTime);

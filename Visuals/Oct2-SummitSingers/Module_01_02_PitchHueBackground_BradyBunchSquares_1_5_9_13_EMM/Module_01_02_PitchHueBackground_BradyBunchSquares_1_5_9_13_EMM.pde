@@ -57,7 +57,7 @@ void setup()
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
   
-  phSquares    = new PitchHueSquares(9);
+  phSquares    = new PitchHueSquares(9, 13);
 
   
   // sets the text size used to display note names:

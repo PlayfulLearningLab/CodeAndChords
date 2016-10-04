@@ -20,10 +20,10 @@ int  adjustTenorSoloAmp = 400;  // number by which tenor amplitude will be divid
 // before sending it to freqPoints, where it controls light size.
 float fallThreshold = 3;    // candles go back to the top when their line's amp is lower than this.
 
-int    sceneOneTenorAmpAdjust     = 1000;  // divide
-int    sceneTwoTenorAmpAdjust     = 3;   // multiply
+int    sceneOneTenorAmpAdjust     = 100;  // divide
+int    sceneTwoTenorAmpAdjust     = 10;   // multiply
 float  sceneThreeTenorAmpAdjust   = 1;      // divide by this
-int    sceneFiveTenorAmpAdjust    = 500; // divide
+int    sceneFiveTenorAmpAdjust    = 50; // divide
 int    sceneSixTenorAmpAdjust     = 1;    // divide
 int    sceneSixAllFundAdjust      = 5000; // multiply by this number.
 
