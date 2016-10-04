@@ -27,7 +27,7 @@ int  saturation;
 float[]  newHue;
 float[]  goalHue;
 float[]  curHue;
-float    hueDelta;
+float    attackTime;
 
 int  newHuePos;
 int  goalHuePos;
@@ -42,8 +42,8 @@ float[][]  colors;          // holds the RGB values for the colors responding to
 
 HScrollbar  scrollbar;
 float       scrollbarPos;
-float       hueDeltaMax  = 20;
-float       hueDeltaMin  = 1;
+float       attackTimeMax  = 20;
+float       attackTimeMin  = 1;
 
 void setup() 
 {
@@ -88,8 +88,8 @@ void setup()
 //  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
   curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
   curHue       = colors[curHuePos];
-  // would like to change more quickly, but there's a weird flicker if hueDelta gets bigger:
-  hueDelta  = 10;
+  // would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
+  attackTime  = 10;
 
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
@@ -105,7 +105,7 @@ void setup()
 
   controller = new GUIController(this);
   textField  = new IFTextField("Text Field", 10, 10, 150);
-  label      = new IFLabel("hueDelta: " + hueDelta, 15, 15);
+  label      = new IFLabel("attackTime: " + attackTime, 15, 15);
   
   controller.add(textField);
   controller.add(label);
@@ -138,12 +138,12 @@ void draw()
   
   for (int i = 0; i < 3; i++)
   {
-    if (curHue[i] > (goalHue[i] - hueDelta))
+    if (curHue[i] > (goalHue[i] - attackTime))
     {
-      curHue[i] = curHue[i] - hueDelta;
-    } else if (curHue[i] < (goalHue[i] + hueDelta))
+      curHue[i] = curHue[i] - attackTime;
+    } else if (curHue[i] < (goalHue[i] + attackTime))
     {
-      curHue[i]  = curHue[i] + hueDelta;
+      curHue[i]  = curHue[i] + attackTime;
     } // if
   } // for
 
@@ -179,9 +179,9 @@ void draw()
   scrollbar.display();
   
   scrollbarPos  = scrollbar.getPos();
-  hueDelta      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, hueDeltaMin, hueDeltaMax);
+  attackTime      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, attackTimeMin, attackTimeMax);
   
-  label.setLabel("hueDelta: " + hueDelta);
+  label.setLabel("attackTime: " + attackTime);
 
 /*
   // ellipse for testing different colors - for my benefit, but could be cool.
