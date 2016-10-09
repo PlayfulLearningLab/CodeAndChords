@@ -633,4 +633,4 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
   public float getAmplitude() {  
     return this.amplitude;
   }
-}
+} // FrequencyEMM class

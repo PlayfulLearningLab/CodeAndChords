@@ -1,4 +1,4 @@
-public class DrawRosette extends Scene
+class DrawRosette extends Scene
 {
   /*
     06/29/2016

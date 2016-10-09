@@ -1,4 +1,4 @@
-public abstract class Scene
+abstract class Scene
 {
   /*
     06/29/2016
