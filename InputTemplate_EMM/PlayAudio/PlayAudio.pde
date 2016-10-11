@@ -1,6 +1,13 @@
 import beads.*;
 
 /*
+  10/11/2016:
+  ** It's all about the Glide value.  Maybe this can just be a Gain?
+  
+  Will only play if option to start is in mousePressed();
+    - separate function
+    - pressing mouse
+
   09/23/2016
   Trying to just play a file!  Copied example from https://groups.google.com/forum/#!searchin/beadsproject/sampleplayer|sort:relevance/beadsproject/98Y7Sa6CRig/Zpw5SWZsLG4J.
 */
@@ -10,6 +17,8 @@ SamplePlayer sp; // the SamplePlayer class will be used to play the audio file
 Gain g;
 Glide gainValue;
 AudioContext ac;
+
+int  count  = 0;
 
 void setup()
 {
@@ -53,13 +62,35 @@ void setup()
   background(0); // set the background to black
   text("Click to demonstrate the SamplePlayer object.", 100, 100); // tell the user what to do!
 
+//  gainValue.setValue((float)mouseX/(float)width); // set the gain based on mouse position
+  gainValue.setValue(1);
+  sp.setToLoopStart();
   sp.start();
-}
+ }
 
 // although we're not drawing to the screen, we need to have a draw function
 // in order to wait for mousePressed events
-void draw(){}
+void draw()
+{
+  if(count == 0) {
+    println("count = " + count);
+//    startSamplePlayer();
+    count++;
+  } else {
+    count++;
+  }
+}
 
+void startSamplePlayer()
+{
+  println("in startSamplePlayer");
+  gainValue.setValue(1); //(float)mouseX/(float)width); // set the gain based on mouse position
+  println("gainValue = " + gainValue.getValue());
+  sp.setToLoopStart(); // move the playback pointer to the first loop point (0.0)
+  sp.start(); // play the audio file
+  println("sp.paused = " + sp.isPaused());
+} // startSamplePlayer
+/*
 // this routine is called whenever a mouse button is pressed on the Processing sketch
 void mousePressed()
 {
@@ -67,3 +98,4 @@ void mousePressed()
   sp.setToLoopStart(); // move the playback pointer to the first loop point (0.0)
   sp.start(); // play the audio file
 }
+*/
