@@ -256,6 +256,7 @@ class Input
       - Make a new constructor that takes an array of... UGens?
         Yes: we'll have to make an array of SamplePlayers that should fit,
         and the others can send their AudioInput ones.
+        ^ kind of, but instead of another constructor, let's just make a method.
      */
   } // constructor(String)
 

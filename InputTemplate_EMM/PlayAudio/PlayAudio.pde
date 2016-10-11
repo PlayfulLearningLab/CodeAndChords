@@ -52,7 +52,7 @@ void setup()
 
   // as usual, we create a gain that will control the volume of our sample player
   gainValue = new Glide(ac, 0.0, 20);
-  g = new Gain(ac, 1, gainValue);
+  g = new Gain(ac, 1, 0.5);
   g.addInput(sp); // connect the SamplePlayer to the Gain
 
   ac.out.addInput(g); // connect the Gain to the AudioContext
