@@ -41,11 +41,14 @@
 
 // Calibrate:
 int  volAdjust             = 20;  // divide amp by this.
+int  volAdjust1            = 3;    // multiply
 float speed                = 10;   // divide amp by this to get a ball move speed.
 float amplify              = 0.05;    // multiply amp by this to slow the ball speed.
 int  whichInputMovesBalls  = 2;  // this line moves the balls in the background.
 
 int stackheight            = 15;  //easily adjusting number of stacks for bars
+
+int colorDecay = 3; //adjusting constant for color decay of bars
 
 Input myIns;   //this is for the new input class
 
@@ -57,7 +60,7 @@ Ball[] myBall;
 //how many balls across the screen
 int balls = 30;
 
-
+// divide by these:
 int b1VolAdjust = 100;
 int b2VolAdjust = 100;
 int t1VolAdjust = 100;
@@ -70,7 +73,6 @@ int t2PitAdjust = 10;
 
 int  allPitchAdjust = 10;
 
-int colorDecay = 7; //adjusting constant for color decay of bars
 
 float  redVol;
 float  orangeVol;
@@ -157,24 +159,8 @@ void draw()
    * ggp = light green, forest green, and periwinkle
    */
 
-  float rpvol = myIns.getAmplitude(1) / volAdjust;  //'volume' of bass1, used for columns RED and PINK
-  // float rpvol = b1VolAdjust*myIns.getAmplitude(1) / 200;  //'volume' of bass1, used for columns RED and PINK
-  float rppit = myIns.getAdjustedFundAsHz(1);  //'pitch' of bass1, used for columns RED and PINK
 
-  float ofvol = myIns.getAmplitude(2) / volAdjust;
-  // float ofvol = b2VolAdjust*myIns.getAmplitude(2) / 200;
-  float ofpit = myIns.getAdjustedFundAsHz(2);
-
-  float ypvol = myIns.getAmplitude(3) / volAdjust;
-  //  float ypvol = t1VolAdjust*myIns.getAmplitude(3) / 200;
-  float yppit = myIns.getAdjustedFundAsHz(3);
-
-  float ggpvol = myIns.getAmplitude(4) / volAdjust;
-  //  float ggpvol = t2VolAdjust*myIns.getAmplitude(4) / 200;
-  float ggppit = myIns.getAdjustedFundAsHz(4);
-
-
-  float  redVol  = myIns.getAmplitude(1) / volAdjust;
+  float  redVol  = myIns.getAmplitude(1) * volAdjust1;
   float  orangeVol  = myIns.getAmplitude(2) / volAdjust;
   float  yellowVol  = myIns.getAmplitude(3) / volAdjust;
   float  lightGreenVol  = myIns.getAmplitude(4) / volAdjust;
