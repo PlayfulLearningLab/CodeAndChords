@@ -24,7 +24,7 @@ int  maxBin;
 
 void settings()
 {
-  size(1000, 500);
+  size(800, 500);
 } // settings
 
 void setup()
@@ -32,7 +32,7 @@ void setup()
   stroke(255);
   
   input  = new Input();
-  freqEMM = input.frequencyArray[0];
+//  freqEMM = input.frequencyArray[0];
   maxBin  = 0;
   
   amplitudeRain  = new RainingNumbers(width / 3, "Amplitude:", 10, 100);
@@ -45,16 +45,20 @@ void setup()
 void draw()
 {
   background(0);
-  amplitudeRain.rain(input.getAmplitude());
+//  amplitudeRain.rain(input.getAmplitude());
 //  frequencyRain.rain(input.getAdjustedFundAsHz());
+  
+  println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
 
-//  drawFFT(input);
-
-//println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
+  drawHPSSecondHighest(input);
 } // draw
 
-void drawFFT(Input input)
+void drawHPS(Input input)
 {
+  int  maxBin  = 0;
+  
+  FrequencyEMM freqEMM  = input.frequencyArray[0];
+  
   stroke(255);
   for(int i = 0; i < freqEMM.hps.length; i++)
   {
@@ -69,3 +73,38 @@ void drawFFT(Input input)
   stroke(150, 50, 150);
   rect( maxBin*10, height, 1, - freqEMM.hps[maxBin] );
 } // drawFFT
+
+void drawHPSSecondHighest(Input input)
+{
+  FrequencyEMM freqEMM  = input.frequencyArray[0];
+  int maxBin            = 0;
+  int secondMaxBin      = 0;
+  
+  stroke(255);
+  for(int i = 0; i < freqEMM.hps.length; i++)
+  {
+    rect( i*10, height, 1, - freqEMM.hps[i] );
+    
+    if(freqEMM.hps[i] > freqEMM.hps[maxBin])
+    {
+      maxBin  = i;
+    } // if
+  } // for
+  
+  stroke(150, 50, 150);
+  rect( maxBin*10, height, 1, - freqEMM.hps[maxBin] );
+    
+  double  j;
+    // find second peak:
+    for (int band = 0; band < freqEMM.hps.length; band++)
+    {
+      j  = freqEMM.hps[band];
+      if ((j > freqEMM.hps[secondMaxBin]) && (j < freqEMM.hps[maxBin]))
+      {
+        secondMaxBin  = band;
+      } // if
+    } // for - second peak
+    
+    stroke(50, 50, 255);
+    rect(secondMaxBin * 10, height, 1, -freqEMM.hps[secondMaxBin]);
+} // void
