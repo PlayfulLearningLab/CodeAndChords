@@ -45,7 +45,7 @@ void setup()
   rain7  = new RainingNumbers(spacing * 6, "mic7:", 11, 200);
   rain8  = new RainingNumbers(spacing * 7, "mic8:", 11, 200);
   rain9  = new RainingNumbers(spacing * 8, "mic9:", 11, 200);
-  rain10  = new RainingNumbers(spacing * 9, "mic9:", 11, 200);
+  rain10  = new RainingNumbers(spacing * 9, "mic10:", 11, 200);
 //  background(amplitudeRain.background[0], amplitudeRain.background[1], amplitudeRain.background[2]);
   background(rain1.backgroundColor);
   
