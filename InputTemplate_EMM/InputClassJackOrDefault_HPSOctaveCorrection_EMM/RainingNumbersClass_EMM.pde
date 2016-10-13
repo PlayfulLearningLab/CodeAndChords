@@ -19,7 +19,6 @@ class RainingNumbers
 //  int[]   background   = new int[] { 200, 100, 100 };
   int[]   background       = new int[] { 0, 0, 0 };
   color   backgroundColor  = color(background[0], background[1], background[2]);
-  color   textColor        = color(0, 204, 0);
   
   
   /**
@@ -67,8 +66,9 @@ class RainingNumbers
     int  tailModPos;             // used to calculate wrap-around to top of screen while keeping space for text at the top.
     
     // Print name of column at the top:
-    fill(textColor);
+    fill(0, 204, 0);
     textSize(24);
+//    println("name = " + name + "; xPos = " + xPos);
     text(name, xPos, 55);
     
     if (millis() > this.nextRain)
@@ -97,7 +97,6 @@ class RainingNumbers
       // Last value of the tail (to be completely blacked out this time around):
       tailDrawPos = ((height - 100) + yDrawPos - (this.tail * 15)) % (height - 100);
       tailModPos  = tailDrawPos - 100;
-      println("RainingNumbers.rain: tailModPos = " + tailModPos);
 
       for (int i = 0; i < 8; i++)
       {

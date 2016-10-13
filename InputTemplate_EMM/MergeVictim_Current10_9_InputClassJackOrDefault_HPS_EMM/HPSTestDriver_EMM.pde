@@ -24,7 +24,7 @@ int  maxBin;
 
 void settings()
 {
-  size(1000, 500);
+  size(800, 500);
 } // settings
 
 void setup()
@@ -45,16 +45,10 @@ void setup()
 void draw()
 {
   background(0);
-  amplitudeRain.rain(input.getAmplitude());
+//  amplitudeRain.rain(input.getAmplitude());
 //  frequencyRain.rain(input.getAdjustedFundAsHz());
 
-//  drawFFT(input);
 
-//println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
-} // draw
-
-void drawFFT(Input input)
-{
   stroke(255);
   for(int i = 0; i < freqEMM.hps.length; i++)
   {
@@ -68,4 +62,4 @@ void drawFFT(Input input)
   
   stroke(150, 50, 150);
   rect( maxBin*10, height, 1, - freqEMM.hps[maxBin] );
-} // drawFFT
+} // draw
