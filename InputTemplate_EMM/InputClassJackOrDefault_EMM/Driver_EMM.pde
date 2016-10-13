@@ -19,6 +19,7 @@ void setup()
   size(400, 400);
   
   input  = new Input(4);
+//input  = new Input();
   wide   = 4;
   high   = 4;
 } // setup()
