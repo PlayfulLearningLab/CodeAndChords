@@ -131,6 +131,8 @@ class Input
     // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
     g = new Gain(this.ac, 1, 0.5);
     g.addInput(this.compressor);
+    
+    // Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
     for (int i = 0; i < this.numInputs; i++)
     {
       g.addInput(uGenArray[i]);
@@ -186,9 +188,6 @@ class Input
       ac.out.addDependent(sfsArray[i]);
     } // for - addDependent
 
-    // Pitches with amplitudes below this number will be ignored by adjustedFreq:
-    this.sensitivity  = 10;
-
     /*
     // trying to mute the output:
      mute = new Gain(this.ac, 1, 0);
@@ -198,6 +197,9 @@ class Input
 
     // Starts the AudioContext (and everything connected to it):
     this.ac.start();
+
+    // Pitches with amplitudes below this number will be ignored by adjustedFreq:
+    this.sensitivity  = 10;
 
     // Initializes the arrays that will hold the pitches:
     this.fundamentalArray = new float[this.numInputs];
@@ -256,6 +258,7 @@ class Input
       - Make a new constructor that takes an array of... UGens?
         Yes: we'll have to make an array of SamplePlayers that should fit,
         and the others can send their AudioInput ones.
+        ^ kind of, but instead of another constructor, let's just make a method.
      */
   } // constructor(String)
 

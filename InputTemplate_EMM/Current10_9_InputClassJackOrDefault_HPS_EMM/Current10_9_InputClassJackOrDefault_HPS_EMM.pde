@@ -502,7 +502,8 @@ class Input
   } // getAmplitude
   
   /**
-   *  Applies a 1:8 compressor for amp's over 400 and returns the resulting amplitude.
+   * No longer does the following: 
+   * Applies a 1:8 compressor for amp's over 400 and returns the resulting amplitude.
    *
    *  @return  float     amplitude of the first input line.
    */
