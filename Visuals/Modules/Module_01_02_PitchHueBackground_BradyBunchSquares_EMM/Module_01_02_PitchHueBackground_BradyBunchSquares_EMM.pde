@@ -47,7 +47,7 @@ void setup()
   saturationMax  = 300;
   brightnessMax  = 100;
 
-  input        = new Input(9);
+  input        = new Input(13);
   println("input = " + input);
   threshold    = 15;
 

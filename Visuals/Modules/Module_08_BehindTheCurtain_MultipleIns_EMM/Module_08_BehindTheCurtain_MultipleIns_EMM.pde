@@ -21,15 +21,31 @@ RainingNumbers   rain2;
 RainingNumbers   rain3;
 RainingNumbers   rain4;
 
+RainingNumbers   rain5;
+RainingNumbers   rain6;
+RainingNumbers   rain7;
+RainingNumbers   rain8;
+RainingNumbers   rain9;
+RainingNumbers   rain10;
+
 void setup()
 {
-  size(800, 500);
+//  size(800, 500);
+  fullScreen();
   
-  input  = new Input(6);
-  rain1  = new RainingNumbers(75, "mic1:", 10, 200);
-  rain2  = new RainingNumbers(200, "mic2:", 13, 200);
-  rain3  = new RainingNumbers(350, "mic3:", 11, 200);
-  rain4  = new RainingNumbers(450, "mic4:", 11, 200);
+  int  spacing  = width / 10;
+  
+  input  = new Input(14);
+  rain1  = new RainingNumbers(spacing * 0, "mic1:", 10, 200);
+  rain2  = new RainingNumbers(spacing * 1, "mic2:", 13, 200);
+  rain3  = new RainingNumbers(spacing * 2, "mic3:", 11, 200);
+  rain4  = new RainingNumbers(spacing * 3, "mic4:", 11, 200);
+  rain5  = new RainingNumbers(spacing * 4, "mic5:", 10, 200);
+  rain6  = new RainingNumbers(spacing * 5, "mic6:", 13, 200);
+  rain7  = new RainingNumbers(spacing * 6, "mic7:", 11, 200);
+  rain8  = new RainingNumbers(spacing * 7, "mic8:", 11, 200);
+  rain9  = new RainingNumbers(spacing * 8, "mic9:", 11, 200);
+  rain10  = new RainingNumbers(spacing * 9, "mic10:", 11, 200);
 //  background(amplitudeRain.background[0], amplitudeRain.background[1], amplitudeRain.background[2]);
   background(rain1.backgroundColor);
   
@@ -38,8 +54,14 @@ void setup()
 
 void draw()
 {
-  rain1.rain(input.getAdjustedFundAsHz(1));
+  rain1.rain(input.getAmplitude(1));
   rain2.rain(input.getAmplitude(2));
-  rain3.rain(input.getAdjustedFundAsHz(3));
+  rain3.rain(input.getAmplitude(3));
   rain4.rain(input.getAmplitude(4));
+  rain5.rain(input.getAmplitude(9));
+  rain6.rain(input.getAmplitude(10));
+  rain7.rain(input.getAmplitude(11));
+  rain8.rain(input.getAmplitude(12));
+  rain9.rain(input.getAmplitude(13));
+  rain10.rain(input.getAmplitude(14));
 } // draw
