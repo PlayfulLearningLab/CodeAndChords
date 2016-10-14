@@ -18,8 +18,8 @@ void setup()
 {
   size(400, 400);
   
-  input  = new Input(4);
-//input  = new Input();
+//  input  = new Input(4);
+input  = new Input();
   wide   = 4;
   high   = 4;
 } // setup()
@@ -29,7 +29,7 @@ void draw()
   background(100);
   color  curColor;
   
-  for(int i = 1; i < input.getNumInputs(); i++)
+  for(int i = 1; i < input.getNumInputs() + 1; i++)
   {
     curColor  = color(i * 18, i * 10, i * 18);
     fill(curColor);
