@@ -21,8 +21,6 @@ class Input
   Ignore this NB!!
   Notate bene: inputNum passed to constructor must be 4 greater
   than the actual desired number of inputs.
-  
-   ** Watch for that NullPointerException -- add a try-catch? **
    
    Emily Meuer
    07/06 Update: works with both the Behringer and Motu interfaces
