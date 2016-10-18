@@ -12,10 +12,10 @@
 MultipleInputs ins;
 
 // Calibrate:
-int  volAdjust             = 20;       // divide amp by this.
+int  volAdjust             = 20;      // divide amp by this.
 float speed                = 2;       // divide amp by this to get a ball move speed.
 float amplify              = 200;     // multiply amp by this to slow the ball speed.
-InputPitch  whichInputMovesBalls;        // this line moves the balls in the background.
+InputPitch  whichInputMovesBalls;     // this line moves the balls in the background.
 int heightAdjust           = 2;       // balls jump higher
 
 int stackheight            = 15;       //easily adjusting number of stacks for bars

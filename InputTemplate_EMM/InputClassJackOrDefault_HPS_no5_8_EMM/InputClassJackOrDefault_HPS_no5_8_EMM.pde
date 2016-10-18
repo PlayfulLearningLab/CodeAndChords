@@ -24,6 +24,7 @@ class Input
    - constructor adds 4 to numInputs;
    - getNumInputs() subtracts 4 before returning it;
    - getters add to every inputNum > 4 before accessing the arrays.
+   - add 4 to numInputs when initializing the AudioContext in the Input(int) constructor.
   
   10/05/2016
   Using the Harmonic Product Spectrum to better locate the pitch.
@@ -73,13 +74,13 @@ class Input
 //  int                    waitUntil;            // number of milliseconds to wait before checking for another key 
   
   /**
-   *  Creates an Input object connected to Jack, with the given number of inputs.
+   *  Creates an Input object connected to Jack, with the given number of inputs + 4, to sip lines 5-8 later.
    *
    *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
    */
   Input(int numInputs)
   {
-      this(numInputs, new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+      this(numInputs, new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs + 4, numInputs + 4)));
   } // constructor - int, AudioContext
   
   /**

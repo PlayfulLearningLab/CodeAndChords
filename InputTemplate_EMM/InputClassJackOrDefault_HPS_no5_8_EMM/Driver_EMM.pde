@@ -19,11 +19,11 @@ void setup()
   size(400, 400);
   
 //  input  = new Input(4);
-input  = new Input();
+input  = new Input(6);
   wide   = 4;
   high   = 4;
   
-  println("input.getAdjustedFund(1) = " + input.getAdjustedFund(1));
+  println("input.getNumInputs() = " + input.getNumInputs());
 } // setup()
 
 void draw()
@@ -31,10 +31,14 @@ void draw()
   background(100);
   color  curColor;
   
+  println("input.getAmplitude(6) = " + input.getAmplitude(6));
+  
   for(int i = 1; i < input.getNumInputs() + 1; i++)
   {
     curColor  = color(i * 18, i * 10, i * 18);
     fill(curColor);
+    
+//    println("input.getAmplitude(" + i + ") = " + input.getAmplitude(i));
     
 //    println("input.getAmplitude(" + i + ") = " + input.getAmplitude(i));
     if(input.getAmplitude(i) > 3.5)
