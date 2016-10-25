@@ -49,7 +49,7 @@ public abstract class Scene
    */
   void pitchColor() {
     red   = Math.min(255 * (input.getAverageFund(1, this.tenorCutoff - 1) / highPitch), 255);
-    blue  = Math.min(255 * (input.getAverageFund(this.tenorCutoff, input.numInputs) / highPitch), 255);
+    blue  = Math.min(255 * (input.getAverageFund(this.tenorCutoff, input.getNumInputs()) / highPitch), 255);
   } // pitchColor
 
   /**

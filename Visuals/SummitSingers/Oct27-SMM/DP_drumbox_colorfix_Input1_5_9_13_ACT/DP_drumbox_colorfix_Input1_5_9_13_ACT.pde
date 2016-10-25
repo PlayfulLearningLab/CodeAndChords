@@ -119,8 +119,8 @@ void draw()
     //DRUM BOX
     // will be hooked to makey makey, so that hitting the drum
     // lights the rectangle around the screen.
-//    if (keyPressed)
-    if(myIns.getAmplitude(14) > 100)
+//    if(myIns.getAmplitude(14) > 100)
+    if (keyPressed)
     {
       stroke(255); 
       fill(255);

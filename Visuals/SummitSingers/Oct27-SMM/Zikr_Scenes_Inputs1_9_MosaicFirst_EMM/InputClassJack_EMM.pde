@@ -18,6 +18,8 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*
+  10/24/2016: Skipping input lines 5-8.
+  
   Ignore this NB!!
   Notate bene: inputNum passed to constructor must be 4 greater
   than the actual desired number of inputs.
@@ -61,8 +63,8 @@ class Input
 
   Input(int numInputs)
   {
-    this.numInputs  = numInputs;
-    //this.numInputs  = numInputs + 4;
+//    this.numInputs  = numInputs;
+    this.numInputs  = numInputs + 4;
     this.ac = new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs));
 
     // creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
@@ -240,12 +242,16 @@ class Input
    */
   float  getAdjustedFund(int inputNum) {
     inputNumErrorCheck(inputNum, "getAdjustedFund(int)");
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+
+    if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
+
     setFund();
+    if(inputNum > this.adjustedFundArray.length) {
+      IllegalArgumentException iae = new IllegalArgumentException("getAdjustedFund(" + inputNum + ")");
+      iae.printStackTrace();
+    } // if
     return this.adjustedFundArray[inputNum - 1];
   } // getAdjustedFund()
 
@@ -255,11 +261,9 @@ class Input
   float  getAdjustedFundAsHz(int inputNum) {
     inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
 
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
 
     setFund();
     return this.adjustedFundArray[inputNum - 1];
@@ -272,11 +276,9 @@ class Input
   float  getAdjustedFundAsMidiNote(int inputNum) {
     inputNumErrorCheck(inputNum, "getAdjustedFundAsMidiNote(int)");
 
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
 
     setFund();
     return Pitch.ftom(this.adjustedFundArray[inputNum - 1]);
@@ -288,11 +290,9 @@ class Input
   float  getFund(int inputNum) {
     inputNumErrorCheck(inputNum, "getFund(int)");
 
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
 
     setFund();
     return this.fundamentalArray[inputNum - 1];
@@ -304,11 +304,9 @@ class Input
   float getFundAsHz(int inputNum) {
     inputNumErrorCheck(inputNum, "getFundAsHz(int)");
 
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
 
     setFund();
     return this.fundamentalArray[inputNum - 1];
@@ -320,17 +318,16 @@ class Input
   float  getFundAsMidiNote(int inputNum) {
     inputNumErrorCheck(inputNum, "getFundAsMidiNote(int)");
 
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
 
     setFund();
     return Pitch.ftom(this.fundamentalArray[inputNum - 1]);
   } // getAdjustedFund()
 
   /**
+   *  Does not adjust for ins 5-8, so bass signal is not as strong as it might be.
    *  @return  float  The average pitch of the inputs whose numbers are given in the int[] param.
    */
   float  getAverageFund(int[] inputsToAverage)
@@ -373,6 +370,7 @@ class Input
   } // getAverageFund
 
   /**
+   *  Does not adjust for ins 5-8, so bass signal is not as strong as it might be.
    *  @return  float  The average pitch of the inputs whose numbers are given in the int[] param.
    */
   float  getAverageAmp(int[] inputsToAverage)
@@ -419,11 +417,9 @@ class Input
   float getAmplitude(int inputNum) {
     inputNumErrorCheck(inputNum, "getAmplitude(int)");
 
-/*
-    if (inputNum > 4 && inputNum < this.numInputs - 4) {
+    if (inputNum > 4) {
       inputNum  = inputNum + 4;
     } // if
-*/
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude
