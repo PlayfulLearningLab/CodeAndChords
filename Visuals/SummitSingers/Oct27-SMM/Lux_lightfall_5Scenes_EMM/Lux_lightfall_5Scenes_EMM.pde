@@ -25,12 +25,22 @@ int    sceneTwoTenorAmpAdjust     = 10;   // multiply
 float  sceneThreeTenorAmpAdjust   = 1;      // divide by this
 int    sceneFiveTenorAmpAdjust    = 50; // divide
 int    sceneSixTenorAmpAdjust     = 1;    // divide
+
+int    sceneOneAllAmpAdjust        = 1;  // multiply
+int    sceneTwoAllAmpAdjust        = 1;  // multiply
+float    sceneThreeAllAmpAdjust      = 0.01;  // multiply
+float    sceneFourAllAmpAdjust       = 0.1;  // multiply
+int    sceneFiveAllAmpAdjust       = 10;  // multiply
+
+int    sceneTwoAllFundAdjust      = 1;    // multiply
+int    sceneThreeAllFundAdjust    = 1;    // multiply
+int    sceneFourAllFundAdjust      = 1;    // multiply
 int    sceneSixAllFundAdjust      = 5000; // multiply by this number.
 
 Input  myInput;
 PImage  img;
 Candle myCandle[];
-int orbs = 9; //number of glowing orbs
+int orbs; //number of glowing orbs
 int scene = 0;
 //int scene = -1;
 int waitUntil;
@@ -40,172 +50,192 @@ void setup()
 {
   fullScreen();
 
- //   myInput = new Input(9);
-  myInput  = new Input(13);
+  //   myInput = new Input(9);
+  myInput  = new Input(12);
+  orbs     = 12;      // number of orbs
   myCandle = new Candle[orbs];
+  
+  println("setup(): myCandle.length = " + myCandle.length);
+  
+  int  spacing  = width / (myCandle.length + 1);
 
   // Tenor soloist:
-  myCandle[3] = new Candle(100, 70, 30, width/10*9, 1); //yellow/gold
-  // Other voices:
-  myCandle[0] = new Candle(100, 60, 60, width/10*1, 1); //rose
-  myCandle[1] = new Candle(100, 50, 30, width/10*2, 1); //red
-  myCandle[2] = new Candle(90, 90, 50, width/10*3, 1);  //orange
-  //  myCandle[4] = new Candle(50, 100, 70, width/10*4, 1); //light green
-  myCandle[4] = new Candle(20, 90, 80, width/10*5, 1); //forest green
-  myCandle[5] = new Candle(20, 40, 100, width/10*6, 1); //periwinkle
-  myCandle[6] = new Candle(80, 50, 80, width/10*7, 1); //violet
-  myCandle[7] = new Candle(100, 20, 90, width/10*8, 1); //fuchsia
-  myCandle[8] = new Candle(255, 130, 180, width/10*8, 1); //pink
+  myCandle[3] = new Candle(100, 70, 30, spacing*9, 1); //yellow/gold
+  // Other voices (added some for a total of 12 for Summit Singers):
+  myCandle[0] = new Candle(100, 60, 60, spacing*1, 1); //rose
+  myCandle[1] = new Candle(100, 50, 30, spacing*2, 1); //red
+  myCandle[2] = new Candle(90, 90, 50, spacing*3, 1);  //orange
+  myCandle[4] = new Candle(90, 100, 100, spacing*5, 1);  //     -- added
+  myCandle[5] = new Candle(50, 100, 70, spacing*6, 1); //light green -- added by uncommenting
+  myCandle[6] = new Candle(20, 90, 80, spacing*7, 1); //forest green
+  myCandle[7] = new Candle(20, 40, 100, spacing*8, 1); //periwinkle
+  myCandle[8] = new Candle(80, 50, 80, spacing*9, 1); //violet
+  myCandle[9] = new Candle(100, 20, 90, spacing*10, 1); //fuchsia
+  myCandle[10] = new Candle(150, 130, 180, spacing*11, 1); // -- added
+  myCandle[11] = new Candle(255, 130, 180, spacing*12, 1); //pink
+
   // Candle(redTint, greenTint, blueTint, xLocation for even spacing, sizeAdjustment);
 }
 
 void draw() {
   try
   {
-  background(0);
-  
-//  println("myInput.getAmplitude(6) = " + myInput.getAmplitude(6));
+    background(0);
 
-  // SETS THE SCENE /////////////////////////////////////////
-  // sets which picture goes with each scene
-  if (keyPressed && millis() > waitUntil) {
-    scene ++;
-    //    scene = ((scene + 1) % 6) + 1;
+    //  println("myInput.getAmplitude(6) = " + myInput.getAmplitude(6));
 
-    println("scene = " + scene);
+    // SETS THE SCENE /////////////////////////////////////////
+    // sets which picture goes with each scene
+    if (keyPressed && millis() > waitUntil) {
+      scene ++;
+      //    scene = ((scene + 1) % 6) + 1;
 
-    if (scene == 1 || scene == 2) {
-      img = loadImage("starryNight.jpg");
-      img.resize(width, height);
-      img.loadPixels();
-      loadPixels();
-    }
-    if (scene == 3) {
-      img = loadImage("angels.jpg");
-      img.resize(width, height);
-      img.loadPixels();
-      loadPixels();
-    }
-    if (scene == 4) {
-      img = loadImage("angel1.jpg");
-      img.resize(width, height);
-      img.loadPixels();
-      loadPixels();
-    }
-    if (scene == 5) {
-      img = loadImage("angel2.jpg");
-      img.resize(width, height);
-      img.loadPixels();
-      loadPixels();
-    }
-    /*
+      println("scene = " + scene);
+
+      if (scene == 1 || scene == 2) {
+        img = loadImage("starryNight.jpg");
+        img.resize(width, height);
+        img.loadPixels();
+        loadPixels();
+      }
+      if (scene == 3) {
+        img = loadImage("angels.jpg");
+        img.resize(width, height);
+        img.loadPixels();
+        loadPixels();
+      }
+      if (scene == 4) {
+        img = loadImage("angel1.jpg");
+        img.resize(width, height);
+        img.loadPixels();
+        loadPixels();
+      }
+      if (scene == 5) {
+        img = loadImage("angel2.jpg");
+        img.resize(width, height);
+        img.loadPixels();
+        loadPixels();
+      }
+      /*
     if (scene == 6) {
-      img = loadImage("holyFamily.jpg");
-      img.resize(width, height);
-      img.loadPixels();
-      loadPixels();
-    }
-*/
-    if (scene > 5) {
-      scene = 1;
-    }
+       img = loadImage("holyFamily.jpg");
+       img.resize(width, height);
+       img.loadPixels();
+       loadPixels();
+       }
+       */
+      if (scene > 5) {
+        scene = 1;
+      }
 
-    waitUntil = millis()+500;
-    //    println(scene);
-  } // if (keyPressed)
+      waitUntil = millis()+500;
+      //    println(scene);
+    } // if (keyPressed)
 
-  // SCENES ////////////////////////////////////////////////
+    // SCENES ////////////////////////////////////////////////
 
-  if (scene == 1) { //start of piece, measure 1
-    // tenor solo:
-    myCandle[3].freqPoints(myInput.getAdjustedFundAsHz(4), myInput.getAmplitude(4) / sceneOneTenorAmpAdjust); //tenor solo controlls this
- 
-    // other voices:
-    for (int i = 0; i < 9; i++)
-    {
-      if(i == 3)  {  i = i + 1;  }
-      
-        if (myInput.getAmplitude(i + 1) > fallThreshold) {
+    if (scene == 1) { //start of piece, measure 1
+      // tenor solo:
+      myCandle[3].freqPoints(myInput.getAdjustedFundAsHz(4), myInput.getAmplitude(4) / sceneOneTenorAmpAdjust); //tenor solo controlls this
+
+      // other voices:
+      for (int i = 0; i < myCandle.length; i++)
+      {
+        if (i == 3) {  
+          i = i + 1;
+        }
+
+        if (myInput.getAmplitude(i + 1) * sceneOneAllAmpAdjust > fallThreshold) {
           myCandle[i].fall();
         }
-        if (myInput.getAmplitude(i + 1) < fallThreshold) {
+        if (myInput.getAmplitude(i + 1) * sceneOneAllAmpAdjust < fallThreshold) {
           myCandle[i].resetYDrop();
         }
-    } // for
+      } // for
 
-    colorLightfall(true, 60);
+      colorLightfall(true, 60);
+    }
+
+    if (scene == 2) { //at first "calida", measure 9
+      myCandle[3].highlight(myInput.getAmplitude(4) * sceneTwoTenorAmpAdjust, width*0.6, height*0.15); //tenor1 controls this
+
+
+      for (int i = 1; i < myCandle.length; i++)
+      {
+        if (i == 3) {  
+          i = i + 1;
+        }
+
+        println("i = " + i);
+        myCandle[i].circle(myInput.getAmplitude(i + 1) * sceneTwoAllAmpAdjust, myInput.getAdjustedFundAsHz(i + 1) * sceneTwoAllFundAdjust, width*0.6, height*0.2);
+      } // for
+
+      colorLightfall(false, 60);
+    }
+
+    if (scene == 3) { //at first "pura", measure 17
+      myCandle[3].highlight(myInput.getAmplitude(4) / sceneThreeTenorAmpAdjust, width*0.45, height*0.3); //tenor1 still controls this
+
+      for (int i = 1; i < myCandle.length; i++)
+      {
+        if (i == 3) {  
+          i = i + 1;
+        }
+
+        myCandle[i].hover(myInput.getAdjustedFundAsHz(i + 1) * sceneThreeAllFundAdjust, myInput.getAmplitude(i + 1) * sceneThreeAllAmpAdjust);
+      } // for
+
+      colorLightfall(true, 50);
+    }
+
+    if (scene == 4) { //at first "canunt", measure 24
+      for (int i = 0; i < myCandle.length; i++)
+      {
+        myCandle[i].hover(myInput.getAdjustedFundAsHz(i + 1) * sceneFourAllFundAdjust, myInput.getAmplitude(i + 1) * sceneFourAllAmpAdjust);
+      } // for
+
+      colorLightfall(true, 50);
+    }
+
+    if (scene == 5) { //right after the grand pause after "angeli", measure 30
+      myCandle[3].freqPoints(myInput.getAdjustedFundAsHz(4), myInput.getAmplitude(4) / sceneFiveTenorAmpAdjust); //tenor solo controls this
+
+      for (int i = 1; i < myCandle.length; i++)
+      {
+        if (i == 3) {  
+          i = i + 1;
+        }
+
+        if (myInput.getAmplitude(i + 1) * sceneFiveAllAmpAdjust > fallThreshold) {
+          myCandle[i].fall();
+        }
+        if (myInput.getAmplitude(i + 1) * sceneFiveAllAmpAdjust < fallThreshold) {
+          myCandle[i].resetYDrop();
+        }
+      } // for
+
+      colorLightfall(true, 50);
+    }
+
+    if (scene == 6) { // at "natum" of lower voices (not tenor soli), measure 38
+      myCandle[3].highlight(myInput.getAmplitude(4) / sceneSixTenorAmpAdjust, width*0.15, height*0.8); //tenor soli control this
+      myCandle[1].highlight(myInput.getAmplitude(2) / sceneSixTenorAmpAdjust, width*0.15, height*0.8); //tenor soli control this
+
+      for (int i = 2; i < myCandle.length; i++)
+      {
+        if (i == 1 || i == 3) {  
+          i = i + 1;
+        }
+        //      if(i == 3)  {  i = i + 1;  }
+
+        myCandle[i].circle(myInput.getAmplitude(i + 1), myInput.getAdjustedFundAsHz(i + 1), width*0.2, height*0.6);
+      } // for
+
+      colorLightfall(false, 60);
+    }
   }
-
-  if (scene == 2) { //at first "calida", measure 9
-    myCandle[3].highlight(myInput.getAmplitude(4) * sceneTwoTenorAmpAdjust, width*0.6, height*0.15); //tenor1 controls this
-
-
-    for (int i = 1; i < 9; i++)
-    {
-      if(i == 3)  {  i = i + 1;  }
-      
-      println("i = " + i);
-      myCandle[i].circle(myInput.getAmplitude(i + 1), myInput.getAdjustedFundAsHz(i + 1), width*0.6, height*0.2);
-    } // for
-
-    colorLightfall(false, 60);
+  catch(NullPointerException npe) {
   }
-
-  if (scene == 3) { //at first "pura", measure 17
-    myCandle[3].highlight(myInput.getAmplitude(4) / sceneThreeTenorAmpAdjust, width*0.45, height*0.3); //tenor1 still controls this
-
-    for (int i = 1; i < 9; i++)
-    {
-      if(i == 3)  {  i = i + 1;  }
-      
-      myCandle[i].hover(myInput.getAdjustedFundAsHz(i + 1), myInput.getAmplitude(i + 1));
-    } // for
-
-    colorLightfall(true, 50);
-  }
-
-  if (scene == 4) { //at first "canunt", measure 24
-    for (int i = 0; i < 9; i++)
-    {
-      myCandle[i].hover(myInput.getAdjustedFundAsHz(i + 1), myInput.getAmplitude(i + 1));
-    } // for
-
-    colorLightfall(true, 50);
-  }
-
-  if (scene == 5) { //right after the grand pause after "angeli", measure 30
-    myCandle[3].freqPoints(myInput.getAdjustedFundAsHz(4), myInput.getAmplitude(4) / sceneFiveTenorAmpAdjust); //tenor solo controls this
-
-    for (int i = 1; i < 9; i++)
-    {
-      if(i == 3)  {  i = i + 1;  }
-      
-      if (myInput.getAmplitude(i + 1) > fallThreshold) {
-        myCandle[i].fall();
-      }
-      if (myInput.getAmplitude(i + 1) < fallThreshold) {
-        myCandle[i].resetYDrop();
-      }
-    } // for
-
-    colorLightfall(true, 50);
-  }
-
-  if (scene == 6) { // at "natum" of lower voices (not tenor soli), measure 38
-    myCandle[3].highlight(myInput.getAmplitude(4) / sceneSixTenorAmpAdjust, width*0.15, height*0.8); //tenor soli control this
-    myCandle[1].highlight(myInput.getAmplitude(2) / sceneSixTenorAmpAdjust, width*0.15, height*0.8); //tenor soli control this
-
-    for (int i = 2; i < 9; i++)
-    {
-      if(i == 1 || i == 3)  {  i = i + 1;  }
-//      if(i == 3)  {  i = i + 1;  }
-      
-      myCandle[i].circle(myInput.getAmplitude(i + 1), myInput.getAdjustedFundAsHz(i + 1), width*0.2, height*0.6);
-    } // for
-
-    colorLightfall(false, 60);
-  }
-}catch(NullPointerException npe)  {}
 }// draw
 
 
