@@ -175,7 +175,7 @@ void draw()
     saturation = saturationMax;
   } // else - saturation
 
-
+  println("input.getAdjustedFund() = " + input.getAdjustedFund());
   //  newHuePos  = round(curNote % 12);
   // set goalHue to the color indicated by the current pitch:
 
@@ -209,7 +209,7 @@ void draw()
   bpm      = round(map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, bpmMin, bpmMax));
 //  println("scrollbarPos = " + scrollbarPos + "; scrollbar.sposMin = " + scrollbar.sposMin + "; scrollbar.sposMax = " + scrollbar.sposMax);
 //  println("  scrollbar.ratio = " + scrollbar.ratio);
-  println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
+//  println("bpm = " + bpm + "; bpmMin = " + bpmMin + "; bpmMax = " + bpmMax);
 
   label.setLabel("BPM: " + bpm);
 } // draw()

@@ -89,7 +89,7 @@ void setup()
    } // for
    */
 
-  input        = new Input();
+  input        = new Input(1);
   threshold    = 15;
 
   noStroke();

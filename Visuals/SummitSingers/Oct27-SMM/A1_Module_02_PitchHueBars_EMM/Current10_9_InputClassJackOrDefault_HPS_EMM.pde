@@ -633,6 +633,24 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
       hps[i]  = hps[i] + powerSpectrum[i*4];
     } // for
     
+    // 5:
+    for(i = 0; (i * 5) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*5];
+    } // for
+    
+    // 6:
+    for(i = 0; (i * 6) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*6];
+    } // for
+    
+    // 7:
+    for(i = 0; (i * 7) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*7];
+    } // for
+    
     for (int band = FIRSTBAND; band < hps.length; band++) {
       double pwr = hps[band];
       if (pwr > pmax) {
