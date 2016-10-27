@@ -414,7 +414,8 @@ class Input
 
   /**
    *  Calculates the average frequency of multiple input lines;
-   *  no changes were made in removing lines 5-8.
+   *  no changes were made in removing lines 5-8, but this should be no problem,
+   *  since it uses getAdjustedFund(), which skips those lines.
    *
    *  @param   inputsToAverage  an int[] with the numbers of each of the lines whose frequency is to be averaged.
    *
