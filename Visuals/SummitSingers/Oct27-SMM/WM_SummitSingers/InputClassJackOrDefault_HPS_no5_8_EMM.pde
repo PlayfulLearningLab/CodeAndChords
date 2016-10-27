@@ -299,12 +299,9 @@ class Input
     }
     
     inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
-    
-    return getAdjustedFund(inputNum);
-/*
+
     setFund();
     return this.adjustedFundArray[inputNum - 1];
-    */
   } // getAdjustedFundAsHz()
 
   /**
@@ -348,12 +345,9 @@ class Input
     }
     
     inputNumErrorCheck(inputNum, "getFundAsHz(int)");
-    
-    return getFund(inputNum);
-/*
+
     setFund();
     return this.fundamentalArray[inputNum - 1];
-    */
   } // getFundAsHz()
 
   /**
@@ -536,6 +530,11 @@ class Input
    */
   float getAmplitude(int inputNum) {
     inputNumErrorCheck(inputNum, "getAmplitude(int)");
+    
+    if(inputNum > 4)
+    {
+      inputNum = inputNum + 4;
+    } // if
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude
