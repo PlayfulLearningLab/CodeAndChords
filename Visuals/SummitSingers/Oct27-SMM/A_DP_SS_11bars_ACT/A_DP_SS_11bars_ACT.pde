@@ -12,7 +12,9 @@ int  volAdjust             = 20;  // divide amp by this.
 int  volAdjust1            = 3;    // multiply
 float speed                = 10;   // divide amp by this to get a ball move speed.
 float amplify              = 0.05;    // multiply amp by this to slow the ball speed.
-int  whichInputMovesBalls  = 16;  // this line moves the balls in the background.
+int  whichInputMovesBalls  = 12;  // this line moves the balls in the background.
+int  drumBoxInput          = 12;
+int  drumBoxThreshold      = 75;
 
 int stackheight            = 15;  //easily adjusting number of stacks for bars
 
@@ -73,8 +75,7 @@ void setup()
 {
   fullScreen();
 
-  // Current janky fix: parameter must be 4 > actually desired num of inputs.
-  this.myIns = new Input(16);
+  this.myIns = new Input(12);
 
   // setup for background balls:
   myLeadBall = new LeadBall();
@@ -122,25 +123,25 @@ void draw()
       orangeVol  = myIns.getAmplitude(2) / volAdjust;
       yellowVol  = myIns.getAmplitude(3) / volAdjust;
       lightGreenVol  = myIns.getAmplitude(4) / volAdjust;
-      forestGreenVol  = myIns.getAmplitude(9) / volAdjust;
-      cyanVol = myIns.getAmplitude(10) / volAdjust;
-      periwinkleVol  = myIns.getAmplitude(11) / volAdjust;
-      indigoVol = myIns.getAmplitude(12) / volAdjust;
-      purpleVol  = myIns.getAmplitude(13) / volAdjust;
-      fuchsiaVol  = myIns.getAmplitude(14) / volAdjust;
-      pinkVol  = myIns.getAmplitude(15) / volAdjust;
+      forestGreenVol  = myIns.getAmplitude(5) / volAdjust;
+      cyanVol = myIns.getAmplitude(6) / volAdjust;
+      periwinkleVol  = myIns.getAmplitude(7) / volAdjust;
+      indigoVol = myIns.getAmplitude(8) / volAdjust;
+      purpleVol  = myIns.getAmplitude(9) / volAdjust;
+      fuchsiaVol  = myIns.getAmplitude(10) / volAdjust;
+      pinkVol  = myIns.getAmplitude(11) / volAdjust;
 
       redPitch  = myIns.getAdjustedFund(1);
       orangePitch  = myIns.getAdjustedFund(2);
       yellowPitch  = myIns.getAdjustedFund(3);
       lightGreenPitch  = myIns.getAdjustedFund(4);
-      forestGreenPitch  = myIns.getAdjustedFund(9);
-      cyanPitch = myIns.getAdjustedFund(10);
-      periwinklePitch  = myIns.getAdjustedFund(11);
-      indigoPitch = myIns.getAdjustedFund(12);
-      purplePitch  = myIns.getAdjustedFund(13);
-      fuchsiaPitch  = myIns.getAdjustedFund(14);
-      pinkPitch  = myIns.getAdjustedFund(15);
+      forestGreenPitch  = myIns.getAdjustedFund(5);
+      cyanPitch = myIns.getAdjustedFund(6);
+      periwinklePitch  = myIns.getAdjustedFund(7);
+      indigoPitch = myIns.getAdjustedFund(8);
+      purplePitch  = myIns.getAdjustedFund(9);
+      fuchsiaPitch  = myIns.getAdjustedFund(10);
+      pinkPitch  = myIns.getAdjustedFund(11);
 
     //1 RED
     stroke(255);
@@ -346,7 +347,7 @@ void draw()
       rect(halfwplus+4*space+3*w, refy-(space+h)*j, halfwplus+4*space+4*w, (refy-h)-(space+h)*j);
       old10=old10+pitch10/(vol10+1);
     }
-    oldb1=pitchb1/(volb1+1);
+    old10=pitch10/(vol10+1);
     
     //11 PINK
     stroke(255);
@@ -375,7 +376,7 @@ void draw()
       //DRUM BOX
     // will be hooked to makey makey, so that hitting the drum
     // lights the rectangle around the screen.
-    if(myIns.getAmplitude(16) > 100)
+    if(myIns.getAmplitude(drumBoxInput) > drumBoxThreshold)
 //    if (keyPressed)
     {
       stroke(255); 
