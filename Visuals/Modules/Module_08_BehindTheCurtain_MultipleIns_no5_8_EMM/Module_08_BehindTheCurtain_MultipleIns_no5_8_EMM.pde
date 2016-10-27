@@ -37,14 +37,14 @@ void setup()
   
   int[]  tailLengths  = {  10, 14, 12  };
   
-  input  = new Input(14);
+  input  = new Input(12);
   
   int  spacing  = width / input.getNumInputs();
   rains  = new RainingNumbers[input.getNumInputs()];
   
   for(int i = 0; i < input.getNumInputs(); i++)
   {
-    rains[i] = new RainingNumbers(spacing * i, ("mic" + i), tailLengths[i % tailLengths.length]);
+    rains[i] = new RainingNumbers(spacing * i, ("mic" + (i+1)), tailLengths[i % tailLengths.length]);
   } // for
 
   /*
@@ -69,7 +69,7 @@ void draw()
 {
   for(int i = 0; i < rains.length; i++)
   {
-    rains[i].rain(input.getAmplitude(i + 1));
+    rains[i].rain(input.getAdjustedFund(i + 1));
   } // for
   
   /*

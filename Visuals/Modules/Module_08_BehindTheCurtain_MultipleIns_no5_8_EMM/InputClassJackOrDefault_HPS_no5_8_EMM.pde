@@ -107,7 +107,7 @@ class Input
     for (int i = 0; i < this.numInputs; i++)
     {
       inputNums[i]  = i + 1;
-//      println("inputNums[" + i + "] = " + inputNums[i]);
+      println("inputNums[" + i + "] = " + inputNums[i]);
     } // for
 
     // get the audio lines from the AudioContext:
@@ -300,9 +300,7 @@ class Input
     
     inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
     
-    // used to call getAdjustedFund(), but now that would result in an additional 4 being added to the inputNum.
-    setFund();
-    return this.adjustedFundArray[inputNum - 1];
+    return getAdjustedFund(inputNum);
 /*
     setFund();
     return this.adjustedFundArray[inputNum - 1];
@@ -351,8 +349,11 @@ class Input
     
     inputNumErrorCheck(inputNum, "getFundAsHz(int)");
     
+    return getFund(inputNum);
+/*
     setFund();
     return this.fundamentalArray[inputNum - 1];
+    */
   } // getFundAsHz()
 
   /**
