@@ -107,4 +107,4 @@ void drawHPSSecondHighest(Input input)
     
     stroke(50, 50, 255);
     rect(secondMaxBin * 10, height, 1, -freqEMM.hps[secondMaxBin]);
-} // drawHPSSecondHighest
+} // void
