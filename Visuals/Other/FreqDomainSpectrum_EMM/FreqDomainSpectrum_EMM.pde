@@ -1,60 +1,30 @@
 /*
-  09/24/2016
+  10/27/2016
   Emily Meuer
   
-  Mathy, Matrix-inspired raining numbers.
-  
-  TODO:
-   - Fix pile-up at the top of the list
-   - Get average freq. over time, not just whatever second happens.
-   - Silence holds the last number; probably don't want that?
-   
-   - Plotting points
-   
-   thoughts: maybe we don't want to start over until they're all gone?
-             or start another column next to that, and start back at the first one when the second one finishes?
+  Drawing the Frequency-Domain spectrum to identify problems with pitch detection.
 */
 
-Input           input;
-RainingNumbers  amplitudeRain;
-RainingNumbers   frequencyRain;
-FrequencyEMM    freqEMM;
-
-int  maxBin;
-
-void settings()
-{
-  size(800, 500);
-} // settings
+Input  input;
+int    maxbin;
 
 void setup()
-{ 
-  stroke(255);
+{
+  size(800, 900);
   
-  input  = new Input();
-//  freqEMM = input.frequencyArray[0];
-  maxBin  = 0;
+  input  = new Input(1);
   
-  amplitudeRain  = new RainingNumbers(width / 3, "Amplitude:", 10, 100);
-  frequencyRain  = new RainingNumbers(2 * width / 3, "Frequency:", 13, 200);
-  background(amplitudeRain.backgroundColor);
-  
-  textAlign(LEFT);
+  while(millis() < 1000) {}
 } // setup
 
 void draw()
 {
-  background(0);
-//  amplitudeRain.rain(input.getAmplitude());
-  frequencyRain.rain(input.getAdjustedFundAsHz());
-  
-  println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
-
-//  drawHPSSecondHighest(input);
+  drawHPS(input);
 } // draw
 
 void drawHPS(Input input)
 {
+  background(200);
   int  maxBin  = 0;
   
   FrequencyEMM freqEMM  = input.frequencyArray[0];
@@ -92,7 +62,7 @@ void drawHPSSecondHighest(Input input)
   } // for
   
   stroke(150, 50, 150);
-  rect( freqEMM.maxbin*10, height, 1, - freqEMM.hps[maxBin] );
+  rect( freqEMM.hps[maxBin]*10, height, 1, - freqEMM.hps[maxBin] );
     
   double  j;
     // find second peak:

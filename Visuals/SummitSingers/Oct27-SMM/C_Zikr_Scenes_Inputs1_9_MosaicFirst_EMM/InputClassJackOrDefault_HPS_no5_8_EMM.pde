@@ -107,7 +107,7 @@ class Input
     for (int i = 0; i < this.numInputs; i++)
     {
       inputNums[i]  = i + 1;
-      println("inputNums[" + i + "] = " + inputNums[i]);
+//      println("inputNums[" + i + "] = " + inputNums[i]);
     } // for
 
     // get the audio lines from the AudioContext:
@@ -300,7 +300,9 @@ class Input
     
     inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
     
-    return getAdjustedFund(inputNum);
+    // used to call getAdjustedFund(), but now that would result in an additional 4 being added to the inputNum.
+    setFund();
+    return this.adjustedFundArray[inputNum - 1];
 /*
     setFund();
     return this.adjustedFundArray[inputNum - 1];
@@ -349,11 +351,8 @@ class Input
     
     inputNumErrorCheck(inputNum, "getFundAsHz(int)");
     
-    return getFund(inputNum);
-/*
     setFund();
     return this.fundamentalArray[inputNum - 1];
-    */
   } // getFundAsHz()
 
   /**
@@ -415,7 +414,8 @@ class Input
 
   /**
    *  Calculates the average frequency of multiple input lines;
-   *  no changes were made in removing lines 5-8.
+   *  no changes were made in removing lines 5-8, but this should be no problem,
+   *  since it uses getAdjustedFund(), which skips those lines.
    *
    *  @param   inputsToAverage  an int[] with the numbers of each of the lines whose frequency is to be averaged.
    *
@@ -536,6 +536,12 @@ class Input
    */
   float getAmplitude(int inputNum) {
     inputNumErrorCheck(inputNum, "getAmplitude(int)");
+    
+    if(inputNum > 4)
+    {
+      inputNum = inputNum + 4;
+    } // if
+    
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude

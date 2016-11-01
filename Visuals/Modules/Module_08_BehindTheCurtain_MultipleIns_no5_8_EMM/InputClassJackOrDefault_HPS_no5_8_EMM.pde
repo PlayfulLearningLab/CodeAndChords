@@ -536,6 +536,12 @@ class Input
    */
   float getAmplitude(int inputNum) {
     inputNumErrorCheck(inputNum, "getAmplitude(int)");
+    
+    if(inputNum > 4)
+    {
+      inputNum = inputNum + 4;
+    } // if
+    
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude

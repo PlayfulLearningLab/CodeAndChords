@@ -89,7 +89,7 @@ void setup()
    } // for
    */
 
-  input        = new Input(1);
+  input        = new Input("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
   threshold    = 15;
 
   noStroke();

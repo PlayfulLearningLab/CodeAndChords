@@ -14,26 +14,30 @@ import beads.Frequency;
 import beads.Pitch;
 import beads.Compressor;
 
-import beads.Sample;
-import beads.SampleManager;
-import beads.SamplePlayer;
-
 import javax.sound.sampled.AudioFormat;
 
 class Input
 {
   /*
-  10/25
-   SamplePlayer plays;
-   To analyze the audio:
-   - pass
-   
+  10/25/2016
+  Added the "WRONG" label in sketch title, but no longer convinced that that is true.
+  
+  10/16/2016
+  Skipping input numbers 5-8, since they are lost when the ADA8200 connects to the FCA1616.
+   - constructor adds 4 to numInputs;
+   - getNumInputs() subtracts 4 before returning it;
+   - getters add to every inputNum > 4 before accessing the arrays.
+   - add 4 to numInputs when initializing the AudioContext in the Input(int) constructor.
+  
+  10/05/2016
+  Using the Harmonic Product Spectrum to better locate the pitch.
+  
    ** As of mid-July, 2016, the following is NOT true:
-   "Notate bene: inputNum passed to constructor must be 4 greater
-   than the actual desired number of inputs."
-   
+    "Notate bene: inputNum passed to constructor must be 4 greater
+    than the actual desired number of inputs."
+  
    ** Watch for that NullPointerException -- add a try-catch? ** 
-   - 8/17: added try/catch
+       - 8/17: added try/catch
    
    (Why doesn't it need jna-jack__.jar in the code folder?  B/c it's in the old one?)
    
@@ -51,14 +55,14 @@ class Input
    - getFund() etc. takes an int parameter specifying which input is in question.
    
    ** If I pass it an AudioContext, do I have to worry about it having the wrong number of inputs or outputs?
-   - an option would be to have them pass the AudioFormat, since that's what has channel nums, ut credo.
+     - an option would be to have them pass the AudioFormat, since that's what has channel nums, ut credo.
    
    */
 
   AudioContext           ac;
   float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
   Compressor             compressor;
-  //  UGen                   inputsUGen;           // initialized with the input from the AudioContext.
+//  UGen                   inputsUGen;           // initialized with the input from the AudioContext.
   UGen[]                 uGenArray;
   Gain                   g;
   Gain                   mute;
@@ -66,24 +70,22 @@ class Input
   FrequencyEMM[]         frequencyArray;       // holds the FrequencyEMM objects connected to each input.
   float[]                fundamentalArray;     // holds the current pitch, in hertz, of each input.
   int                    numInputs;            // number of lines / mics
-  //  float                  pitch;                // 
+//  float                  pitch;                // 
   PowerSpectrum[]        psArray;              // holds the PowerSpectrum objects connected to each input.
-  SamplePlayer           samplePlayer;
-  SampleManager          sampleManager;
   float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
   ShortFrameSegmenter[]  sfsArray;             // holds the ShortFrameSegmenter objects connected to each input.
-  //  int                    waitUntil;            // number of milliseconds to wait before checking for another key 
-
+//  int                    waitUntil;            // number of milliseconds to wait before checking for another key 
+  
   /**
-   *  Creates an Input object connected to Jack, with the given number of inputs.
+   *  Creates an Input object connected to Jack, with the given number of inputs + 4, to sip lines 5-8 later.
    *
    *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
    */
   Input(int numInputs)
   {
-    this(numInputs, new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+      this(numInputs, new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs + 4, numInputs + 4)));
   } // constructor - int, AudioContext
-
+  
   /**
    *  Creates an Input object with the given number of inputs and particular AudioContext.
    *
@@ -92,14 +94,15 @@ class Input
    */
   Input(int numInputs, AudioContext audioContext)
   {
-    if (numInputs < 1) {
+    if(numInputs < 1)  {
       throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
     } // if(numInputs < 1)
-    if (audioContext == null) {
+    if(audioContext == null) {
       throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
     } // if(numInputs < 1)
-
-    this.numInputs  = numInputs;
+      
+//    this.numInputs  = numInputs;
+    this.numInputs  = numInputs + 4;
     this.ac = audioContext;
 
     // creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
@@ -107,10 +110,11 @@ class Input
     for (int i = 0; i < this.numInputs; i++)
     {
       inputNums[i]  = i + 1;
+      println("inputNums[" + i + "] = " + inputNums[i]);
     } // for
 
     // get the audio lines from the AudioContext:
-    //    this.inputsUGen = ac.getAudioInput(inputNums);
+//    this.inputsUGen = ac.getAudioInput(inputNums);
 
     // fill the uGenArray with UGens, each one from a particular line of the AudioContext.
     uGenArray  = new UGen[this.numInputs];
@@ -120,186 +124,15 @@ class Input
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
 
-    initInput(uGenArray);
-
     /*
     Default compressor values:
-     threshold - .5
-     attack - 1
-     decay - .5
-     knee - .5
-     ratio - 2
-     side-chain - the input audio
-     */
-    // Create a compressor w/standard values:
-    /*    this.compressor  = new Compressor(this.ac, 1);
-     this.compressor.setRatio(8.0);
-     
-     // Create a Gain, add the Compressor to the Gain,
-     // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
-     g = new Gain(this.ac, 1, 0.5);
-     g.addInput(this.compressor);
-     
-     // Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
-     for (int i = 0; i < this.numInputs; i++)
-     {
-     g.addInput(uGenArray[i]);
-     } // for
-     ac.out.addInput(g);
-     
-     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
-     // this creates an array of SFS's and adds the UGens to them:
-     this.sfsArray  = new ShortFrameSegmenter[this.numInputs];
-     for (int i = 0; i < this.sfsArray.length; i++)
-     {
-     this.sfsArray[i] = new ShortFrameSegmenter(ac);
-     while (this.sfsArray[i] == null) {
-     }
-     this.sfsArray[i].addInput(uGenArray[i]);
-     }
-     
-     // Creates an array of FFTs and adds them to the SFSs:
-     this.fftArray  = new FFT[this.numInputs];
-     for (int i = 0; i < this.fftArray.length; i++)
-     {
-     this.fftArray[i] = new FFT();
-     while (this.fftArray[i] == null) {
-     }
-     this.sfsArray[i].addListener(this.fftArray[i]);
-     } // for
-     
-     // Creates an array of PowerSpectrum's and adds them to the FFTs
-     // (the PowerSpectrum is what will actually perform the FFT):
-     this.psArray  = new PowerSpectrum[this.numInputs];
-     for (int i = 0; i < this.psArray.length; i++)
-     {
-     this.psArray[i] = new PowerSpectrum();
-     while (this.psArray[i] == null) {
-     }
-     this.fftArray[i].addListener(psArray[i]);
-     } // for
-     
-     // Creates an array of FrequencyEMMs and adds them to the PSs
-     // (using my version of the Frequency class - an inner class further down - to allow access to amplitude):
-     this.frequencyArray  = new FrequencyEMM[this.numInputs];
-     for (int i = 0; i < this.frequencyArray.length; i++)
-     {
-     this.frequencyArray[i] = new FrequencyEMM(44100);
-     while (this.frequencyArray[i] == null) {
-     }
-     this.psArray[i].addListener(frequencyArray[i]);
-     } // for
-     
-     // Adds the SFSs (and everything connected to them) to the AudioContext:
-     for (int i = 0; i < this.numInputs; i++)
-     {
-     ac.out.addDependent(sfsArray[i]);
-     } // for - addDependent
-     
-    /*
-     // trying to mute the output:
-     mute = new Gain(this.ac, 1, 0);
-     mute.addInput(this.ac.out);
-     ac.out.addInput(mute);
-     */
-
-    // Starts the AudioContext (and everything connected to it):
-    /*    this.ac.start();
-     
-     // Pitches with amplitudes below this number will be ignored by adjustedFreq:
-     this.sensitivity  = 10;
-     
-     // Initializes the arrays that will hold the pitches:
-     this.fundamentalArray = new float[this.numInputs];
-     this.adjustedFundArray = new float[this.numInputs];
-     
-     // Gets the ball rolling on analysis:
-     this.setFund();
-     */
-  } // constructor(int)
-
-  /**
-   * Constructor for creating a one (or two?)-channel Input object 
-   * from the machine's default audio input device;
-   * does not require Jack.
-   */
-  Input()
-  {
-    this(1, new AudioContext());
-  } // constructor()
-
-  /**
-   *  TODO:  add Beads functionality
-   * Constructor for creating an Input object from an audio file.
-   *
-   * @param  filename  String specifying the audio file.
-   */
-  Input(String filename)
-  {
-    this(new String[] { filename });
-  } // constructor(String)
-  
-  /**
-   *  TODO:  add Beads functionality
-   * Constructor for creating an Input object from an audio file.
-   *
-   * @param  filename  String specifying the audio file.
-   */
-  Input(String[] filenames)
-  {
-    this.ac = new AudioContext();
-    this.numInputs  = filenames.length;
-    this.sampleManager  = new SampleManager();
-    Sample[]  samples  = new Sample[filenames.length];
-
-    try {
-
-      for (int i = 0; i < samples.length; i++)
-      {
-        samples[i]  = new Sample(sketchPath(filenames[i]));
-      } // for
-    }
-    catch(Exception e)
-    {
-      // if there is an error, show an error message (at the bottom of the processing window)
-      println("Exception while attempting to load sample!");
-      e.printStackTrace(); // then print a technical description of the error
-      exit(); // and exit the program
-    }
-
-    for (int i = 0; i < samples.length; i++)
-    {
-      SampleManager.addToGroup("group", samples[i]);
-    } // for
-    
-    uGenArray  = new UGen[SampleManager.getGroup("group").size()];
-    for(int i = 0; i < uGenArray.length; i++)
-    {
-      // Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
-      uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
-    } // for
-
-    initInput(uGenArray);
-  } // constructor(String[])
-
-  /**
-   *  As of 10/24/2016, does everything that was in the (int, AudioContext) constructor;
-   *  that is, initialize the Gain, add everything in the given UGen[] to it,
-   *  and analyze the frequencies w/SFS, PS, FFT, Frequency.
-   *
-   *  @param  uGenArray  a UGen[] whose members will be added to a gain, analyzed, and added to the AudioContext.
-   */
-  void initInput(UGen[] uGenArray)
-  {
-    /*
-    Default compressor values:
-     threshold - .5
-     attack - 1
-     decay - .5
-     knee - .5
-     ratio - 2
-     side-chain - the input audio
-     */
+      threshold - .5
+      attack - 1
+      decay - .5
+      knee - .5
+      ratio - 2
+      side-chain - the input audio
+    */
     // Create a compressor w/standard values:
     this.compressor  = new Compressor(this.ac, 1);
     this.compressor.setRatio(8.0);
@@ -308,8 +141,6 @@ class Input
     // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
     g = new Gain(this.ac, 1, 0.5);
     g.addInput(this.compressor);
-
-    // Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
     for (int i = 0; i < this.numInputs; i++)
     {
       g.addInput(uGenArray[i]);
@@ -365,32 +196,57 @@ class Input
       ac.out.addDependent(sfsArray[i]);
     } // for - addDependent
 
-    /*
+    // Pitches with amplitudes below this number will be ignored by adjustedFreq:
+    this.sensitivity  = 10;
+    
+/*
     // trying to mute the output:
-     mute = new Gain(this.ac, 1, 0);
-     mute.addInput(this.ac.out);
-     ac.out.addInput(mute);
-     */
+    mute = new Gain(this.ac, 1, 0);
+    mute.addInput(this.ac.out);
+    ac.out.addInput(mute);
+*/
 
     // Starts the AudioContext (and everything connected to it):
     this.ac.start();
 
-    // Pitches with amplitudes below this number will be ignored by adjustedFreq:
-    this.sensitivity  = 10;
-
     // Initializes the arrays that will hold the pitches:
     this.fundamentalArray = new float[this.numInputs];
     this.adjustedFundArray = new float[this.numInputs];
-
+    
     // Gets the ball rolling on analysis:
     this.setFund();
-  } // initInput
+  } // constructor(int)
 
   /**
+   * Constructor for creating a one (or two?)-channel Input object 
+   * from the machine's default audio input device;
+   * does not require Jack.
+   */
+  Input()
+  {
+    this(1, new AudioContext());
+  } // constructor()
+
+  /**
+   *  TODO:  add Beads functionality
+   * Constructor for creating an Input object from an audio file.
+   *
+   * @param  filename  String specifying the audio file.
+   */
+  Input(String filename)
+  {
+    this();
+    println("InputClassJack_EMM: the constructor Input(String) is undergoing construction.  Your Input object will take audio from the default audio device.");
+  } // constructor(String)
+
+  /**
+   * Subtracts 4 from the numInputs variable because I added 4
+   * to account for the fact that the two interfaces together skip lines 5-8.
+   *
    * @return  int  number of input channels.
    */
   int  getNumInputs() {
-    return this.numInputs;
+    return this.numInputs - 4;
   } // getNumInputs
 
   /**
@@ -404,29 +260,32 @@ class Input
       for (int i = 0; i < this.numInputs; i++)
       {
         //     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
-
+  
         // want to assign the value of .getFeatures() to a variable and check for null,
         // but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
         if (this.frequencyArray[i].getFeatures() != null) {
           //       println("i = " + i);
           //       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
           this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-
+  
           // ignores pitches with amplitude lower than "sensitivity":
           if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
             this.adjustedFundArray[i]  = this.fundamentalArray[i];
           } // if: amp > sensitivity
         } // if: features() != null
       } // if: > numInputs
-    } 
-    catch(NullPointerException npe) {
-    }
+    } catch(NullPointerException npe)  {}
   } // setFund
 
   /**
    *  @return  pitch (in Hertz) of the Input, adjusted to ignore frequencies below a certain volume.
    */
   float  getAdjustedFund(int inputNum) {
+    if(inputNum > 4)
+    {
+      inputNum  = inputNum + 4;
+    }
+    
     inputNumErrorCheck(inputNum, "getAdjustedFund(int)");
 
     setFund();
@@ -437,13 +296,15 @@ class Input
    *  @return  pitch (in Hertz) of the Input, adjusted to ignore frequencies below a certain volume.
    */
   float  getAdjustedFundAsHz(int inputNum) {
+    if(inputNum > 4)
+    {
+      inputNum  = inputNum + 4;
+    }
+    
     inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
-
-    return getAdjustedFund(inputNum);
-    /*
+   
     setFund();
-     return this.adjustedFundArray[inputNum - 1];
-     */
+    return this.adjustedFundArray[inputNum - 1];
   } // getAdjustedFundAsHz()
 
   /**
@@ -451,6 +312,11 @@ class Input
    * adjusted to ignore sounds below a certain volume.
    */
   float  getAdjustedFundAsMidiNote(int inputNum) {
+    if(inputNum > 4)
+    {
+      inputNum  = inputNum + 4;
+    }
+    
     inputNumErrorCheck(inputNum, "getAdjustedFundAsMidiNote(int)");
 
     setFund();
@@ -461,6 +327,11 @@ class Input
    *  @return  pitch (in Hertz) of the Input.
    */
   float  getFund(int inputNum) {
+    if(inputNum > 4)
+    {
+      inputNum  = inputNum + 4;
+    }
+    
     inputNumErrorCheck(inputNum, "getFund(int)");
 
     setFund();
@@ -471,25 +342,32 @@ class Input
    *  @return  pitch (in Hertz) of the Input.
    */
   float getFundAsHz(int inputNum) {
+    if(inputNum > 4)
+    {
+      inputNum  = inputNum + 4;
+    }
+    
     inputNumErrorCheck(inputNum, "getFundAsHz(int)");
-
-    return getFund(inputNum);
-    /*
+    
     setFund();
-     return this.fundamentalArray[inputNum - 1];
-     */
+    return this.fundamentalArray[inputNum - 1];
   } // getFundAsHz()
 
   /**
    *  @return  pitch of the Input as a MIDI note.
    */
   float  getFundAsMidiNote(int inputNum) {
+    if(inputNum > 4)
+    {
+      inputNum  = inputNum + 4;
+    }
+    
     inputNumErrorCheck(inputNum, "getFundAsMidiNote(int)");
 
     setFund();
     return Pitch.ftom(this.fundamentalArray[inputNum - 1]);
   } // getFundAsMidiNote()
-
+  
   /**
    *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
    */
@@ -503,7 +381,7 @@ class Input
   float  getAdjustedFundAsHz() {
     return getAdjustedFundAsHz(1);
   } // getAdjustedFundAsHz()
-
+  
   /**
    *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
    */
@@ -533,7 +411,8 @@ class Input
   } // getFundAsMidiNote()
 
   /**
-   *  Calculates the average frequency of multiple input lines.
+   *  Calculates the average frequency of multiple input lines;
+   *  no changes were made in removing lines 5-8.
    *
    *  @param   inputsToAverage  an int[] with the numbers of each of the lines whose frequency is to be averaged.
    *
@@ -657,7 +536,7 @@ class Input
 
     return this.frequencyArray[inputNum - 1].getAmplitude();
   } // getAmplitude
-
+  
   /**
    *  Applies a 1:8 compressor for amp's over 400 and returns the resulting amplitude.
    *
@@ -666,9 +545,9 @@ class Input
   float getAmplitude()  
   {
     float  amp  = this.frequencyArray[0].getAmplitude();
-
-    //   if(amp > 400)  {  amp = amp + ((amp - 400) / 8);  }
-
+    
+ //   if(amp > 400)  {  amp = amp + ((amp - 400) / 8);  }
+    
     return amp;
   }
 
@@ -706,9 +585,7 @@ class Input
  * CREDIT: This class uses portions of code taken from MEAP. See readme/CREDITS.txt.
  *
  *  07/02/2016
- *  Emily Meuer
- *
- *  Edited to allow access to amplitude, so classes using these Frequencies
+ *  Emily Meuer: Edited to allow access to amplitude, so classes using these Frequencies
  *  can cut out some background noise.
  */
 
@@ -732,6 +609,8 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
   private float bin2hz;
 
   private int bufferSize;
+  
+  private  float[]  hps;      // Harmonic Product Spectrum summed up here
 
   private float sampleRate;
 
@@ -755,26 +634,67 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
     if (bufferSize != powerSpectrum.length) {
       bufferSize = powerSpectrum.length;
       bin2hz = sampleRate / (2 * bufferSize);
-    }
+    } // if
+    
+    hps  = new float[powerSpectrum.length];
+    
     features = null;
     // now pick best peak from linspec
     double pmax = -1;
-    int maxbin = 0;
+    int maxbin = 0;    
+    
+    for(int i = 0; i < hps.length; i++)
+    {
+      hps[i]  = powerSpectrum[i];
+    } // for
+    
+    // 2:
+    int  i;
+    for(i = 0; (i * 2) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*2];
+    } // for
+    
+    // 3:
+    for(i = 0; (i * 3) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*3];
+    } // for
+    
+    // 4:
+    for(i = 0; (i * 4) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*4];
+    } // for
+    
     for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
       double pwr = powerSpectrum[band];
       if (pwr > pmax) {
         pmax = pwr;
         maxbin = band;
-      }
+      } // if
     } // for
 
-    // I added the following line:
+    // I added the following line;
+    // 10/5 edits may cause it to be a larger num than it was previously:
     amplitude  = (float)pmax;
 
     // cubic interpolation
     double yz = powerSpectrum[maxbin];
-    double ym = maxbin <= 0? powerSpectrum[maxbin] : powerSpectrum[maxbin - 1];
-    double yp = maxbin < powerSpectrum.length - 1 ? powerSpectrum[maxbin + 1] : powerSpectrum[maxbin];
+    double ym;
+    if(maxbin <= 0) {
+      ym = powerSpectrum[maxbin];
+    } else {
+      ym = powerSpectrum[maxbin - 1];
+    } // else
+    
+    double yp;
+    if(maxbin < powerSpectrum.length - 1) {
+      yp  = powerSpectrum[maxbin + 1];
+    } else {
+      yp  = powerSpectrum[maxbin];
+    } // else
+    
     double k = (yp + ym) / 2 - yz;
     double x0 = (ym - yp) / (4 * k);
     features = (float)(bin2hz * (maxbin + x0));

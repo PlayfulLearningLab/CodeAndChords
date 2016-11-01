@@ -10,7 +10,7 @@
 */
 
 // Calibrate:
-int  volumeAdjust  = 2;   // not currently used.
+int  volumeAdjust  = 2;   // divide by this
 
 //Creating variables for all the images used. Each picture is numbered based 
 //on its spot in the grid (i.e. the top left picture is "one" and 
@@ -281,7 +281,7 @@ void setup()
   tenCblur.resize(width/4, height/4);
 
   //I did not do this part ... Emily? 
-  input = new Input(13);
+  input = new Input(12);
   
 
   noStroke();
@@ -808,6 +808,9 @@ void draw()
   eightLevel  = (int)Math.floor(input.getAmplitude(7) / volumeAdjust);
   nineLevel  = (int)Math.floor(input.getAmplitude(8) / volumeAdjust);
   tenLevel  = (int)Math.floor(input.getAmplitude(9) / volumeAdjust);
+  
+  println("input.getAmplitude(1) = " + input.getAmplitude(1));
+  println("oneLevel = " + oneLevel);
 
   //showing regular images as amplitude of each part is adjusted
   tint(255, (Math.min(oneLevel, 255)));

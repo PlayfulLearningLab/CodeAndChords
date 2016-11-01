@@ -23,14 +23,14 @@
 
 // Calibrate:
 // (tenorCutoff: mic numbers below this will be "low voices", and all mics numbered this and higher will be "high voices.")
-int  drawTenorCutoff    = 5;    // mics below this number will control the drawing;
+int  drawTenorCutoff    = 7;    // mics below this number will control the drawing;
 // if lines don't draw that should, make sure that this is low enough,
 // i.e., that the only mics numbered below this are for the voices that sing in the first low part.
 
-int  colorsTenorCutoff  = 5;    // mics below this will control red (high pitch = more red, low pitch = less)
+int  colorsTenorCutoff  = 7;    // mics below this will control red (high pitch = more red, low pitch = less)
 // and mics this number and above will control blue in the same way.
 
-int  rotateTenorCutoff  = 5;    // mics numbered below this control rosette growth, mics numbered this and above control rotation
+int  rotateTenorCutoff  = 7;    // mics numbered below this control rosette growth, mics numbered this and above control rotation
 // (higher pitch = bigger rosettes/faster rotation, respectively)
 
 int  gameOfLifeTenorCutoff = 5; // mics numbered below this add red, mics above add blue.
@@ -51,7 +51,7 @@ void setup()
   fullScreen();
   background(0);
 
-  inputs     = new Input(16);
+  inputs     = new Input(12);
 
   drawRosette      = new DrawRosette(inputs, drawTenorCutoff);
   rosetteV3Colors  = new RosetteV3Colors(inputs, colorsTenorCutoff);
