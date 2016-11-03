@@ -1,4 +1,9 @@
 /*
+ *  11/03/2016
+ *  Emily Meuer
+ *
+ *  Getting it to work for a demo.
+ *
  * Amanda Tenhoff
  * 1 October 2016
  * Module 04: Amplitude Bars
