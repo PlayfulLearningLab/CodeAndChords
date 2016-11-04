@@ -18,32 +18,22 @@
  
  Use PVector to move shapes?
  
- --
- Deal with this at some point:
- ==== JavaSound Minim Error ====
- ==== Couldn't find a sketchPath method on the file loading object provided!
- ==== File recording will be disabled.
- 
- ==== JavaSound Minim Error ====
- ==== Couldn't find a createInput method in the file loading object provided!
- ==== File loading will be disabled.
- 
  */
 
-PShape circle;
-Input  input;
-/*
-void settings()
-{
-  size(400, 400);
-}
-*/
+PShape   circle;
+float    fund;
+Input    input;
+float    prevX  = width/2 - 50;
+float    prevY  = height / 2;
+
 void setup()
 {
+//  fullScreen();
+  size(800,800);
   background(0);
 
   input  = new Input();
-  circle  = createShape(ELLIPSE, 0, 0, 100, 100);
+  circle  = createShape(ELLIPSE, width / 2, height - height/4, 100, 100);
 }
 
 void draw()
@@ -55,19 +45,18 @@ void draw()
   circle.setStrokeWeight(25);
   circle.setFill(color(0));
 
-  println("freq: " + input.getFreqAsHz() + "; amplitude = " + input.getAmplitude());
-
-  // previous location -- stay there when < 3
-  // Problem: currently, prevFreq changes just as often as freq,
-  // so it doesn't really help;
-  // I need to not reset prevFreq until the amplitude reaches a certain height.
+  println("freq: " + input.getAdjustedFundAsHz() + "; amplitude = " + input.getAmplitude());
   
-  if(input.getAmplitude() > 0.05)
+  if(input.getAmplitude() > 10)
   //if (input.getAmplitude() > 3)
   {
-    translate(width/2, (height - input.getFreqAsHz()/2));
+    fund  = input.getAdjustedFundAsHz();
+//    translate(width / 2, ((height - fund/2)));
+    circle.translate(400, 400);
+
+    prevY  = fund;
   } else {
-//    translate(width/2, (height - input.getPrevFreq().asHz()/2));
+    circle.translate(prevX, ((height - prevY/2)));
   } // else
 
   shape(circle);
