@@ -1,0 +1,5 @@
+import processing.core.PApplet;
+
+public class Input extends PApplet {
+
+} // Input class
