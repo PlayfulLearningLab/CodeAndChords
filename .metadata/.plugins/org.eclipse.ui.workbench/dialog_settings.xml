@@ -29,6 +29,7 @@
 		<item value="false" key="WizardFileSystemResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID"/>
 		<list key="WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID">
 			<item value="/Users/codeandchords/Downloads/beads/library"/>
+			<item value="/Users/codeandchords/Downloads/Processing 4.app/Contents/Java/core/library"/>
 			<item value="/Users/codeandchords/Downloads/Processing.app/Contents/Java/core/library"/>
 		</list>
 	</section>
