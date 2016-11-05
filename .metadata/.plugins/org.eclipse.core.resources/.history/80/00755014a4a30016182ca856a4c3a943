@@ -52,8 +52,8 @@ public class Driver extends PApplet {
 	
 	public void setup()
 	{
-		AudioFormat	defaultAF	= new AudioFormat(44100, 16, 1, true, false);
-		Mixer	inputMixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[3]);
+		AudioFormat	defaultAF	= new AudioFormat(44100, 16, 4, false, true);
+		Mixer	inputMixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[5]);
 		Mixer	outputMixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[3]);
 		
 
@@ -75,30 +75,14 @@ public class Driver extends PApplet {
 		// [10]: Port FCA1616
 //		Line.Info	lineInfo	= AudioSystem.getTargetLineInfo(AudioSystem.getMixerInfo()[10]);
 		TargetDataLine	tdl;
-		TargetDataLine	tdl1;
-		TargetDataLine	tdl2;
 		SourceDataLine	sdl;
 		try {
-			tdl	= AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[3]);
-			tdl1	= AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[3]);
-			tdl2	= AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[3]);
+			tdl	= AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[5]);
 //			sdl	= AudioSystem.getSourceDataLine(defaultAF, AudioSystem.getMixerInfo()[10]);
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException("Driver.setup: line unavailable");		
 		}
-		try {
-			tdl.open(tdl.getFormat());
-			tdl1.open(tdl1.getFormat());
-			tdl2.open(tdl2.getFormat());
-		} catch (LineUnavailableException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		System.out.println("tdl.getLineInfo(): " + tdl.getLineInfo());
-		System.out.println("tdl1.getLineInfo(): " + tdl1.getLineInfo());
-		System.out.println("tdl2.getLineInfo(): " + tdl2.getLineInfo());
 		
 		System.out.println("Source: ");
 		for(int i = 0; i < sourceInfo.length; i++)
@@ -131,7 +115,7 @@ public class Driver extends PApplet {
 //		Line[] lines = inputMixer.getMaxLines(inputMixer.g)
 //		System.out.println("lines.length = " + lines.length);
 		System.out.println();
-//		printMixers();
+		printMixers();
 	} // setup
 	
 	public void draw()
