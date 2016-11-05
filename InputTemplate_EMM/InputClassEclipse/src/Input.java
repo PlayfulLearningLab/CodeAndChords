@@ -5,8 +5,11 @@ import processing.core.PApplet;
 
 import net.beadsproject.beads.core.*;
 import net.beadsproject.beads.data.Pitch;
+import net.beadsproject.beads.data.Sample;
+import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.SamplePlayer;
 import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
 
@@ -87,6 +90,7 @@ public class Input extends PApplet {
   float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
   ShortFrameSegmenter[]  sfsArray;             // holds the ShortFrameSegmenter objects connected to each input.
 //  int                    waitUntil;            // number of milliseconds to wait before checking for another key 
+private SampleManager sampleManager;
   
   /**
    *  Creates an Input object connected to Jack, with the given number of inputs.
@@ -134,16 +138,92 @@ public class Input extends PApplet {
       // getAudioInput needs an int[] with the number of the particular line.
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
+    
+    initInput(uGenArray);
+  } // constructor(int)
 
+  /**
+   * Constructor for creating a one (or two?)-channel Input object 
+   * from the machine's default audio input device;
+   * does not require Jack.
+   */
+  Input()
+  {
+    this(1, new AudioContext());
+  } // constructor()
+
+  /**
+   *  TODO:  add Beads functionality
+   * Constructor for creating an Input object from an audio file.
+   *
+   * @param  filename  String specifying the audio file.
+   */
+  Input(String filename)
+  {
+    this(new String[] { filename });
+  } // constructor(String)
+  
+  /**
+   *  TODO:  add Beads functionality
+   * Constructor for creating an Input object from an audio file.
+   *
+   * @param  filename  String specifying the audio file.
+   */
+  Input(String[] filenames)
+  {
+    this.ac = new AudioContext();
+    this.numInputs  = filenames.length;
+    this.sampleManager  = new SampleManager();
+    Sample[]  samples  = new Sample[filenames.length];
+
+    try {
+
+      for (int i = 0; i < samples.length; i++)
+      {
+        samples[i]  = new Sample(sketchPath("") + "src/" + filenames[i]);
+      } // for
+    }
+    catch(Exception e)
+    {
+      // if there is an error, show an error message (at the bottom of the processing window)
+      println("Exception while attempting to load sample!");
+      e.printStackTrace(); // then print a technical description of the error
+      exit(); // and exit the program
+    }
+
+    for (int i = 0; i < samples.length; i++)
+    {
+      SampleManager.addToGroup("group", samples[i]);
+    } // for
+    
+    uGenArray  = new UGen[SampleManager.getGroup("group").size()];
+    for(int i = 0; i < uGenArray.length; i++)
+    {
+      // Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
+      uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
+    } // for
+
+    initInput(uGenArray);
+  } // constructor(String[])
+
+  /**
+   *  As of 10/24/2016, does everything that was in the (int, AudioContext) constructor;
+   *  that is, initialize the Gain, add everything in the given UGen[] to it,
+   *  and analyze the frequencies w/SFS, PS, FFT, Frequency.
+   *
+   *  @param  uGenArray  a UGen[] whose members will be added to a gain, analyzed, and added to the AudioContext.
+   */
+  void initInput(UGen[] uGenArray)
+  {
     /*
     Default compressor values:
-      threshold - .5
-      attack - 1
-      decay - .5
-      knee - .5
-      ratio - 2
-      side-chain - the input audio
-    */
+     threshold - .5
+     attack - 1
+     decay - .5
+     knee - .5
+     ratio - 2
+     side-chain - the input audio
+     */
     // Create a compressor w/standard values:
     this.compressor  = new Compressor(this.ac, 1);
     this.compressor.setRatio(8);
@@ -152,6 +232,8 @@ public class Input extends PApplet {
     // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
     g = new Gain(this.ac, 1, (float) 0.5);
     g.addInput(this.compressor);
+
+    // Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
     for (int i = 0; i < this.numInputs; i++)
     {
       g.addInput(uGenArray[i]);
@@ -207,48 +289,26 @@ public class Input extends PApplet {
       ac.out.addDependent(sfsArray[i]);
     } // for - addDependent
 
-    // Pitches with amplitudes below this number will be ignored by adjustedFreq:
-    this.sensitivity  = 10;
-    
-/*
+    /*
     // trying to mute the output:
-    mute = new Gain(this.ac, 1, 0);
-    mute.addInput(this.ac.out);
-    ac.out.addInput(mute);
-*/
+     mute = new Gain(this.ac, 1, 0);
+     mute.addInput(this.ac.out);
+     ac.out.addInput(mute);
+     */
 
     // Starts the AudioContext (and everything connected to it):
     this.ac.start();
 
+    // Pitches with amplitudes below this number will be ignored by adjustedFreq:
+    this.sensitivity  = 10;
+
     // Initializes the arrays that will hold the pitches:
     this.fundamentalArray = new float[this.numInputs];
     this.adjustedFundArray = new float[this.numInputs];
-    
+
     // Gets the ball rolling on analysis:
     this.setFund();
-  } // constructor(int)
-
-  /**
-   * Constructor for creating a one (or two?)-channel Input object 
-   * from the machine's default audio input device;
-   * does not require Jack.
-   */
-  Input()
-  {
-    this(1, new AudioContext());
-  } // constructor()
-
-  /**
-   *  TODO:  add Beads functionality
-   * Constructor for creating an Input object from an audio file.
-   *
-   * @param  filename  String specifying the audio file.
-   */
-  Input(String filename)
-  {
-    this();
-    println("InputClassJack_EMM: the constructor Input(String) is undergoing construction.  Your Input object will take audio from the default audio device.");
-  } // constructor(String)
+  } // initInput(UGen[])
 
   /**
    * Subtracts 4 from the numInputs variable because I added 4
