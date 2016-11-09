@@ -1,0 +1,44 @@
+#!/bin/sh
+
+#  Script.sh
+#  
+#
+#  Created by Code and Chords (Emily Meuer) on 10/9/16.
+#
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_01_01_PitchHueBackgroundWBorder_Easing_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_01_01_PitchHueBackgroundWBorder_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_01_01_PitchHueBackgroundWBorder_HPS_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_01_02_PitchHueBackground_BradyBunchSquares_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_01_PitchHueBackground_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_02_PitchHueBars_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_02_PitchHueBars_Filtered_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_04_AmplitudeBars_ACT
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_08_BehindTheCurtain_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/Module_08_BehindTheCurtain_MultipleIns_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/ZikrIndividualScenes/SceneDrawRosette_EMM
+
+cp ./InputTemplate_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM/Current10_9_InputClassJackOrDefault_HPS_EMM.pde ./Visuals/Modules/ZikrIndividualScenes/SceneGrowRotateRosette_EMM
+
+rm ./Visuals/Modules/Module_01_01_PitchHueBackgroundWBorder_Easing_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_01_01_PitchHueBackgroundWBorder_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_01_01_PitchHueBackgroundWBorder_HPS_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_01_02_PitchHueBackground_BradyBunchSquares_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_01_PitchHueBackground_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_02_PitchHueBars_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_02_PitchHueBars_Filtered_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_04_AmplitudeBars_ACT/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_08_BehindTheCurtain_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/Module_08_BehindTheCurtain_MultipleIns_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/ZikrIndividualScenes/SceneDrawRosette_EMM/InputClassJackOrDefault_EMM.pde
+rm ./Visuals/Modules/ZikrIndividualScenes/SceneDrawRosette_EMM/InputClassJackOrDefault_EMM.pde

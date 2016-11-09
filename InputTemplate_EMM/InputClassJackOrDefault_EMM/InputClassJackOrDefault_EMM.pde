@@ -19,6 +19,9 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*
+  10/05/2016
+  Using the Harmonic Product Spectrum to better locate the pitch.
+  
    ** As of mid-July, 2016, the following is NOT true:
     "Notate bene: inputNum passed to constructor must be 4 greater
     than the actual desired number of inputs."
@@ -572,6 +575,8 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
   private float bin2hz;
 
   private int bufferSize;
+  
+  private  float[]  hps;      // Harmonic Product Spectrum summed up here
 
   private float sampleRate;
 
@@ -595,26 +600,67 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
     if (bufferSize != powerSpectrum.length) {
       bufferSize = powerSpectrum.length;
       bin2hz = sampleRate / (2 * bufferSize);
-    }
+    } // if
+    
+    hps  = new float[powerSpectrum.length];
+    
     features = null;
     // now pick best peak from linspec
     double pmax = -1;
-    int maxbin = 0;
+    int maxbin = 0;    
+    
+    for(int i = 0; i < hps.length; i++)
+    {
+      hps[i]  = powerSpectrum[i];
+    } // for
+    
+    // 2:
+    int  i;
+    for(i = 0; (i * 2) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*2];
+    } // for
+    
+    // 3:
+    for(i = 0; (i * 3) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*3];
+    } // for
+    
+    // 4:
+    for(i = 0; (i * 4) < hps.length; i++)
+    {
+      hps[i]  = hps[i] + powerSpectrum[i*4];
+    } // for
+    
     for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
       double pwr = powerSpectrum[band];
       if (pwr > pmax) {
         pmax = pwr;
         maxbin = band;
-      }
+      } // if
     } // for
 
-    // I added the following line:
+    // I added the following line;
+    // 10/5 edits may cause it to be a larger num than it was previously:
     amplitude  = (float)pmax;
 
     // cubic interpolation
     double yz = powerSpectrum[maxbin];
-    double ym = maxbin <= 0? powerSpectrum[maxbin] : powerSpectrum[maxbin - 1];
-    double yp = maxbin < powerSpectrum.length - 1 ? powerSpectrum[maxbin + 1] : powerSpectrum[maxbin];
+    double ym;
+    if(maxbin <= 0) {
+      ym = powerSpectrum[maxbin];
+    } else {
+      ym = powerSpectrum[maxbin - 1];
+    } // else
+    
+    double yp;
+    if(maxbin < powerSpectrum.length - 1) {
+      yp  = powerSpectrum[maxbin + 1];
+    } else {
+      yp  = powerSpectrum[maxbin];
+    } // else
+    
     double k = (yp + ym) / 2 - yz;
     double x0 = (ym - yp) / (4 * k);
     features = (float)(bin2hz * (maxbin + x0));

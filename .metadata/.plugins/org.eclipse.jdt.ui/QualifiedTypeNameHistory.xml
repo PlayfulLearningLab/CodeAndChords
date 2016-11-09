@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="processing.core.PApplet"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.ugens.Compressor"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.ugens.Gain"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.data.Pitch"/>
+<fullyQualifiedTypeName name="org.jaudiolibs.audioservers.jack.JackAudioServer"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.core.io.NonrealtimeIO"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.core.io.JavaSoundAudioIO"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.data.SampleManager"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.data.Sample"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.ugens.SamplePlayer"/>
+</qualifiedTypeNameHistroy>
