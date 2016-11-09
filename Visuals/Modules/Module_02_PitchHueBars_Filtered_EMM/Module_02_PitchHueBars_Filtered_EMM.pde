@@ -199,7 +199,7 @@ void draw()
   } // if
   goalHue  = goalHuePos * 30;
   
-  println("input.getTimeAverageFundAsHz(1, 500) = " + input.getTimeAverageFundAsHz(1, 500));
+//  println("input.getTimeAverageFundAsHz(1, 500) = " + input.getTimeAverageFundAsHz(1, 500));
 
   legend();
   

@@ -26,9 +26,10 @@ void settings()
 
 void setup()
 {
-  background(100, 225, 120);
-  fill(0, 150, 25);
-  stroke(255);
+  background(204, 255, 204);
+  fill(255);
+  strokeWeight(5);
+  stroke(102, 0, 102);
   
   sShape  = new SoundShape(width/4, height - height/4, 100, 4, 0, 0);
   input   = new Input();
@@ -44,7 +45,7 @@ void setup()
   setXLowText  = new IFTextField("setXLow", 50, height - 50, 100);
 //  setXLow      = new IFButton("Set xLow"
   
-  controller.add(setXLowText);
+//  controller.add(setXLowText);
   
 //  scroll  = new HScrollbar(10, height - 26, width - 20, 16, 10);
 
@@ -56,9 +57,8 @@ void draw()
 
   if(input.getAmplitude() > 20)
   {
-    background(100, 225, 120);
-    fill(0, 150, 25);
-    stroke(255);
+  background(204, 255, 204);
+//    fill(0, 150, 25);
     
     sShape.positionShape();
    
@@ -66,7 +66,7 @@ void draw()
   
    
    
-      println("setXLowText.getValue() = " + setXLowText.getValue());
+//      println("setXLowText.getValue() = " + setXLowText.getValue());
 
 //  scroll.update();
 //  scroll.display();
