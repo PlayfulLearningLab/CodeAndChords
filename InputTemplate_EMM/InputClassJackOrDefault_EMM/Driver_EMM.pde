@@ -34,6 +34,7 @@ void draw()
     fill(curColor);
     
 //    println("input.getAmplitude(" + i + ") = " + input.getAmplitude(i));
+
     if(input.getAmplitude(i) > 3.5)
     {
       int x  = ((i-1) % wide) * (width / wide);
