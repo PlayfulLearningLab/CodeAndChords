@@ -1,11 +1,17 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
   11/10/2016
   Working on buttons;
    - Why is it drawing one in the corner?
    - Only works b/c mousePressed is in "main" sketch. Need a better way.
 
+<<<<<<< HEAD
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
+=======
 >>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
   10/09/2016
  Emily Meuer
@@ -35,6 +41,11 @@ IFLookAndFeel    darkGrayClicked;  // so that buttons have a different look when
 IFLookAndFeel    defaultLAF;        // the "off" state look.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+Button  testButton;
+
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
 =======
 Button  testButton;
 
@@ -47,9 +58,14 @@ void settings()
 void setup()
 { 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   controller   = new GUIController(this);
   int  buttonX  = 20;
+=======
+  controller   = new GUIController(this);
+  int  buttonX  = 100;
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
 =======
   controller   = new GUIController(this);
   int  buttonX  = 100;
@@ -77,9 +93,15 @@ void setup()
   {
     buttonArray[i].addActionListener(this);
 <<<<<<< HEAD
+<<<<<<< HEAD
     println("this = " + this);
     controller.add(buttonArray[i]);
     println("button " + i + " has been added.");
+=======
+    controller.add(buttonArray[i]);
+    
+    println("buttonArray[" + i + "].getY() " + buttonArray[i].getY());
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
 =======
     controller.add(buttonArray[i]);
     
@@ -101,6 +123,7 @@ void setup()
 
   background(0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 } // setup()
 
 void draw()
@@ -108,6 +131,8 @@ void draw()
   rosetteV3Rotate.run();
 } // draw
 =======
+=======
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
   
   testButton  = new Button(100, 100, 50, color(0), color(150, 50, 150), color(200, 50, 150), 0, true);
 } // setup()
@@ -203,5 +228,9 @@ void actionPerformed(GUIEvent e)
      } // else
      } // if  - saturationButton
      */
+<<<<<<< HEAD
+  } // actionPerformed
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
+=======
   } // actionPerformed
 >>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4

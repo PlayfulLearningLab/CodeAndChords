@@ -12,6 +12,9 @@ INDEX VERSION 1.129+/Users/codeandchords/Documents/CodeAndChords/.metadata/.plug
 684372810.index
 1488366270.index
 4208283476.index
+<<<<<<< HEAD
 1600889917.index
+=======
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
 2724956193.index
 2418000020.index
