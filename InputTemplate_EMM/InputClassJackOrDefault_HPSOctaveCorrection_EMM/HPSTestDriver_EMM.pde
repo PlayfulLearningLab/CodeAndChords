@@ -46,11 +46,11 @@ void draw()
 {
   background(0);
 //  amplitudeRain.rain(input.getAmplitude());
-//  frequencyRain.rain(input.getAdjustedFundAsHz());
+  frequencyRain.rain(input.getAdjustedFundAsHz());
   
   println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
 
-  drawHPSSecondHighest(input);
+//  drawHPSSecondHighest(input);
 } // draw
 
 void drawHPS(Input input)
@@ -92,7 +92,7 @@ void drawHPSSecondHighest(Input input)
   } // for
   
   stroke(150, 50, 150);
-  rect( maxBin*10, height, 1, - freqEMM.hps[maxBin] );
+  rect( freqEMM.maxbin*10, height, 1, - freqEMM.hps[maxBin] );
     
   double  j;
     // find second peak:

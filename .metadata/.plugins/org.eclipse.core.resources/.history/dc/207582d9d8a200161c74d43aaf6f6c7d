@@ -1,0 +1,8 @@
+import processing.core.PApplet;
+
+public class Driver {
+	public static void main(String[] args)
+	{
+		PApplet.main("Input");
+	} // main
+}
