@@ -9,6 +9,8 @@ SoundShape  sShape;
 Input       input;
 float         x;
 float         y;
+float        prevX  = width / 2;
+float        prevY  = height / 2;
 
 void settings()
 {
@@ -26,7 +28,8 @@ void setup()
   x  = input.getAdjustedFundAsHz();
   x  = map(x, 0, 800, 0, width);
   
-  y  = input.getAmplitude();
+//  y  = input.getAmplitude();
+  y  = input.getAdjustedFundAsHz();
   y  = map(y, 0, 800, height, 0);
 
 } // setup()
@@ -41,14 +44,18 @@ void draw()
   
     x  = input.getAdjustedFundAsHz();
     x  = map(x, 0, 800, height - 200, 150);
+    prevX  = x;
     
     y  = input.getAmplitude();
     println("y = " + y);
     y  = map(y, 0, 800, 0, width);
+    prevY  = y;
   
 //    sShape.moveTo(x, y);
     sShape.moveTo(y,x);
-  } // if - amplitude
+  } else {
+    sShape.moveTo(prevX,prevY);
+  } // else - amplitude
   
   
 } // draw()
