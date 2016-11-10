@@ -174,6 +174,8 @@ org.eclipse.recommenders.utils.Logs$LogTraceException
 	at com.google.common.util.concurrent.AbstractIdleService$2$1.run(AbstractIdleService.java:54)
 	at com.google.common.util.concurrent.Callables$3.run(Callables.java:93)
 	at java.lang.Thread.run(Thread.java:745)
+<<<<<<< HEAD
+=======
 !SESSION 2016-11-09 09:06:44.292 -----------------------------------------------
 eclipse.buildId=4.6.0.I20160606-1100
 java.version=1.8.0_102
@@ -1883,3 +1885,4 @@ Caused by: java.io.FileNotFoundException: /Users/codeandchords/Documents/CodeAnd
 	at java.io.FileOutputStream.<init>(FileOutputStream.java:101)
 	at org.eclipse.swt.graphics.ImageLoader.save(ImageLoader.java:255)
 	... 12 more
+>>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
