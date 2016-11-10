@@ -1856,3 +1856,30 @@ Caused by: java.net.SocketException: Connection reset
 
 !ENTRY org.eclipse.core.jobs 2 2 2016-11-09 09:19:33.486
 !MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: org.eclipse.oomph.setup.ui.SetupUIPlugin$1$1
+
+!ENTRY org.eclipse.jface.text 4 0 2016-11-10 11:40:45.623
+!MESSAGE Unexpected runtime error while computing a text hover
+!STACK 0
+org.eclipse.swt.SWTException: i/o error (java.io.FileNotFoundException: /Users/codeandchords/Documents/CodeAndChords/.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/12.png (No such file or directory))
+	at org.eclipse.swt.SWT.error(SWT.java:4533)
+	at org.eclipse.swt.SWT.error(SWT.java:4448)
+	at org.eclipse.swt.graphics.ImageLoader.save(ImageLoader.java:257)
+	at org.eclipse.jdt.internal.ui.viewsupport.ImagesOnFileSystemRegistry.getImageURL(ImagesOnFileSystemRegistry.java:104)
+	at org.eclipse.jdt.internal.ui.viewsupport.ImagesOnFileSystemRegistry.getImageURL(ImagesOnFileSystemRegistry.java:85)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getImageURL(JavadocHover.java:823)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getImageAndLabel(JavadocHover.java:983)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getInfoText(JavadocHover.java:787)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo(JavadocHover.java:712)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.internalGetHoverInfo(JavadocHover.java:635)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo2(JavadocHover.java:627)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:164)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:130)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:86)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:165)
+Caused by: java.io.FileNotFoundException: /Users/codeandchords/Documents/CodeAndChords/.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/12.png (No such file or directory)
+	at java.io.FileOutputStream.open0(Native Method)
+	at java.io.FileOutputStream.open(FileOutputStream.java:270)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:213)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:101)
+	at org.eclipse.swt.graphics.ImageLoader.save(ImageLoader.java:255)
+	... 12 more
