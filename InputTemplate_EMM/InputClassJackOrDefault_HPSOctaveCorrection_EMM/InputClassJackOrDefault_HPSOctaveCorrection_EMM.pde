@@ -579,7 +579,7 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
 
   private int bufferSize;
 
-  private  float[]  hps;      // Harmonic Product Spetrum summed up here
+  private  float[]  hps;      // Harmonic Product Spectrum summed up here
 
   private float sampleRate;
 
@@ -587,6 +587,7 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
 
   // ** Added this for testing:
   int  maxbin;
+  int  secondMaxBin;
 
 
   /**
@@ -610,15 +611,16 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
     } // if
 
     hps  = new float[powerSpectrum.length];
+    println("in process(), powerSpectrum = " + powerSpectrum);
 
     features = null;
     // now pick best peak from linspec
-    double pmax = -1;
+    double pmax = -1; //<>//
     //    int maxbin  = 0;
     maxbin  = 0;
     // keep track of the second highest peak for HPS octave correction:
     double  secondMax     = -1;
-    int     secondMaxBin  = 0;
+    secondMaxBin  = 0;
 
     for (int i = 0; i < hps.length; i++)
     {
@@ -644,27 +646,46 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
       hps[i]  = hps[i] + powerSpectrum[i*4];
     } // for
 
-
-    // find peak:
-    for (int band = FIRSTBAND; band < hps.length; band++) {
-      double pwr = hps[band];
-      if (pwr > pmax) {
-        pmax = pwr;
-        maxbin = band;
-      } // if
-    } // for - first peak
-
-    double  j;
-    // find second peak:
-    for (int band = FIRSTBAND; band < hps.length; band++)
+    for (i = FIRSTBAND; i < freqEMM.hps.length; i++)
     {
-      j  = hps[band];
-      if ((j > secondMax) && (j < pmax))
+      // find max and secondMax peaks:
+      if (freqEMM.hps[i] > freqEMM.hps[maxBin])
       {
-        secondMax  = j;
-        secondMaxBin  = band;
-      } // if
-    } // for - second peak
+        maxBin  = i;
+        println("Input: maxBin = " + maxBin);
+      }
+    } // for
+    /*
+    else if(freqEMM.hps[i] > freqEMM.hps[secondMaxBin] && freqEMM.hps[i] < freqEMM.hps[maxBin])
+     {
+     secondMaxBin  = i;
+     println("Input: secondMaxBin = " + secondMaxBin);
+     } // if
+     */
+
+    /*
+    // We were getting errors with this, probably maening that freqEMM.hps was being updated between detecting the max and secondHighest freq's.
+     // find peak:
+     for (int band = FIRSTBAND; band < hps.length; band++) {
+     double pwr = hps[band];
+     if (pwr > pmax) {
+     pmax = pwr;
+     maxbin = band;
+     } // if
+     } // for - first peak
+     
+     double  j;
+     // find second peak:
+     for (int band = FIRSTBAND; band < hps.length; band++)
+     {
+     j  = hps[band];
+     if ((j > secondMax) && (j < pmax))
+     {
+     secondMax  = j;
+     secondMaxBin  = band;
+     } // if
+     } // for - second peak
+     */
 
     // only select the second peak if it's about half of the first one:
     int error  = 50;
