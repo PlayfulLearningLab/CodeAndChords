@@ -11,4 +11,20 @@
 <fullyQualifiedTypeName name="net.beadsproject.beads.data.SampleManager"/>
 <fullyQualifiedTypeName name="net.beadsproject.beads.data.Sample"/>
 <fullyQualifiedTypeName name="net.beadsproject.beads.ugens.SamplePlayer"/>
+<fullyQualifiedTypeName name="org.jaudiolibs.audioservers.javasound.JavasoundAudioServer"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.Mixer"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.AudioSystem"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.Mixer.Info"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.TargetDataLine"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.Line"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.Port.Info"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.Line.Info"/>
+<fullyQualifiedTypeName name="net.beadsproject.beads.core.AudioContext"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.AudioFormat"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.SourceDataLine"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.AudioInputStream"/>
+<fullyQualifiedTypeName name="javax.sound.sampled.AudioFileFormat"/>
+<fullyQualifiedTypeName name="java.io.ByteArrayOutputStream"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="java.io.BufferedInputStream"/>
 </qualifiedTypeNameHistroy>

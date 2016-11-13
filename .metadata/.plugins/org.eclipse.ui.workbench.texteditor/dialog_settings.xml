@@ -2,24 +2,32 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="j" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="i1"/>
+			<item value="process("/>
+			<item value="audioFormat"/>
+			<item value="tdl"/>
+			<item value="security restrictions"/>
 			<item value="beads-io"/>
 			<item value="beads.io"/>
 			<item value="beadsio"/>
 		</list>
 		<list key="replacehistory">
+			<item value="j"/>
+			<item value="tdl2"/>
+			<item value="tdl1"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="290" key="DIALOG_WIDTH"/>
 		<item value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText-Regular" key="DIALOG_FONT_NAME"/>
 		<item value="409" key="DIALOG_HEIGHT"/>
-		<item value="530" key="DIALOG_X_ORIGIN"/>
-		<item value="126" key="DIALOG_Y_ORIGIN"/>
+		<item value="1058" key="DIALOG_X_ORIGIN"/>
+		<item value="34" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

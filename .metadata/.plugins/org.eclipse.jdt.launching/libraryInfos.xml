@@ -1,27 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <libraryInfos>
-<<<<<<< HEAD
-=======
-<libraryInfo home="C:\Program Files\Java\jre1.8.0_102" version="1.8.0_102">
-<bootpath>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\resources.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\rt.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\sunrsasign.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\jsse.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\jce.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\charsets.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\jfr.jar"/>
-<entry path="C:\Program Files\Java\jre1.8.0_102\classes"/>
-</bootpath>
-<extensionDirs>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\ext"/>
-<entry path="C:\windows\Sun\Java\lib\ext"/>
-</extensionDirs>
-<endorsedDirs>
-<entry path="C:\Program Files\Java\jre1.8.0_102\lib\endorsed"/>
-</endorsedDirs>
-</libraryInfo>
->>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
 <libraryInfo home="/Library/Java/JavaVirtualMachines/jdk1.8.0_91.jdk/Contents/Home" version="1.8.0_91">
 <bootpath>
 <entry path="/Library/Java/JavaVirtualMachines/jdk1.8.0_91.jdk/Contents/Home/jre/lib/resources.jar"/>

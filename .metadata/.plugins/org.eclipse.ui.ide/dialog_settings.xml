@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
-<<<<<<< HEAD
-=======
-		<item value="C:\Users\meue0006\Desktop\CodeAndChords"/>
-		<item value="C:\Users\meue0006\Desktop\CodeAndChords\InputTemplate_EMM\InputClassEclipseJSTest"/>
->>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
+		<item value="/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM"/>
 		<item value="/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/InputClassEclipseJSTest"/>
 	</list>
 	<section name="ExternalProjectImportWizard">
@@ -19,10 +15,10 @@
 		<item value="226" key="DIALOG_Y_ORIGIN"/>
 	</section>
 	<section name="SaveAsDialogSettings">
-		<item value="525" key="DIALOG_WIDTH"/>
+		<item value="526" key="DIALOG_WIDTH"/>
 		<item value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText-Regular" key="DIALOG_FONT_NAME"/>
 		<item value="532" key="DIALOG_HEIGHT"/>
-		<item value="447" key="DIALOG_X_ORIGIN"/>
+		<item value="331" key="DIALOG_X_ORIGIN"/>
 		<item value="22" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>
