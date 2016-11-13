@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+<<<<<<< HEAD
 		<item value="/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM"/>
+=======
+>>>>>>> f45c6ea4d42e773811fe9e9bdc798e20d75393d2
 		<item value="/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/InputClassEclipseJSTest"/>
 	</list>
 	<section name="ExternalProjectImportWizard">

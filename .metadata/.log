@@ -175,6 +175,7 @@ org.eclipse.recommenders.utils.Logs$LogTraceException
 	at com.google.common.util.concurrent.Callables$3.run(Callables.java:93)
 	at java.lang.Thread.run(Thread.java:745)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 !SESSION 2016-11-09 09:06:44.292 -----------------------------------------------
 eclipse.buildId=4.6.0.I20160606-1100
@@ -2128,3 +2129,5 @@ org.xml.sax.SAXParseException; lineNumber: 3; columnNumber: 2; The content of el
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:673)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:610)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1519)
+=======
+>>>>>>> f45c6ea4d42e773811fe9e9bdc798e20d75393d2
