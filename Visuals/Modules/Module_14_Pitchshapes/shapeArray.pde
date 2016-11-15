@@ -13,7 +13,7 @@ class shapeArray
   { 
     this.colour = colour; 
     this.shapeWidth = shapeWidth; 
-    this.shapeHeight = shapeHeight; 
+    this.shapeHeight = shapeHeight + 200; 
     this.num = num;
   } 
   
@@ -24,26 +24,36 @@ class shapeArray
     stroke(127); 
     //ellipseMode(CORNER); 
     //ellipse(50, 50, shapeWidth, shapeHeight); 
-    if (num % 7 ==0) {
-      triangle(80, shapeWidth, 108, 70, 136, shapeWidth);
+    if (num % 8 ==0) {
+      //this isn't actually centered which I find deeply, fundamentally annoying
+      triangle(280, 200, 360, 70, 440, 200);
+      //arc(50, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
-    if (num % 7 ==1) {
-      rect(250, 250, 200, 200);
+    if (num % 8 ==1) {
+     // rect(250, 250, 200, 200);
+     arc(100, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
-    if (num % 7 ==2) {
-      quad(189, 18, shapeWidth, 18, 216, 360, 144, 360);
+    if (num % 8 ==2) {
+      //quad(189, 78, 250, 58, 216, 360, 144, 360);
+      arc(150, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
-    if (num % 7 ==3) {
-      ellipse(316, 144, 72, 72);
+    if (num % 8 ==3) {
+     // ellipse(316, 144, 72, 72);
+     arc(200, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
-    if (num % 7 ==4) {
-      triangle(30, 75, 58, 20, 86, 75); 
+    if (num % 8 ==4) {
+     // triangle(30, 75, 58, 20, 86, 75); 
+     arc(250, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
-    if (num % 7 ==5) {
-      arc(479, 300, shapeWidth, 280, PI, TWO_PI);
+    if (num % 8 ==5) {
+     arc(300, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
-    if (num % 7 ==6) {
-      star(316, 180, shapeWidth, shapeHeight, 5);
+    if (num % 8 ==6) {
+     // star(316, 180, shapeWidth, shapeHeight, 5);
+     arc(350, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+    } 
+    if (num % 8 ==7) {
+       arc(400, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     
     /** 
