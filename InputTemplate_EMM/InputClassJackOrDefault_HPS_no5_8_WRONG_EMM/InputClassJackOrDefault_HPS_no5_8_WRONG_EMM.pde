@@ -19,6 +19,9 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*
+  10/25/2016
+  Added the "WRONG" label in sketch title, but no longer convinced that that is true.
+  
   10/16/2016
   Skipping input numbers 5-8, since they are lost when the ADA8200 connects to the FCA1616.
    - constructor adds 4 to numInputs;
@@ -299,12 +302,9 @@ class Input
     }
     
     inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
-    
-    return getAdjustedFund(inputNum);
-/*
+   
     setFund();
     return this.adjustedFundArray[inputNum - 1];
-    */
   } // getAdjustedFundAsHz()
 
   /**
@@ -349,11 +349,8 @@ class Input
     
     inputNumErrorCheck(inputNum, "getFundAsHz(int)");
     
-    return getFund(inputNum);
-/*
     setFund();
     return this.fundamentalArray[inputNum - 1];
-    */
   } // getFundAsHz()
 
   /**

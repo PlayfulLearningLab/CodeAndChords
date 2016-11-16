@@ -23,6 +23,11 @@ import javax.sound.sampled.AudioFormat;
 class Input
 {
   /*
+  10/25
+   SamplePlayer plays;
+   To analyze the audio:
+   - pass
+   
    ** As of mid-July, 2016, the following is NOT true:
    "Notate bene: inputNum passed to constructor must be 4 greater
    than the actual desired number of inputs."
@@ -64,6 +69,7 @@ class Input
   //  float                  pitch;                // 
   PowerSpectrum[]        psArray;              // holds the PowerSpectrum objects connected to each input.
   SamplePlayer           samplePlayer;
+  SampleManager          sampleManager;
   float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
   ShortFrameSegmenter[]  sfsArray;             // holds the ShortFrameSegmenter objects connected to each input.
   //  int                    waitUntil;            // number of milliseconds to wait before checking for another key 
@@ -114,6 +120,177 @@ class Input
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
 
+    initInput(uGenArray);
+
+    /*
+    Default compressor values:
+     threshold - .5
+     attack - 1
+     decay - .5
+     knee - .5
+     ratio - 2
+     side-chain - the input audio
+     */
+    // Create a compressor w/standard values:
+    /*    this.compressor  = new Compressor(this.ac, 1);
+     this.compressor.setRatio(8.0);
+     
+     // Create a Gain, add the Compressor to the Gain,
+     // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
+     g = new Gain(this.ac, 1, 0.5);
+     g.addInput(this.compressor);
+     
+     // Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
+     for (int i = 0; i < this.numInputs; i++)
+     {
+     g.addInput(uGenArray[i]);
+     } // for
+     ac.out.addInput(g);
+     
+     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
+     // this creates an array of SFS's and adds the UGens to them:
+     this.sfsArray  = new ShortFrameSegmenter[this.numInputs];
+     for (int i = 0; i < this.sfsArray.length; i++)
+     {
+     this.sfsArray[i] = new ShortFrameSegmenter(ac);
+     while (this.sfsArray[i] == null) {
+     }
+     this.sfsArray[i].addInput(uGenArray[i]);
+     }
+     
+     // Creates an array of FFTs and adds them to the SFSs:
+     this.fftArray  = new FFT[this.numInputs];
+     for (int i = 0; i < this.fftArray.length; i++)
+     {
+     this.fftArray[i] = new FFT();
+     while (this.fftArray[i] == null) {
+     }
+     this.sfsArray[i].addListener(this.fftArray[i]);
+     } // for
+     
+     // Creates an array of PowerSpectrum's and adds them to the FFTs
+     // (the PowerSpectrum is what will actually perform the FFT):
+     this.psArray  = new PowerSpectrum[this.numInputs];
+     for (int i = 0; i < this.psArray.length; i++)
+     {
+     this.psArray[i] = new PowerSpectrum();
+     while (this.psArray[i] == null) {
+     }
+     this.fftArray[i].addListener(psArray[i]);
+     } // for
+     
+     // Creates an array of FrequencyEMMs and adds them to the PSs
+     // (using my version of the Frequency class - an inner class further down - to allow access to amplitude):
+     this.frequencyArray  = new FrequencyEMM[this.numInputs];
+     for (int i = 0; i < this.frequencyArray.length; i++)
+     {
+     this.frequencyArray[i] = new FrequencyEMM(44100);
+     while (this.frequencyArray[i] == null) {
+     }
+     this.psArray[i].addListener(frequencyArray[i]);
+     } // for
+     
+     // Adds the SFSs (and everything connected to them) to the AudioContext:
+     for (int i = 0; i < this.numInputs; i++)
+     {
+     ac.out.addDependent(sfsArray[i]);
+     } // for - addDependent
+     
+    /*
+     // trying to mute the output:
+     mute = new Gain(this.ac, 1, 0);
+     mute.addInput(this.ac.out);
+     ac.out.addInput(mute);
+     */
+
+    // Starts the AudioContext (and everything connected to it):
+    /*    this.ac.start();
+     
+     // Pitches with amplitudes below this number will be ignored by adjustedFreq:
+     this.sensitivity  = 10;
+     
+     // Initializes the arrays that will hold the pitches:
+     this.fundamentalArray = new float[this.numInputs];
+     this.adjustedFundArray = new float[this.numInputs];
+     
+     // Gets the ball rolling on analysis:
+     this.setFund();
+     */
+  } // constructor(int)
+
+  /**
+   * Constructor for creating a one (or two?)-channel Input object 
+   * from the machine's default audio input device;
+   * does not require Jack.
+   */
+  Input()
+  {
+    this(1, new AudioContext());
+  } // constructor()
+
+  /**
+   *  TODO:  add Beads functionality
+   * Constructor for creating an Input object from an audio file.
+   *
+   * @param  filename  String specifying the audio file.
+   */
+  Input(String filename)
+  {
+    this(new String[] { filename });
+  } // constructor(String)
+  
+  /**
+   *  TODO:  add Beads functionality
+   * Constructor for creating an Input object from an audio file.
+   *
+   * @param  filename  String specifying the audio file.
+   */
+  Input(String[] filenames)
+  {
+    this.ac = new AudioContext();
+    this.numInputs  = filenames.length;
+    this.sampleManager  = new SampleManager();
+    Sample[]  samples  = new Sample[filenames.length];
+
+    try {
+
+      for (int i = 0; i < samples.length; i++)
+      {
+        samples[i]  = new Sample(sketchPath(filenames[i]));
+      } // for
+    }
+    catch(Exception e)
+    {
+      // if there is an error, show an error message (at the bottom of the processing window)
+      println("Exception while attempting to load sample!");
+      e.printStackTrace(); // then print a technical description of the error
+      exit(); // and exit the program
+    }
+
+    for (int i = 0; i < samples.length; i++)
+    {
+      SampleManager.addToGroup("group", samples[i]);
+    } // for
+    
+    uGenArray  = new UGen[SampleManager.getGroup("group").size()];
+    for(int i = 0; i < uGenArray.length; i++)
+    {
+      // Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
+      uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
+    } // for
+
+    initInput(uGenArray);
+  } // constructor(String[])
+
+  /**
+   *  As of 10/24/2016, does everything that was in the (int, AudioContext) constructor;
+   *  that is, initialize the Gain, add everything in the given UGen[] to it,
+   *  and analyze the frequencies w/SFS, PS, FFT, Frequency.
+   *
+   *  @param  uGenArray  a UGen[] whose members will be added to a gain, analyzed, and added to the AudioContext.
+   */
+  void initInput(UGen[] uGenArray)
+  {
     /*
     Default compressor values:
      threshold - .5
@@ -131,7 +308,7 @@ class Input
     // add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
     g = new Gain(this.ac, 1, 0.5);
     g.addInput(this.compressor);
-    
+
     // Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
     for (int i = 0; i < this.numInputs; i++)
     {
@@ -207,60 +384,7 @@ class Input
 
     // Gets the ball rolling on analysis:
     this.setFund();
-  } // constructor(int)
-
-  /**
-   * Constructor for creating a one (or two?)-channel Input object 
-   * from the machine's default audio input device;
-   * does not require Jack.
-   */
-  Input()
-  {
-    this(1, new AudioContext());
-  } // constructor()
-
-  /**
-   *  TODO:  add Beads functionality
-   * Constructor for creating an Input object from an audio file.
-   *
-   * @param  filename  String specifying the audio file.
-   */
-  Input(String filename)
-  {
-    this.ac = new AudioContext();
-    String filepath = sketchPath(filename);
-
-    // Load the file: 
-    try {  
-      // initialize our SamplePlayer, loading the file indicated by the sourceFile string
-      this.samplePlayer = new SamplePlayer(ac, new Sample(filepath));
-    } 
-    catch(Exception e) {
-      // if there is an error, show an error message (at the bottom of the Processing window)
-      println("Exception while attempting to load sample!");
-      e.printStackTrace(); // then print a technical description of the error
-      exit(); // and exit the program
-    }
-
-    g = new Gain(this.ac, 1, 0.5);
-    g.addInput(this.samplePlayer);
-
-    ac.out.addInput(g);
-
-    ac.start();
-
-    samplePlayer.setToLoopStart();
-    samplePlayer.start();
-
-    /*
-    ** To finish this out:
-       
-      - Make a new constructor that takes an array of... UGens?
-        Yes: we'll have to make an array of SamplePlayers that should fit,
-        and the others can send their AudioInput ones.
-        ^ kind of, but instead of another constructor, let's just make a method.
-     */
-  } // constructor(String)
+  } // initInput
 
   /**
    * @return  int  number of input channels.
