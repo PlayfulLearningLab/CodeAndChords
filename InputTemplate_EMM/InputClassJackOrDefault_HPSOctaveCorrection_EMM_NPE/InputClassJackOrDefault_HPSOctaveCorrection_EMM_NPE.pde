@@ -653,7 +653,8 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
     } // for
     
     println("  in process(), powerSpectrum = " + powerSpectrum);
-
+    
+    // NB: freqEMM is defined in the HPSTestDriver tab.
     for (i = FIRSTBAND; i < freqEMM.hps.length; i++)
     {
       // find max and secondMax peaks:

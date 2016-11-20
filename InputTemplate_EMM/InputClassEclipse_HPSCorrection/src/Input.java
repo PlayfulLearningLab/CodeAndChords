@@ -660,6 +660,11 @@ public class Input extends PApplet {
 	void setSensitivity(float newSensitivity) {
 		this.sensitivity = newSensitivity;
 	}
+	
+	public FrequencyEMM[]	getFrequencyArray()
+	{
+		return this.frequencyArray;
+	}
 
 	/*
 	 * This file is part of Beads. See http://www.beadsproject.net for all
@@ -682,10 +687,12 @@ public class Input extends PApplet {
 	 * Frequency processes spectral data forwarded to it by a
 	 * {@link PowerSpectrum} to determine the best estimate for the frequency of
 	 * the current signal.
+	 * 
+	 * TODO: make FrequencyEMM and hps (float[]) private.
 	 *
 	 * @beads.category analysis
 	 */
-	private class FrequencyEMM extends FeatureExtractor<Float, float[]> {
+	public class FrequencyEMM extends FeatureExtractor<Float, float[]> {
 
 		/** The Constant FIRSTBAND. */
 		static final int FIRSTBAND = 3;
@@ -695,7 +702,8 @@ public class Input extends PApplet {
 
 		private int bufferSize;
 
-		private float[] hps; // Harmonic Product Spectrum summed up here
+		// TODO: makes this private, post-testing.
+		public float[] hps; // Harmonic Product Spectrum summed up here
 
 		private float sampleRate;
 
@@ -725,7 +733,6 @@ public class Input extends PApplet {
 		 * float[])
 		 */
 		public synchronized void process(TimeStamp startTime, TimeStamp endTime, float[] powerSpectrum) {
-			println("calling process()");
 			if (bufferSize != powerSpectrum.length) {
 				bufferSize = powerSpectrum.length;
 				bin2hz = sampleRate / (2 * bufferSize);
@@ -758,12 +765,12 @@ public class Input extends PApplet {
 				hps[i] = hps[i] + powerSpectrum[i * 4];
 			} // for
 
-			for (i = FIRSTBAND; i < freqEMM.hps.length; i++) {
+			for (i = FIRSTBAND; i < this.hps.length; i++) {
 				// find max and secondMax peaks:
-				if (freqEMM.hps[i] > freqEMM.hps[maxBin]) {
+				if (this.hps[i] > this.hps[maxBin]) {
 					maxBin = i;
 					println("Input: maxBin = " + maxBin);
-				} else if (freqEMM.hps[i] > freqEMM.hps[secondMaxBin] && freqEMM.hps[i] < freqEMM.hps[maxBin]) {
+				} else if (this.hps[i] > this.hps[secondMaxBin] && this.hps[i] < this.hps[maxBin]) {
 					secondMaxBin = i;
 					println("Input: secondMaxBin = " + secondMaxBin);
 				} // if
