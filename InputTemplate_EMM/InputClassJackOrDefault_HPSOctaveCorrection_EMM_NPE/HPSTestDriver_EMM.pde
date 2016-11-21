@@ -125,7 +125,7 @@ void drawHPSSecondHighest(Input input)
   } // for
 
   stroke(150, 50, 150);
-  rect( freqEMM.maxbin*10, height, 1, - freqEMM.hps[maxBin] );
+  rect( maxBin*10, height, 1, - freqEMM.hps[maxBin] );
 
   /*
     // We were getting errors with this, probably maening that freqEMM.hps was being updated between detecting the max and secondHighest freq's.

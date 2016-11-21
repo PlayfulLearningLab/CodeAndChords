@@ -769,10 +769,8 @@ public class Input extends PApplet {
 				// find max and secondMax peaks:
 				if (this.hps[i] > this.hps[maxBin]) {
 					maxBin = i;
-					println("Input: maxBin = " + maxBin);
 				} else if (this.hps[i] > this.hps[secondMaxBin] && this.hps[i] < this.hps[maxBin]) {
 					secondMaxBin = i;
-					println("Input: secondMaxBin = " + secondMaxBin);
 				} // if
 			} // for
 
@@ -783,29 +781,30 @@ public class Input extends PApplet {
 			 */
 
 			// I added the following line;
-			// 10/5 edits may cause it to be a larger num than it was
+			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was
 			// previously:
-			amplitude = (float) pmax;
+			amplitude = (float) hps[maxBin];
 
 			// cubic interpolation
-			double yz = powerSpectrum[maxbin];
+			// (11/20: replaced "maxbin" with "maxBin" so that hps detection can have effect!)
+			double yz = powerSpectrum[maxBin];
 			double ym;
 			if (maxbin <= 0) {
-				ym = powerSpectrum[maxbin];
+				ym = powerSpectrum[maxBin];
 			} else {
-				ym = powerSpectrum[maxbin - 1];
+				ym = powerSpectrum[maxBin - 1];
 			} // else
 
 			double yp;
-			if (maxbin < powerSpectrum.length - 1) {
-				yp = powerSpectrum[maxbin + 1];
+			if (maxBin < powerSpectrum.length - 1) {
+				yp = powerSpectrum[maxBin + 1];
 			} else {
-				yp = powerSpectrum[maxbin];
+				yp = powerSpectrum[maxBin];
 			} // else
 
 			double k = (yp + ym) / 2 - yz;
 			double x0 = (ym - yp) / (4 * k);
-			features = (float) (bin2hz * (maxbin + x0));
+			features = (float) (bin2hz * (maxBin + x0));
 
 			forward(startTime, endTime);
 		}
