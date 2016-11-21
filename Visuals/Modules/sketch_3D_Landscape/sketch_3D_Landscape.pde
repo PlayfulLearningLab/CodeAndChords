@@ -1,3 +1,12 @@
+/**
+  * Elena Ryan
+  * Sketch 3D Attempt
+  * 11/14/16
+  * SourceCode Derived: https://www.openprocessing.org/sketch/11381#
+*/
+
+
+Input input;
 int  d=8;
 
 float[][] val ;
@@ -9,6 +18,7 @@ float zincrement = 0.01;
 
 void setup(){
   //smooth();
+  input = new Input();
   size(720, 480, P3D);
   val = new float[width/d][height/d];
   xSize = width/d;
@@ -37,7 +47,7 @@ void draw(){
     float yoff = 0.0;   // For every xoff, start yoff at 0
     for (int y = 0; y < height/d; y++) {
       yoff += increment; // Increment yoff
-      float z = noise(xoff,yoff,zoff)*600;
+      float z = noise(input.getAmplitude(),yoff,zoff)*600;
       val[x][y] = z;
     }
   }
