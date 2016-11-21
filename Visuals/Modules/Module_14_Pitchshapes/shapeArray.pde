@@ -30,30 +30,32 @@ class shapeArray
       //arc(50, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==1) {
-     // rect(250, 250, 200, 200);
-     arc(100, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+     rect(250, 50, 200, 200);
+    //arc(100, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==2) {
-      //quad(189, 78, 250, 58, 216, 360, 144, 360);
-      arc(150, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+      quad(138, 31, 186, 20, 269, 63, 230, 76);
+      //arc(150, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==3) {
-     // ellipse(316, 144, 72, 72);
-     arc(200, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+      ellipse(316, 144, 72, 72);
+     //arc(200, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==4) {
-     // triangle(30, 75, 58, 20, 86, 75); 
-     arc(250, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+      triangle(130, 75, 58, 20, 286, 75); 
+     //arc(250, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==5) {
-     arc(300, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+     rect(250, 50, 100, 200); 
+    // arc(300, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==6) {
-     // star(316, 180, shapeWidth, shapeHeight, 5);
-     arc(350, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+      star(316, 180, shapeWidth, shapeHeight, 5);
+     //arc(350, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 8 ==7) {
-       arc(400, 300, shapeWidth, shapeHeight, PI, TWO_PI);
+       ellipse(316, 244, 72, 72);
+      //arc(400, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     
     /** 
