@@ -29,23 +29,23 @@ void draw(){
   
   for (int i = 0; i < width; i++) {
     float r = random(255) ;
-    //stroke(r);
+    stroke(r);
     line(i, 0, i, height);
   }
  
   for (int i = height; i > 0; i--) {
    float r = random(255);
-   // stroke(r);
+   stroke(r);
     line(i, 0, width, i);
   }
  for (int i = height; i > 0; i--){
     float r = random(255);
-    //stroke(r);
+    stroke(r);
     line(height, 0, i, height);
  }
  for (int i = height; i > 0; i--){
      float r = random(255);
-    //stroke(r);
+    stroke(r);
     line(height, width, 0, i);
  }
 
@@ -53,7 +53,7 @@ void draw(){
 
 //This if statement has random rectangles appearing if an input is above a threshold
  if(testInput.getAmplitude()>threshold){  
-    fill(random(255), random(255), random(255), 10);
+    fill(random(255), random(255), random(255));
     rect(random(width), random(height), random(150), random(150));
   }
 //This if statement is still in the works....trying to make a circle appear in the center
