@@ -1,5 +1,9 @@
 import processing.core.PApplet;
 
+/*
+ * Driver for InputClassEclipse_Renamed
+ */
+
 public class Driver extends PApplet {
 	Input	input;
 	

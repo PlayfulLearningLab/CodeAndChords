@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;Driver_HPSCorrection.java&apos; to &apos;Driver.java&apos;&#x0A;- Original project: &apos;InputClassEclipse&apos;&#x0A;- Original element: &apos;Driver_HPSCorrection.java&apos;&#x0A;- Renamed element: &apos;Driver.java&apos;" description="Rename compilation unit &apos;Driver_HPSCorrection.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;{Driver_HPSCorrection.java" name="Driver.java" references="false" stamp="1479514813673" version="1.0"/>
+</session>
