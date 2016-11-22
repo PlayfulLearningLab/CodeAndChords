@@ -2,22 +2,23 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="j" key="selection"/>
+		<item value="psArray" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="psArray"/>
+			<item value="PowerSpectrum"/>
+			<item value="bin2hz"/>
+			<item value="bins2hz"/>
+			<item value="freqEMM.hps"/>
 			<item value="i1"/>
 			<item value="process("/>
 			<item value="audioFormat"/>
-			<item value="tdl"/>
-			<item value="security restrictions"/>
-			<item value="beads-io"/>
-			<item value="beads.io"/>
-			<item value="beadsio"/>
 		</list>
 		<list key="replacehistory">
+			<item value="powerSpectrum"/>
 			<item value="j"/>
 			<item value="tdl2"/>
 			<item value="tdl1"/>
