@@ -25,8 +25,8 @@ class RainingNumbers
 	int[]	background      = new int[] { 0, 0, 0 };
 //	int   backgroundColor; //	= parent.color(background[0], background[1], background[2]);
 	int[]	text			= new int[] { 0, 0, 0 };
-	int		titleSize		= 18;
-	int		textSize		= 14;
+	int		titleSize		= 24;
+	int		textSize		= 18;
 
 	PApplet	parent;
 
@@ -64,7 +64,7 @@ class RainingNumbers
 		//    fill(0, 0, 0);
 		parent.fill(text[0], text[1], text[2]);
 		parent.textSize(this.titleSize);
-		parent.text(name, xPos, 55);
+		parent.text(name, xPos, 35);
 
 		parent.textSize(this.textSize);
 		this.nextRain  = parent.millis() + delay;
@@ -81,14 +81,12 @@ class RainingNumbers
 		int  tailDrawPos;            // position of value that will dissapear into background.
 		int  tailModPos;             // used to calculate wrap-around to top of screen while keeping space for text at the top.
 
-/*
+		// Tried w/out success to do this only in the constructor:
 		// Print name of column at the top:
 		parent.fill(text[0], text[1], text[2]);
 		parent.textSize(this.titleSize);
 		parent.text(name, xPos, 55);
-*/
 
-		parent.fill(text[0], text[1], text[2]);
 		if (parent.millis() > this.nextRain)
 		{
 			// Draw the next value:

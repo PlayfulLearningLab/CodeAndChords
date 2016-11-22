@@ -94,7 +94,7 @@ class RainingNumbers
 			// Draw the next value:
 			parent.textSize(this.textSize);
 			parent.text(value, xPos, yDrawPos);
-			yModPos   = (yModPos + 15) % (parent.height - 100);
+			yModPos   = (yModPos + 30) % (parent.height - 100);
 			yDrawPos  = yModPos + 100;
 
 			/*

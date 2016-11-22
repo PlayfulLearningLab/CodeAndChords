@@ -109,7 +109,7 @@ class RainingNumbers
 			 */
 
 			// Last value of the tail (to be completely blacked out this time around):
-			tailDrawPos = ((parent.height - 100) + yDrawPos - (this.tail * 15)) % (parent.height - 100);
+			tailDrawPos = ((parent.height - 100) + yDrawPos - (this.tail * 15) + 15) % (parent.height - 100);
 			tailModPos  = tailDrawPos - 100;
 			
 			for (int i = 0; i < 8; i++)
