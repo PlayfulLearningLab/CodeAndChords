@@ -71,6 +71,8 @@ public class Driver extends PApplet {
 	{
 //		println("drawHPSSecondHighest()");
 		Input.FrequencyEMM freqEMM  = input.frequencyArray[0];
+		int maxBin            = 0;
+		int secondMaxBin      = 0;
 
 		int	spacer;
 		try
@@ -102,7 +104,7 @@ public class Driver extends PApplet {
 
 
 			stroke(50, 50, 255);
-			rect(freqEMM.secondMaxBinBelow * spacer, height, 1, -freqEMM.hps[freqEMM.secondMaxBinBelow]);
+			rect(freqEMM.secondMaxBinBelow * 10, height, 1, -freqEMM.hps[freqEMM.secondMaxBinBelow]);
 		} catch(NullPointerException npe)
 		{
 			println("InputClassEclipse_HPSCorrection.drawHPSSecondHighest: " + npe.getMessage());
@@ -111,6 +113,8 @@ public class Driver extends PApplet {
 	
 	void drawPSSecondHighest(Input input)
 	{
+//		println("drawPSSecondHighest()");
+		Input.FrequencyEMM freqEMM  = input.frequencyArray[0];
 		PowerSpectrum	powerSpectrum = input.psArray[0];
 		float[]	features	= powerSpectrum.getFeatures();
 		int maxBin            = 0;

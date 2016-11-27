@@ -76,6 +76,7 @@ public class Driver extends PApplet {
 		try
 		{
 			spacer	= width / freqEMM.hps.length;
+			println("width / freqEMM.hps.length = " + width / freqEMM.hps.length);
 
 			// draw rectangles for every frequency:
 			stroke(255);
@@ -111,6 +112,8 @@ public class Driver extends PApplet {
 	
 	void drawPSSecondHighest(Input input)
 	{
+//		println("drawPSSecondHighest()");
+		Input.FrequencyEMM freqEMM  = input.frequencyArray[0];
 		PowerSpectrum	powerSpectrum = input.psArray[0];
 		float[]	features	= powerSpectrum.getFeatures();
 		int maxBin            = 0;

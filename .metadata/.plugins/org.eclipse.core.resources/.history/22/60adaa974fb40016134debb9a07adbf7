@@ -803,22 +803,11 @@ public class Input extends PApplet {
 				if (this.hps[i] > this.hps[maxBin]) {
 					maxBin = i;
 				}
-				/*
 				if (this.hps[i] > this.hps[secondMaxBinBelow] && this.hps[i] < this.hps[maxBin] && i < maxBin) {
 					secondMaxBinBelow = i;
-					println("i < maxBin = " + (i<maxBin) + "; i = " + i + "; maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
+					println("i < maxBin = " + (i<maxBin) + "; i = " + i + "; maxBin = " + maxBin);
 				} // if
-				*/
 			} // for
-			
-			secondMaxBinBelow	= FIRSTBAND;
-			for(i = FIRSTBAND; i < maxBin; i++)
-			{
-				if(this.hps[i] > this.hps[secondMaxBinBelow] && this.hps[i] < this.hps[maxBin])
-				{
-					secondMaxBinBelow = i;
-				}
-			} // for - secondMaxBinBelow
 //			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
 
 			// only select the second peak if it's about half of the first one:

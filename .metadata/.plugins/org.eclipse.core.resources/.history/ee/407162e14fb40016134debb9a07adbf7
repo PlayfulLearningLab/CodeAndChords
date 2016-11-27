@@ -111,6 +111,8 @@ public class Driver extends PApplet {
 	
 	void drawPSSecondHighest(Input input)
 	{
+//		println("drawPSSecondHighest()");
+		Input.FrequencyEMM freqEMM  = input.frequencyArray[0];
 		PowerSpectrum	powerSpectrum = input.psArray[0];
 		float[]	features	= powerSpectrum.getFeatures();
 		int maxBin            = 0;

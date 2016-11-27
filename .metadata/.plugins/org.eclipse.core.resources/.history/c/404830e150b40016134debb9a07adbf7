@@ -811,7 +811,6 @@ public class Input extends PApplet {
 				*/
 			} // for
 			
-			secondMaxBinBelow	= FIRSTBAND;
 			for(i = FIRSTBAND; i < maxBin; i++)
 			{
 				if(this.hps[i] > this.hps[secondMaxBinBelow] && this.hps[i] < this.hps[maxBin])

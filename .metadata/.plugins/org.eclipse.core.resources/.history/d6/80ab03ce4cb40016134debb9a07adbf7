@@ -33,7 +33,7 @@ import beads.PowerSpectrum;
 import beads.Frequency;
 import beads.Pitch;
 import beads.Compressor;
- */
+*/
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 
 import javax.sound.sampled.AudioFormat;
@@ -77,8 +77,8 @@ public class Input extends PApplet {
 
 	AudioContext ac;
 	float[] adjustedFundArray; // holds the pitch, in hertz, of each input,
-	// adjusted to ignore pitches below a certain
-	// amplitude.
+								// adjusted to ignore pitches below a certain
+								// amplitude.
 	Compressor compressor;
 	// UGen inputsUGen; // initialized with the input from the AudioContext.
 	UGen[] uGenArray;
@@ -86,16 +86,16 @@ public class Input extends PApplet {
 	Gain mute;
 	FFT[] fftArray; // holds the FFT for each input.
 	FrequencyEMM[] frequencyArray; // holds the FrequencyEMM objects connected
-	// to each input.
+									// to each input.
 	float[] fundamentalArray; // holds the current pitch, in hertz, of each
-	// input.
+								// input.
 	int numInputs; // number of lines / mics
 	// float pitch; //
 	PowerSpectrum[] psArray; // holds the PowerSpectrum objects connected to
-	// each input.
+								// each input.
 	float sensitivity; // amplitude below which adjustedFreq will not be reset
 	ShortFrameSegmenter[] sfsArray; // holds the ShortFrameSegmenter objects
-	// connected to each input.
+									// connected to each input.
 	// int waitUntil; // number of milliseconds to wait before checking for
 	// another key
 	private SampleManager sampleManager;
@@ -198,7 +198,7 @@ public class Input extends PApplet {
 			// processing window)
 			println("Exception while attempting to load sample!");
 			e.printStackTrace(); // then print a technical description of the
-			// error
+									// error
 			exit(); // and exit the program
 		}
 
@@ -641,7 +641,7 @@ public class Input extends PApplet {
 		if (inputNum > this.numInputs) {
 			IllegalArgumentException iae = new IllegalArgumentException(
 					"InputClass_Jack.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum
-					+ " is greater than " + this.numInputs + ", the number of inputs.");
+							+ " is greater than " + this.numInputs + ", the number of inputs.");
 			iae.printStackTrace();
 		}
 		if (inputNum < 1) {
@@ -660,7 +660,7 @@ public class Input extends PApplet {
 	void setSensitivity(float newSensitivity) {
 		this.sensitivity = newSensitivity;
 	}
-
+	
 	public FrequencyEMM[]	getFrequencyArray()
 	{
 		return this.frequencyArray;
@@ -711,7 +711,7 @@ public class Input extends PApplet {
 
 		// TODO: make these private at some point?
 		public int maxBin;
-		public int secondMaxBinBelow;
+		public int secondMaxBin;
 
 		/**
 		 * Instantiates a new Frequency.
@@ -748,35 +748,8 @@ public class Input extends PApplet {
 			// now pick best peak from linspec
 			double pmax = -1;
 			int maxbin = 0;
-
+			
 			//Calculating HPS a little differently:
-			for (int i = 0; i < hps1.length; i++) {
-				hps1[i] = powerSpectrum[i];
-			} // for
-
-			// 2:
-			int i;
-			for (i = 0; (i * 2) < hps2.length; i++) {
-				hps2[i] = powerSpectrum[i * 2];
-			} // for
-
-			// 3:
-			for (i = 0; (i * 3) < hps3.length; i++) {
-				hps3[i] = powerSpectrum[i * 3];
-			} // for
-
-			// 4:
-			for (i = 0; (i * 4) < hps4.length; i++) {
-				hps4[i] = powerSpectrum[i * 4];
-			} // for
-
-			for(i = 0; i < hps.length; i++)
-			{
-				hps[i]	= hps1[i] * hps2[i] * hps3[i] * hps4[i];
-			} // for - hps
-
-			// old method:
-			/*
 			for (int i = 0; i < hps.length; i++) {
 				hps[i] = powerSpectrum[i];
 			} // for
@@ -796,44 +769,52 @@ public class Input extends PApplet {
 			for (i = 0; (i * 4) < hps.length; i++) {
 				hps[i] = hps[i] * powerSpectrum[i * 4];
 			} // for
-			 */
+/*
+			for (int i = 0; i < hps.length; i++) {
+				hps[i] = powerSpectrum[i];
+			} // for
+
+			// 2:
+			int i;
+			for (i = 0; (i * 2) < hps.length; i++) {
+				hps[i] = hps[i] * powerSpectrum[i * 2];
+			} // for
+
+			// 3:
+			for (i = 0; (i * 3) < hps.length; i++) {
+				hps[i] = hps[i] * powerSpectrum[i * 3];
+			} // for
+
+			// 4:
+			for (i = 0; (i * 4) < hps.length; i++) {
+				hps[i] = hps[i] * powerSpectrum[i * 4];
+			} // for
+			*/
 
 			for (i = FIRSTBAND; i < this.hps.length; i++) {
 				// find max and secondMax peaks:
 				if (this.hps[i] > this.hps[maxBin]) {
 					maxBin = i;
-				}
-				/*
-				if (this.hps[i] > this.hps[secondMaxBinBelow] && this.hps[i] < this.hps[maxBin] && i < maxBin) {
-					secondMaxBinBelow = i;
-					println("i < maxBin = " + (i<maxBin) + "; i = " + i + "; maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
+				} 
+				if (this.hps[i] > this.hps[secondMaxBin] && this.hps[i] < this.hps[maxBin]) {
+					secondMaxBin = i;
 				} // if
-				*/
 			} // for
+			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBin = " + secondMaxBin);
 			
-			secondMaxBinBelow	= FIRSTBAND;
-			for(i = FIRSTBAND; i < maxBin; i++)
-			{
-				if(this.hps[i] > this.hps[secondMaxBinBelow] && this.hps[i] < this.hps[maxBin])
-				{
-					secondMaxBinBelow = i;
-				}
-			} // for - secondMaxBinBelow
-//			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
-
 			// only select the second peak if it's about half of the first one:
-			int error  = 5;
-			//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
-			if (Math.abs(maxBin - secondMaxBinBelow) < (secondMaxBinBelow + error) && 
-					Math.abs(maxBin - secondMaxBinBelow) > (secondMaxBinBelow - error) &&
-					//"...AND the ratio of amplitudes is above a threshold (e.g., 0.2 for 5 harmonics)..."
-					((hps[secondMaxBinBelow] * 100) / (hps[maxBin] * 100) > 20))
-			{
-				//"...THEN select the lower octave peak as the pitch for the current frame."
-				println("got within margin of error correction");
-
-				maxBin  = secondMaxBinBelow;
-			} // if
+		    int error  = 5;
+		    if (Math.abs(maxBin - secondMaxBin) < (secondMaxBin + error) && 
+		      Math.abs(maxBin - secondMaxBin) > (secondMaxBin - error) /*&& // I don't know what this is doing...
+		      ((hps[secondMaxBin] * 100) / (hps[maxBin] * 100) > 20)*/)
+		    {
+		      println("got within margin of error correction");
+		      if (secondMaxBin < maxBin)
+		      {
+		        println("maxBin was higher");
+		        maxBin  = secondMaxBin;
+		      } // if
+		    } // if
 
 			/*
 			 * for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
