@@ -752,27 +752,43 @@ public class Input extends PApplet {
 			// 2:
 			int i;
 			for (i = 0; (i * 2) < hps.length; i++) {
-				hps[i] = hps[i] + powerSpectrum[i * 2];
+				hps[i] = hps[i] * powerSpectrum[i * 2];
 			} // for
 
 			// 3:
 			for (i = 0; (i * 3) < hps.length; i++) {
-				hps[i] = hps[i] + powerSpectrum[i * 3];
+				hps[i] = hps[i] * powerSpectrum[i * 3];
 			} // for
 
 			// 4:
 			for (i = 0; (i * 4) < hps.length; i++) {
-				hps[i] = hps[i] + powerSpectrum[i * 4];
+				hps[i] = hps[i] * powerSpectrum[i * 4];
 			} // for
 
 			for (i = FIRSTBAND; i < this.hps.length; i++) {
 				// find max and secondMax peaks:
 				if (this.hps[i] > this.hps[maxBin]) {
 					maxBin = i;
-				} else if (this.hps[i] > this.hps[secondMaxBin] && this.hps[i] < this.hps[maxBin]) {
+				} 
+				if (this.hps[i] > this.hps[secondMaxBin] && this.hps[i] < this.hps[maxBin]) {
 					secondMaxBin = i;
 				} // if
 			} // for
+			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBin = " + secondMaxBin);
+			
+			// only select the second peak if it's about half of the first one:
+		    int error  = 5;
+		    if (Math.abs(maxBin - secondMaxBin) < (secondMaxBin + error) && 
+		      Math.abs(maxBin - secondMaxBin) > (secondMaxBin - error) /*&& // I don't know what this is doing...
+		      ((hps[secondMaxBin] * 100) / (hps[maxBin] * 100) > 20)*/)
+		    {
+		      println("got within margin of error correction");
+		      if (secondMaxBin < maxBin)
+		      {
+		        println("maxBin was higher");
+		        maxBin  = secondMaxBin;
+		      } // if
+		    } // if
 
 			/*
 			 * for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
@@ -789,7 +805,7 @@ public class Input extends PApplet {
 			// (11/20: replaced "maxbin" with "maxBin" so that hps detection can have effect!)
 			double yz = powerSpectrum[maxBin];
 			double ym;
-			if (maxbin <= 0) {
+			if (maxBin <= 0) {
 				ym = powerSpectrum[maxBin];
 			} else {
 				ym = powerSpectrum[maxBin - 1];

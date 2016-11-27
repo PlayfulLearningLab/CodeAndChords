@@ -10,7 +10,7 @@ Input  input;
 
 void setup()
 {
-  size(700, 394);
+  size(750, 422);
   input  = new Input();
 } // draw()
 

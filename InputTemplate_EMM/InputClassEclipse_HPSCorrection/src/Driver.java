@@ -19,8 +19,8 @@ public class Driver extends PApplet {
 	public void setup()
 	{
 		background(230, 179, 204);
-		input	= new Input("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
-		//		input	= new Input(new String[] {"Horse and Rider 1.wav", "Horse and Rider 2.wav", "Horse and Rider 3.wav"});
+//		input	= new Input("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
+		input	= new Input();
 		freqEMMarray = input.getFrequencyArray();
 		inputFreqRain	= new RainingNumbers(this, width - 200, "input.getAdjustedFund()", 15);
 //		inputFreqRain.setBackgroundColor(250, 150, 204);
