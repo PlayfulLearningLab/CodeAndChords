@@ -60,13 +60,18 @@ class shapeArray
     // arc(300, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
     if (num % 12 ==6) {
+      beginShape();
+      vertex(225, 200);
+      vertex(280, 144);
+      vertex(320, 144);
+      vertex(375, 200);
+      endShape();
       //MAKE THIS A trapezoid
      // star(316, 180, shapeWidth, shapeHeight, 5);
      //arc(350, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 
      if (num % 12 ==7) {
-       //ought to be square
-       rect(250, 50, 100, 200); 
+      rect(250, 50, 100, 200); 
      // star(316, 180, shapeWidth, shapeHeight, 5);
      //arc(350, 300, shapeWidth, shapeHeight, PI, TWO_PI);
     } 

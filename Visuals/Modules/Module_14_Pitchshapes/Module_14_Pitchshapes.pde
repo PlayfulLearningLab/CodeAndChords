@@ -7,6 +7,13 @@ import interfascia.*;
  * shape changes based on pitch.
  * SWITCH INPUT TO MOST RECENT VERSION
  * (Adapted from Examples => Color => Hue as well as Background_hue module)
+ 
+ 
+ 
+ 
+ * 11/26/16
+ * Added trapezoid to pitchShapes
+ * created input of C scale
  */
 
 
