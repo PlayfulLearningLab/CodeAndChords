@@ -75,8 +75,9 @@ void setup()
 
 
 //  input        = new Input("C Major Scale.wav");
-  input        = new Input("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
+//  input        = new Input("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
  // input        = new Input("Gittin.mp3");
+ input    = new Input();
   threshold    = 15;
 
   noStroke();

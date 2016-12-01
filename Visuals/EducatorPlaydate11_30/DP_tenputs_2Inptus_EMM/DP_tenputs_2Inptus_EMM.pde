@@ -226,12 +226,15 @@ void draw()
   //FOREST GREEN
   stroke(255);
   rectMode(CORNERS);
+  oldb1 = pitchb1/(volb1+1);
+  volb1 = round(rpvol);
+  oldb1=pitchb1/(volb1+1);
   for (j=0; j<volt2; j++)
   {
-    fill(1, 100-colorDecay*oldt2, 65-colorDecay*oldt2); //1 100 65 (0 255 232 was CYAN)
+    fill(1, 100-colorDecay*oldb1, 65-colorDecay*oldb1); //1 100 65 (0 255 232 was CYAN)
     //rect(width-5*refx-w,refy-(space+h)*j, width-4*refx-w-off,(refy-h)-(space+h)*j);
     rect(halfwmin, refy-(space+h)*j, halfwplus, (refy-h)-(space+h)*j);
-    oldt2=oldt2+pitcht2/(volt2+1);
+    oldb1=oldb1+pitchb1/(volb1+1);
   }
   oldt2=pitcht2/(volt2+1);
 
