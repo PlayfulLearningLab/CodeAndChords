@@ -69,7 +69,7 @@ void draw()
 {
   for(int i = 0; i < rains.length; i++)
   {
-    rains[i].rain(input.getAmplitude(i + 1));
+    rains[i].rain(input.getAdjustedFund(i + 1));
   } // for
   
   /*
