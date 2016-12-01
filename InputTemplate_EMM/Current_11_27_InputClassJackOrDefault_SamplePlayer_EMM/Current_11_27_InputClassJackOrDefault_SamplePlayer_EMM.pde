@@ -157,12 +157,12 @@ class Input
     this.sampleManager  = new SampleManager();
     Sample[] samples    = new Sample[filenames.length];  // samples will be initiated in a try/catch in order to determine whether or not the operation was successful.
     int  semaphore      = 1;
-// Ooooohhh... I can't test for /data/ or not, b/c it has it if I tell it to, and doesn't if I don't.
+    // Ooooohhh... I can't test for /data/ or not, b/c it has it if I tell it to, and doesn't if I don't.
 
-// Okay: I could try both ways, catch Exceptions, set semaphores.  Then, if both fail, I throw an exception, but if only one fails --
-// the key here is to have 2 separate samples -- no, that's annoying.  I'll have one, and I'll only try it with data if sketch fails.
+    // Okay: I could try both ways, catch Exceptions, set semaphores.  Then, if both fail, I throw an exception, but if only one fails --
+    // the key here is to have 2 separate samples -- no, that's annoying.  I'll have one, and I'll only try it with data if sketch fails.
     try {
-//      samples  = new Sample[filenames.length];
+      //      samples  = new Sample[filenames.length];
 
       for (int i = 0; i < samples.length; i++)
       {
@@ -172,29 +172,32 @@ class Input
     catch(Exception e)
     {
       semaphore  = 0;
-      // if there is an error, show an error message (at the bottom of the processing window)
-      println("Exception while attempting to load sample!");
-      e.printStackTrace(); // then print a technical description of the error
-      exit(); // and exit the program
     }
-    if(semaphore == 0)
+    if (semaphore == 0)
     {
-    try {
-      samples  = new Sample[filenames.length];
+      try {
+        for (int i = 0; i < samples.length; i++)
+        {
+          samples[i]  = new Sample(dataPath(filenames[i]));
+        } // for
 
-      for (int i = 0; i < samples.length; i++)
+        semaphore  = 1;
+      }
+      catch(Exception e)
       {
-        samples[i]  = new Sample(dataPath(filenames[i]));
-      } // for
-    }
-    catch(Exception e)
+        // if there is an error, show an error message (at the bottom of the processing window)
+        println("Exception while attempting to load sample!");
+        e.printStackTrace(); // then print a technical description of the error
+        throw new IllegalArgumentException("Input.constructor(String[]): the specified files could not be found.");
+        //    exit(); // and exit the program
+      }
+    } // if
+
+    if (semaphore  == 0)
     {
-      // if there is an error, show an error message (at the bottom of the processing window)
-      println("Exception while attempting to load sample!");
-      e.printStackTrace(); // then print a technical description of the error
-      throw new IllegalArgumentException("Input.constructor(String[]): the specified files could not be found.");
-  //    exit(); // and exit the program
-    }
+      RuntimeException re  = new RuntimeException("Input.constructor(String[]): the specified files could not be found.");
+      re.printStackTrace();
+      throw re;
     } // if
 
     for (int i = 0; i < samples.length; i++)
