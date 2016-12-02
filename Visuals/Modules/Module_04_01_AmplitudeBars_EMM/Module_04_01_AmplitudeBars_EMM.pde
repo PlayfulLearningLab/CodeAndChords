@@ -2,7 +2,7 @@
  *  11/03/2016
  *  Emily Meuer
  *
- *  Getting it to work for a demo -- uses Beads.
+ *  Getting it to work for a demo -- uses Minim.
  *
  * Amanda Tenhoff
  * 1 October 2016
