@@ -2,11 +2,10 @@
 
 Live music visualization project (in-progress) using the Processing language and Java Sound API.
 
-## To run:
-_Quick Demos:_
+## Quick Demos:
 Download the appropriate "StartHere" folder for your OS; all the demos should run without additional software.
 
-_Everything else:_
+## Everything Else:
  1. Download Processing (https://processing.org/download/)
  2. Open and run any of the files in Visuals/Modules.
  
