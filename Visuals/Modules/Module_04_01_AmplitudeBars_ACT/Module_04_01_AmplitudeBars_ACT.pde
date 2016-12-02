@@ -1,11 +1,9 @@
 /*
- *  11/03/2016
- *  Emily Meuer
- *
- *  Getting it to work for a demo -- uses Beads.
- *
  * Amanda Tenhoff
  * 1 October 2016
+ *
+ * ** Uses minim. **
+ *
  * Module 04: Amplitude Bars
  * This module takes a single input and creates stacked bars whose stackheight
  * depends on amplitude.
