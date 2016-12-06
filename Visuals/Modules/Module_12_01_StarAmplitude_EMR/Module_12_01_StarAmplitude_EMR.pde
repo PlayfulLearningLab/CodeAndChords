@@ -15,9 +15,11 @@ float r2;
 
 
 
+
+
 void setup() {
-  //input = new Input();
-  input = new Input("Emily_CMajor-2016_9_2-16bit-44.1K Tuned.wav");
+  input = new Input();
+  //input = new Input("Emily_CMajor-2016_9_2-16bit-44.1K Tuned.wav");
   stroke(255, 255, 185);
   threshold = .5;
   background(75, 45, 135);
