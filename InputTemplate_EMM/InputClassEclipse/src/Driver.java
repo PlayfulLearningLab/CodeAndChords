@@ -19,12 +19,14 @@ public class Driver extends PApplet {
 	
 	public void setup()
 	{
-		input	= new Input(new String[] {"Horse and Rider 1.wav", "Horse and Rider 2.wav", "Horse and Rider 3.wav"});
+		input	= new Input();
+//		input	= new Input(new String[] {"Horse and Rider 1.wav" }); //, "Horse and Rider 2.wav", "Horse and Rider 3.wav"});
 	} // setup
 	
 	public void draw()
 	{
 		background(204, 150, 204);
+		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
 		
 		ellipse(width / 2, height - input.getAdjustedFund(), 50, 50);
 	} // draw

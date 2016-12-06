@@ -37,10 +37,11 @@ public class Driver extends PApplet {
 		fill(230, 179, 204);
 		rect(0, 0, width - 200, height);
 		
-		drawPSSecondHighest(input);
+//		drawPSSecondHighest(input);
 		drawHPSSecondHighest(input);
 		
 		inputFreqRain.rain(input.getAdjustedFund());
+		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
 		/*
  // This is now happening in drawHPSSecondHighest()
 		stroke(255);
@@ -60,15 +61,11 @@ public class Driver extends PApplet {
 	} // draw
 
 	/**
-	 * 11/19: currently, secondMaxBin is always after maxBin.
-	 * This is problematic: I want secondMaxBin to be the one that maxBin is fluctuating with,
-	 * but right now maxBin just goes back and forth between them.
-	 * 
-	 * Or: what if we always picked what is now getting "maxBin"?  Would that be helpful?
 	 * @param input
 	 */
 	void drawHPSSecondHighest(Input input)
 	{
+		int	divideBy	= 8;
 //		println("drawHPSSecondHighest()");
 		Input.FrequencyEMM freqEMM  = input.frequencyArray[0];
 
@@ -81,7 +78,7 @@ public class Driver extends PApplet {
 			stroke(255);
 			for (int i = 0; i < freqEMM.hps.length; i++)
 			{
-				rect( i*spacer, height, 1, - freqEMM.hps[i] );
+				rect( i*spacer, height, 1, - (freqEMM.hps[i] / divideBy) );
 				/*
  // I don't want to find my max and secondMax here, b/c the point is to test them from Input.
 	    if (freqEMM.hps[i] > freqEMM.hps[maxBin])
@@ -97,12 +94,13 @@ public class Driver extends PApplet {
 			//	  maxBin		= freqEMM.maxBin;
 			//	  secondMaxBin	= freqEMM.secondMaxBin;
 
-			stroke(150, 50, 150);
-			rect( freqEMM.maxBin*spacer, height, 1, - freqEMM.hps[freqEMM.maxBin] );
-
-
 			stroke(50, 50, 255);
-			rect(freqEMM.secondMaxBinBelow * spacer, height, 1, -freqEMM.hps[freqEMM.secondMaxBinBelow]);
+			rect(freqEMM.secondMaxBinBelow * spacer, height, 1, - (freqEMM.hps[freqEMM.secondMaxBinBelow] / divideBy));
+			
+			stroke(150, 50, 150);
+//			rect( freqEMM.maxBin*spacer, height, 1, - (freqEMM.hps[freqEMM.maxBin] / divideBy) );
+
+
 		} catch(NullPointerException npe)
 		{
 			println("InputClassEclipse_HPSCorrection.drawHPSSecondHighest: " + npe.getMessage());

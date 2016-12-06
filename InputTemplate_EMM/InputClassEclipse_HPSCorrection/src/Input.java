@@ -702,7 +702,7 @@ public class Input extends PApplet {
 
 		private int bufferSize;
 
-		// TODO: makes this private, post-testing.
+		// TODO: make this private, post-testing.
 		public float[] hps; // Harmonic Product Spectrum summed up here
 
 		private float sampleRate;
@@ -797,6 +797,8 @@ public class Input extends PApplet {
 				hps[i] = hps[i] * powerSpectrum[i * 4];
 			} // for
 			 */
+			int	spacer	= width / this.hps.length;
+			int	divideBy	= 8;
 
 			for (i = FIRSTBAND; i < this.hps.length; i++) {
 				// find max and secondMax peaks:
@@ -819,7 +821,7 @@ public class Input extends PApplet {
 					secondMaxBinBelow = i;
 				}
 			} // for - secondMaxBinBelow
-//			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
+			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
 
 			// only select the second peak if it's about half of the first one:
 			int error  = 5;

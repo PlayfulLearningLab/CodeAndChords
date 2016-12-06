@@ -475,7 +475,7 @@ private SampleManager sampleManager;
 
     float  result  = 0;
 
-    // adds the freqencies of the specified inputs:
+    // adds the frequencies of the specified inputs:
     for (int i = 0; i < inputsToAverage.length; i++)
     {
       result  += this.getAdjustedFund(inputsToAverage[i]);
@@ -723,6 +723,8 @@ private class FrequencyEMM extends FeatureExtractor<Float, float[]> {
         maxbin = band;
       } // if
     } // for
+    
+    println("maxbin = " + maxbin);
 
     // I added the following line;
     // 10/5 edits may cause it to be a larger num than it was previously:
