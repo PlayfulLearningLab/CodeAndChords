@@ -11,8 +11,8 @@ int    maxbin;
 void setup()
 {
   size(800, 900);
-  
-  input  = new Input(1);
+  input  = new Input();
+//  input  = new Input(1);
   
   while(millis() < 1000) {}
 } // setup
