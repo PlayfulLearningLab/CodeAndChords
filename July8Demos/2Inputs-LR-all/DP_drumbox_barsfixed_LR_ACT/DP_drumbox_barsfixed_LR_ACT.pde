@@ -290,7 +290,7 @@ void draw()
   }
   oldt2=pitcht2/(volt2+1);
 
-/*
+
   //FOREST GREEN
   stroke(255);
   rectMode(CORNERS);
@@ -391,7 +391,7 @@ void draw()
   }
   oldb1 = pitchb1/(volb1+1);
   */
-/*
+
   //PINK
   stroke(255);
   rectMode(CORNERS);
@@ -406,7 +406,7 @@ void draw()
     oldPink=oldPink+pitchb1/(volb1+1);
   }
   oldb1=pitchb1/(volb1+1);
-  */
+
   } // try
   catch (NullPointerException npe)  {}
 } // draw()
