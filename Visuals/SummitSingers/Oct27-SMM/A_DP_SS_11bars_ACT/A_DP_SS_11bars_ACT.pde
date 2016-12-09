@@ -203,7 +203,7 @@ void draw()
     int old3 = pitch3/(vol3+1);
     for (j=0; j<vol3; j++)
     {
-      fill(255-colorDecay*old3, 234-colorDecay*old3, 44-colorDecay*old3); //255 234 44 good how it is probably
+      fill(250-colorDecay*old3, 255-colorDecay*old3, 0); //255 234 44 good how it is probably
       //rect(width-7*refx-w,refy-(space+h)*j,width-6*refx-w-off,(refy-h)-(space+h)*j);
       rect(halfwmin-3*space-3*w, refy-(space+h)*j, halfwmin-3*space-2*w, (refy-h)-(space+h)*j);
       old3 = old3+pitch3/(vol3+1);
@@ -223,7 +223,7 @@ void draw()
     int old4 = pitch4/(vol4+1);
     for (j=0; j<vol4; j++)
     {
-      fill(255-colorDecay*old4, 234-colorDecay*old4, 44-colorDecay*old4); //255 234 44 good how it is probably
+      fill(41-colorDecay*old4, 255-colorDecay*old4, 0); //255 234 44 good how it is probably
       //rect(width-7*refx-w,refy-(space+h)*j,width-6*refx-w-off,(refy-h)-(space+h)*j);
       rect(halfwmin-2*space-2*w, refy-(space+h)*j, halfwmin-2*space-w, (refy-h)-(space+h)*j);
       old4 = old4+pitch4/(vol4+1);
@@ -244,7 +244,7 @@ void draw()
     int old5 = pitch5/(vol5+1);
     for (j=0; j<vol5; j++)
     {
-      fill(41-colorDecay*old5, 255-colorDecay*old5, 0); //162 211 2 (41 255 0)
+      fill(1, 100-colorDecay*old5, 65 - colorDecay*old5); //162 211 2 (41 255 0)
       //rect(width-6*refx-w,refy-(space+h)*j,width-5*refx-w-off,(refy-h)-(space+h)*j);
       rect(halfwmin - space - w, refy-(space+h)*j, halfwmin - space, (refy-h)-(space+h)*j);
       old5=old5+pitch5/(vol5+1);
@@ -283,7 +283,7 @@ void draw()
     int old7  = pitch7 / (vol7 + 1);
     for (j=0; j<vol7; j++)
     {
-      fill(0-colorDecay*old7, 129-colorDecay*old7, 255-colorDecay*old7); //149 176 250 (0 129 255)
+      fill(0, 129-colorDecay*old7, 255-colorDecay*old7); //149 176 250 (0 129 255)
       //rect(width-4*refx-w,refy-(space+h)*j,width-3*refx-w-off,(refy-h)-(space+h)*j);
       rect(halfwplus+space, refy-(space+h)*j, halfwplus+space+w, (refy-h)-(space+h)*j);
       old7=old7+pitch7/(vol7+1);
@@ -363,7 +363,7 @@ void draw()
     int old11  = pitch11 / (vol11 + 1);
     for (j=0; j<vol11; j++)
     {
-      fill(255-(colorDecay/2)*old11, 0, 222-(colorDecay/2)*old11); //255 130 180 (255 0 222 was fuchsia)
+      fill(255-(colorDecay/2)*old11, 175 - (colorDecay/2)*old11, 210-(colorDecay/2)*old11); //255 130 180 (255 0 222 was fuchsia)
       //rect(width-refx-w,refy-(space+h)*j,width-refx,(refy-h)-(space+h)*j);
       rect(halfwplus+5*space+4*w, refy-(space+h)*j, halfwplus+5*space+5*w, (refy-h)-(space+h)*j);
       old11=old11+pitch11/(vol11+1);
@@ -428,7 +428,8 @@ class Ball {
   int c;
   Ball(int inBallNumber) {
     ballNumber = inBallNumber;
-    y = height*0.9;
+    
+//    y = height*0.9;
     c = ballNumber*10;
     constrain(c, 0, 255);
   }

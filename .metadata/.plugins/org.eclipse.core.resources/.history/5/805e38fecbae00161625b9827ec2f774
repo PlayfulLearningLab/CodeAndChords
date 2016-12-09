@@ -1,0 +1,102 @@
+import processing.core.PApplet;
+
+public class Driver extends PApplet {
+	Input	input;
+	Input.FrequencyEMM[] freqEMMarray;
+	/**
+	 * 11/12/2016
+	 * Problem:
+	 * 	- process() doesn't ever seem to be called.
+	 * 
+	 * HERE's WHY: this isn't in the build path of a current project!!! Why ever not????!!!
+	 */
+	
+	public static void main(String[] args)
+	{
+		PApplet.main("Driver");
+	} // main
+	
+	public void settings()
+	{
+		size(1000,600);
+	} // settings
+	
+	public void setup()
+	{
+		input	= new Input();
+//		input	= new Input(new String[] {"Horse and Rider 1.wav", "Horse and Rider 2.wav", "Horse and Rider 3.wav"});
+		freqEMMarray = input.getFrequencyArray();
+	} // setup
+	
+	public void draw()
+	{
+		println("Hello????");
+		background(204, 150, 204);
+		
+		drawHPSSecondHighest(input);
+/*
+ // This is now happening in drawHPSSecondHighest()
+		stroke(255);
+		  for (int i = 0; i < freqEMMarray[0].hps.length; i++)
+		  {
+		    rect( i*10, height, 1, - freqEMMarray[0].hps[i] );
+		  } // for
+
+		  stroke(150, 50, 150);
+		  rect( freqEMMarray[0].hps[freqEMMarray[0].maxBin]*10, height, 1, - freqEMMarray[0].hps[freqEMMarray[0].maxBin] );
+
+		  stroke(50, 50, 255);
+		  rect(freqEMMarray[0].secondMaxBin * 10, height, 1, -freqEMMarray[0].hps[freqEMMarray[0].secondMaxBin]);
+*/	
+//		ellipse(width / 2, height - input.getAdjustedFund(), 50, 50);
+
+	} // draw
+	
+	void drawHPSSecondHighest(Input input)
+	{
+	  Input.FrequencyEMM freqEMM  = input.frequencyArray[0];
+	  int maxBin            = 0;
+	  int secondMaxBin      = 0;
+	  
+	  int	spacer	= width / freqEMM.hps.length;
+
+	  stroke(255);
+	  for (int i = 0; i < freqEMM.hps.length; i++)
+	  {
+	    rect( i*spacer, height, 1, - freqEMM.hps[i] );
+/*
+ // I don't want to find my max and secondMax here, b/c the point is to test them from Input.
+	    if (freqEMM.hps[i] > freqEMM.hps[maxBin])
+	    {
+	      maxBin  = i;
+	    } else if (freqEMM.hps[i] > freqEMM.hps[secondMaxBin] && freqEMM.hps[i] < freqEMM.hps[maxBin])
+	    {
+	      secondMaxBin  = i;
+	    } // if
+*/
+	  } // for
+	  
+//	  maxBin		= freqEMM.maxBin;
+//	  secondMaxBin	= freqEMM.secondMaxBin;
+
+	  stroke(150, 50, 150);
+	  rect( freqEMM.maxBin*10, height, 1, - freqEMM.hps[freqEMM.maxBin] );
+
+	  /*
+	    // We were getting errors with this, probably maening that freqEMM.hps was being updated between detecting the max and secondHighest freq's.
+	   double  j;
+	   // find second peak:
+	   for (int band = 0; band < freqEMM.hps.length; band++)
+	   {
+	   j  = freqEMM.hps[band];
+	   if ((j > freqEMM.hps[secondMaxBin]) && (j < freqEMM.hps[maxBin]))
+	   {
+	   secondMaxBin  = band;
+	   } // if
+	   } // for - second peak
+	   */
+
+	  stroke(50, 50, 255);
+	  rect(freqEMM.secondMaxBin * 10, height, 1, -freqEMM.hps[freqEMM.secondMaxBin]);
+	} // void
+} // Driver

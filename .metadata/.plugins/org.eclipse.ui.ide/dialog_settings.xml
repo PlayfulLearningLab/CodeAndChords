@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
-		<item value="/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/InputClassEclipseJSTest"/>
+		<item value="/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/InputClassEclipse_HPSCorrection"/>
 	</list>
 	<section name="ExternalProjectImportWizard">
-	</section>
-	<section name="WORKBENCH_SETTINGS">
-		<list key="ENABLED_TRANSFERS">
-		</list>
-	</section>
-	<section name="ChooseWorkspaceDialogSettings">
-		<item value="413" key="DIALOG_X_ORIGIN"/>
-		<item value="226" key="DIALOG_Y_ORIGIN"/>
-	</section>
-	<section name="SaveAsDialogSettings">
-		<item value="525" key="DIALOG_WIDTH"/>
-		<item value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText-Regular" key="DIALOG_FONT_NAME"/>
-		<item value="532" key="DIALOG_HEIGHT"/>
-		<item value="447" key="DIALOG_X_ORIGIN"/>
-		<item value="22" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>
