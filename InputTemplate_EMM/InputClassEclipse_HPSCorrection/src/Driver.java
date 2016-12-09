@@ -41,7 +41,11 @@ public class Driver extends PApplet {
 		drawHPSSecondHighest(input);
 		
 		inputFreqRain.rain(input.getAdjustedFund());
+<<<<<<< HEAD
 		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
+=======
+//		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 		/*
  // This is now happening in drawHPSSecondHighest()
 		stroke(255);
