@@ -722,7 +722,11 @@ public class Input extends PApplet {
 		public FrequencyEMM(float sampleRate) {
 			bufferSize = -1;
 			this.sampleRate = sampleRate;
+<<<<<<< HEAD
+			features = null;
+=======
 			this.features = null;
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 		}
 
 		/*
@@ -733,6 +737,14 @@ public class Input extends PApplet {
 		 * float[])
 		 */
 		public synchronized void process(TimeStamp startTime, TimeStamp endTime, float[] powerSpectrum) {
+<<<<<<< HEAD
+			if (bufferSize != powerSpectrum.length) {
+				bufferSize = powerSpectrum.length;
+				bin2hz = sampleRate / (2 * bufferSize);
+			} // if
+
+			hps = new float[powerSpectrum.length];
+=======
 			// NB: powerSpectrum.length = 256; bin2hz = 86.13281
 			if (bufferSize != powerSpectrum.length) {
 				bufferSize = powerSpectrum.length;
@@ -745,12 +757,17 @@ public class Input extends PApplet {
 			float	secondMaxBinBelowAmp;
 
 			this.hps = new float[powerSpectrum.length];
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 			float[]	hps1	= new float[powerSpectrum.length];
 			float[]	hps2	= new float[powerSpectrum.length];
 			float[]	hps3	= new float[powerSpectrum.length];
 			float[]	hps4	= new float[powerSpectrum.length];
 
+<<<<<<< HEAD
+			features = null;
+=======
 			this.features = null;
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 			// now pick best peak from linspec
 			double pmax = -1;
 			int maxbin = 0;
@@ -776,11 +793,41 @@ public class Input extends PApplet {
 				hps4[i] = powerSpectrum[i * 4];
 			} // for
 
+<<<<<<< HEAD
+			for(i = 0; i < hps.length; i++)
+			{
+				hps[i]	= hps1[i] * hps2[i] * hps3[i] * hps4[i];
+			} // for - hps
+
+			// old method:
+			/*
+			for (int i = 0; i < hps.length; i++) {
+				hps[i] = powerSpectrum[i];
+			} // for
+
+			// 2:
+			int i;
+			for (i = 0; (i * 2) < hps.length; i++) {
+				hps[i] = hps[i] * powerSpectrum[i * 2];
+			} // for
+
+			// 3:
+			for (i = 0; (i * 3) < hps.length; i++) {
+				hps[i] = hps[i] * powerSpectrum[i * 3];
+			} // for
+
+			// 4:
+			for (i = 0; (i * 4) < hps.length; i++) {
+				hps[i] = hps[i] * powerSpectrum[i * 4];
+			} // for
+			 */
+=======
 			for(i = 0; i < this.hps.length; i++)
 			{
 				this.hps[i]	= hps1[i] * hps2[i] * hps3[i] * hps4[i];
 			} // for - hps
 
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 			int	spacer	= width / this.hps.length;
 			int	divideBy	= 8;
 
@@ -805,11 +852,30 @@ public class Input extends PApplet {
 					secondMaxBinBelow = i;
 				}
 			} // for - secondMaxBinBelow
+<<<<<<< HEAD
+			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
+
+			// only select the second peak if it's about half of the first one:
+			int error  = 5;
+			//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
+			if (Math.abs(maxBin - secondMaxBinBelow) < (secondMaxBinBelow + error) && 
+					Math.abs(maxBin - secondMaxBinBelow) > (secondMaxBinBelow - error) &&
+					//"...AND the ratio of amplitudes is above a threshold (e.g., 0.2 for 5 harmonics)..."
+					((hps[secondMaxBinBelow] * 100) / (hps[maxBin] * 100) > 20))
+			{
+				//"...THEN select the lower octave peak as the pitch for the current frame."
+				println("got within margin of error correction");
+
+				maxBin  = secondMaxBinBelow;
+			} // if
+
+=======
 //			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
 
 			//TODO: manually setting maxBin - for testing purposes only!!!  Remove post solving the mystery!
 			maxBin	= 100;
 			
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 			/*
 			 * for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
 			 * double pwr = powerSpectrum[band]; if (pwr > pmax) { pmax = pwr;
@@ -817,11 +883,17 @@ public class Input extends PApplet {
 			 */
 
 			// I added the following line;
+<<<<<<< HEAD
+			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was
+			// previously:
+			amplitude = (float) hps[maxBin];
+=======
 			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was previously:
 			maxBinAmp				= this.hps[maxBin];
 			secondMaxBinBelowAmp	= this.hps[secondMaxBinBelow];
 /*
 	// 12/06: Put the following into the cubicInterp(int, float[]) function:
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 
 			// cubic interpolation
 			// (11/20: replaced "maxbin" with "maxBin" so that hps detection can have effect!)
@@ -842,6 +914,11 @@ public class Input extends PApplet {
 
 			double k = (yp + ym) / 2 - yz;
 			double x0 = (ym - yp) / (4 * k);
+<<<<<<< HEAD
+			features = (float) (bin2hz * (maxBin + x0));
+
+			forward(startTime, endTime);
+=======
 */
 			this.features	= this.cubicInterp(maxBin, powerSpectrum);
 			this.amplitude 	= maxBinAmp;
@@ -912,6 +989,7 @@ public class Input extends PApplet {
 			
 			// discovering the actual frequency:
 			return (float) (bin2hz * (bin + x0));
+>>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 		}
 
 		/*
