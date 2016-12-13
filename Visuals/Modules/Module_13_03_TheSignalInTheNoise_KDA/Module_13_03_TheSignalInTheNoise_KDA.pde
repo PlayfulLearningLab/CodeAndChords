@@ -23,15 +23,22 @@ import interfascia.*;
  */
 GUIController controller;
 Input testInput;
+HScrollbar scrollSize;
+IFLabel label;
+IFTextField textField;
 
 float threshold = 15.0;
 float threshold1 = 50.0;
 float threshold2 = 30.0;
 float threshold3 = 8.0;
+float scrollbarPos;
+int sizeMin  = 0;
+int sizeMax  = 100;
+int thres, size;
+int delay;
+int l;
 int thresMin  = 0;
 int thresMax  = 100;
-int thres;
-int delay;
 
 void setup(){
   controller   = new GUIController(this);
@@ -40,16 +47,35 @@ void setup(){
   background(0);
   noStroke();
   frameRate(9);
-  delay  = millis();
   
+  scrollSize = new HScrollbar(width-200, height - 50, 150, 18, 5);
+  fill(0);
+  textField = new IFTextField("Text Field", width - 200, height - 85, 140);
+  label     = new IFLabel("Size of Rectangles: " + thres, width - 197, height - 81);
+  controller.add(textField);
+  controller.add(label);
+  textField.addActionListener(this);
+  
+  
+  delay  = millis();
 }
 void draw(){
+  
   
   for (int i = 0; i < width; i++) {
     float r = random(255) ;
     stroke(r);
     line(i, 0, i, height);
   }
+  
+  scrollSize.update();
+  scrollSize.display();
+  scrollbarPos = scrollSize.getPos();
+  size     = round(round(map(scrollbarPos, scrollSize.sposMin, scrollSize.sposMax, sizeMin, sizeMax))/10)-3;
+  println("Size of Rect = " + size + "; bpmMin = " + sizeMin + "; bpmMax = " + sizeMax);
+  label.setLabel("Size of Rectangles: " + size);
+  
+  l = size;
  /*
   for (int i = height; i > 0; i--) {
    float r = random(255);
@@ -74,18 +100,18 @@ void draw(){
  /*
  if(testInput.getAmplitude()>threshold){  
       fill(random(255), random(255), random(255));
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
        
   }
   */
@@ -94,51 +120,51 @@ void draw(){
  
  if(testInput.getAmplitude()>threshold1){  
       fill(96, 245, 90);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
        
   }
  
   if(testInput.getAmplitude()>threshold2 && testInput.getAmplitude()<threshold1){  
       fill(98, 17, 250);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
        
   }
   if(testInput.getAmplitude()>threshold3 && testInput.getAmplitude()<threshold2){  
       fill(96, 245, 241);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
-      rect(random(width), 0, 7, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
+      rect(random(width), 0, l, height);
        
   }
   
