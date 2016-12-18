@@ -1,6 +1,6 @@
 # CodeAndChords
 
-Live music visualization project (in-progress) using the Processing language and Java Sound API.
+Live music visualization project (in-progress) using the Processing language and Java Sound API; [here's a 3-minute overview.] (https://youtu.be/Y1x6bk8nvog)
 
 ## Quick Demos:
 Download the appropriate "StartHere" folder for your OS; all the demos therein should run without requiring additional software.
