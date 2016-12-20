@@ -47,7 +47,7 @@ float       attackTimeMin  = 1;
 
 void setup() 
 {
-  size(638, 360);
+  size(750, 422);
 
   hueMax         = 360;
   saturationMax  = 300;
@@ -193,6 +193,9 @@ void draw()
 
 void legend()
 {
+  
+  textSize(15);
+  
   String[] notes = new String[] {
     "C", 
     "C#", 
@@ -209,7 +212,9 @@ void legend()
     "C"
   }; // notes
 
-  float  side = width / colors.length;
+// 12/19: updating to be on the side.
+//  float  side = width / colors.length;
+  float  side = height / colors.length;
 
   stroke(255);
 
@@ -217,12 +222,15 @@ void legend()
   {
     fill(colors[i][0], colors[i][1], colors[i][2]);
     if(i == goalHuePos) {
-      rect((side * i), height - (side * 1.5), side, side * 1.5);
+//      rect((side * i), height - (side * 1.5), side, side * 1.5);
+      rect(0, (side * i), side * 1.5, side);
+
     } else {
-      rect((side * i), height - side, side, side);
+//      rect((side * i), height - side, side, side);
+      rect(0, (side * i), side, side);
     }
     fill(0);
-    text(notes[i], (side * i) + side/2 - 10, height - (side / 3));
+    text(notes[i], 7, (side * i) + side * 0.75);
   } // for
 } // legend
 
