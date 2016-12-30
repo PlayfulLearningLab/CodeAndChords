@@ -52,10 +52,19 @@ public class Module_01_01_Driver extends PApplet {
 	float       scrollbarPos;
 	float       attackTimeMax  = 20;
 	float       attackTimeMin  = 1;
+	
+	public static void main(String[] args) {
+        PApplet.main("Module_01_01_Driver");
+    }
+	
+	public void settings() 
+	{
+		  size(750, 422);
+	}
 
 	public void setup() 
 	{
-	  size(750, 422);
+	  //size(750, 422);
 
 	  hueMax         = 360;
 	  saturationMax  = 300;
@@ -87,7 +96,8 @@ public class Module_01_01_Driver extends PApplet {
 	   } // for
 	   */
 
-	  input        = new Input(inputFile);
+//	  input        = new Input(inputFile);
+	  input        = new Input();
 	  threshold    = 15;
 
 	  noStroke();
@@ -109,7 +119,7 @@ public class Module_01_01_Driver extends PApplet {
 	  // draws the legend
 	  legend();
 	  
-	  scrollbar = new HScrollbar(10, 45, (width / 2) - 10, 18, 5);
+	  scrollbar = new HScrollbar(this, 10, 45, (width / 2) - 10, 18, 5);
 
 	  controller = new GUIController(this);
 	  textField  = new IFTextField("Text Field", 10, 10, 150);
