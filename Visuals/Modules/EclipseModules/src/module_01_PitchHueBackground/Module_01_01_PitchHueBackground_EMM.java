@@ -1,7 +1,11 @@
+package module_01_PitchHueBackground;
+
 import interfascia.*;
 import processing.core.PApplet;
+import core.Input;
+import addons.HScrollbar;
 
-public class Module_01_01_Driver extends PApplet {
+public class Module_01_01_PitchHueBackground_EMM extends PApplet {
 // *** Add a main in that call-PApplet way
 	/**
 	 * 08/01/2016
@@ -54,7 +58,7 @@ public class Module_01_01_Driver extends PApplet {
 	float       attackTimeMin  = 1;
 	
 	public static void main(String[] args) {
-        PApplet.main("Module_01_01_Driver");
+        PApplet.main("module_01_PitchHueBackground.Module_01_01_PitchHueBackground_EMM");
     }
 	
 	public void settings() 
@@ -130,7 +134,7 @@ public class Module_01_01_Driver extends PApplet {
 	  
 	  textField.addActionListener(this);
 	  
-	  println("scrollbar.ratio = " + scrollbar.ratio);
+//	  println("scrollbar.ratio = " + scrollbar.ratio);
 	} // setup()
 
 	public void draw() 
@@ -197,7 +201,7 @@ public class Module_01_01_Driver extends PApplet {
 	  scrollbar.display();
 	  
 	  scrollbarPos  = scrollbar.getPos();
-	  attackTime      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, attackTimeMin, attackTimeMax);
+	  attackTime      = map(scrollbarPos, scrollbar.getSposMin(), scrollbar.getSposMax(), attackTimeMin, attackTimeMax);
 	  
 	  label.setLabel("attackTime: " + attackTime);
 
