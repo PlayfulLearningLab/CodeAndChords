@@ -4,11 +4,16 @@ import processing.core.PApplet;
 //import org.jaudiolibs.beads.*;
 
 import net.beadsproject.beads.core.*;
+import net.beadsproject.beads.data.Buffer;
+import net.beadsproject.beads.data.BufferFactory;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
+import net.beadsproject.beads.data.buffers.HanningWindow;
+import net.beadsproject.beads.ugens.BiquadFilter;
 import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.LPRezFilter;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
@@ -79,6 +84,8 @@ public class Input extends PApplet {
 	float[] adjustedFundArray; // holds the pitch, in hertz, of each input,
 	// adjusted to ignore pitches below a certain
 	// amplitude.
+	BiquadFilter	lpBiquadFilter;
+	BiquadFilter	hpBiquadFilter;
 	Compressor compressor;
 	// UGen inputsUGen; // initialized with the input from the AudioContext.
 	UGen[] uGenArray;
@@ -89,6 +96,7 @@ public class Input extends PApplet {
 	// to each input.
 	float[] fundamentalArray; // holds the current pitch, in hertz, of each
 	// input.
+	LPRezFilter	lprf;
 	int numInputs; // number of lines / mics
 	// float pitch; //
 	PowerSpectrum[] psArray; // holds the PowerSpectrum objects connected to
@@ -227,6 +235,30 @@ public class Input extends PApplet {
 	 */
 	void initInput(UGen[] uGenArray) {
 		/*
+		// 1046.5 = C6 (2 octaves above middle C)
+		this.lprf	= new LPRezFilter(this.ac, (float)1046.50, (float)0.5);
+//		this.lprf	= new LPRezFilter(this.ac);		// default values were 100 (cut-off freq) and 0.5 (res).
+		println("this.lprf.getFrequency() = " + this.lprf.getFrequency() + "; " + this.lprf.getRes());
+		*/
+		
+		// low-pass filter set to 1046.5 (C6 - 2 octaves above middle C)
+		//TODO: if things are weird, this might not need 2 channels (depends on the mics?):
+		this.lpBiquadFilter	= new BiquadFilter(this.ac, 2, BiquadFilter.LP);
+		this.lpBiquadFilter.setFrequency((float)1046.5);
+		
+		// high-pass filter set to 65.41 (C2)
+		this.hpBiquadFilter	= new BiquadFilter(this.ac, 2, BiquadFilter.HP);
+		this.hpBiquadFilter.setFrequency((float)65.41);
+		
+		// uGenArray => low-pass filter; low-pass filter => high-pass filter => AudioContext.
+		for(int i = 0; i < this.numInputs; i++)
+		{
+			this.hpBiquadFilter.addInput(uGenArray[i]);
+		} // for - biquadFilter
+		this.lpBiquadFilter.addInput(this.hpBiquadFilter);
+		this.ac.out.addInput(this.lpBiquadFilter);
+		
+		/*
 		 * Default compressor values: threshold - .5 attack - 1 decay - .5 knee
 		 * - .5 ratio - 2 side-chain - the input audio
 		 */
@@ -245,7 +277,7 @@ public class Input extends PApplet {
 		for (int i = 0; i < this.numInputs; i++) {
 			g.addInput(uGenArray[i]);
 		} // for
-		ac.out.addInput(g);
+		this.ac.out.addInput(g);
 
 		// The ShortFrameSegmenter splits the sound into smaller, manageable
 		// portions;
@@ -290,7 +322,7 @@ public class Input extends PApplet {
 
 		// Adds the SFSs (and everything connected to them) to the AudioContext:
 		for (int i = 0; i < this.numInputs; i++) {
-			ac.out.addDependent(sfsArray[i]);
+			this.ac.out.addDependent(sfsArray[i]);
 		} // for - addDependent
 
 		/*
@@ -688,6 +720,8 @@ public class Input extends PApplet {
 	 * {@link PowerSpectrum} to determine the best estimate for the frequency of
 	 * the current signal.
 	 * 
+	 * TODO: try autocorrelation for pitch detection if HPS doesn't come through.
+	 * 
 	 * TODO: make FrequencyEMM and hps (float[]) private.
 	 *
 	 * @beads.category analysis
@@ -712,6 +746,9 @@ public class Input extends PApplet {
 		// TODO: make these private at some point?
 		public int maxBin;
 		public int secondMaxBinBelow;
+		
+		public 	HanningWindow	hanningWindow;
+		public	Buffer			hanningWindowBuffer;
 
 		/**
 		 * Instantiates a new Frequency.
@@ -722,11 +759,15 @@ public class Input extends PApplet {
 		public FrequencyEMM(float sampleRate) {
 			bufferSize = -1;
 			this.sampleRate = sampleRate;
-<<<<<<< HEAD
-			features = null;
-=======
 			this.features = null;
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
+			
+			this.hanningWindow	= new HanningWindow();
+			this.hanningWindowBuffer = this.hanningWindow.getDefault();
+/*			for(int i = 0; i < this.hanningWindowBuffer.buf.length; i++)
+			{
+				println("this.hanningWindowBuffer.buf[" + i + "] = " + this.hanningWindowBuffer.buf[i] + "; this.hanningWindowBuffer.getValueIndex(" + i + ") = " + this.hanningWindowBuffer.getValueIndex(i));
+			} // for
+			*/
 		}
 
 		/*
@@ -737,14 +778,12 @@ public class Input extends PApplet {
 		 * float[])
 		 */
 		public synchronized void process(TimeStamp startTime, TimeStamp endTime, float[] powerSpectrum) {
-<<<<<<< HEAD
 			if (bufferSize != powerSpectrum.length) {
 				bufferSize = powerSpectrum.length;
 				bin2hz = sampleRate / (2 * bufferSize);
 			} // if
+			
 
-			hps = new float[powerSpectrum.length];
-=======
 			// NB: powerSpectrum.length = 256; bin2hz = 86.13281
 			if (bufferSize != powerSpectrum.length) {
 				bufferSize = powerSpectrum.length;
@@ -757,17 +796,13 @@ public class Input extends PApplet {
 			float	secondMaxBinBelowAmp;
 
 			this.hps = new float[powerSpectrum.length];
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
+			
 			float[]	hps1	= new float[powerSpectrum.length];
 			float[]	hps2	= new float[powerSpectrum.length];
 			float[]	hps3	= new float[powerSpectrum.length];
 			float[]	hps4	= new float[powerSpectrum.length];
 
-<<<<<<< HEAD
-			features = null;
-=======
 			this.features = null;
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 			// now pick best peak from linspec
 			double pmax = -1;
 			int maxbin = 0;
@@ -793,7 +828,6 @@ public class Input extends PApplet {
 				hps4[i] = powerSpectrum[i * 4];
 			} // for
 
-<<<<<<< HEAD
 			for(i = 0; i < hps.length; i++)
 			{
 				hps[i]	= hps1[i] * hps2[i] * hps3[i] * hps4[i];
@@ -821,13 +855,7 @@ public class Input extends PApplet {
 				hps[i] = hps[i] * powerSpectrum[i * 4];
 			} // for
 			 */
-=======
-			for(i = 0; i < this.hps.length; i++)
-			{
-				this.hps[i]	= hps1[i] * hps2[i] * hps3[i] * hps4[i];
-			} // for - hps
 
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 			int	spacer	= width / this.hps.length;
 			int	divideBy	= 8;
 
@@ -852,9 +880,8 @@ public class Input extends PApplet {
 					secondMaxBinBelow = i;
 				}
 			} // for - secondMaxBinBelow
-<<<<<<< HEAD
-			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
-
+			
+			
 			// only select the second peak if it's about half of the first one:
 			int error  = 5;
 			//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
@@ -869,13 +896,13 @@ public class Input extends PApplet {
 				maxBin  = secondMaxBinBelow;
 			} // if
 
-=======
 //			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
 
-			//TODO: manually setting maxBin - for testing purposes only!!!  Remove post solving the mystery!
-			maxBin	= 100;
-			
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
+			/*
+			 * TODO: manually setting maxBin - for testing purposes only!!!  Remove post solving the mystery!
+			 */
+//			maxBin	= 100;
+
 			/*
 			 * for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
 			 * double pwr = powerSpectrum[band]; if (pwr > pmax) { pmax = pwr;
@@ -883,17 +910,11 @@ public class Input extends PApplet {
 			 */
 
 			// I added the following line;
-<<<<<<< HEAD
-			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was
-			// previously:
-			amplitude = (float) hps[maxBin];
-=======
 			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was previously:
 			maxBinAmp				= this.hps[maxBin];
 			secondMaxBinBelowAmp	= this.hps[secondMaxBinBelow];
 /*
 	// 12/06: Put the following into the cubicInterp(int, float[]) function:
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 
 			// cubic interpolation
 			// (11/20: replaced "maxbin" with "maxBin" so that hps detection can have effect!)
@@ -914,27 +935,35 @@ public class Input extends PApplet {
 
 			double k = (yp + ym) / 2 - yz;
 			double x0 = (ym - yp) / (4 * k);
-<<<<<<< HEAD
 			features = (float) (bin2hz * (maxBin + x0));
 
 			forward(startTime, endTime);
-=======
 */
 			this.features	= this.cubicInterp(maxBin, powerSpectrum);
 			this.amplitude 	= maxBinAmp;
+
+			secondMaxBinBelowFreq	= this.cubicInterp(secondMaxBinBelow, powerSpectrum);
+			println("this.features = " + this.features);
+			println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
 			
 			// We can ignore the times that they are both the same (happens often for the lowest bin):
 			//TODO: is this ^ true?
-			if(secondMaxBinBelow < maxBin)
+			if(secondMaxBinBelowFreq < this.features)
 			{
+				/*
 				secondMaxBinBelowFreq	= this.cubicInterp(secondMaxBinBelow, powerSpectrum);
+				println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+				*/
 
 //				println("  first if; features = " + this.features + "; secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
-				int	error	= 5;
+				int	freqError	= 5;
 				
 				//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
-				if(this.features - secondMaxBinBelowFreq < (secondMaxBinBelowFreq + error) &&
-						this.features - secondMaxBinBelowFreq > (secondMaxBinBelowFreq - error) &&
+/*				if(this.features - secondMaxBinBelowFreq < (secondMaxBinBelowFreq + freqError) &&
+						this.features - secondMaxBinBelowFreq > (secondMaxBinBelowFreq - freqError) &&
+						*/
+				if(secondMaxBinBelowFreq < (this.features * 0.5) + freqError &&
+						secondMaxBinBelowFreq > (this.features * 0.5) - freqError &&
 						//"...AND the ratio of amplitudes is above a threshold (e.g., 0.2 for 5 harmonics)..."
 						((this.hps[secondMaxBinBelow] * 100) / (this.hps[maxBin] * 100) > 20))
 				{
@@ -985,11 +1014,10 @@ public class Input extends PApplet {
 			double k = (yp + ym) / 2 - yz;
 			double x0 = (ym - yp) / (4 * k);
 			
-			println("  k = " + k + "\nx0 = " + x0);
+			//println("  k = " + k + "\nx0 = " + x0);
 			
 			// discovering the actual frequency:
 			return (float) (bin2hz * (bin + x0));
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 		}
 
 		/*
