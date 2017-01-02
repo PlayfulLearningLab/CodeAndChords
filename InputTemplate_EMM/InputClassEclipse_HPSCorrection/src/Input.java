@@ -84,6 +84,7 @@ public class Input extends PApplet {
 	float[] adjustedFundArray; // holds the pitch, in hertz, of each input,
 	// adjusted to ignore pitches below a certain
 	// amplitude.
+	float[]	amplitudeArray;
 	BiquadFilter[]	lpbfArray;
 	BiquadFilter[]	hpbfArray;
 	Compressor[] compressorArray;
@@ -96,6 +97,7 @@ public class Input extends PApplet {
 	// to each input.
 	float[] fundamentalArray; // holds the current pitch, in hertz, of each
 	// input.
+	HarmonicProductSpectrum[]	hpsArray;
 	LPRezFilter	lprf;
 	int numInputs; // number of lines / mics
 	// float pitch; //
@@ -107,6 +109,7 @@ public class Input extends PApplet {
 	// int waitUntil; // number of milliseconds to wait before checking for
 	// another key
 	private SampleManager sampleManager;
+	private SpectralPeaks[]	spArray;
 
 	/**
 	 * Creates an Input object connected to Jack, with the given number of
@@ -237,7 +240,7 @@ public class Input extends PApplet {
 		// TODO: check with multiple inputs; do I really need to put *everything* in arrays?
 		// (I did so to begin with [1/2/2017] because I will need an individual PowerSpectrum passed to an 
 		// individual FrequencyEMM for each line, and this seemed the simplest way to split them up.)
-		
+
 		this.lpbfArray	= new BiquadFilter[this.numInputs];
 		this.hpbfArray	= new BiquadFilter[this.numInputs];
 		//TODO: if things are weird, this might not need 2 channels (depends on the mics?):
@@ -248,14 +251,14 @@ public class Input extends PApplet {
 			this.lpbfArray[i]	= new BiquadFilter(this.ac, 2, BiquadFilter.LP);
 			this.lpbfArray[i].setFrequency((float)1046.5);
 			this.lpbfArray[i].addInput(uGenArray[i]);
-			
+
 			// high-pass filter set to 65.41 (C2)
 			this.hpbfArray[i]	= new BiquadFilter(this.ac, 2, BiquadFilter.HP);
 			this.hpbfArray[i].setFrequency((float)65.41);
 			this.hpbfArray[i].addInput(uGenArray[i]);
-			
+
 		}
-		
+
 		/*
 		 * Default compressor values: threshold - .5 attack - 1 decay - .5 knee
 		 * - .5 ratio - 2 side-chain - the input audio
@@ -281,12 +284,12 @@ public class Input extends PApplet {
 
 		// Do the following in a method that can be passed a Gain, UGen[], and
 		// AudioContext.
-/*
+		/*
 		for (int i = 0; i < this.numInputs; i++) {
 			g.addInput(uGenArray[i]);
 		} // for
-*/
-//		this.ac.out.addInput(g);
+		 */
+		//		this.ac.out.addInput(g);
 
 		// The ShortFrameSegmenter splits the sound into smaller, manageable
 		// portions;
@@ -310,16 +313,35 @@ public class Input extends PApplet {
 		} // for
 
 
-		// Creates an array of PowerSpectrum's and adds them to the FFTs
-		// (the PowerSpectrum is what will actually perform the FFT):
+		// Creates an array of PowerSpectrums and adds them to the FFTs
+		// (the PowerSpectrum is what will actually perform the FFT - 1/2/2017 update: that is false):
 		this.psArray = new PowerSpectrum[this.numInputs];
 		for (int i = 0; i < this.psArray.length; i++) {
 			this.psArray[i] = new PowerSpectrum();
 			while (this.psArray[i] == null) {
 			}
-			this.fftArray[i].addListener(psArray[i]);
+			this.fftArray[i].addListener(this.psArray[i]);
 		} // for
+		
+		// Creates an array of HarmonicProductSpectrums and adds them to the PowerSpectrums:
+		this.hpsArray	= new HarmonicProductSpectrum[this.numInputs];
+		for(int i = 0; i < this.numInputs; i++)
+		{
+			this.hpsArray[i]	= new HarmonicProductSpectrum();
+			this.psArray[i].addListener(this.hpsArray[i]);
+		} // for - hps
 
+		// Creates an array of SpectralPeaks and adds them to the HarmonicProductSpectrums
+		// (this will aid in octave correction):
+		this.spArray	= new SpectralPeaks[this.numInputs];
+		for(int i = 0; i < this.numInputs; i++)
+		{
+			this.spArray[i]	= new SpectralPeaks(this.ac, 2);
+			this.hpsArray[i].addListener(this.spArray[i]);
+		} // for - spectral peaks
+		
+/*
+ * 1/2/2016: shouldn't need this section anymore
 		// Creates an array of FrequencyEMMs and adds them to the PSs
 		// (using my version of the Frequency class - an inner class further
 		// down - to allow access to amplitude):
@@ -330,7 +352,7 @@ public class Input extends PApplet {
 			}
 			this.psArray[i].addListener(frequencyArray[i]);
 		} // for
-
+*/
 		// Adds the SFSs (and everything connected to them) to the AudioContext:
 		for (int i = 0; i < this.numInputs; i++) {
 			this.ac.out.addDependent(sfsArray[i]);
@@ -347,7 +369,7 @@ public class Input extends PApplet {
 		// Pitches with amplitudes below this number will be ignored by
 		// adjustedFreq:
 		this.sensitivity = (float) 0.2;
-		// 1/2: this was 10, but I think that I finally connected the filters correctly and brought it down!
+		// 1/2/2016: this was 10, but I think that I finally connected the filters correctly and brought it down!
 
 		// Initializes the arrays that will hold the pitches:
 		this.fundamentalArray = new float[this.numInputs];
@@ -376,6 +398,53 @@ public class Input extends PApplet {
 		// crash during a concert.
 		try {
 			for (int i = 0; i < this.numInputs; i++) {
+				// get the SpectralPeaks features:
+				float[][][]	spfeatures	= new float[this.numInputs][][];
+				for(i = 0; i < this.numInputs; i++)
+				{
+					spfeatures[i]	= this.spArray[i].getFeatures();
+					if(spfeatures[i][0][1] < spfeatures[i][1][1])
+					{
+						println("Warning! spfeatures[i][0][1] < spfeatures[i][1][1]");
+					} // if
+				} // for
+				
+				// determine which is the highest and which is the secondHighest:
+				
+				// pick the secondHighest if:
+		/*
+				if(secondMaxBinBelowFreq < this.features)
+				{
+					/*
+					secondMaxBinBelowFreq	= this.cubicInterp(secondMaxBinBelow, powerSpectrum);
+					println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+					 */
+
+					//				println("  first if; features = " + this.features + "; secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+					int	freqError	= 5;
+
+					//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
+					/*				if(this.features - secondMaxBinBelowFreq < (secondMaxBinBelowFreq + freqError) &&
+							this.features - secondMaxBinBelowFreq > (secondMaxBinBelowFreq - freqError) &&
+					 */
+	/*				
+					if(secondMaxBinBelowFreq < (this.features * 0.5) + freqError &&
+							secondMaxBinBelowFreq > (this.features * 0.5) - freqError &&
+							//"...AND the ratio of amplitudes is above a threshold (e.g., 0.2 for 5 harmonics)..."
+							((this.hps[secondMaxBinBelow] * 100) / (this.hps[maxBin] * 100) > 20))
+					{
+						//"...THEN select the lower octave peak as the pitch for the current frame."
+						println("second...Freq selected! original features = " + this.features + "; secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+						this.features	= secondMaxBinBelowFreq;
+						this.amplitude	= secondMaxBinBelowAmp;
+					} // if - choose lower octave freq
+				} // if - secondMaxBinBelow < maxBin
+				else
+				{
+					//				println("not first if");
+				}
+	*/			
+				/*
 				// println("setFund(); this.frequencyArray[i] = " +
 				// this.frequencyArray[i].getFeatures());
 
@@ -390,13 +459,15 @@ public class Input extends PApplet {
 					// "this.frequencyArray[i].getFeatures() = " +
 					// this.frequencyArray[i].getFeatures());
 					this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-
+					*/
+/*
 					// ignores pitches with amplitude lower than "sensitivity":
 					if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
 						this.adjustedFundArray[i] = this.fundamentalArray[i];
+	*/					
 					} // if: amp > sensitivity
-				} // if: features() != null
-			} // if: > numInputs
+	//			} // if: features() != null
+		//	} // if: > numInputs
 		} catch (NullPointerException npe) {
 		}
 	} // setFund
@@ -709,7 +780,71 @@ public class Input extends PApplet {
 	{
 		return this.frequencyArray;
 	}
+	
+	/**
+	 * HarmonicProductSpectrum sums the harmonic product spectrum of a buffer from a PowerSpectrum.
+	 * @author codeandchords
+	 *
+	 */
+	public class HarmonicProductSpectrum extends FeatureExtractor<float[], float[]> {
+		
+		float[]	features;
 
+		float[]	hps1;
+		float[]	hps2;
+		float[]	hps3;
+		float[]	hps4;
+		
+		/**
+		 * Instantiates a new HarmonicProductSpectrum.
+		 */
+		public HarmonicProductSpectrum() {
+		}
+		
+		/* (non-Javadoc)
+		 * (based on other beads process methods)
+		 */
+		public void process(TimeStamp startTime, TimeStamp endTime, float[] powerSpectrum) {
+			this.features = new float[powerSpectrum.length];
+
+			this.hps1	= new float[powerSpectrum.length];
+			this.hps2	= new float[powerSpectrum.length];
+			this.hps3	= new float[powerSpectrum.length];
+			this.hps4	= new float[powerSpectrum.length];
+			
+			//Calculating HPS:
+			for (int i = 0; i < hps1.length; i++) {
+				hps1[i] = powerSpectrum[i];
+			} // for
+
+			// 2:
+			int i;
+			for (i = 0; (i * 2) < hps2.length; i++) {
+				hps2[i] = powerSpectrum[i * 2];
+			} // for
+
+			// 3:
+			for (i = 0; (i * 3) < hps3.length; i++) {
+				hps3[i] = powerSpectrum[i * 3];
+			} // for
+
+			// 4:
+			for (i = 0; (i * 4) < hps4.length; i++) {
+				hps4[i] = powerSpectrum[i * 4];
+			} // for
+
+			for(i = 0; i < this.features.length; i++)
+			{
+				this.features[i]	= hps1[i] * hps2[i] * hps3[i] * hps4[i];
+			} // for - hps
+			
+			//update the listeners
+			forward(startTime, endTime);
+		} // process
+
+	} // HPS class
+
+	
 	/*
 	 * This file is part of Beads. See http://www.beadsproject.net for all
 	 * information. CREDIT: This class uses portions of code taken from MEAP.
@@ -719,6 +854,8 @@ public class Input extends PApplet {
 	 *
 	 * Edited to allow access to amplitude, so classes using these Frequencies
 	 * can cut out some background noise.
+	 * 
+	 * Further edited in attempts to get a more accurate pitch.
 	 */
 
 	// package net.beadsproject.beads.analysis.featureextractors;
@@ -758,9 +895,11 @@ public class Input extends PApplet {
 		// TODO: make these private at some point?
 		public int maxBin;
 		public int secondMaxBinBelow;
-		
+
 		public 	HanningWindow	hanningWindow;
 		public	Buffer			hanningWindowBuffer;
+
+		//		private	SpectralPeaks	spectralPeaks;
 
 		/**
 		 * Instantiates a new Frequency.
@@ -772,15 +911,19 @@ public class Input extends PApplet {
 			bufferSize = -1;
 			this.sampleRate = sampleRate;
 			this.features = null;
-			
+
+			//			this.spectralPeaks	= new SpectralPeaks(ac, 2);
+
+			/*
+			 * TODO : remove this window stuff:
 			this.hanningWindow	= new HanningWindow();
 			this.hanningWindowBuffer = this.hanningWindow.getDefault();
 /*			for(int i = 0; i < this.hanningWindowBuffer.buf.length; i++)
 			{
 				println("this.hanningWindowBuffer.buf[" + i + "] = " + this.hanningWindowBuffer.buf[i] + "; this.hanningWindowBuffer.getValueIndex(" + i + ") = " + this.hanningWindowBuffer.getValueIndex(i));
 			} // for
-			*/
-		}
+			 */
+		} // constructor
 
 		/*
 		 * (non-Javadoc)
@@ -794,21 +937,21 @@ public class Input extends PApplet {
 				bufferSize = powerSpectrum.length;
 				bin2hz = sampleRate / (2 * bufferSize);
 			} // if
-			
+
 
 			// NB: powerSpectrum.length = 256; bin2hz = 86.13281
 			if (bufferSize != powerSpectrum.length) {
 				bufferSize = powerSpectrum.length;
 				bin2hz = sampleRate / (2 * bufferSize);
 			} // if 
-			
+
 			float	maxBinFreq;
 			float 	secondMaxBinBelowFreq;
 			float	maxBinAmp;
 			float	secondMaxBinBelowAmp;
 
 			this.hps = new float[powerSpectrum.length];
-			
+
 			float[]	hps1	= new float[powerSpectrum.length];
 			float[]	hps2	= new float[powerSpectrum.length];
 			float[]	hps3	= new float[powerSpectrum.length];
@@ -881,9 +1024,9 @@ public class Input extends PApplet {
 					secondMaxBinBelow = i;
 					println("i < maxBin = " + (i<maxBin) + "; i = " + i + "; maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
 				} // if
-				*/
+				 */
 			} // for
-			
+
 			secondMaxBinBelow	= FIRSTBAND;
 			for(i = FIRSTBAND; i < maxBin; i++)
 			{
@@ -892,8 +1035,8 @@ public class Input extends PApplet {
 					secondMaxBinBelow = i;
 				}
 			} // for - secondMaxBinBelow
-			
-			
+
+
 			// only select the second peak if it's about half of the first one:
 			int error  = 5;
 			//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
@@ -908,12 +1051,8 @@ public class Input extends PApplet {
 				maxBin  = secondMaxBinBelow;
 			} // if
 
-//			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
+			//			println("Input.FreqEMM.process: maxBin = " + maxBin + "; secondMaxBinBelow = " + secondMaxBinBelow);
 
-			/*
-			 * TODO: manually setting maxBin - for testing purposes only!!!  Remove post solving the mystery!
-			 */
-//			maxBin	= 100;
 
 			/*
 			 * for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
@@ -925,7 +1064,7 @@ public class Input extends PApplet {
 			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was previously:
 			maxBinAmp				= this.hps[maxBin] * 100;
 			secondMaxBinBelowAmp	= this.hps[secondMaxBinBelow] * 100;
-/*
+			/*
 	// 12/06: Put the following into the cubicInterp(int, float[]) function:
 
 			// cubic interpolation
@@ -950,14 +1089,26 @@ public class Input extends PApplet {
 			features = (float) (bin2hz * (maxBin + x0));
 
 			forward(startTime, endTime);
-*/
+			 */
 			this.features	= this.cubicInterp(maxBin, powerSpectrum);
 			this.amplitude 	= maxBinAmp;
 
 			secondMaxBinBelowFreq	= this.cubicInterp(secondMaxBinBelow, powerSpectrum);
-//			println("this.features = " + this.features);
-//			println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
-			
+			//			println("this.features = " + this.features);
+			//			println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+
+			float[][]	spfeatures	= spArray[0].getFeatures();
+/*
+			println("this.features = " + this.features + "; secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+			for(i = 0; i < spfeatures.length; i++)
+			{
+				for(int j = 0; j < spfeatures[i].length; j++)
+				{
+					print("spfeatures[" + i + "][" + j + "] = " + spfeatures[i][j] + "; ");
+				
+				} // for - j
+			} // for - i
+*/
 			// We can ignore the times that they are both the same (happens often for the lowest bin):
 			//TODO: is this ^ true?
 			if(secondMaxBinBelowFreq < this.features)
@@ -965,15 +1116,15 @@ public class Input extends PApplet {
 				/*
 				secondMaxBinBelowFreq	= this.cubicInterp(secondMaxBinBelow, powerSpectrum);
 				println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
-				*/
+				 */
 
-//				println("  first if; features = " + this.features + "; secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+				//				println("  first if; features = " + this.features + "; secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
 				int	freqError	= 5;
-				
+
 				//"if the second peak amplitude below initially chosen pitch is approximately 1/2 of the chosen pitch..."
-/*				if(this.features - secondMaxBinBelowFreq < (secondMaxBinBelowFreq + freqError) &&
+				/*				if(this.features - secondMaxBinBelowFreq < (secondMaxBinBelowFreq + freqError) &&
 						this.features - secondMaxBinBelowFreq > (secondMaxBinBelowFreq - freqError) &&
-						*/
+				 */
 				if(secondMaxBinBelowFreq < (this.features * 0.5) + freqError &&
 						secondMaxBinBelowFreq > (this.features * 0.5) - freqError &&
 						//"...AND the ratio of amplitudes is above a threshold (e.g., 0.2 for 5 harmonics)..."
@@ -987,12 +1138,12 @@ public class Input extends PApplet {
 			} // if - secondMaxBinBelow < maxBin
 			else
 			{
-//				println("not first if");
+				//				println("not first if");
 			}
 
 			forward(startTime, endTime);
 		} // process
-		
+
 		/**
 		 * This method takes the cubic interpolation out of process(),
 		 * so that it can be performed on both maxBin and secondMaxBinBelow
@@ -1005,7 +1156,7 @@ public class Input extends PApplet {
 		private float cubicInterp(int bin, float[] powerSpectrum)
 		{
 			// TODO: I don't want negative frequencies. Is this the method where I should deal with them?
-			
+
 			// all these y-numbers will be used to figure out the percentage that must be multiplied against the bin
 			// to then multiply it by "bin2hz" to get the exact frequency:
 			double yz = powerSpectrum[bin];
@@ -1025,9 +1176,9 @@ public class Input extends PApplet {
 
 			double k = (yp + ym) / 2 - yz;
 			double x0 = (ym - yp) / (4 * k);
-			
+
 			//println("  k = " + k + "\nx0 = " + x0);
-			
+
 			// discovering the actual frequency:
 			return (float) (bin2hz * (bin + x0));
 		}

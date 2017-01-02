@@ -40,18 +40,18 @@ public class Driver extends PApplet {
 
 	public void draw()
 	{
-//		background(0);
+		background(0);
 //		testInput();
 		
 //		background(250, 150, 204);
 		stroke(230, 179, 204);
 		fill(230, 179, 204);
-		rect(0, 0, width - 200, height);
+//		rect(0, 0, width - 200, height);
 		
 //		drawPSSecondHighest(input);
 //		drawHPSSecondHighest(input);
 		
-		inputFreqRain.rain(input.getAdjustedFund());
+//		inputFreqRain.rain(input.getAdjustedFund());
 //		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
 		/*
  // This is now happening in drawHPSSecondHighest()
@@ -68,8 +68,8 @@ public class Driver extends PApplet {
 		  rect(freqEMMarray[0].secondMaxBin * 10, height, 1, -freqEMMarray[0].hps[freqEMMarray[0].secondMaxBin]);
 		 */	
 		ellipse(width / 2, height - input.getAdjustedFund(), 50, 50);
-		println("input.getAdjustedFund() = " + input.getAdjustedFund());
-		println("input.getAmplitude() = " + input.getAmplitude());
+//		println("input.getAdjustedFund() = " + input.getAdjustedFund());
+//		println("input.getAmplitude() = " + input.getAmplitude());
 
 	} // draw
 
@@ -204,9 +204,9 @@ public class Driver extends PApplet {
 		} // for
 		
 		String	logFile	= "/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/InputClassEclipse_HPSCorrection/filter_tests.txt";
-		this.writeToFile(logFile, tooLowArray, "tooLowArray - with filters:");
-		this.writeToFile(logFile, resultBuffer, "resultBuffer - with filters:");
-		this.writeToFile(logFile, tooHighArray, "tooHighArray - with filters:");
+		this.writeToFile(logFile, tooLowArray, "tooLowArray - without filters:");
+		this.writeToFile(logFile, resultBuffer, "resultBuffer - without filters:");
+		this.writeToFile(logFile, tooHighArray, "tooHighArray - without filters:");
 		
 		return new int[][] { tooLowArray, resultBuffer, tooHighArray };
 	} // testInput
