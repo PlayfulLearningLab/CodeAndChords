@@ -84,12 +84,12 @@ public class Input extends PApplet {
 	float[] adjustedFundArray; // holds the pitch, in hertz, of each input,
 	// adjusted to ignore pitches below a certain
 	// amplitude.
-	BiquadFilter	lpBiquadFilter;
-	BiquadFilter	hpBiquadFilter;
-	Compressor compressor;
+	BiquadFilter[]	lpbfArray;
+	BiquadFilter[]	hpbfArray;
+	Compressor[] compressorArray;
 	// UGen inputsUGen; // initialized with the input from the AudioContext.
 	UGen[] uGenArray;
-	Gain g;
+	Gain[] gainArray;
 	Gain mute;
 	FFT[] fftArray; // holds the FFT for each input.
 	FrequencyEMM[] frequencyArray; // holds the FrequencyEMM objects connected
@@ -234,61 +234,71 @@ public class Input extends PApplet {
 	 *            added to the AudioContext.
 	 */
 	void initInput(UGen[] uGenArray) {
-		/*
-		// 1046.5 = C6 (2 octaves above middle C)
-		this.lprf	= new LPRezFilter(this.ac, (float)1046.50, (float)0.5);
-//		this.lprf	= new LPRezFilter(this.ac);		// default values were 100 (cut-off freq) and 0.5 (res).
-		println("this.lprf.getFrequency() = " + this.lprf.getFrequency() + "; " + this.lprf.getRes());
-		*/
+		// TODO: check with multiple inputs; do I really need to put *everything* in arrays?
+		// (I did so to begin with [1/2/2017] because I will need an individual PowerSpectrum passed to an 
+		// individual FrequencyEMM for each line, and this seemed the simplest way to split them up.)
 		
-		// low-pass filter set to 1046.5 (C6 - 2 octaves above middle C)
+		this.lpbfArray	= new BiquadFilter[this.numInputs];
+		this.hpbfArray	= new BiquadFilter[this.numInputs];
 		//TODO: if things are weird, this might not need 2 channels (depends on the mics?):
-		this.lpBiquadFilter	= new BiquadFilter(this.ac, 2, BiquadFilter.LP);
-		this.lpBiquadFilter.setFrequency((float)1046.5);
-		
-		// high-pass filter set to 65.41 (C2)
-		this.hpBiquadFilter	= new BiquadFilter(this.ac, 2, BiquadFilter.HP);
-		this.hpBiquadFilter.setFrequency((float)65.41);
-		
-		// uGenArray => low-pass filter; low-pass filter => high-pass filter => AudioContext.
+		// uGenArray => high-pass filter; high-pass filter => low-pass filter => rest of the chain.
 		for(int i = 0; i < this.numInputs; i++)
 		{
-			this.hpBiquadFilter.addInput(uGenArray[i]);
-		} // for - biquadFilter
-		this.lpBiquadFilter.addInput(this.hpBiquadFilter);
-		this.ac.out.addInput(this.lpBiquadFilter);
+			// low-pass filter set to 1046.5 (C6 - 2 octaves above middle C)
+			this.lpbfArray[i]	= new BiquadFilter(this.ac, 2, BiquadFilter.LP);
+			this.lpbfArray[i].setFrequency((float)1046.5);
+			this.lpbfArray[i].addInput(uGenArray[i]);
+			
+			// high-pass filter set to 65.41 (C2)
+			this.hpbfArray[i]	= new BiquadFilter(this.ac, 2, BiquadFilter.HP);
+			this.hpbfArray[i].setFrequency((float)65.41);
+			this.hpbfArray[i].addInput(uGenArray[i]);
+			
+		}
 		
 		/*
 		 * Default compressor values: threshold - .5 attack - 1 decay - .5 knee
 		 * - .5 ratio - 2 side-chain - the input audio
 		 */
 		// Create a compressor w/standard values:
-		this.compressor = new Compressor(this.ac, 1);
-		this.compressor.setRatio(8);
+		this.compressorArray	= new Compressor[this.numInputs];
+		for(int i = 0; i < this.numInputs; i++)
+		{
+			this.compressorArray[i] = new Compressor(this.ac, 1);
+			this.compressorArray[i].setRatio(8);
+			this.compressorArray[i].addInput(hpbfArray[i]);
+		}
 
 		// Create a Gain, add the Compressor to the Gain,
 		// add each of the UGens from uGenArray to the Gain, and add the Gain to
 		// the AudioContext:
-		g = new Gain(this.ac, 1, (float) 0.5);
-		g.addInput(this.compressor);
+		this.gainArray	= new Gain[this.numInputs];
+		for(int i = 0; i < this.numInputs; i++)
+		{
+			gainArray[i] = new Gain(this.ac, 1, (float) 0.5);
+			gainArray[i].addInput(this.compressorArray[i]);
+		}
 
 		// Do the following in a method that can be passed a Gain, UGen[], and
 		// AudioContext.
+/*
 		for (int i = 0; i < this.numInputs; i++) {
 			g.addInput(uGenArray[i]);
 		} // for
-		this.ac.out.addInput(g);
+*/
+//		this.ac.out.addInput(g);
 
 		// The ShortFrameSegmenter splits the sound into smaller, manageable
 		// portions;
 		// this creates an array of SFS's and adds the UGens to them:
 		this.sfsArray = new ShortFrameSegmenter[this.numInputs];
 		for (int i = 0; i < this.sfsArray.length; i++) {
-			this.sfsArray[i] = new ShortFrameSegmenter(ac);
+			this.sfsArray[i] = new ShortFrameSegmenter(this.ac);
 			while (this.sfsArray[i] == null) {
 			}
-			this.sfsArray[i].addInput(uGenArray[i]);
+			this.sfsArray[i].addInput(gainArray[i]);
 		}
+
 
 		// Creates an array of FFTs and adds them to the SFSs:
 		this.fftArray = new FFT[this.numInputs];
@@ -298,6 +308,7 @@ public class Input extends PApplet {
 			}
 			this.sfsArray[i].addListener(this.fftArray[i]);
 		} // for
+
 
 		// Creates an array of PowerSpectrum's and adds them to the FFTs
 		// (the PowerSpectrum is what will actually perform the FFT):
@@ -335,7 +346,8 @@ public class Input extends PApplet {
 
 		// Pitches with amplitudes below this number will be ignored by
 		// adjustedFreq:
-		this.sensitivity = 10;
+		this.sensitivity = (float) 0.2;
+		// 1/2: this was 10, but I think that I finally connected the filters correctly and brought it down!
 
 		// Initializes the arrays that will hold the pitches:
 		this.fundamentalArray = new float[this.numInputs];
@@ -911,8 +923,8 @@ public class Input extends PApplet {
 
 			// I added the following line;
 			// 10/5 edits (i.e., hps) may cause it to be a larger num than it was previously:
-			maxBinAmp				= this.hps[maxBin];
-			secondMaxBinBelowAmp	= this.hps[secondMaxBinBelow];
+			maxBinAmp				= this.hps[maxBin] * 100;
+			secondMaxBinBelowAmp	= this.hps[secondMaxBinBelow] * 100;
 /*
 	// 12/06: Put the following into the cubicInterp(int, float[]) function:
 
@@ -943,8 +955,8 @@ public class Input extends PApplet {
 			this.amplitude 	= maxBinAmp;
 
 			secondMaxBinBelowFreq	= this.cubicInterp(secondMaxBinBelow, powerSpectrum);
-			println("this.features = " + this.features);
-			println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
+//			println("this.features = " + this.features);
+//			println("secondMaxBinBelowFreq = " + secondMaxBinBelowFreq);
 			
 			// We can ignore the times that they are both the same (happens often for the lowest bin):
 			//TODO: is this ^ true?
@@ -975,7 +987,7 @@ public class Input extends PApplet {
 			} // if - secondMaxBinBelow < maxBin
 			else
 			{
-				println("not first if");
+//				println("not first if");
 			}
 
 			forward(startTime, endTime);
