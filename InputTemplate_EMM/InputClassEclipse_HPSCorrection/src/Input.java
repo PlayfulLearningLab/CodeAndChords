@@ -375,9 +375,10 @@ public class Input extends PApplet {
 		this.sensitivity = (float) 0.2;
 		// 1/2/2016: this was 10, but I think that I finally connected the filters correctly and brought it down!
 
-		// Initializes the arrays that will hold the pitches:
+		// Initializes the arrays that will hold the pitches and amplitudes:
 		this.fundamentalArray = new float[this.numInputs];
 		this.adjustedFundArray = new float[this.numInputs];
+		this.amplitudeArray	= new float[this.numInputs];
 
 		// Gets the ball rolling on analysis:
 		this.setFund();
@@ -406,38 +407,50 @@ public class Input extends PApplet {
 			float	highestAmp;
 			float	secondHighestAmp;
 
-			for (int i = 0; i < this.numInputs; i++) {
 				// get the SpectralPeaks features:
-				float[][][]	spfeatures	= new float[this.numInputs][][];
-				for(i = 0; i < this.numInputs; i++)
+				float[][][]	spfeaturesArray	= new float[this.numInputs][][];
+				for(int i = 0; i < this.numInputs; i++)
 				{
-					spfeatures[i]	= this.spArray[i].getFeatures();
+					spfeaturesArray[i]	= this.spArray[i].getFeatures();
 					// First frequency is quieter but higher than the second:
-					if(spfeatures[i][0][1] < spfeatures[i][1][1])
+					println("spfeaturesArray[i][0][1] = " + spfeaturesArray[i][0][1] + "; spfeaturesArray[i][1][1] = " + spfeaturesArray[i][1][1]);
+					if(spfeaturesArray[i][0][1] < spfeaturesArray[i][1][1])
 					{
-						println("Hmm, spfeatures[i][0][1] < spfeatures[i][1][1]... ");
-						if(spfeatures[i][0][0] > spfeatures[i][1][1])
+						println("Hmm, spfeaturesArray[i][0][1] < spfeaturesArray[i][1][1]... ");
+						if(spfeaturesArray[i][0][0] > spfeaturesArray[i][1][1])
 
 						{
-							println("Warning! spfeatures[i][0][1] < spfeatures[i][1][1] && spfeatures[i][0][0] > spfeatures[i][1][1]");
+							println("Warning! spfeaturesArray[i][0][1] < spfeaturesArray[i][1][1] && spfeaturesArray[i][0][0] > spfeaturesArray[i][1][1]");
 						} // if
 					} // outer if
-				} // for
+				
+				for(int n = 0; n < spfeaturesArray.length; n++)
+				{
+					println("inputNum = " + i);
+					for(int j = 0; j < spfeaturesArray[n].length; j++)
+					{
+						println("	j = " + j);
+						for(int k = 0; k < spfeaturesArray[n][j].length; k++)
+						{
+							println("	spfeaturesArray[" + n + "][" + j + "][" + k + "] = " + spfeaturesArray[n][j][k]);
+						}
+					}
+				}
 
 				// determine which is the highest and which is the secondHighest:
 				// (TODO: I'm not going to check to make sure that higher freq and higher amplitude go together - not yet.)
 				//((TODO: could also do something clever w/highest and secondhighest being 1 and 0...))
-				if(spfeatures[i][0][1] > spfeatures[i][1][1])
+				if(spfeaturesArray[i][0][1] > spfeaturesArray[i][1][1])
 				{
-					highestAmpFreq			= spfeatures[i][0][0];
-					highestAmp				= spfeatures[i][0][1];
-					secondHighestAmpFreq	= spfeatures[i][1][0];
-					secondHighestAmp		= spfeatures[i][1][1];
+					highestAmpFreq			= spfeaturesArray[i][0][0];
+					highestAmp				= spfeaturesArray[i][0][1];
+					secondHighestAmpFreq	= spfeaturesArray[i][1][0];
+					secondHighestAmp		= spfeaturesArray[i][1][1];
 				} else {
-					highestAmpFreq			= spfeatures[i][1][0];
-					highestAmp				= spfeatures[i][1][1];
-					secondHighestAmpFreq	= spfeatures[i][0][0];
-					secondHighestAmp		= spfeatures[i][0][1];
+					highestAmpFreq			= spfeaturesArray[i][1][0];
+					highestAmp				= spfeaturesArray[i][1][1];
+					secondHighestAmpFreq	= spfeaturesArray[i][0][0];
+					secondHighestAmp		= spfeaturesArray[i][0][1];
 				} // if
 
 				int	freqError	= 5;
@@ -452,13 +465,17 @@ public class Input extends PApplet {
 				} // if
 				// for now, just use the highest.
 				this.fundamentalArray[i]	= highestAmpFreq;
+				highestAmp	= highestAmp * (10 ^ 1000);
 				if(highestAmp > sensitivity)
 				{
 					this.amplitudeArray[i]		= highestAmp;
+					println("this.amplitudeArray[" + i + "] = " + this.amplitudeArray[i]);
+				} else {
+					println("highestAmp = " + highestAmp);
 				}
 			} // for
 		} catch (NullPointerException npe) {
-		}
+		} // catch
 	} // setFund
 
 	/**
@@ -722,7 +739,12 @@ public class Input extends PApplet {
 	 * @return float amplitude of the first input line.
 	 */
 	float getAmplitude() {
-		float amp = this.frequencyArray[0].getAmplitude();
+		if(this.amplitudeArray == null)
+		{
+			this.amplitudeArray	= new float[this.numInputs];
+		}
+		
+		float amp = this.amplitudeArray[0];
 
 		// if(amp > 400) { amp = amp + ((amp - 400) / 8); }
 
