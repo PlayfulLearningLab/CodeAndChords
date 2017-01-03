@@ -68,8 +68,8 @@ public class Driver extends PApplet {
 		  rect(freqEMMarray[0].secondMaxBin * 10, height, 1, -freqEMMarray[0].hps[freqEMMarray[0].secondMaxBin]);
 		 */	
 		ellipse(width / 2, height - input.getAdjustedFund(), 50, 50);
-//		println("input.getAdjustedFund() = " + input.getAdjustedFund());
-//		println("input.getAmplitude() = " + input.getAmplitude());
+		println("input.getAdjustedFund() = " + input.getAdjustedFund());
+		println("input.getAmplitude() = " + input.getAmplitude());
 
 	} // draw
 

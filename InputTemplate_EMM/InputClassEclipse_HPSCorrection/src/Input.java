@@ -413,7 +413,7 @@ public class Input extends PApplet {
 				{
 					spfeaturesArray[i]	= this.spArray[i].getFeatures();
 					// First frequency is quieter but higher than the second:
-					println("spfeaturesArray[i][0][1] = " + spfeaturesArray[i][0][1] + "; spfeaturesArray[i][1][1] = " + spfeaturesArray[i][1][1]);
+//					println("spfeaturesArray[i][0][1] = " + spfeaturesArray[i][0][1] + "; spfeaturesArray[i][1][1] = " + spfeaturesArray[i][1][1]);
 					if(spfeaturesArray[i][0][1] < spfeaturesArray[i][1][1])
 					{
 						println("Hmm, spfeaturesArray[i][0][1] < spfeaturesArray[i][1][1]... ");
@@ -423,7 +423,7 @@ public class Input extends PApplet {
 							println("Warning! spfeaturesArray[i][0][1] < spfeaturesArray[i][1][1] && spfeaturesArray[i][0][0] > spfeaturesArray[i][1][1]");
 						} // if
 					} // outer if
-				
+			/*	
 				for(int n = 0; n < spfeaturesArray.length; n++)
 				{
 					println("inputNum = " + i);
@@ -436,7 +436,8 @@ public class Input extends PApplet {
 						}
 					}
 				}
-
+*/
+					
 				// determine which is the highest and which is the secondHighest:
 				// (TODO: I'm not going to check to make sure that higher freq and higher amplitude go together - not yet.)
 				//((TODO: could also do something clever w/highest and secondhighest being 1 and 0...))
@@ -464,14 +465,16 @@ public class Input extends PApplet {
 					println("Made it to the correction zone.");
 				} // if
 				// for now, just use the highest.
+				println("	highestAmpFreq = " + highestAmpFreq + "; i = " + i);
 				this.fundamentalArray[i]	= highestAmpFreq;
-				highestAmp	= highestAmp * (10 ^ 1000);
+				highestAmp	= (float) (highestAmp * Math.pow(10, 8));
 				if(highestAmp > sensitivity)
 				{
+					// TODO: also set pitch here
 					this.amplitudeArray[i]		= highestAmp;
-					println("this.amplitudeArray[" + i + "] = " + this.amplitudeArray[i]);
+	//				println("this.amplitudeArray[" + i + "] = " + this.amplitudeArray[i]);
 				} else {
-					println("highestAmp = " + highestAmp);
+					println("highestAmp = " + highestAmp + " (wasn't loud enough to set amplitude)");
 				}
 			} // for
 		} catch (NullPointerException npe) {

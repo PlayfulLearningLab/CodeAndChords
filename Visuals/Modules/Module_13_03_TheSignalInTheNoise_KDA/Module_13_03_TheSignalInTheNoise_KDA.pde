@@ -120,6 +120,11 @@ void draw(){
  
  if(testInput.getAmplitude()>threshold1){  
       fill(96, 245, 90);
+      for(int i = 0; i < 13; i++)
+      {
+        rect(random(width), 0, l, height);
+      } // for
+/*
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
@@ -132,11 +137,16 @@ void draw(){
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
-       
-  }
+*/
+  } // if
  
   if(testInput.getAmplitude()>threshold2 && testInput.getAmplitude()<threshold1){  
       fill(98, 17, 250);
+      for(int i = 0; i < 13; i++)
+      {
+        rect(random(width), 0, l, height);
+      } // for
+      /*
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
@@ -149,10 +159,15 @@ void draw(){
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
-       
+       */
   }
   if(testInput.getAmplitude()>threshold3 && testInput.getAmplitude()<threshold2){  
       fill(96, 245, 241);
+      for(int i = 0; i < 13; i++)
+      {
+        rect(random(width), 0, l, height);
+      } // for
+      /*
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
@@ -165,7 +180,7 @@ void draw(){
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
       rect(random(width), 0, l, height);
-       
+      */
   }
   
 
