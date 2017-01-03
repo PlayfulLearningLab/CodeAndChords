@@ -12,7 +12,7 @@ Download the appropriate "ModuleApps" folder for your OS ("MacApps", "PC-32bitAp
  
 We recommend starting with "Module_02_PitchHueBars_EMM", "Module_01_01_PitchHueBackgroundWBorder_HPS_EMM_CURRENT" (both link pitch and color), and "Module_04_03_AmplitudeBars_SS_1Voice_EMM."
 
-(There are also Eclipse version of some of the modules.)
+(There are also Eclipse versions of some of the modules.)
 
 ### Notate Bene:
  * Volume must be turned down or off to avoid feedback while running sketches.
