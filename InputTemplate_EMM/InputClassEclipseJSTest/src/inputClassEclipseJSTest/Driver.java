@@ -1,3 +1,4 @@
+package inputClassEclipseJSTest;
 import processing.core.PApplet;
 import java.io.ByteArrayOutputStream;
 
@@ -68,7 +69,7 @@ public class Driver extends PApplet {
 	// (and I never set it.... maybe later we'll add a button for it.)
 
 	public static void main(String[] args) {
-		PApplet.main("Driver");
+		PApplet.main("inputClassEclipseJSTest.Driver");
 	} // main
 
 	public void settings() {

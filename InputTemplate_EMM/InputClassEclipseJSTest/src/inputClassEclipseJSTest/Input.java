@@ -1,3 +1,4 @@
+package inputClassEclipseJSTest;
 import processing.core.PApplet;
 
 //import org.jaudiolibs.beads.AudioServerIO;
@@ -99,7 +100,7 @@ private SampleManager sampleManager;
    */
   Input(int numInputs)
   {
-      this(numInputs, new AudioContext(new AudioServerIO.Jack(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+      this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
   } // constructor - int, AudioContext
   
   /**

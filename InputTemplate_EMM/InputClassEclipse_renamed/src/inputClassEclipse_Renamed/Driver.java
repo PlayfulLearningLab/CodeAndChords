@@ -1,3 +1,4 @@
+package inputClassEclipse_Renamed;
 import processing.core.PApplet;
 
 /*
@@ -9,7 +10,7 @@ public class Driver extends PApplet {
 	
 	public static void main(String[] args)
 	{
-		PApplet.main("Driver");
+		PApplet.main("inputClassEclipse_Renamed.Driver");
 	} // main
 	
 	public void settings()
