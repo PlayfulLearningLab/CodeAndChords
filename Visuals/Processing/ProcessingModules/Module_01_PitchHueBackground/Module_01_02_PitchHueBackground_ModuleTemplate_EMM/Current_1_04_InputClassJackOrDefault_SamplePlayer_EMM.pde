@@ -99,8 +99,8 @@ class Input
       throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
     } // if(numInputs < 1)
 
-    this.numInputs  = numInputs;
     this.ac = audioContext;
+    this.numInputs  = numInputs;
 
     // creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
     int[]  inputNums  = new int[this.numInputs];
