@@ -87,6 +87,7 @@ void setup()
    */
 
   input        = new Input(inputFile);
+//  input  = new Input();
   threshold    = 15;
 
   noStroke();
@@ -193,10 +194,17 @@ void draw()
 
   /*
   // ellipse for testing different colors - for my benefit, but could be cool.
-   fill(255, 127.5, 0);
-   //  fill(colors[0][0], colors[0][1], colors[0][2]);
-   ellipse(width / 2, height / 2, 100, 100);
-   */
+
+  fill(255, 127.5, 0);
+//  fill(colors[0][0], colors[0][1], colors[0][2]);
+  ellipse(width / 2, height / 2, 100, 100);
+*/
+
+  if(mousePressed)
+  {
+    input.uGenArrayFromSample("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
+  } // if
+
 } // draw()
 
 void legend()
