@@ -1,6 +1,8 @@
 /*
   12/05/2016
   Moved to ProtoModules.
+  
+  A Circle gets created and remains on the screen.
 
 // Emily Meuer
 // Fall 2015

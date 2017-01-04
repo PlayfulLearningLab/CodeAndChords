@@ -132,9 +132,9 @@ class Input
     g.addInput(this.compressor);
     for (int i = 0; i < this.numInputs; i++)
     {
-      g.addInput(uGenArray[i]); //<>//
+      g.addInput(uGenArray[i]); //<>// //<>//
     } // for
-    ac.out.addInput(g); //<>//
+    ac.out.addInput(g); //<>// //<>//
 
     // The ShortFrameSegmenter splits the sound into smaller, manageable portions;
     // this creates an array of SFS's and adds the UGens to them:
@@ -144,7 +144,7 @@ class Input
       this.sfsArray[i] = new ShortFrameSegmenter(ac);
       while (this.sfsArray[i] == null) {
       }
-      this.sfsArray[i].addInput(uGenArray[i]); //<>//
+      this.sfsArray[i].addInput(uGenArray[i]); //<>// //<>//
     }
 
     // Creates an array of FFTs and adds them to the SFSs:
@@ -154,7 +154,7 @@ class Input
       this.fftArray[i] = new FFT();
       while (this.fftArray[i] == null) {
       }
-      this.sfsArray[i].addListener(this.fftArray[i]); //<>//
+      this.sfsArray[i].addListener(this.fftArray[i]); //<>// //<>//
     } // for
 
     // Creates an array of PowerSpectrum's and adds them to the FFTs
@@ -165,7 +165,7 @@ class Input
       this.psArray[i] = new PowerSpectrum();
       while (this.psArray[i] == null) {
       }
-      this.fftArray[i].addListener(psArray[i]); //<>//
+      this.fftArray[i].addListener(psArray[i]); //<>// //<>//
     } // for
 
     // Creates an array of FrequencyEMMs and adds them to the PSs
@@ -176,13 +176,13 @@ class Input
       this.frequencyArray[i] = new FrequencyEMM(44100);
       while (this.frequencyArray[i] == null) {
       }
-      this.psArray[i].addListener(frequencyArray[i]); //<>//
+      this.psArray[i].addListener(frequencyArray[i]); //<>// //<>//
     } // for
 
     // Adds the SFSs (and everything connected to them) to the AudioContext:
     for (int i = 0; i < this.numInputs; i++)
     {
-      ac.out.addDependent(sfsArray[i]); //<>//
+      ac.out.addDependent(sfsArray[i]); //<>// //<>//
     } // for - addDependent
 
     // Pitches with amplitudes below this number will be ignored by adjustedFreq:

@@ -6,8 +6,9 @@
   Spring 2016
   
   Early live input experiments.
-  Displays spectrum (rectangle heights = amplitude);
+  Displays frequency domain spectrum (rectangle heights = amplitude);
   changes background color on keypress.
+  
 
 */
 

@@ -6,6 +6,12 @@ import interfascia.*;
   There will be a randlomy changing/morphing background. When an 
   input is recieved, tere will be a randomly placed disruption (star) in the field 
  */
+
+// Luke:
+String  inputFile  = "Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
+//String  inputFile  = "Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
+//String  inputFile  = "Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
+
 GUIController controller;
 Input testInput;
 
@@ -15,9 +21,10 @@ int thresMax  = 100;
 int thres;
 int delay;
 
+
 void setup(){
   controller   = new GUIController(this);
-  testInput = new Input();
+  testInput = new Input(inputFile);
   size(640, 360);
   background(0);
   noStroke();

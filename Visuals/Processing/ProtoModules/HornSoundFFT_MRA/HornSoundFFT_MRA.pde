@@ -1,6 +1,8 @@
 /*
   12/05/2016
   Saved as ProtoModule.
+  
+  Frequency Spectrum FFT Visualization
 
   Michaela Andrews, Emily Meuer
   pre-5/27/2016

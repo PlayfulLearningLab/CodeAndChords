@@ -22,16 +22,16 @@
    
    this.minim  = new Minim(this);
   this.player = this.minim.loadFile("Zikr.mp3", 4096);
-  //this.player.loop();
+//  this.player.loop();
    this.input  = minim.getLineIn();
    this.fft    = new FFT(input.bufferSize(), input.sampleRate());
-   //this.fft    = new FFT(player.bufferSize(), player.sampleRate());
+//   this.fft    = new FFT(player.bufferSize(), player.sampleRate());
  } // setup
  
  void draw()
  {
    this.fft.forward(this.input.mix);
-   //this.fft.forward(this.player.mix);
+ //  this.fft.forward(this.player.mix);
    this.fft.logAverages(11,12);
    
    float  loudestFreq = 0;

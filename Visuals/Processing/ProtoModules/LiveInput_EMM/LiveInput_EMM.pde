@@ -8,6 +8,8 @@ import ddf.minim.*;
   
   Push the arrow keys to change the background color!
   
+  Similar visual to HornSoundFFT_MRA (a Frequency domain FFT visualization), 
+  but with an audio loop.
 
   Emily Meuer
   06/06/2016

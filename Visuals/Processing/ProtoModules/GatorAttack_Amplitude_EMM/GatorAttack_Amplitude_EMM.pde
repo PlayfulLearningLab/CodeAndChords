@@ -8,7 +8,7 @@ import ddf.minim.*;
   Emily Meuer
   04/15/2016
   
-  Image fades and reveals a background image in response to volume.
+  Image fades and reveals a background image in response to volume (amplitude changes the picture).
 */
 
 PImage      amanda;
