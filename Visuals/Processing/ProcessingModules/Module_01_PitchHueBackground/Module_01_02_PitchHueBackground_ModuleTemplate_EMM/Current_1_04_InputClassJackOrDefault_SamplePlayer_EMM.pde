@@ -153,20 +153,31 @@ class Input
   Input(String[] filenames)
   {
     this.ac = new AudioContext();
-    this.numInputs  = filenames.length;
+    
+    this.uGenArrayFromSample(filenames);
+    
+    initInput(uGenArray);
+  } // constructor(String[])
+  
+  public void uGenArrayFromSample(String sampleFilename)
+  {
+    this.uGenArrayFromSample(new String[] { sampleFilename });
+  } // uGenArrayFromSample
+  
+  public void uGenArrayFromSample(String[] sampleFilenames)
+  {
+    // Moved this from the constructor:
+    this.numInputs  = sampleFilenames.length;
     this.sampleManager  = new SampleManager();
-    Sample[] samples    = new Sample[filenames.length];  // samples will be initiated in a try/catch in order to determine whether or not the operation was successful.
+    Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initiated in a try/catch in order to determine whether or not the operation was successful.
     int  semaphore      = 1;
-    // Ooooohhh... I can't test for /data/ or not, b/c it has it if I tell it to, and doesn't if I don't.
-
-    // Okay: I could try both ways, catch Exceptions, set semaphores.  Then, if both fail, I throw an exception, but if only one fails --
-    // the key here is to have 2 separate samples -- no, that's annoying.  I'll have one, and I'll only try it with data if sketch fails.
+    
     try {
-      //      samples  = new Sample[filenames.length];
+      //      samples  = new Sample[sampleFilenames.length];
 
       for (int i = 0; i < samples.length; i++)
       {
-        samples[i]  = new Sample(sketchPath(filenames[i]));
+        samples[i]  = new Sample(sketchPath(sampleFilenames[i]));
       } // for
     }
     catch(Exception e)
@@ -178,7 +189,7 @@ class Input
       try {
         for (int i = 0; i < samples.length; i++)
         {
-          samples[i]  = new Sample(dataPath(filenames[i]));
+          samples[i]  = new Sample(dataPath(sampleFilenames[i]));
         } // for
 
         semaphore  = 1;
@@ -213,7 +224,7 @@ class Input
     } // for
 
     initInput(uGenArray);
-  } // constructor(String[])
+  } // uGenArrayFromSample(String[])
 
   /**
    *  As of 10/24/2016, does everything that was in the (int, AudioContext) constructor;
