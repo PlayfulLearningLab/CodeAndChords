@@ -86,8 +86,8 @@ void setup()
    } // for
    */
 
-  input        = new Input(inputFile);
-//  input  = new Input();
+//  input        = new Input(inputFile);
+  input  = new Input();
   threshold    = 15;
 
   noStroke();
