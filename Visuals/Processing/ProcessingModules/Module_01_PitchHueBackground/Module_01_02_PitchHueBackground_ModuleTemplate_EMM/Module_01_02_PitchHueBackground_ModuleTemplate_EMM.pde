@@ -54,6 +54,8 @@ void setup()
 {
   size(750, 422);
 
+
+
   hueMax         = 360;
   saturationMax  = 300;
   brightnessMax  = 100;
@@ -90,7 +92,7 @@ void setup()
   noStroke();
   background(0);
 
-//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
+  //  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
   curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
   curHue       = colors[curHuePos];
   // would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
@@ -99,24 +101,24 @@ void setup()
   curSaturation       = (int)Math.min(input.getAmplitude(1), 300);
   changeInSaturation  = 10;
 
-  
+
   // sets the text size used to display note names:
   textSize(24);
-  
+
   // draws the legend
   legend();
-  
+
   scrollbar = new HScrollbar(10, 45, (width / 2) - 10, 18, 5);
 
   controller = new GUIController(this);
   textField  = new IFTextField("Text Field", 10, 10, 150);
   label      = new IFLabel("attackTime: " + attackTime, 15, 15);
-  
+
   controller.add(textField);
   controller.add(label);
-  
+
   textField.addActionListener(this);
-  
+
   println("scrollbar.ratio = " + scrollbar.ratio);
 } // setup()
 
@@ -140,7 +142,7 @@ void draw()
     goalHuePos  = newHuePos;
   } // if
   goalHue  = colors[goalHuePos];
-  
+
   for (int i = 0; i < 3; i++)
   {
     if (curHue[i] > (goalHue[i] - attackTime))
@@ -177,30 +179,31 @@ void draw()
   background(curHue[0], curHue[1], curHue[2]);
 
   stroke(255);
+  triangle( 710, 10, 710, 30, 730, 20);
   // draws the legend along the bottom of the screen:
   legend();
-  
+
   scrollbar.update();
   scrollbar.display();
-  
+
   scrollbarPos  = scrollbar.getPos();
   attackTime      = map(scrollbarPos, scrollbar.sposMin, scrollbar.sposMax, attackTimeMin, attackTimeMax);
-  
+
   label.setLabel("attackTime: " + attackTime);
 
-/*
+  /*
   // ellipse for testing different colors - for my benefit, but could be cool.
-  fill(255, 127.5, 0);
-//  fill(colors[0][0], colors[0][1], colors[0][2]);
-  ellipse(width / 2, height / 2, 100, 100);
-*/
+   fill(255, 127.5, 0);
+   //  fill(colors[0][0], colors[0][1], colors[0][2]);
+   ellipse(width / 2, height / 2, 100, 100);
+   */
 } // draw()
 
 void legend()
 {
-  
+
   textSize(15);
-  
+
   String[] notes = new String[] {
     "C", 
     "C#", 
@@ -213,12 +216,12 @@ void legend()
     "G#", 
     "A", 
     "A#", 
-    "B",
+    "B", 
     "C"
   }; // notes
 
-// 12/19: updating to be on the side.
-//  float  side = width / colors.length;
+  // 12/19: updating to be on the side.
+  //  float  side = width / colors.length;
   float  side = height / colors.length;
 
   stroke(255);
@@ -226,12 +229,11 @@ void legend()
   for (int i = 0; i < colors.length; i++)
   {
     fill(colors[i][0], colors[i][1], colors[i][2]);
-    if(i == goalHuePos) {
-//      rect((side * i), height - (side * 1.5), side, side * 1.5);
+    if (i == goalHuePos) {
+      //      rect((side * i), height - (side * 1.5), side, side * 1.5);
       rect(0, (side * i), side * 1.5, side);
-
     } else {
-//      rect((side * i), height - side, side, side);
+      //      rect((side * i), height - side, side, side);
       rect(0, (side * i), side, side);
     }
     fill(0);
