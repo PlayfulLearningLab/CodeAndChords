@@ -6,8 +6,6 @@ import interfascia.*;
  Wrapper class to make it easier to use interfascia buttons.
  */
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 class Buttons
 {
   GUIController    controller;
@@ -114,9 +112,7 @@ class Buttons
      */
   } // actionPerformed
 } // Buttons
-=======
-=======
->>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
+
 class Button
 {
   boolean  rect;          // true if button is rectangle
@@ -262,9 +258,4 @@ class Button
   {
     return this.on;
   } // getOn
-<<<<<<< HEAD
 } // Button
->>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
-=======
-} // Button
->>>>>>> 4a4f8e45b789ff3416305762fab4c04ba1075fd4
