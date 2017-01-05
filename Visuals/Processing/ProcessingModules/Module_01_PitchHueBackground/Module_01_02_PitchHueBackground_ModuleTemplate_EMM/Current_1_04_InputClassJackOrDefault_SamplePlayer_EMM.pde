@@ -100,8 +100,8 @@ class Input
     } // if(numInputs < 1)
 
     this.ac = audioContext;
+    /*
     this.numInputs  = numInputs;
-
     // creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
     int[]  inputNums  = new int[this.numInputs];
     for (int i = 0; i < this.numInputs; i++)
@@ -119,6 +119,8 @@ class Input
       // getAudioInput needs an int[] with the number of the particular line.
       uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
     }
+    */
+    this.uGenArrayFromNumInputs(numInputs);
 
     initInput(uGenArray);
   } // constructor(int)
@@ -225,6 +227,31 @@ class Input
 
     initInput(uGenArray);
   } // uGenArrayFromSample(String[])
+  
+  public void uGenArrayFromNumInputs(int numInputs)
+  {
+    this.numInputs  = numInputs;
+
+    // creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
+    int[]  inputNums  = new int[this.numInputs];
+    for (int i = 0; i < this.numInputs; i++)
+    {
+      inputNums[i]  = i + 1;
+    } // for
+
+    // get the audio lines from the AudioContext:
+    //    this.inputsUGen = ac.getAudioInput(inputNums);
+
+    // fill the uGenArray with UGens, each one from a particular line of the AudioContext.
+    uGenArray  = new UGen[this.numInputs];
+    for (int i = 0; i < uGenArray.length; i++)
+    {
+      // getAudioInput needs an int[] with the number of the particular line.
+      uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
+    }
+    
+    initInput(uGenArray);
+  } // uGenArrayFromNumInputs
 
   /**
    *  As of 10/24/2016, does everything that was in the (int, AudioContext) constructor;

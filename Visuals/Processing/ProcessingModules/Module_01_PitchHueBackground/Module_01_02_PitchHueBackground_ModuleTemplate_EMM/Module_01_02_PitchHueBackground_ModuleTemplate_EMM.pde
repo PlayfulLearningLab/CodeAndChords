@@ -1,8 +1,14 @@
 import interfascia.*;
 
 /**
+  1/4/2016
+  Emily
+  Current struggle = since they're on top of each other, they both contain....
+  Probably set a boolean to see which if it goes to?
+  
  * 08/01/2016
  * Emily Meuer
+
  *
  * Background changes hue based on pitch.
  *
@@ -49,6 +55,11 @@ HScrollbar  scrollbar;
 float       scrollbarPos;
 float       attackTimeMax  = 20;
 float       attackTimeMin  = 1;
+
+PShape  playButton;
+PShape  stopButton;
+boolean  showPlay;
+boolean  showStop;
 
 void setup() 
 {
@@ -121,9 +132,39 @@ void setup()
   textField.addActionListener(this);
 
   println("scrollbar.ratio = " + scrollbar.ratio);
+  
+  // Creating the PShape as a square. The corner 
+  // is 0,0 so that the center is at 40,40 
+  // syntax: createShape(TRIANGLE, x1, y1, x2, y2, x3, y3)
+  int  playDistanceFromEdge  = 20;
+  int  playWidth  = 25;
+  int  playHeight  = 30;
+  float[][]  playButtonVerts  = new float[][] { new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge }, 
+                                      new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge + playHeight }, 
+                                      new float[] { width - playDistanceFromEdge, playDistanceFromEdge + (playHeight / 2) }, 
+                                      new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge }
+  };
+  this.playButton  = createShape(PShape.PATH);
+  // Setting vcount to 4 means connects the first and last points with a side, 
+  // making it look nice and making mousePressed/contains() functionality work.
+  this.playButton.setPath(4, playButtonVerts);
+  this.showPlay  = true;
+                                      
+  int  stopSideSize  = 30;
+  int  stopDistanceFromEdge  = 20;
+  float[][]  stopButtonVerts  = new float[][] { new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge },
+                                                  new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge + stopSideSize },
+                                                  new float[] { width - stopDistanceFromEdge, stopDistanceFromEdge + stopSideSize },
+                                                  new float[] { width - stopDistanceFromEdge, stopDistanceFromEdge },
+                                                  new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge },
+                                                };
+  this.stopButton  = createShape(PShape.PATH);
+  this.stopButton.setPath(5, stopButtonVerts);
+  this.showStop  = false;
+  this.stopButton.setVisible(false);
 } // setup()
 
-void draw() 
+void draw()
 {
   stroke(255);
   if (input.getAmplitude() > threshold)
@@ -180,7 +221,7 @@ void draw()
   background(curHue[0], curHue[1], curHue[2]);
 
   stroke(255);
-  triangle( 710, 10, 710, 30, 730, 20);
+//  triangle( 710, 10, 710, 30, 730, 20);
   // draws the legend along the bottom of the screen:
   legend();
 
@@ -192,18 +233,8 @@ void draw()
 
   label.setLabel("attackTime: " + attackTime);
 
-  /*
-  // ellipse for testing different colors - for my benefit, but could be cool.
-
-  fill(255, 127.5, 0);
-//  fill(colors[0][0], colors[0][1], colors[0][2]);
-  ellipse(width / 2, height / 2, 100, 100);
-*/
-
-  if(mousePressed)
-  {
-    input.uGenArrayFromSample("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
-  } // if
+    shape(this.playButton);
+    shape(this.stopButton);
 
 } // draw()
 
@@ -224,7 +255,7 @@ void legend()
     "G#", 
     "A", 
     "A#", 
-    "B", 
+    "B" , 
     "C"
   }; // notes
 
@@ -248,6 +279,37 @@ void legend()
     text(notes[i], 7, (side * i) + side * 0.75);
   } // for
 } // legend
+
+void mousePressed()
+{
+  if(this.showPlay)
+  {
+    if(this.playButton.contains(mouseX, mouseY))
+    {
+      this.playButton.setVisible(false);
+      this.showPlay  = false;
+      this.stopButton.setVisible(true);
+      this.showStop  = true;
+      this.input.uGenArrayFromSample("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
+    } // if - playButton
+  } else {
+    if(this.stopButton.contains(mouseX, mouseY))
+    {
+      this.stopButton.setVisible(false);
+      this.showStop  = false;
+      this.playButton.setVisible(true);
+      this.showPlay  = true;
+      
+      // The uGenArray is currently full of SamplePlayers; can simply pause them:
+      for(int i = 0; i < input.uGenArray.length; i++)
+      {
+        input.uGenArray[i].pause(true);
+      } // for
+      
+      this.input.uGenArrayFromNumInputs(1);
+    } // if - stopButton
+  }
+} // mousePressed
 
 // Not sure that this really does anything right now:
 void actionPerformed(GUIEvent e) {
