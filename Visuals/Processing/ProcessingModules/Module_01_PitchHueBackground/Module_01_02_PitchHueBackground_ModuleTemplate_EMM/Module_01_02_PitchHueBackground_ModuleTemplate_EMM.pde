@@ -61,6 +61,9 @@ PShape  stopButton;
 boolean  showPlay;
 boolean  showStop;
 
+boolean  sidebarOut;
+int      leftEdgeX;
+
 void setup() 
 {
   size(750, 422);
@@ -162,6 +165,9 @@ void setup()
   this.stopButton.setPath(5, stopButtonVerts);
   this.showStop  = false;
   this.stopButton.setVisible(false);
+  
+  this.sidebarOut  = false;
+  this.leftEdgeX   = 0;
 } // setup()
 
 void draw()
@@ -217,8 +223,9 @@ void draw()
 
   curSaturation  = saturationMax;
 
-  //  println("curSaturation = " + curSaturation + "; goalSaturation = " + goalSaturation);
-  background(curHue[0], curHue[1], curHue[2]);
+//  background(curHue[0], curHue[1], curHue[2]);
+  fill(curHue[0], curHue[1], curHue[2]);
+  rect(leftEdgeX, 0, width - leftEdgeX, height);
 
   stroke(255);
 //  triangle( 710, 10, 710, 30, 730, 20);
@@ -235,13 +242,32 @@ void draw()
 
     shape(this.playButton);
     shape(this.stopButton);
+    
+    if(mousePressed && (mouseX < (width / 3)))
+    {
+      this.sidebarOut  = !this.sidebarOut;
+      
+      if(sidebarOut)
+      {
+        this.leftEdgeX  = width / 3;
+        this.displaySidebar();
+      } else { 
+        this.leftEdgeX  = 0;
+      } // if - leftEdgeX
+    } // if - mousePressed
 
 } // draw()
+
+void displaySidebar()
+{
+  fill(0);
+  rect(0, 0, leftEdgeX, height);
+} // displaySidebar
 
 void legend()
 {
 
-  textSize(15);
+  textSize(24);
 
   String[] notes = new String[] {
     "C", 
@@ -255,13 +281,15 @@ void legend()
     "G#", 
     "A", 
     "A#", 
-    "B" , 
+    "B" ,
     "C"
   }; // notes
 
   // 12/19: updating to be on the side.
-  //  float  side = width / colors.length;
-  float  side = height / colors.length;
+  // 01/05: changing it back!
+  float  sideWidth   = (width - leftEdgeX) / colors.length;
+  float  sideHeight  = width / colors.length;
+//  float  side = height / colors.length;
 
   stroke(255);
 
@@ -269,46 +297,46 @@ void legend()
   {
     fill(colors[i][0], colors[i][1], colors[i][2]);
     if (i == goalHuePos) {
-      //      rect((side * i), height - (side * 1.5), side, side * 1.5);
-      rect(0, (side * i), side * 1.5, side);
+      rect(leftEdgeX + (sideWidth * i), height - (sideHeight * 1.5), sideWidth, sideHeight * 1.5);
+//      rect(0, (side * i), side * 1.5, side);
     } else {
-      //      rect((side * i), height - side, side, side);
-      rect(0, (side * i), side, side);
+      rect(leftEdgeX + (sideWidth * i), height - sideHeight, sideWidth, sideHeight);
+      //      rect(0, (side * i), side, side);
     }
     fill(0);
-    text(notes[i], 7, (side * i) + side * 0.75);
+    text(notes[i], leftEdgeX + (sideWidth * i) + (sideWidth * 0.35), height - 20);
   } // for
 } // legend
 
 void mousePressed()
 {
+  // The following for loops stops either the SamplePlayers or the uGens getting audio input (and otherwise creating feedback):
+    for(int i = 0; i < input.uGenArray.length; i++)
+    {
+      input.uGenArray[i].pause(true);
+    } // for
+      
   if(this.showPlay)
   {
     if(this.playButton.contains(mouseX, mouseY))
     {
-      this.playButton.setVisible(false);
       this.showPlay  = false;
-      this.stopButton.setVisible(true);
       this.showStop  = true;
+      
       this.input.uGenArrayFromSample("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
     } // if - playButton
   } else {
     if(this.stopButton.contains(mouseX, mouseY))
     {
-      this.stopButton.setVisible(false);
       this.showStop  = false;
-      this.playButton.setVisible(true);
       this.showPlay  = true;
-      
-      // The uGenArray is currently full of SamplePlayers; can simply pause them:
-      for(int i = 0; i < input.uGenArray.length; i++)
-      {
-        input.uGenArray[i].pause(true);
-      } // for
       
       this.input.uGenArrayFromNumInputs(1);
     } // if - stopButton
-  }
+  } // else - showPlay/showStop
+  
+  this.playButton.setVisible(this.showPlay);
+  this.stopButton.setVisible(this.showStop);
 } // mousePressed
 
 // Not sure that this really does anything right now:
