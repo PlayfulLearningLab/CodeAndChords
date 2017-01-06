@@ -115,7 +115,7 @@ int    scrollbarX;
 
 void setup() 
 {
-  size(825, 464);
+  size(925, 520);
 
   hueMax         = 360;
   saturationMax  = 300;
@@ -222,7 +222,7 @@ void setup()
   arrowX       = scrollbarX + 80;
   scaleX       = scrollbarX + 140;
 
-  hideWidth         = 75;
+  hideWidth     = 75;
   hideY         = 40;
   thresholdY    = 65;
   attackY       = 85;
@@ -234,18 +234,18 @@ void setup()
   pitchColorCodesY  = 185;
   
   this.rainbowX     = scrollbarX;
-  this.dichromaticX  = scrollbarX + 150;
-  this.trichromaticX  = scrollbarX + 300;
+  this.dichromaticX  = scrollbarX + 60;
+  this.trichromaticX  = scrollbarX + 140;
   this.customX  = scrollbarX + 400;
 
   this.buttons  = new IFButton[] {
     // annoyingly, buttons have to be placed15 pts higher than their corresponding text
-    new IFButton("PlayButton", playButtonX, hideY - 15, hideWidth), 
+    new IFButton("PlayButton", playButtonX, hideY - 15, hideWidth),
     new IFButton("Arrow", arrowX, hideY - 15, hideWidth - 20), 
     new IFButton("Scale", scaleX, hideY - 15, hideWidth - 35), 
-    new IFButton("Rainbow", rainbowX, colorStyleY - 15), 
-    new IFButton("Dichromatic", dichromaticX, colorStyleY - 15), 
-    new IFButton("Trichromatic", trichromaticX, colorStyleY - 15), 
+    new IFButton("Rainbow", rainbowX, colorStyleY - 15, 55), 
+    new IFButton("Dichromatic", dichromaticX, colorStyleY - 15, 75), 
+    new IFButton("Trichromatic", trichromaticX, colorStyleY - 15, 75), 
     new IFButton("Custom", customX, colorStyleY), 
   }; // buttons
 
@@ -259,7 +259,7 @@ void setup()
     new HScrollbar(scrollbarX, releaseY - 5, scrollWidth1),
     new HScrollbar(scrollbarX, transitionY - 5, scrollWidth1),
     new HScrollbar(scrollbarX, keyY - 5, scrollWidth1),
-    new HScrollbar(scrollbarX, colorStyleY - 5, scrollWidth1),
+    new HScrollbar(scrollbarX, rootColorY - 5, scrollWidth1),
   };
   
 } // setup()
@@ -336,12 +336,20 @@ void displaySidebar()
   stroke(255);
   fill(0);
   rect(0, 0, leftEdgeX, height);
+  
+  int  textX  = 5;
 
-  textSize(12);
+  textSize(10);
   fill(255);
   text("Module_01_01_PitchHueBackground", 10, 15);
-  text("Hide", 5, hideY);
-  text("Threshold", 5, thresholdY);
+  text("Hide", textX, hideY);
+  text("Threshold", textX, thresholdY);
+  text("Attack", textX, attackY);
+  text("Release", textX, releaseY);
+  text("Transition", textX, transitionY);
+  text("Key", textX, keyY);
+  text("Root Color", textX, rootColorY);
+  text("ColorStyle", textX, colorStyleY);
   // TODO: make buttons clickable only when sidebar is open?
 
 /*

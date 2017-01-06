@@ -1,4 +1,4 @@
-package module_01_PitchHueBackground;
+package module_01_PitchHueBackground.module_01_01_PitchHueBackground_EMM;
 
 import interfascia.*;
 import processing.core.PApplet;
@@ -21,7 +21,7 @@ public class Module_01_01_PitchHueBackground_EMM extends PApplet {
 	//String  inputFile  = "Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
 	//String  inputFile  = "Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 
-	// Lable for the scrollbar:
+	// Label for the scrollbar:
 	GUIController controller;
 	IFTextField   textField;
 	IFLabel       label;
