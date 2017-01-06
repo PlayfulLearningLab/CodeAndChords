@@ -18,7 +18,28 @@ public class HScrollbar {
 	float ratio;
 
 	PApplet	parent;
-
+	  /**
+	   *  Constructor for an HScrollbar with the given x, y, and width values,
+	   *  a height of 18 and a loose value of 10.
+	   *
+	   *  @param  xp  x position of scrollbar; float
+	   *  @param  yp  y position of scrollbar; float
+	   *  @param  sw  int width of scrollbar
+	   */
+	  public HScrollbar(PApplet parent, float xp, float yp, int sw)
+	  {
+	    this(parent, xp, yp, sw, 18, 3);
+	  } // constructor(float, float, int)
+	  
+	  /**
+	   *  Creates an HScrollbar object.
+	   *
+	   *  @param  xp  x position of scrollbar; float
+	   *  @param  yp  y position of scrollbar; float
+	   *  @param  sw  int width of scrollbar
+	   *  @param  sh  int height of scrollbar
+	   *  @param  l   int to determine how loose or heavy a particular bar is
+	   */
 	public HScrollbar (PApplet parent, float xp, float yp, int sw, int sh, int l) {
 		this.parent = parent;
 		swidth = sw;

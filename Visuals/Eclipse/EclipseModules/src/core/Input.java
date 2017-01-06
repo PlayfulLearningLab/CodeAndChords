@@ -83,7 +83,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
 	Compressor             compressor;
 	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
-	UGen[]                 uGenArray;
+	private UGen[]                 uGenArray;
 	Gain                   g;
 	Gain                   mute;
 	FFT[]                  fftArray;             // holds the FFT for each input.
@@ -137,14 +137,14 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		//  this.inputsUGen = ac.getAudioInput(inputNums);
 
 		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
-		uGenArray  = new UGen[this.numInputs];
-		for (int i = 0; i < uGenArray.length; i++)
+		setuGenArray(new UGen[this.numInputs]);
+		for (int i = 0; i < getuGenArray().length; i++)
 		{
 			// getAudioInput needs an int[] with the number of the particular line.
-			uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
+			getuGenArray()[i]  = ac.getAudioInput(new int[] {(i + 1)});
 		}
 
-		initInput(uGenArray);
+		initInput(getuGenArray());
 	} // constructor(int)
 
 	/**
@@ -162,37 +162,69 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 *
 	 * @param  filename  String specifying the audio file.
 	 */
-	public Input(String filename)
-	{
-		this(new String[] { filename });
-	} // constructor(String)
-
-	/**
-	 * Constructor for creating an Input object from an audio file.
-	 *
-	 * @param  filename  String specifying the audio file.
-	 */
-	public Input(String[] filenames)
+	Input(String[] filenames)
 	{
 		this.ac = new AudioContext();
-		this.numInputs  = filenames.length;
+
+		this.uGenArrayFromSample(filenames);
+
+		initInput(uGenArray);
+	} // constructor(String[])
+
+	public void uGenArrayFromSample(String sampleFilename)
+	{
+		this.uGenArrayFromSample(new String[] { sampleFilename });
+	} // uGenArrayFromSample
+
+	public void uGenArrayFromSample(String[] sampleFilenames)
+	{
+		// Moved this from the constructor:
+		this.numInputs  = sampleFilenames.length;
 		this.sampleManager  = new SampleManager();
-		Sample[]  samples  = new Sample[filenames.length];
+		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initiated in a try/catch in order to determine whether or not the operation was successful.
+		int  semaphore      = 1;
 
 		try {
+			//      samples  = new Sample[sampleFilenames.length];
 
 			for (int i = 0; i < samples.length; i++)
 			{
-				samples[i]  = new Sample(sketchPath("") + "src/" + filenames[i]);
+				println("sketchPath(sampleFilenames[i]) = " + sketchPath(sampleFilenames[i]));
+				samples[i]  = new Sample(sketchPath(sampleFilenames[i]));
+				println("samples[i] = " + samples[i]);
+//				samples[i]  = new Sample("./" + sampleFilenames[i]);
 			} // for
 		}
 		catch(Exception e)
 		{
-			// if there is an error, show an error message (at the bottom of the processing window)
-			println("Exception while attempting to load sample!");
-			e.printStackTrace(); // then print a technical description of the error
-			exit(); // and exit the program
+			semaphore  = 0;
 		}
+		if (semaphore == 0)
+		{
+			try {
+				for (int i = 0; i < samples.length; i++)
+				{
+					samples[i]  = new Sample(dataPath(sampleFilenames[i]));
+				} // for
+
+				semaphore  = 1;
+			}
+			catch(Exception e)
+			{
+				// if there is an error, show an error message (at the bottom of the processing window)
+				println("Exception while attempting to load sample!");
+				e.printStackTrace(); // then print a technical description of the error
+				throw new IllegalArgumentException("Input.constructor(String[]): the specified files could not be found.");
+				//    exit(); // and exit the program
+			}
+		} // if
+
+		if (semaphore  == 0)
+		{
+			RuntimeException re  = new RuntimeException("Input.constructor(String[]): the specified files could not be found.");
+			re.printStackTrace();
+			throw re;
+		} // if
 
 		for (int i = 0; i < samples.length; i++)
 		{
@@ -200,14 +232,40 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		} // for
 
 		uGenArray  = new UGen[SampleManager.getGroup("group").size()];
-		for(int i = 0; i < uGenArray.length; i++)
+		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
 			uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
 		} // for
 
 		initInput(uGenArray);
-	} // constructor(String[])
+	} // uGenArrayFromSample(String[])
+
+	public void uGenArrayFromNumInputs(int numInputs)
+	{
+		this.numInputs  = numInputs;
+
+		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
+		int[]  inputNums  = new int[this.numInputs];
+		for (int i = 0; i < this.numInputs; i++)
+		{
+			inputNums[i]  = i + 1;
+		} // for
+
+		// get the audio lines from the AudioContext:
+		//    this.inputsUGen = ac.getAudioInput(inputNums);
+
+		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
+		uGenArray  = new UGen[this.numInputs];
+		for (int i = 0; i < uGenArray.length; i++)
+		{
+			// getAudioInput needs an int[] with the number of the particular line.
+			uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
+		}
+
+		initInput(uGenArray);
+	} // uGenArrayFromNumInputs
+
 
 	/**
 	 *  As of 10/24/2016, does everything that was in the (int, AudioContext) constructor;
@@ -645,6 +703,14 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 import beads.FeatureExtractor;
 import beads.TimeStamp;
 	 */
+
+	public UGen[] getuGenArray() {
+		return uGenArray;
+	}
+
+	public void setuGenArray(UGen[] uGenArray) {
+		this.uGenArray = uGenArray;
+	}
 
 	/**
 	 * Frequency processes spectral data forwarded to it by a {@link PowerSpectrum}
