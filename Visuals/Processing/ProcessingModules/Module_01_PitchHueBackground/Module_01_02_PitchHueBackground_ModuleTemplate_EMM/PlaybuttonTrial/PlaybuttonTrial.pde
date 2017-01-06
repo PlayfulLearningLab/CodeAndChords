@@ -1,7 +1,7 @@
 import ddf.minim.*;                                                      
 //Import the audio library
 Minim minim;                                                              
-// Use the library
+// Use the minim class within the library
 AudioPlayer player;                                                         
 // Get Audio player
 boolean play;                                                               
@@ -17,7 +17,7 @@ void setup()
   //(number of pixels in the x direction, number of pixels in the y direction)                                    
 
 minim=new Minim(this);
-//function 
+//Pass minim the file
   player=minim.loadFile("Thomas Rhett - Die A Happy Man (Home Free Cover).mp3");   
   //Select music file from folder
 }
