@@ -28,11 +28,9 @@ public class Buttons
 		for (int i = 0; i < buttons.length; i++)
 		{
 			buttons[i].addActionListener(this);
-			parent.println("this = " + this);
 			controller.add(buttons[i]);
-			parent.println("button " + i + " has been added.");
 		} // for
-
+/*
 		this.darkGrayClicked  = defaultLAF;
 		darkGrayClicked.baseColor = parent.color(240, 100, 30);
 		darkGrayClicked.textColor = parent.color(255);
@@ -42,6 +40,7 @@ public class Buttons
 
 		// set the first button's LAF because it is the default mode:
 		buttons[0].setLookAndFeel(darkGrayClicked);
+		*/
 	} // constructor
 
 

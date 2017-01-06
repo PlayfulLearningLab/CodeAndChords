@@ -84,6 +84,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int      leftEdgeX;
 
 	HScrollbar[]  scrollbarArray;
+	HScrollbar[]	modulateScrollbarArray;
+	
+	int    scrollbarX;
+	int		modulateScrollbarX;
 
 	HScrollbar  thresholdScroll;
 	HScrollbar  attackScroll;
@@ -106,13 +110,38 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int    a_deY;
 	int    ab_eY;
 	int    b_fY;
+	int		cY;
 	int    cd_fgY;
 	int    d_gaY;
 	int    redModulateY;
 	int    greenModulateY;
 	int    blueModulateY;
+	int[]	textYVals	= new int[] {
+			hideY,
+			thresholdY,
+			attackY,
+			releaseY,
+			transitionY,
+			keyY,
+			rootColorY,
+			colorStyleY,
+			pitchColorCodesY
+	}; //textYVals
+	int[]	noteYVals = new int[] {
+			a_deY,
+			ab_eY,
+			b_fY,
+			cY,
+			cd_fgY,
+			d_gaY
+	}; // noteYVals
+	int[]	modulateYVals	= new int[] {
+			redModulateY,
+			greenModulateY,
+			blueModulateY,
+	};
 
-	int    playButtonX;
+	int		playButtonX;
 	int    arrowX;
 	int    scaleX;
 
@@ -127,8 +156,19 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	IFButton[]  buttons;
 	Buttons   buttonWrapper;
 
-	int    scrollbarX;
-
+	int		noteNameX1;
+	int		noteNameX2;
+	
+	IFTextField[]	textFieldArray;
+	IFTextField[]	noteTextFieldArray;
+	IFTextField[]	modulateTextFieldArray;
+	int		textFieldX;
+	int[]		noteTextFieldX;	// array because there is a different xPos for each column
+	int		modulateTextFieldX;
+	int		textFieldWidth;
+	int		noteTextFieldWidth;
+	int		modulateTextFieldWidth;
+	
 
 	public void settings()
 	{
@@ -176,12 +216,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		//  String[] fontList = PFont.list();
 		//  printArray(fontList);
 
-//		consolas  = createFont("./data/Consolas.ttf", 10);
-//		textFont(consolas);
+		//		consolas  = createFont("./data/Consolas.ttf", 10);
+		//		textFont(consolas);
 		// sets the text size used to display note names:
 		textSize(24);
-
-		println("Hello? Did we make it?");
 
 		// draws the legend
 		legend();
@@ -189,16 +227,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		scrollbar = new HScrollbar(this, 10, 45, (width / 2) - 10, 18, 5);
 
 		controller = new GUIController(this);
-		textField  = new IFTextField("Text Field", 10, 10, 150);
-		label      = new IFLabel("attackTime: " + attackTime, 15, 15);
-		/*
-  controller.add(textField);
-   controller.add(label);
-		 */
-		textField.addActionListener(this);
 
-		//  println("scrollbar.ratio = " + scrollbar.ratio);
-
+		IFLookAndFeel	modTemplate	= new IFLookAndFeel(IFLookAndFeel.MOD_TEMPLATE);
+//		controller.setLookAndFeel(modTemplate);
+		
 		// Creating the PShape as a square. The corner 
 		// is 0,0 so that the center is at 40,40 
 		// syntax: createShape(TRIANGLE, x1, y1, x2, y2, x3, y3)
@@ -233,6 +265,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.leftEdgeX   = 0;
 
 		this.scrollbarX  = (width / 3) / 4;
+		this.modulateScrollbarX	= this.scrollbarX + 10;
 
 		/*
     this.playButtonX  = ((width / 3) / 4) * 1;
@@ -244,15 +277,47 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		scaleX       = scrollbarX + 140;
 
 		hideWidth     = 75;
+
+		/*
 		hideY         = 40;
 		thresholdY    = 65;
-		attackY       = 85;
-		releaseY      = 105;
-		transitionY   = 125;
-		keyY          = 145;
-		rootColorY    = 165;
-		colorStyleY   = 185;
-		pitchColorCodesY  = 185;
+		attackY       = 90;
+		releaseY      = 115;
+		transitionY   = 140;
+		keyY          = 165;
+		rootColorY    = 190;
+		colorStyleY   = 215;
+		pitchColorCodesY  = 240;
+	    a_deY			= 265;
+	    ab_eY;
+	    b_fY;
+	    cd_fgY;
+	    d_gaY;
+	    redModulateY;
+	    greenModulateY;
+	    blueModulateY;
+		 */
+		// set y vals for first set of scrollbar labels:
+		textYVals[0]	=	40;
+		int yValDif	= 25;
+		for(int i = 1; i < textYVals.length; i++)
+		{
+			textYVals[i]	= textYVals[i - 1] + yValDif;
+		} // for
+
+		// set y vals for the note names:
+		noteYVals[0]	= textYVals[textYVals.length - 1] + yValDif;
+		for(int i = 1; i < noteYVals.length; i++)
+		{
+			noteYVals[i]	= noteYVals[i - 1] + yValDif;
+		}
+
+		// set y vals for the color modulate scrollbars:
+		modulateYVals[0]	= noteYVals[noteYVals.length - 1] + yValDif;
+		for(int i = 1; i < modulateYVals.length; i++)
+		{
+			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
+		}
 
 		this.rainbowX     = scrollbarX;
 		this.dichromaticX  = scrollbarX + 49;
@@ -261,27 +326,106 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		this.buttons  = new IFButton[] {
 				// annoyingly, buttons have to be placed15 pts higher than their corresponding text
-				new IFButton("PlayButton", playButtonX, hideY - 15, hideWidth),
-				new IFButton("Arrow", arrowX, hideY - 15, hideWidth - 20), 
-				new IFButton("Scale", scaleX, hideY - 15, hideWidth - 35), 
-				new IFButton("Rainbow", rainbowX, colorStyleY - 15, 45), 
-				new IFButton("Dichromatic", dichromaticX, colorStyleY - 15, 60), 
-				new IFButton("Trichromatic", trichromaticX, colorStyleY - 15, 60), 
-				new IFButton("Custom", customX, colorStyleY - 15, 50), 
+				new IFButton("PlayButton", playButtonX, textYVals[0] - 15, hideWidth),
+				new IFButton("Arrow", arrowX, textYVals[0] - 15, hideWidth - 20), 
+				new IFButton("Scale", scaleX, textYVals[0] - 15, hideWidth - 35), 
+				new IFButton("Rainbow", rainbowX, textYVals[7] - 15, 45), 	// 7: colorStyle
+				new IFButton("Dichromatic", dichromaticX, textYVals[7] - 15, 60), 
+				new IFButton("Trichromatic", trichromaticX, textYVals[7] - 15, 60), 
+				new IFButton("Custom", customX, textYVals[7] - 15, 50), 
 		}; // buttons
 
-		buttonWrapper  = new Buttons(this, controller, new IFLookAndFeel(IFLookAndFeel.DEFAULT), this.buttons);
+		buttonWrapper  = new Buttons(this, controller, modTemplate, this.buttons);
 
 		scrollWidth1  = 150;
 		//  thresholdScroll  = new HScrollbar(scrollbarX, thresholdY - 5, scrollWidth1);
+		/*
 		scrollbarArray  = new HScrollbar[]  {
-				new HScrollbar(this, scrollbarX, thresholdY - 5, scrollWidth1),
-				new HScrollbar(this, scrollbarX, attackY - 5, scrollWidth1),
-				new HScrollbar(this, scrollbarX, releaseY - 5, scrollWidth1),
-				new HScrollbar(this, scrollbarX, transitionY - 5, scrollWidth1),
-				new HScrollbar(this, scrollbarX, keyY - 5, scrollWidth1),
-				new HScrollbar(this, scrollbarX, rootColorY - 5, scrollWidth1),
+				new HScrollbar(this, scrollbarX, textYVals[1] - 5, scrollWidth1),
+				new HScrollbar(this, scrollbarX, textYVals[2] - 5, scrollWidth1),
+				new HScrollbar(this, scrollbarX, textYVals[3] - 5, scrollWidth1),
+				new HScrollbar(this, scrollbarX, textYVals[4] - 5, scrollWidth1),
+				new HScrollbar(this, scrollbarX, textYVals[5] - 5, scrollWidth1),
+				new HScrollbar(this, scrollbarX, textYVals[6] - 5, scrollWidth1),
 		};
+		*/
+		// don't want scrollbars next to Hide, ColorStyle, or PitchColorCodes -- thus the weird "i" math:
+		this.scrollbarArray	= new HScrollbar[textYVals.length - 3];
+		for(int i = 0; i < this.scrollbarArray.length; i++)
+		{
+			this.scrollbarArray[i]	= new HScrollbar(this, scrollbarX, textYVals[i + 1] - 5, scrollWidth1);
+		} // for - initialize scrollbarArray
+		
+		this.modulateScrollbarArray	= new HScrollbar[modulateYVals.length];
+		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
+		{
+			this.modulateScrollbarArray[i]	= new HScrollbar(this, modulateScrollbarX, modulateYVals[i] - 5, scrollWidth1);
+		} // for - initialize color modulate scrollbars
+
+		String[]	textFieldLabels	= new String[] {
+				"thresholdNum",
+				"attackNum",
+				"releaseNum",
+				"transitionNum",
+				"keyVal",
+				"rootColorCode"
+		}; // textFieldLabels
+		
+		textFieldX	= (int) this.scrollbarArray[0].getSposMax() + 20;
+		textFieldWidth	= (width / 3) - textFieldX - 10;
+		String[]	textFieldInitialContent	= new String[] {
+				"Par#",
+				"0:00",
+				"0:00",
+				"0:00",
+				"C Chromatic",
+				"Code#"
+		};
+		
+		this.textFieldArray	= new IFTextField[] {
+				new IFTextField("thresholdNum", textFieldX, textYVals[1] - 16, textFieldWidth, "Par"),
+				new IFTextField("attackNum", textFieldX, textYVals[2] - 16, textFieldWidth, "0:00"),
+				new IFTextField("releaseNum", textFieldX, textYVals[3] - 16, textFieldWidth, "0:00"),
+				new IFTextField("transitionNum", textFieldX, textYVals[4] - 16, textFieldWidth, "0:00"),
+				new IFTextField("keyVal", textFieldX, textYVals[5] - 16, textFieldWidth, "C Chromatic"),
+				new IFTextField("rootColorCode", textFieldX, textYVals[6] - 16, textFieldWidth, "Code#"),
+		};
+		for(int i = 0; i < this.textFieldArray.length; i++)
+		{
+			//this.textFieldArray[i]	= new IFTextField(textFieldLabels[i], textFieldX, textYVals[i + 1] - 16, textFieldWidth, textFieldInitialContent[i]);
+			this.textFieldArray[i].addActionListener(this);
+			this.controller.add(this.textFieldArray[i]);
+		}
+		
+		this.noteNameX1	= 20;
+		this.noteNameX2 = (int)((width / 3) * 0.5) + this.noteNameX1;
+		
+		this.noteTextFieldX	= new int[] { this.noteNameX1 + 50, this.noteNameX2 + 50 };
+		this.noteTextFieldWidth	= 75;
+		
+		this.noteTextFieldArray	= new IFTextField[noteYVals.length * 2];
+		int	whichX;
+		for(int i = 0; i < this.noteTextFieldArray.length; i++)
+		{
+			if(i < 6) {
+				whichX	= 0;
+			} else {
+				whichX	= 1;
+			}
+			this.noteTextFieldArray[i]	= new IFTextField("noteTextFieldArray[" + i + "]", noteTextFieldX[whichX], noteYVals[i % noteYVals.length] - 16, noteTextFieldWidth, "Code#");
+			this.noteTextFieldArray[i].addActionListener(this);
+			this.controller.add(this.noteTextFieldArray[i]);
+		}
+		
+		this.modulateTextFieldX	= (int)this.modulateScrollbarArray[0].getSposMax() + 25;
+		this.modulateTextFieldWidth	= 60;
+		this.modulateTextFieldArray	= new IFTextField[this.modulateYVals.length];
+		for(int i = 0; i < this.modulateTextFieldArray.length; i++)
+		{
+			modulateTextFieldArray[i]	= new IFTextField("modulateTextFieldArray[" + i + "]", modulateTextFieldX, modulateYVals[i] - 16, modulateTextFieldWidth, "Code#");
+			this.modulateTextFieldArray[i].addActionListener(this);
+			this.controller.add(this.modulateTextFieldArray[i]);
+		} // for - initialize modulate textField array
 
 	} // setup()
 
@@ -354,24 +498,58 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	void displaySidebar()
 	{
+		// TODO: make buttons clickable only when sidebar is open?
 		stroke(255);
 		fill(0);
 		rect(0, 0, leftEdgeX, height);
 
 		int  textX  = 5;
 
+		String[]	textArray	= new String[] {
+				"Hide",
+				"Threshold",
+				"Attack",
+				"Release",
+				"Transition",
+				"Key",
+				"Root Color",
+				"Color Style",
+				"Pitch Color Codes"				
+		}; // textArray
+
+		String[]	noteNames1	= new String[] {
+				"A", "A#/Bb", "B", "C", "C#/Db", "D"
+		}; // noteNames
+		String[]	noteNames2	= new String[] {
+				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
+		}; // noteNames2
+
+		String[]	modulateText	= new String[] {
+				"Red Modulate", "Green Modulate", "Blue Modulate"
+		}; // modulateText
+
 		textSize(10);
 		fill(255);
 		text("Module_01_01_PitchHueBackground", 10, 15);
-		text("Hide", textX, hideY);
-		text("Threshold", textX, thresholdY);
-		text("Attack", textX, attackY);
-		text("Release", textX, releaseY);
-		text("Transition", textX, transitionY);
-		text("Key", textX, keyY);
-		text("Root Color", textX, rootColorY);
-		text("ColorStyle", textX, colorStyleY);
-		// TODO: make buttons clickable only when sidebar is open?
+		
+		for(int i = 0; i < textArray.length; i++)
+		{
+			text(textArray[i], textX, textYVals[i]);
+		}
+
+		for(int i = 0; i < noteNames1.length; i++)
+		{
+			text(noteNames1[i], noteNameX1, noteYVals[i]);
+		}
+		for(int i = 0; i < noteNames2.length; i++)
+		{
+			text(noteNames2[i], noteNameX2, noteYVals[i]);
+		}
+
+		for(int i = 0; i < modulateText.length; i++)
+		{
+			text(modulateText[i], textX, modulateYVals[i]);
+		}
 
 		/*
   thresholdScroll.update();  
@@ -382,6 +560,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			scrollbarArray[i].update();
 			scrollbarArray[i].display();
 		} // for - update and display first set of scrollbars
+		
+		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
+		{
+			modulateScrollbarArray[i].update();
+			modulateScrollbarArray[i].display();
+		} // for - update and display modulate color scrollbars
 	} // displaySidebar
 
 	void legend()

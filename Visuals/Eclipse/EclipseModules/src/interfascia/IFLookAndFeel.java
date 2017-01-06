@@ -30,6 +30,8 @@ public class IFLookAndFeel {
 				activeColor, textColor, lightGrayColor, darkGrayColor;
 	public IFPGraphicsState defaultGraphicsState;
 	public static final char DEFAULT = 1;
+	public static final char MOD_TEMPLATE = 2;
+	public	char	type;
 	
 	public IFLookAndFeel(char type) {
 		defaultGraphicsState = new IFPGraphicsState();
@@ -37,13 +39,19 @@ public class IFLookAndFeel {
 	
 	public IFLookAndFeel(PApplet parent, char type) {
 		defaultGraphicsState = new IFPGraphicsState();
+
+		// Play nicely with other people's draw methods. They
+		// may have changed the color mode.
+		IFPGraphicsState temp = new IFPGraphicsState(parent);
+		
+		parent.colorMode(PApplet.RGB, 255);
+		
+		this.type	= type;
+		parent.println("(int)type = " + (int)type);
 		
 		if (type == DEFAULT) {
-			// Play nicely with other people's draw methods. They
-			// may have changed the color mode.
-			IFPGraphicsState temp = new IFPGraphicsState(parent);
-			
-			parent.colorMode(PApplet.RGB, 255);
+//			IllegalArgumentException iae = new IllegalArgumentException("Hi");
+//			iae.printStackTrace();
 
 			baseColor = parent.color(153, 153, 204);
 			highlightColor = parent.color(102, 102, 204);
@@ -62,8 +70,24 @@ public class IFLookAndFeel {
 					"\nsmooth:\t" + parent.g.smooth);
 			*/
 			
-			PFont tempFont = parent.loadFont ("FrutigerLight-13.vlw");
-			parent.textFont(tempFont, 13);
+//			PFont tempFont = parent.loadFont ("FrutigerLight-13.vlw");
+//			parent.textFont(tempFont, 13);
+		} else if(type == MOD_TEMPLATE)
+		{
+			parent.println("The MOD_TEMPLATE type was selected!");
+			baseColor = parent.color(204);
+			highlightColor = parent.color(0, 51, 204);
+			activeColor = parent.color (240, 100, 30);
+			selectionColor = parent.color(240, 100, 30);
+			borderColor = parent.color (255);
+			textColor = parent.color(255);
+			lightGrayColor = parent.color(100);
+			darkGrayColor = parent.color(50);
+			
+//			PFont tempFont = parent.loadFont ("FrutigerLight-13.vlw");
+//			parent.textFont(tempFont, 13);
+		} // if
+		
 			parent.textAlign(PApplet.LEFT);
 			
 			parent.rectMode(PApplet.CORNER);
@@ -91,6 +115,6 @@ public class IFLookAndFeel {
 			// System.out.println("Class: " + parent.g.getClass() + "/n");
 			// Set the color mode back
 			temp.restoreSettingsToApplet(parent);
-		}
-	}
-}
+//		}
+	} // constructor
+} // class
