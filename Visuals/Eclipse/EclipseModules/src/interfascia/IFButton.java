@@ -32,6 +32,7 @@ import processing.event.*;
 
 public class IFButton extends GUIComponent {
 	private int currentColor;
+	private	boolean	state;
 
 	public IFButton (String newLabel, int newX, int newY) {
 		this (newLabel, newX, newY, 100, 21);
@@ -45,6 +46,7 @@ public class IFButton extends GUIComponent {
 		setLabel(newLabel);
 		setPosition(newX, newY);
 		setSize(newWidth, newHeight);
+		this.setState(false);
 	}
 
 	public void initWithParent () {
@@ -55,6 +57,7 @@ public class IFButton extends GUIComponent {
 		if (e.getAction() == MouseEvent.PRESS) {
 			if (isMouseOver (e.getX(), e.getY())) {
 				wasClicked = true;
+				state	= !state;
 			}
 		} else if (e.getAction() == MouseEvent.RELEASE) {
 			if (wasClicked && isMouseOver (e.getX(), e.getY())) {
@@ -67,7 +70,7 @@ public class IFButton extends GUIComponent {
 	public void draw () {
 		boolean hasFocus = controller.getFocusStatusForComponent(this);
 	
-		if (wasClicked) {
+		if (wasClicked || state) {
 			 currentColor = lookAndFeel.activeColor;
 		} else if (isMouseOver (controller.parent.mouseX, controller.parent.mouseY) || hasFocus) {
 			 currentColor = lookAndFeel.highlightColor;
@@ -93,12 +96,20 @@ public class IFButton extends GUIComponent {
 			controller.parent.stroke(255,0,0);
 			controller.parent.rect(x, y, wid, hgt);
 		}
+	} // draw
+
+	public boolean getState() {
+		return state;
+	}
+
+	public void setState(boolean state) {
+		this.state = state;
 	}
 		
 	public void keyEvent(KeyEvent e) {
 		if (e.getAction() == KeyEvent.TYPE && e.getKey() == ' ') {
 			fireEventNotification(this, "Selected");
 		}
-	}
+	} // keyEvent
 
 }

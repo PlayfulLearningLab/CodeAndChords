@@ -227,9 +227,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		scrollbar = new HScrollbar(this, 10, 45, (width / 2) - 10, 18, 5);
 
 		controller = new GUIController(this);
+		
+		println("We're here, right?");
 
-		IFLookAndFeel	modTemplate	= new IFLookAndFeel(IFLookAndFeel.MOD_TEMPLATE);
-//		controller.setLookAndFeel(modTemplate);
+		IFLookAndFeel	modTemplate	= new IFLookAndFeel(this, IFLookAndFeel.MOD_TEMPLATE);
+//		println("modTemplate.activeColor = " + modTemplate.activeColor);
+		controller.setLookAndFeel(modTemplate);
+		controller.setVisible(false);
 		
 		// Creating the PShape as a square. The corner 
 		// is 0,0 so that the center is at 40,40 
@@ -334,8 +338,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				new IFButton("Trichromatic", trichromaticX, textYVals[7] - 15, 60), 
 				new IFButton("Custom", customX, textYVals[7] - 15, 50), 
 		}; // buttons
-
-		buttonWrapper  = new Buttons(this, controller, modTemplate, this.buttons);
+		
+		for(int i = 0; i < this.buttons.length; i++)
+		{
+			this.buttons[i].addActionListener(this);
+			this.controller.add(this.buttons[i]);
+		} // for - add buttons to controller
 
 		scrollWidth1  = 150;
 		//  thresholdScroll  = new HScrollbar(scrollbarX, thresholdY - 5, scrollWidth1);
@@ -349,7 +357,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				new HScrollbar(this, scrollbarX, textYVals[6] - 5, scrollWidth1),
 		};
 		*/
-		// don't want scrollbars next to Hide, ColorStyle, or PitchColorCodes -- thus the weird "i" math:
+		// don't want scrollbars next to Hide, ColorStyle, or PitchColorCodes -- thus the "i" math:
 		this.scrollbarArray	= new HScrollbar[textYVals.length - 3];
 		for(int i = 0; i < this.scrollbarArray.length; i++)
 		{
@@ -490,15 +498,17 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			{
 				this.leftEdgeX  = width / 3;
 				this.displaySidebar();
-			} else { 
+			} else {
 				this.leftEdgeX  = 0;
+				this.controller.setVisible(false);
 			} // if - leftEdgeX
 		} // if - mousePressed
 	} // draw()
 
 	void displaySidebar()
 	{
-		// TODO: make buttons clickable only when sidebar is open?
+		this.controller.setVisible(true);
+
 		stroke(255);
 		fill(0);
 		rect(0, 0, leftEdgeX, height);
@@ -551,10 +561,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			text(modulateText[i], textX, modulateYVals[i]);
 		}
 
-		/*
-  thresholdScroll.update();  
-  thresholdScroll.display();
-		 */
 		for(int i = 0; i < scrollbarArray.length; i++)
 		{
 			scrollbarArray[i].update();
@@ -643,7 +649,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.stopButton.setVisible(this.showStop);
 	} // mousePressed
 
-	// TODO: make buttons clickable only when sidebar is open?
 	void actionPerformed(GUIEvent e) {
 		if (e.getMessage().equals("Completed")) {
 			// This .setLabel prob. has value for getting values:
