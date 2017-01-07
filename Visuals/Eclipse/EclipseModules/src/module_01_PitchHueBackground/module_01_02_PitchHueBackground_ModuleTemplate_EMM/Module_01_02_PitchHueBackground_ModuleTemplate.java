@@ -85,7 +85,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	HScrollbar[]  scrollbarArray;
 	HScrollbar[]	modulateScrollbarArray;
-	
+
 	int    scrollbarX;
 	int		modulateScrollbarX;
 
@@ -158,7 +158,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	int		noteNameX1;
 	int		noteNameX2;
-	
+
 	IFTextField[]	textFieldArray;
 	IFTextField[]	noteTextFieldArray;
 	IFTextField[]	modulateTextFieldArray;
@@ -168,7 +168,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int		textFieldWidth;
 	int		noteTextFieldWidth;
 	int		modulateTextFieldWidth;
-	
+
 
 	public void settings()
 	{
@@ -227,14 +227,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		scrollbar = new HScrollbar(this, 10, 45, (width / 2) - 10, 18, 5);
 
 		controller = new GUIController(this);
-		
+
 		println("We're here, right?");
 
 		IFLookAndFeel	modTemplate	= new IFLookAndFeel(this, IFLookAndFeel.MOD_TEMPLATE);
-//		println("modTemplate.activeColor = " + modTemplate.activeColor);
+		//		println("modTemplate.activeColor = " + modTemplate.activeColor);
 		controller.setLookAndFeel(modTemplate);
 		controller.setVisible(false);
-		
+
 		// Creating the PShape as a square. The corner 
 		// is 0,0 so that the center is at 40,40 
 		// syntax: createShape(TRIANGLE, x1, y1, x2, y2, x3, y3)
@@ -338,7 +338,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				new IFButton("Trichromatic", trichromaticX, textYVals[7] - 15, 60), 
 				new IFButton("Custom", customX, textYVals[7] - 15, 50), 
 		}; // buttons
-		
+
 		for(int i = 0; i < this.buttons.length; i++)
 		{
 			this.buttons[i].addActionListener(this);
@@ -356,14 +356,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				new HScrollbar(this, scrollbarX, textYVals[5] - 5, scrollWidth1),
 				new HScrollbar(this, scrollbarX, textYVals[6] - 5, scrollWidth1),
 		};
-		*/
+		 */
 		// don't want scrollbars next to Hide, ColorStyle, or PitchColorCodes -- thus the "i" math:
 		this.scrollbarArray	= new HScrollbar[textYVals.length - 3];
 		for(int i = 0; i < this.scrollbarArray.length; i++)
 		{
 			this.scrollbarArray[i]	= new HScrollbar(this, scrollbarX, textYVals[i + 1] - 5, scrollWidth1);
 		} // for - initialize scrollbarArray
-		
+
 		this.modulateScrollbarArray	= new HScrollbar[modulateYVals.length];
 		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
 		{
@@ -378,7 +378,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"keyVal",
 				"rootColorCode"
 		}; // textFieldLabels
-		
+
 		textFieldX	= (int) this.scrollbarArray[0].getSposMax() + 20;
 		textFieldWidth	= (width / 3) - textFieldX - 10;
 		String[]	textFieldInitialContent	= new String[] {
@@ -389,7 +389,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"C Chromatic",
 				"Code#"
 		};
-		
+
 		this.textFieldArray	= new IFTextField[] {
 				new IFTextField("thresholdNum", textFieldX, textYVals[1] - 16, textFieldWidth, "Par"),
 				new IFTextField("attackNum", textFieldX, textYVals[2] - 16, textFieldWidth, "0:00"),
@@ -404,13 +404,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.textFieldArray[i].addActionListener(this);
 			this.controller.add(this.textFieldArray[i]);
 		}
-		
+
 		this.noteNameX1	= 20;
 		this.noteNameX2 = (int)((width / 3) * 0.5) + this.noteNameX1;
-		
+
 		this.noteTextFieldX	= new int[] { this.noteNameX1 + 50, this.noteNameX2 + 50 };
 		this.noteTextFieldWidth	= 75;
-		
+
 		this.noteTextFieldArray	= new IFTextField[noteYVals.length * 2];
 		int	whichX;
 		for(int i = 0; i < this.noteTextFieldArray.length; i++)
@@ -424,7 +424,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.noteTextFieldArray[i].addActionListener(this);
 			this.controller.add(this.noteTextFieldArray[i]);
 		}
-		
+
 		this.modulateTextFieldX	= (int)this.modulateScrollbarArray[0].getSposMax() + 25;
 		this.modulateTextFieldWidth	= 60;
 		this.modulateTextFieldArray	= new IFTextField[this.modulateYVals.length];
@@ -527,6 +527,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"Pitch Color Codes"				
 		}; // textArray
 
+
 		String[]	noteNames1	= new String[] {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D"
 		}; // noteNames
@@ -541,7 +542,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		textSize(10);
 		fill(255);
 		text("Module_01_01_PitchHueBackground", 10, 15);
-		
+
 		for(int i = 0; i < textArray.length; i++)
 		{
 			text(textArray[i], textX, textYVals[i]);
@@ -566,13 +567,78 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			scrollbarArray[i].update();
 			scrollbarArray[i].display();
 		} // for - update and display first set of scrollbars
-		
+
 		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
 		{
 			modulateScrollbarArray[i].update();
 			modulateScrollbarArray[i].display();
 		} // for - update and display modulate color scrollbars
 	} // displaySidebar
+
+	public String[] getScale(String key, int majMinChrom)
+	{
+		String[][] allNotes	= new String[][] {
+			new String[] { "A" }, 
+			new String[] { "A#", "Bb" }, 
+			new String[] { "B" },
+			new String[] { "C" },
+			new String[] { "C#", "Db" }, 
+			new String[] { "D" }, 
+			new String[] { "D#", "Eb" }, 
+			new String[] { "E" }, 
+			new String[] { "F" }, 
+			new String[] { "F#", "Gb" }, 
+			new String[] { "G" }, 
+			new String[] { "G#", "Ab" }
+		};
+		int[]	majorScale	= new int[] {
+				2, 2, 1, 2, 2, 2, 1
+		};
+		int[]	minorScale	= new int[] {
+				2, 1, 2, 2, 1, 2, 2
+		};
+		int[]	chromaticScale	= new int[] {
+				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+		};
+		int[][]	allScales	= new int[][] {
+			majorScale,
+			minorScale,
+			chromaticScale
+		};
+		
+		boolean	flag	= false;
+		int[]		startHere	= new int[2];
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				if(allNotes[i][j] == key && flag == false)
+				{
+					startHere[0]	= i;
+					startHere[1]	= j;
+					flag	= true;
+				}
+			}
+		} // for
+		if(flag == false) 
+		{
+			throw new IllegalArgumentException("Module_01_02_PHB_ModuleTemplate.getScale: key " + key + " is not a valid option.");
+		} // if - throw exception if key not found
+		
+		// This is wrong:
+		int	sharpOrFlat	= majMinChrom % 2;	// chromatic scale will use sharps
+		
+		// Might have to redo the note array and scale steps:
+		// A  A#  Bb  B  C  C#  Db  D  D#  Eb  E  F  F#  Gb  G  G#
+		// maj: 3 2 2 3 2 3
+		// That doesn't work.  But: I can have a circle of 5ths, and their location in that
+		// determines their eligibility!
+		
+		
+		String[]	result	= new String[allScales[majMinChrom].length];
+		
+		return buttonLabels;
+	} // getScale
 
 	void legend()
 	{
