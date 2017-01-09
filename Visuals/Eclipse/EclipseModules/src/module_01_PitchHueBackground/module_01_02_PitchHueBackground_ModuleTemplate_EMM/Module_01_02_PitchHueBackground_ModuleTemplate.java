@@ -328,7 +328,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
 		}
-		
+
 
 		hideWidth     = 71;
 		int hideSpace	= 4;
@@ -341,10 +341,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		playButtonX  = scrollbarX;
 		arrowX       = scrollbarX + hideWidth + hideSpace;
 		scaleX       = scrollbarX + (+ hideWidth + hideSpace) * 2;
-		
+
 		int	colorStyleWidth	= 52;
 		int	colorStyleSpace	= 4;
-		
+
 		this.rainbowX     = scrollbarX;
 		this.dichromaticX  = scrollbarX + colorStyleWidth + colorStyleSpace;
 		this.trichromaticX  = scrollbarX + (colorStyleWidth + colorStyleSpace) * 2;
@@ -366,7 +366,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.buttons[i].addActionListener(this);
 			this.controller.add(this.buttons[i]);
 		} // for - add buttons to controller
-
+/*		
+		this.buttons[0].addActionListener(this);
+		this.controller.add(this.buttons[0]);
+*/
+		this.buttons[0].fireEventNotification(this.controller, "setup: fired Event notification.");
 		scrollWidth1  = 150;
 		//  thresholdScroll  = new HScrollbar(scrollbarX, thresholdY - 5, scrollWidth1);
 		/*
@@ -447,7 +451,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.noteTextFieldArray[i]);
 		}
 
-//		this.modulateTextFieldX	= (int)this.modulateScrollbarArray[0].getSposMax() + 25;
+		//		this.modulateTextFieldX	= (int)this.modulateScrollbarArray[0].getSposMax() + 25;
 		this.modulateTextFieldX	= this.textFieldX;
 		this.modulateTextFieldWidth	= this.textFieldWidth;
 		this.modulateTextFieldArray	= new IFTextField[this.modulateYVals.length];
@@ -457,64 +461,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.modulateTextFieldArray[i].addActionListener(this);
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
-		
-		String[][] allNotes	= new String[][] {
-			new String[] { "A" , "A" }, 
-			new String[] { "A#", "Bb" }, 
-			new String[] { "B" , "B" },
-			new String[] { "C" , "C" },
-			new String[] { "C#", "Db" }, 
-			new String[] { "D" , "D" }, 
-			new String[] { "D#", "Eb" }, 
-			new String[] { "E" , "E" }, 
-			new String[] { "F" , "F"}, 
-			new String[] { "F#", "Gb" }, 
-			new String[] { "G" , "G" }, 
-			new String[] { "G#", "Ab" }
-		}; // allNotes
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				try {
-					String[]	scale	= getScale(allNotes[i][j], 0);
-					println(allNotes[i][j] + " Major: ");
-					printArray(scale);
-				} catch(IllegalArgumentException iae) {
-					println(iae.getMessage());
-				}
-			}
-		}
-		println();
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				try {
-					String[]	scale	= getScale(allNotes[i][j], 1);
-					println(allNotes[i][j] + " Minor: ");
-					printArray(scale);
-				} catch(IllegalArgumentException iae) {
-					println(iae.getMessage());
-				}
-			}
-		}
-		println();
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				try {
-					String[]	scale	= getScale(allNotes[i][j], 2);
-					println(allNotes[i][j] + " Chromatic: ");
-					printArray(scale);
-				} catch(IllegalArgumentException iae) {
-					println(iae.getMessage());
-				}
-			}
-		}
+
+
 	} // setup()
-		
+
 	private void printArray(String[] array)
 	{
 		for(int i = 0; i < array.length - 1; i++)
@@ -692,7 +642,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			minorScale,
 			chromaticScale
 		};
-		
+
 		// find starting position in allNotes:
 		boolean	flag	= false;
 		int[]		startHere	= new int[2];
@@ -712,7 +662,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			throw new IllegalArgumentException("Module_01_02_PHB_ModuleTemplate.getScale: key " + key + " is not a valid key.");
 		} // if - throw exception if key not found
-		
+
 		// Determine whether the key should use sharps or flats when choosing from enharmonic notes:
 		// Be sure to include the space when doing indexOf - to avoid false positives with keys that are sharped
 		String	sharps;
@@ -726,7 +676,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			flats	= "D G C F Bb Eb ";
 		}
 		String[]	sharpsAndFlats	= new String[] { sharps, flats };
-		
+
 		int	sharpOrFlat	= -1;
 		for(int i = 0; i < sharpsAndFlats.length; i++)
 		{
@@ -738,7 +688,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		if(sharpOrFlat == -1) {
 			throw new IllegalArgumentException("Module_01_02.getScale: key " + key + " is not supported at this time. Sorry! Try an enharmonic equivalent.");
 		}
-		
+
 		String[]	result	= new String[allScales[majMinChrom].length];
 		int	scalePos	= startHere[0];
 		// i is position in result;
@@ -748,9 +698,68 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			result[i]	= allNotes[scalePos][sharpOrFlat];
 			scalePos	= (scalePos + allScales[majMinChrom][i]) % allNotes.length;
 		}
-		
+
 		return result;
 	} // getScale
+
+	private void testGetScale()
+	{
+		String[][] allNotes	= new String[][] {
+			new String[] { "A" , "A" }, 
+			new String[] { "A#", "Bb" }, 
+			new String[] { "B" , "B" },
+			new String[] { "C" , "C" },
+			new String[] { "C#", "Db" }, 
+			new String[] { "D" , "D" }, 
+			new String[] { "D#", "Eb" }, 
+			new String[] { "E" , "E" }, 
+			new String[] { "F" , "F"}, 
+			new String[] { "F#", "Gb" }, 
+			new String[] { "G" , "G" }, 
+			new String[] { "G#", "Ab" }
+		}; // allNotes
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				try {
+					String[]	scale	= getScale(allNotes[i][j], 0);
+					println(allNotes[i][j] + " Major: ");
+					printArray(scale);
+				} catch(IllegalArgumentException iae) {
+					println(iae.getMessage());
+				}
+			}
+		}
+		println();
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				try {
+					String[]	scale	= getScale(allNotes[i][j], 1);
+					println(allNotes[i][j] + " Minor: ");
+					printArray(scale);
+				} catch(IllegalArgumentException iae) {
+					println(iae.getMessage());
+				}
+			}
+		}
+		println();
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				try {
+					String[]	scale	= getScale(allNotes[i][j], 2);
+					println(allNotes[i][j] + " Chromatic: ");
+					printArray(scale);
+				} catch(IllegalArgumentException iae) {
+					println(iae.getMessage());
+				}
+			}
+		}
+	} // testGetScale
 
 	void legend()
 	{
@@ -779,7 +788,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		float  sideHeight  = width / colors.length;
 		//  float  side = height / colors.length;
 
-	//	stroke(255);
+		//	stroke(255);
 		noStroke();
 
 		for (int i = 0; i < colors.length; i++)
@@ -797,6 +806,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // for
 	} // legend
 
+	/*
 	public void mousePressed()
 	{
 		// The following for loops stops either the SamplePlayers or the uGens getting audio input (and otherwise creating feedback):
@@ -827,11 +837,26 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.playButton.setVisible(this.showPlay);
 		this.stopButton.setVisible(this.showStop);
 	} // mousePressed
-
+*/
+	
 	void actionPerformed(GUIEvent e) {
+		println("e.getSource() = " + e.getSource());
+		
 		if (e.getMessage().equals("Completed")) {
 			// This .setLabel prob. has value for getting values:
 			label.setLabel(textField.getValue());
 		}
+
+		//Hide buttons:
+
+		// PlayButton:
+		if(e.getSource() == this.buttons[0])
+		{
+			println("Hide Play Button was pressed.");
+			this.playButton.setVisible(false);
+		}
+
+		// Arrow:
+		// 
 	} // actionPerformed
 } // class
