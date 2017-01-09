@@ -58,10 +58,12 @@ public class IFButton extends GUIComponent {
 			if (isMouseOver (e.getX(), e.getY())) {
 				wasClicked = true;
 				state	= !state;
+//				controller.parent.println("IFButton.mouseEvent: mouse click on button has begun.");
 			}
 		} else if (e.getAction() == MouseEvent.RELEASE) {
 			if (wasClicked && isMouseOver (e.getX(), e.getY())) {
 				fireEventNotification(this, "Clicked");
+//				controller.parent.println("IFButton.mouseEvent: mouse click on button was registered.");
 				wasClicked = false;
 			}
 		}

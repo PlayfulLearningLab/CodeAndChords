@@ -189,7 +189,6 @@ abstract class GUIComponent {
 	public void fireEventNotification (GUIComponent argComponent, String argMessage) {
 		if (listener == null)
 			return;
-		
 		GUIEvent e = new GUIEvent(argComponent, argMessage);
 		IFDelegation.callDelegate(listener, "actionPerformed", new Object[] { e });
 			

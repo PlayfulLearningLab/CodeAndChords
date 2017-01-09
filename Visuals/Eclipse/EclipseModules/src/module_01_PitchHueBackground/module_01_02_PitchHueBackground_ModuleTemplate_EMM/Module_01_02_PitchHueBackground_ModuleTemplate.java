@@ -828,10 +828,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.stopButton.setVisible(this.showStop);
 	} // mousePressed
 
-	void actionPerformed(GUIEvent e) {
+	public void actionPerformed(GUIEvent e) {
 		if (e.getMessage().equals("Completed")) {
 			// This .setLabel prob. has value for getting values:
 			label.setLabel(textField.getValue());
+		}
+		
+		if(e.getSource() == buttons[0])
+		{
+			println("buttons[0] was clicked!");
 		}
 	} // actionPerformed
 } // class
