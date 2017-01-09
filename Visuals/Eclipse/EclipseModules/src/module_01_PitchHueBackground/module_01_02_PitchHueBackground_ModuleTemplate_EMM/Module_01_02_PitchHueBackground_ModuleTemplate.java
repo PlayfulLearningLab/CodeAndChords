@@ -79,6 +79,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	PShape  stopButton;
 	boolean  showPlay;
 	boolean  showStop;
+	
+	PShape	rightArrow;
+	PShape	leftArrow;
+	boolean	showLeftArrow;
 
 	boolean  sidebarOut;
 	int      leftEdgeX;
@@ -272,6 +276,32 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.stopButton.setPath(5, stopButtonVerts);
 		this.showStop  = false;
 		this.stopButton.setVisible(false);
+		
+		int	aX		=	width / 2;		// arrow X coordinate (x val of left edge)
+		int	aY		=	height / 2;		// arrow Y coordinate (y val of upmost point)
+		int	aW		= 50;				// arrow width
+		int	aH		= 50;				// arrow height (from highest to lowest points)
+		
+		float	oneQuarterY		= (float) (aY + (.25 * aH));
+		float	oneHalfY		= (float) (aY + (.25 * aH));
+		float	threeQuartersY	= (float) (aY + (0.75 * aH));
+		float	oneY			= aY + aH;
+		float	oneHalfX		= (float)(aX + (0.5 * aW));
+		float	oneX			= aX + aW;
+		float[][]	leftArrowVerts	= new float[][] {
+			new float[]	{ aX, oneQuarterY },
+			new float[] { oneHalfX, oneHalfY },
+			new float[]	{ oneHalfX, aY },
+			new float[]	{ oneX, oneHalfY },
+			new float[] { oneHalfX, oneY },
+			new float[] { oneHalfX, threeQuartersY },
+			new float[] { aX, threeQuartersY },
+			new float[] { aX, oneQuarterY }		// back where we started
+		};
+		this.leftArrow	= createShape(PShape.PATH);
+		this.leftArrow.setPath(8, leftArrowVerts);
+		this.leftArrow.setVisible(true);
+		println(this.leftArrow.getVertexX(0));
 
 		this.sidebarOut  = false;
 		this.leftEdgeX   = 0;
@@ -366,10 +396,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.buttons[i].addActionListener(this);
 			this.controller.add(this.buttons[i]);
 		} // for - add buttons to controller
-/*		
+		/*		
 		this.buttons[0].addActionListener(this);
 		this.controller.add(this.buttons[0]);
-*/
+		 */
 		this.buttons[0].fireEventNotification(this.controller, "setup: fired Event notification.");
 		scrollWidth1  = 150;
 		//  thresholdScroll  = new HScrollbar(scrollbarX, thresholdY - 5, scrollWidth1);
@@ -462,7 +492,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 
-
+		
 	} // setup()
 
 	private void printArray(String[] array)
@@ -806,17 +836,18 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // for
 	} // legend
 
-	/*
+
 	public void mousePressed()
 	{
 		// The following for loops stops either the SamplePlayers or the uGens getting audio input (and otherwise creating feedback):
-		for (int i = 0; i < input.getuGenArray().length; i++)
-		{
-			input.getuGenArray()[i].pause(true);
-		} // for
+
 
 		if (this.showPlay)
 		{
+			for (int i = 0; i < input.getuGenArray().length; i++)
+			{
+				input.getuGenArray()[i].pause(true);
+			} // for
 			if (this.playButton.contains(mouseX, mouseY))
 			{
 				this.showPlay  = false;
@@ -824,39 +855,86 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 				this.input.uGenArrayFromSample(inputFile);
 			} // if - playButton
-		} else {
-			if (this.stopButton.contains(mouseX, mouseY))
+		} else if (this.stopButton.contains(mouseX, mouseY))
+		{
+			for (int i = 0; i < input.getuGenArray().length; i++)
 			{
-				this.showStop  = false;
-				this.showPlay  = true;
+				input.getuGenArray()[i].pause(true);
+			} // for
+			this.showStop  = false;
+			this.showPlay  = true;
 
-				this.input.uGenArrayFromNumInputs(1);
-			} // if - stopButton
-		} // else - showPlay/showStop
+			this.input.uGenArrayFromNumInputs(1);
+		} // if - stopButton
 
-		this.playButton.setVisible(this.showPlay);
-		this.stopButton.setVisible(this.showStop);
+		// if the hidePlayButton button was NOT pressed:
+		if(!this.buttons[0].getState())
+		{
+			this.playButton.setVisible(this.showPlay);
+			this.stopButton.setVisible(this.showStop);
+		} /*else {
+			this.playButton.setVisible(false);
+			this.playButton.setVisible(false);
+		}*/
+
 	} // mousePressed
-*/
-	
-	void actionPerformed(GUIEvent e) {
-		println("e.getSource() = " + e.getSource());
-		
+
+
+	public void actionPerformed(GUIEvent e) {		
 		if (e.getMessage().equals("Completed")) {
 			// This .setLabel prob. has value for getting values:
 			label.setLabel(textField.getValue());
 		}
 
 		//Hide buttons:
-
 		// PlayButton:
 		if(e.getSource() == this.buttons[0])
 		{
-			println("Hide Play Button was pressed.");
 			this.playButton.setVisible(false);
+			this.stopButton.setVisible(false);
 		}
 
 		// Arrow:
-		// 
+		if(e.getSource() == this.buttons[1])
+		{
+			println("Hide Arrow was pressed.");
+			this.playButton.setVisible(false);
+		}
+
+		// Scale:
+		if(e.getSource() == this.buttons[2])
+		{
+			println("Hide Scale was pressed.");
+			this.playButton.setVisible(false);
+		}
+
+		// Color Style:
+		// Rainbow:
+		if(e.getSource() == this.buttons[3])
+		{
+			println("Color Style: Rainbow was pressed.");
+			this.playButton.setVisible(false);
+		}
+
+		// Dichromatic:
+		if(e.getSource() == this.buttons[4])
+		{
+			println("Color Style: Dichromatic was pressed.");
+			this.playButton.setVisible(false);
+		}
+
+		// Trichromatic:
+		if(e.getSource() == this.buttons[5])
+		{
+			println("Color Style: Trichromatic was pressed.");
+			this.playButton.setVisible(false);
+		}
+
+		// Custom:
+		if(e.getSource() == this.buttons[6])
+		{
+			println("Color Style: Custom was pressed.");
+			this.playButton.setVisible(false);
+		}
 	} // actionPerformed
 } // class
