@@ -277,17 +277,24 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.showStop  = false;
 		this.stopButton.setVisible(false);
 		
-		int	aX		=	width / 2;		// arrow X coordinate (x val of left edge)
-		int	aY		=	height / 2;		// arrow Y coordinate (y val of upmost point)
-		int	aW		= 50;				// arrow width
-		int	aH		= 50;				// arrow height (from highest to lowest points)
 		
+		float	aX		=	width / 2;		// arrow X coordinate (x val of left edge)
+		float	aY		=	height / 2;		// arrow Y coordinate (y val of upmost point)
+		int	aW		= 100;				// arrow width
+		int	aH		= 100;				// arrow height (from highest to lowest points)
+		stroke(255);
 		float	oneQuarterY		= (float) (aY + (.25 * aH));
 		float	oneHalfY		= (float) (aY + (.25 * aH));
 		float	threeQuartersY	= (float) (aY + (0.75 * aH));
 		float	oneY			= aY + aH;
 		float	oneHalfX		= (float)(aX + (0.5 * aW));
 		float	oneX			= aX + aW;
+		println("oneQuarterY = " + oneQuarterY +
+				"\noneHalfY = " + oneHalfY +
+				"\nthreeQuartersY = " + threeQuartersY +
+				"\noneY = " + oneY +
+				"\noneHalfX = " + oneHalfX +
+				"\noneX = " + oneX);
 		float[][]	leftArrowVerts	= new float[][] {
 			new float[]	{ aX, oneQuarterY },
 			new float[] { oneHalfX, oneHalfY },
@@ -295,13 +302,16 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			new float[]	{ oneX, oneHalfY },
 			new float[] { oneHalfX, oneY },
 			new float[] { oneHalfX, threeQuartersY },
-			new float[] { aX, threeQuartersY },
+			new float[] { 20, 50 } ,//new float[] { aX, threeQuartersY },
 			new float[] { aX, oneQuarterY }		// back where we started
 		};
 		this.leftArrow	= createShape(PShape.PATH);
-		this.leftArrow.setPath(8, leftArrowVerts);
-		this.leftArrow.setVisible(true);
-		println(this.leftArrow.getVertexX(0));
+		this.leftArrow.setPath(4, leftArrowVerts);
+		this.leftArrow.beginShape();
+		this.leftArrow.strokeWeight(2);
+		this.leftArrow.stroke(255);
+		this.leftArrow.noFill();
+		this.leftArrow.endShape();
 
 		this.sidebarOut  = false;
 		this.leftEdgeX   = 0;
@@ -543,8 +553,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		stroke(255);
 		//  triangle( 710, 10, 710, 30, 730, 20);
-		// draws the legend along the bottom of the screen:
-		legend();
+		if(!this.buttons[2].getState())
+		{
+			// draws the legend along the bottom of the screen:
+			legend();
+		}
 
 		//  scrollbar.update();
 		//  scrollbar.display();
@@ -898,14 +911,19 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		if(e.getSource() == this.buttons[1])
 		{
 			println("Hide Arrow was pressed.");
-			this.playButton.setVisible(false);
+			this.leftArrow.setVisible(!this.leftArrow.isVisible());
+			int[]	vertexCodes	= this.leftArrow.getVertexCodes();
+			println("this.leftArrow = " + this.leftArrow);
+			for(int i = 0; i < vertexCodes.length; i++)
+			{
+				println("vertexCodes[" + i + "] = " + vertexCodes[i]);
+			}
 		}
 
 		// Scale:
 		if(e.getSource() == this.buttons[2])
 		{
-			println("Hide Scale was pressed.");
-			this.playButton.setVisible(false);
+			// draw() looks at buttons[2].getState() and does not display if the button has been pressed.
 		}
 
 		// Color Style:
