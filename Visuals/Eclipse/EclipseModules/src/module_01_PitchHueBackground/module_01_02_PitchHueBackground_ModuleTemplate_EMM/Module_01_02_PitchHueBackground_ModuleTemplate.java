@@ -31,11 +31,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	// Choose input file here:
 	// Raw:
-	//String  inputFile  = "module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
+	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
 	// Tuned:
-	String  inputFile  = "module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
+	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
 	// Kanye:
-	//String  inputFile  = "module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
+	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 
 	// Lable for the scrollbar:
 	GUIController controller;
@@ -228,8 +228,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		controller = new GUIController(this);
 
-		println("We're here, right?");
-
 		IFLookAndFeel	modTemplate	= new IFLookAndFeel(this, IFLookAndFeel.MOD_TEMPLATE);
 		//		println("modTemplate.activeColor = " + modTemplate.activeColor);
 		controller.setLookAndFeel(modTemplate);
@@ -247,6 +245,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge }
 		};
 		this.playButton  = createShape(PShape.PATH);
+		this.playButton.beginShape();		// strokeWeight, stoke, fill, etc., can only be set between beginShape and endShape.
+		this.playButton.strokeWeight(2);
+		this.playButton.stroke(255);
+		this.playButton.noFill();
+		this.playButton.endShape();
 		// Setting vcount to 4 means connects the first and last points with a side, 
 		// making it look nice and making mousePressed/contains() functionality work.
 		this.playButton.setPath(4, playButtonVerts);
@@ -261,6 +264,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge }, 
 		};
 		this.stopButton  = createShape(PShape.PATH);
+		this.stopButton.beginShape();
+		this.stopButton.strokeWeight(2);
+		this.stopButton.stroke(255);
+		this.stopButton.noFill();
+		this.stopButton.endShape();
 		this.stopButton.setPath(5, stopButtonVerts);
 		this.showStop  = false;
 		this.stopButton.setVisible(false);
@@ -269,18 +277,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.leftEdgeX   = 0;
 
 		this.scrollbarX  = (width / 3) / 4;
-		this.modulateScrollbarX	= this.scrollbarX + 10;
-
-		/*
-    this.playButtonX  = ((width / 3) / 4) * 1;
-   this.arrowX       = ((width / 3) / 4) * 2 + 15;
-   this.scaleX       = ((width / 3) / 4) * 3 + 20;
-		 */
-		playButtonX  = scrollbarX;
-		arrowX       = scrollbarX + 80;
-		scaleX       = scrollbarX + 140;
-
-		hideWidth     = 75;
+		this.modulateScrollbarX	= this.scrollbarX;
 
 		/*
 		hideY         = 40;
@@ -303,11 +300,19 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		 */
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	40;
-		int yValDif	= 25;
-		for(int i = 1; i < textYVals.length; i++)
+		// Given our height = 250 and "hide" (textYVals[0]) starts at 40,
+		// We want a difference of 27.  This gets that:
+		int	yValDif = (int)((height - textYVals[0]) / 18);//(textYVals.length + noteYVals.length + modulateYVals.length));
+		// ... but no smaller than 25:
+		if(yValDif < 25) {
+			yValDif	= 25;
+		}
+		for(int i = 1; i < textYVals.length - 1; i++)
 		{
 			textYVals[i]	= textYVals[i - 1] + yValDif;
 		} // for
+		// Add extra space before "Pitch Color Codes":
+		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1.5);
 
 		// set y vals for the note names:
 		noteYVals[0]	= textYVals[textYVals.length - 1] + yValDif;
@@ -317,26 +322,43 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		}
 
 		// set y vals for the color modulate scrollbars:
-		modulateYVals[0]	= noteYVals[noteYVals.length - 1] + yValDif;
+		// (add double space between this and previous group of note text fields)
+		modulateYVals[0]	= noteYVals[noteYVals.length - 1] + (int)(yValDif * 1.5);
 		for(int i = 1; i < modulateYVals.length; i++)
 		{
 			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
 		}
+		
 
+		hideWidth     = 71;
+		int hideSpace	= 4;
+
+		/*
+    this.playButtonX  = ((width / 3) / 4) * 1;
+   this.arrowX       = ((width / 3) / 4) * 2 + 15;
+   this.scaleX       = ((width / 3) / 4) * 3 + 20;
+		 */
+		playButtonX  = scrollbarX;
+		arrowX       = scrollbarX + hideWidth + hideSpace;
+		scaleX       = scrollbarX + (+ hideWidth + hideSpace) * 2;
+		
+		int	colorStyleWidth	= 52;
+		int	colorStyleSpace	= 4;
+		
 		this.rainbowX     = scrollbarX;
-		this.dichromaticX  = scrollbarX + 49;
-		this.trichromaticX  = scrollbarX + 112;
-		this.customX  = scrollbarX + 175;
+		this.dichromaticX  = scrollbarX + colorStyleWidth + colorStyleSpace;
+		this.trichromaticX  = scrollbarX + (colorStyleWidth + colorStyleSpace) * 2;
+		this.customX  = scrollbarX + (colorStyleWidth + colorStyleSpace) * 3;
 
 		this.buttons  = new IFButton[] {
 				// annoyingly, buttons have to be placed15 pts higher than their corresponding text
 				new IFButton("PlayButton", playButtonX, textYVals[0] - 15, hideWidth),
-				new IFButton("Arrow", arrowX, textYVals[0] - 15, hideWidth - 20), 
-				new IFButton("Scale", scaleX, textYVals[0] - 15, hideWidth - 35), 
-				new IFButton("Rainbow", rainbowX, textYVals[7] - 15, 45), 	// 7: colorStyle
-				new IFButton("Dichromatic", dichromaticX, textYVals[7] - 15, 60), 
-				new IFButton("Trichromatic", trichromaticX, textYVals[7] - 15, 60), 
-				new IFButton("Custom", customX, textYVals[7] - 15, 50), 
+				new IFButton("Arrow", arrowX, textYVals[0] - 15, hideWidth), 
+				new IFButton("Scale", scaleX, textYVals[0] - 15, hideWidth), 
+				new IFButton("Rainbow", rainbowX, textYVals[7] - 15, colorStyleWidth), 	// 7: colorStyle
+				new IFButton("Dichrom.", dichromaticX, textYVals[7] - 15, colorStyleWidth), 
+				new IFButton("Trichrom.", trichromaticX, textYVals[7] - 15, colorStyleWidth), 
+				new IFButton("Custom", customX, textYVals[7] - 15, colorStyleWidth), 
 		}; // buttons
 
 		for(int i = 0; i < this.buttons.length; i++)
@@ -405,11 +427,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.textFieldArray[i]);
 		}
 
-		this.noteNameX1	= 20;
-		this.noteNameX2 = (int)((width / 3) * 0.5) + this.noteNameX1;
+		this.noteNameX1	= 40;
+		this.noteNameX2 = this.noteNameX1 + 135;
 
-		this.noteTextFieldX	= new int[] { this.noteNameX1 + 50, this.noteNameX2 + 50 };
-		this.noteTextFieldWidth	= 75;
+		this.noteTextFieldWidth	= 65;
+		this.noteTextFieldX	= new int[] { this.scrollbarX, this.scrollbarX + this.noteTextFieldWidth + 70 };
 
 		this.noteTextFieldArray	= new IFTextField[noteYVals.length * 2];
 		int	whichX;
@@ -425,8 +447,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.noteTextFieldArray[i]);
 		}
 
-		this.modulateTextFieldX	= (int)this.modulateScrollbarArray[0].getSposMax() + 25;
-		this.modulateTextFieldWidth	= 60;
+//		this.modulateTextFieldX	= (int)this.modulateScrollbarArray[0].getSposMax() + 25;
+		this.modulateTextFieldX	= this.textFieldX;
+		this.modulateTextFieldWidth	= this.textFieldWidth;
 		this.modulateTextFieldArray	= new IFTextField[this.modulateYVals.length];
 		for(int i = 0; i < this.modulateTextFieldArray.length; i++)
 		{
@@ -434,6 +457,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.modulateTextFieldArray[i].addActionListener(this);
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
+		
+//		getScale("A", 0);
 
 	} // setup()
 
@@ -536,7 +561,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		}; // noteNames2
 
 		String[]	modulateText	= new String[] {
-				"Red Modulate", "Green Modulate", "Blue Modulate"
+				"Red Modulate", "Green Mod.", "Blue Modulate"
 		}; // modulateText
 
 		textSize(10);
@@ -578,17 +603,17 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public String[] getScale(String key, int majMinChrom)
 	{
 		String[][] allNotes	= new String[][] {
-			new String[] { "A" }, 
+			new String[] { "A" , "A" }, 
 			new String[] { "A#", "Bb" }, 
-			new String[] { "B" },
-			new String[] { "C" },
+			new String[] { "B" , "B" },
+			new String[] { "C" , "C" },
 			new String[] { "C#", "Db" }, 
-			new String[] { "D" }, 
+			new String[] { "D" , "D" }, 
 			new String[] { "D#", "Eb" }, 
-			new String[] { "E" }, 
-			new String[] { "F" }, 
+			new String[] { "E" , "E" }, 
+			new String[] { "F" , "F"}, 
 			new String[] { "F#", "Gb" }, 
-			new String[] { "G" }, 
+			new String[] { "G" , "G" }, 
 			new String[] { "G#", "Ab" }
 		};
 		int[]	majorScale	= new int[] {
@@ -598,7 +623,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				2, 1, 2, 2, 1, 2, 2
 		};
 		int[]	chromaticScale	= new int[] {
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 		};
 		int[][]	allScales	= new int[][] {
 			majorScale,
@@ -606,6 +631,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			chromaticScale
 		};
 		
+		// find starting position in allNotes:
 		boolean	flag	= false;
 		int[]		startHere	= new int[2];
 		for(int i = 0; i < allNotes.length; i++)
@@ -617,25 +643,53 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 					startHere[0]	= i;
 					startHere[1]	= j;
 					flag	= true;
-				}
-			}
-		} // for
+				} // if
+			} // for - j
+		} // for - i
 		if(flag == false) 
 		{
 			throw new IllegalArgumentException("Module_01_02_PHB_ModuleTemplate.getScale: key " + key + " is not a valid option.");
 		} // if - throw exception if key not found
 		
-		// This is wrong:
-		int	sharpOrFlat	= majMinChrom % 2;	// chromatic scale will use sharps
+		// Determine whether the key should use sharps or flats when choosing from enharmonic notes:
+		// Be sure to include the space when doing indexOf - to avoid false positives with keys that are sharped
+		String	sharps;
+		String	flats;
+		if(majMinChrom == 0 || majMinChrom == 2)
+		{
+			sharps	= "C G D A E B F# C# G# ";
+			flats	= "F Bb Eb Ab Db Gb ";
+		} else {
+			sharps	= "A E B F# C# G# D#";
+			flats	= "D G C F Bb Eb ";
+		}
+		String[]	sharpsAndFlats	= new String[] { sharps, flats };
 		
-		// Might have to redo the note array and scale steps:
-		// A  A#  Bb  B  C  C#  Db  D  D#  Eb  E  F  F#  Gb  G  G#
-		// maj: 3 2 2 3 2 3
-		// That doesn't work.  But: I can have a circle of 5ths, and their location in that
-		// determines their eligibility!
-		
+		int	sharpOrFlat	= -1;
+		for(int i = 0; i < sharpsAndFlats.length; i++)
+		{
+			if(sharpsAndFlats[i].indexOf(key + " ") > -1)
+			{
+				sharpOrFlat	= i;
+			}
+		}
+		if(sharpOrFlat == -1) {
+			throw new IllegalArgumentException("Module_01_02.getScale: error finding key " + key + ".");
+		}
+		println("sharpOrFlat = " + sharpOrFlat);
 		
 		String[]	result	= new String[allScales[majMinChrom].length];
+		int	scalePos	= startHere[0];
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				result[i]	= allNotes[scalePos][sharpOrFlat];
+				println("result[" + i + "] = " + result[i]);
+			}
+			scalePos	= (scalePos + allScales[majMinChrom][i]) % result.length;
+			println("scalePos = " + scalePos);
+		}
 		
 		return buttonLabels;
 	} // getScale
@@ -667,7 +721,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		float  sideHeight  = width / colors.length;
 		//  float  side = height / colors.length;
 
-		stroke(255);
+	//	stroke(255);
+		noStroke();
 
 		for (int i = 0; i < colors.length; i++)
 		{

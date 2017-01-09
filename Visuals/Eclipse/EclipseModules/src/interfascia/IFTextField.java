@@ -750,8 +750,10 @@ public class IFTextField extends GUIComponent {
 		}*/
 
 		// Draw the surrounding box
-		controller.parent.stroke(lookAndFeel.highlightColor);
-		controller.parent.fill(lookAndFeel.borderColor);
+//		controller.parent.stroke(lookAndFeel.highlightColor);
+//		controller.parent.fill(lookAndFeel.borderColor);
+		controller.parent.stroke(lookAndFeel.borderColor);		// Hard coding because I want to change the border to black (that is, I don't want one)
+		controller.parent.fill(255);		// changed the border 
 		controller.parent.rect(getX(), getY(), getWidth(), getHeight());
 		controller.parent.noStroke();
 

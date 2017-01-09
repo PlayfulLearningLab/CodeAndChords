@@ -159,8 +159,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 	/**
 	 * Constructor for creating an Input object from an audio file.
+	 * NB: string parameter must include src/[modulePackageName]/[iterationPackageName]/fileName
 	 *
-	 * @param  filename  String specifying the audio file.
+	 * @param  filename  String specifying the audio file; must be in the format src/[modulePackageName]/[iterationPackageName]/"fileName"
 	 */
 	Input(String[] filenames)
 	{
@@ -189,9 +190,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 			for (int i = 0; i < samples.length; i++)
 			{
-				println("sketchPath(sampleFilenames[i]) = " + sketchPath(sampleFilenames[i]));
 				samples[i]  = new Sample(sketchPath(sampleFilenames[i]));
-				println("samples[i] = " + samples[i]);
 //				samples[i]  = new Sample("./" + sampleFilenames[i]);
 			} // for
 		}

@@ -111,7 +111,7 @@ public class IFLookAndFeel {
 			highlightColor = parent.color(150);
 			activeColor = parent.color (80);
 			selectionColor = parent.color(242);
-			borderColor = parent.color (255);
+			borderColor = parent.color (0);		// don't want it to look like there is a border
 			textColor = parent.color(0);
 			lightGrayColor = parent.color(100);
 			darkGrayColor = parent.color(50);
