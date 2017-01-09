@@ -458,9 +458,71 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 		
-//		getScale("A", 0);
-
+		String[][] allNotes	= new String[][] {
+			new String[] { "A" , "A" }, 
+			new String[] { "A#", "Bb" }, 
+			new String[] { "B" , "B" },
+			new String[] { "C" , "C" },
+			new String[] { "C#", "Db" }, 
+			new String[] { "D" , "D" }, 
+			new String[] { "D#", "Eb" }, 
+			new String[] { "E" , "E" }, 
+			new String[] { "F" , "F"}, 
+			new String[] { "F#", "Gb" }, 
+			new String[] { "G" , "G" }, 
+			new String[] { "G#", "Ab" }
+		}; // allNotes
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				try {
+					String[]	scale	= getScale(allNotes[i][j], 0);
+					println(allNotes[i][j] + " Major: ");
+					printArray(scale);
+				} catch(IllegalArgumentException iae) {
+					println(iae.getMessage());
+				}
+			}
+		}
+		println();
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				try {
+					String[]	scale	= getScale(allNotes[i][j], 1);
+					println(allNotes[i][j] + " Minor: ");
+					printArray(scale);
+				} catch(IllegalArgumentException iae) {
+					println(iae.getMessage());
+				}
+			}
+		}
+		println();
+		for(int i = 0; i < allNotes.length; i++)
+		{
+			for(int j = 0; j < allNotes[i].length; j++)
+			{
+				try {
+					String[]	scale	= getScale(allNotes[i][j], 2);
+					println(allNotes[i][j] + " Chromatic: ");
+					printArray(scale);
+				} catch(IllegalArgumentException iae) {
+					println(iae.getMessage());
+				}
+			}
+		}
 	} // setup()
+		
+	private void printArray(String[] array)
+	{
+		for(int i = 0; i < array.length - 1; i++)
+		{
+			print(array[i] + ", ");
+		}
+		print(array[array.length - 1] + ";\n");
+	}
 
 	public void draw()
 	{
@@ -605,7 +667,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		String[][] allNotes	= new String[][] {
 			new String[] { "A" , "A" }, 
 			new String[] { "A#", "Bb" }, 
-			new String[] { "B" , "B" },
+			new String[] { "B" , "Cb" },
 			new String[] { "C" , "C" },
 			new String[] { "C#", "Db" }, 
 			new String[] { "D" , "D" }, 
@@ -648,7 +710,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // for - i
 		if(flag == false) 
 		{
-			throw new IllegalArgumentException("Module_01_02_PHB_ModuleTemplate.getScale: key " + key + " is not a valid option.");
+			throw new IllegalArgumentException("Module_01_02_PHB_ModuleTemplate.getScale: key " + key + " is not a valid key.");
 		} // if - throw exception if key not found
 		
 		// Determine whether the key should use sharps or flats when choosing from enharmonic notes:
@@ -657,7 +719,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		String	flats;
 		if(majMinChrom == 0 || majMinChrom == 2)
 		{
-			sharps	= "C G D A E B F# C# G# ";
+			sharps	= "C G D A E B ";
 			flats	= "F Bb Eb Ab Db Gb ";
 		} else {
 			sharps	= "A E B F# C# G# D#";
@@ -674,24 +736,20 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			}
 		}
 		if(sharpOrFlat == -1) {
-			throw new IllegalArgumentException("Module_01_02.getScale: error finding key " + key + ".");
+			throw new IllegalArgumentException("Module_01_02.getScale: key " + key + " is not supported at this time. Sorry! Try an enharmonic equivalent.");
 		}
-		println("sharpOrFlat = " + sharpOrFlat);
 		
 		String[]	result	= new String[allScales[majMinChrom].length];
 		int	scalePos	= startHere[0];
-		for(int i = 0; i < allNotes.length; i++)
+		// i is position in result;
+		// scalePos is position in allNotes
+		for(int i = 0; i < result.length; i++)
 		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				result[i]	= allNotes[scalePos][sharpOrFlat];
-				println("result[" + i + "] = " + result[i]);
-			}
-			scalePos	= (scalePos + allScales[majMinChrom][i]) % result.length;
-			println("scalePos = " + scalePos);
+			result[i]	= allNotes[scalePos][sharpOrFlat];
+			scalePos	= (scalePos + allScales[majMinChrom][i]) % allNotes.length;
 		}
 		
-		return buttonLabels;
+		return result;
 	} // getScale
 
 	void legend()
