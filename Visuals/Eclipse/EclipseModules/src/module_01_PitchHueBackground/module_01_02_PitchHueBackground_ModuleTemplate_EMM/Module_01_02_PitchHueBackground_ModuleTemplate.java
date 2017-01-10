@@ -92,7 +92,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	PShape	rightArrow;
 	PShape	leftArrow;
-	boolean	showLeftArrow;
+	boolean	showRightArrow;
 
 	boolean  sidebarOut;
 	int      leftEdgeX;
@@ -282,13 +282,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		controller.setLookAndFeel(modTemplate);
 		controller.setVisible(false);
 
-		// Creating the PShape as a square. The corner 
-		// is 0,0 so that the center is at 40,40 
-		// syntax: createShape(TRIANGLE, x1, y1, x2, y2, x3, y3)
+		// Making the play button:
 		int  playDistanceFromEdge  = 20;
 		int  playWidth  = 25;
 		int  playHeight  = 30;
-		float[][]  playButtonVerts  = new float[][] { new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge }, 
+		float[][]  playButtonVerts  = new float[][] { 
+			new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge }, 
 			new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge + playHeight }, 
 			new float[] { width - playDistanceFromEdge, playDistanceFromEdge + (playHeight / 2) }, 
 			new float[] { width - playDistanceFromEdge - playWidth, playDistanceFromEdge }
@@ -304,9 +303,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.playButton.setPath(4, playButtonVerts);
 		this.showPlay  = true;
 
+		// Making the stop button:
 		int  stopSideSize  = 30;
 		int  stopDistanceFromEdge  = 20;
-		float[][]  stopButtonVerts  = new float[][] { new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge }, 
+		float[][]  stopButtonVerts  = new float[][] { 
+			new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge }, 
 			new float[] { width - stopDistanceFromEdge - stopSideSize, stopDistanceFromEdge + stopSideSize }, 
 			new float[] { width - stopDistanceFromEdge, stopDistanceFromEdge + stopSideSize }, 
 			new float[] { width - stopDistanceFromEdge, stopDistanceFromEdge }, 
@@ -322,14 +323,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.showStop  = false;
 		this.stopButton.setVisible(false);
 
-
-		float	aX		=	width / 2;		// arrow X coordinate (x val of left edge)
-		float	aY		=	height / 2;		// arrow Y coordinate (y val of upmost point)
-		int	aW		= 100;				// arrow width
-		int	aH		= 100;				// arrow height (from highest to lowest points)
+		// Making the left arrow:
+		int arrowDistanceFromEdge	= 20;
+		float	aX		= arrowDistanceFromEdge;		// arrow X coordinate (x val of left edge)
+		float	aY		= arrowDistanceFromEdge;		// arrow Y coordinate (y val of upmost point)
+		int	aW			= 25;				// arrow width
+		int	aH			= 25;				// arrow height (from highest to lowest points)
 		stroke(255);
 		float	oneQuarterY		= (float) (aY + (.25 * aH));
-		float	oneHalfY		= (float) (aY + (.25 * aH));
+		float	oneHalfY		= (float) (aY + (.5 * aH));
 		float	threeQuartersY	= (float) (aY + (0.75 * aH));
 		float	oneY			= aY + aH;
 		float	oneHalfX		= (float)(aX + (0.5 * aW));
@@ -342,23 +344,54 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"\noneHalfX = " + oneHalfX +
 				"\noneX = " + oneX);
 		 */
-		float[][]	leftArrowVerts	= new float[][] {
+		float[][]	rightArrowVerts	= new float[][] {
 			new float[]	{ aX, oneQuarterY },
-			new float[] { oneHalfX, oneHalfY },
+			new float[] { oneHalfX, oneQuarterY },
 			new float[]	{ oneHalfX, aY },
 			new float[]	{ oneX, oneHalfY },
 			new float[] { oneHalfX, oneY },
 			new float[] { oneHalfX, threeQuartersY },
-			new float[] { 20, 50 } ,//new float[] { aX, threeQuartersY },
+			new float[] { aX, threeQuartersY },
 			new float[] { aX, oneQuarterY }		// back where we started
 		};
+
+		this.rightArrow	= createShape(PShape.PATH);
+		this.rightArrow.beginShape();
+		this.rightArrow.strokeWeight(1);
+		this.rightArrow.stroke(255);
+		this.rightArrow.noFill();
+		this.rightArrow.endShape();
+		this.rightArrow.setPath(8, rightArrowVerts);
+		this.showRightArrow	= true;
+
+		// left arrow:
+		aX	= (width / 3) + arrowDistanceFromEdge;
+		// redefining these because I changed aX:
+		oneQuarterY		= (float) (aY + (.25 * aH));
+		oneHalfY		= (float) (aY + (.5 * aH));
+		threeQuartersY	= (float) (aY + (0.75 * aH));
+		oneY			= aY + aH;
+		oneHalfX		= (float)(aX + (0.5 * aW));
+		oneX			= aX + aW;
+
+		float[][]	leftArrowVerts	= new float[][] {
+			new float[] { aX, oneHalfY },
+			new float[] { oneHalfX, aY },
+			new float[] { oneHalfX, oneQuarterY },
+			new float[] { oneX, oneQuarterY },
+			new float[] { oneX, threeQuartersY },
+			new float[] { oneHalfX, threeQuartersY },
+			new float[] { oneHalfX, oneY },
+			new float[] { aX, oneHalfY },
+		};
 		this.leftArrow	= createShape(PShape.PATH);
-		this.leftArrow.setPath(4, leftArrowVerts);
+		this.leftArrow.setPath(8, leftArrowVerts);
 		this.leftArrow.beginShape();
-		this.leftArrow.strokeWeight(2);
+		this.leftArrow.strokeWeight(1);
 		this.leftArrow.stroke(255);
 		this.leftArrow.noFill();
 		this.leftArrow.endShape();
+		this.leftArrow.setVisible(false);
 
 		this.sidebarOut  = false;
 		this.leftEdgeX   = 0;
@@ -616,7 +649,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		shape(this.playButton);
 		shape(this.stopButton);
-
+		shape(this.leftArrow);
+		shape(this.rightArrow);
+		/*
 		if (mousePressed && (mouseX < (width / 3)))
 		{
 			this.sidebarOut  = !this.sidebarOut;
@@ -630,11 +665,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				this.controller.setVisible(false);
 			} // if - leftEdgeX
 		} // if - mousePressed
+		 */
 	} // draw()
 
 	void displaySidebar()
 	{
 		this.controller.setVisible(true);
+		this.leftEdgeX  = width / 3;
 
 		stroke(255);
 		fill(0);
@@ -1068,7 +1105,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			} // for - j
 		} // for - i
 	} // dichromatic_TwoRGB
-	
+
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
@@ -1150,7 +1187,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("    rgbVals2[" + i + "] = " + rgbVals2[i]);
 		}
-		
+
 		int	rgb3	= Color.HSBtoRGB(hsbTriad2[0], hsbTriad2[1], hsbTriad2[2]);
 		println("rgb3 = " + rgb3);
 		Color	rgbColor3	=  new Color(rgb3);
@@ -1351,6 +1388,27 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.playButton.setVisible(false);
 		}*/
 
+		if(this.rightArrow.contains(mouseX, mouseY))
+		{
+			this.showRightArrow	= false;
+
+			this.displaySidebar();
+
+		} else if(this.leftArrow.contains(mouseX, mouseY))
+		{
+			this.showRightArrow	= true;
+
+			this.leftEdgeX  = 0;
+			this.controller.setVisible(false);
+		}
+
+		// if the hideArrowButton button was NOT pressed:
+		if(!this.buttons[1].getState())
+		{
+			this.rightArrow.setVisible(this.showRightArrow);
+			this.leftArrow.setVisible(!this.showRightArrow);
+		}
+
 	} // mousePressed
 
 
@@ -1371,15 +1429,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Arrow:
 		if(e.getSource() == this.buttons[1])
 		{
-			println("Hide Arrow was pressed.");
-			this.leftArrow.setVisible(!this.leftArrow.isVisible());
-			int[]	vertexCodes	= this.leftArrow.getVertexCodes();
-			println("this.leftArrow = " + this.leftArrow);
-			for(int i = 0; i < vertexCodes.length; i++)
+			if(this.buttons[1].getState())
 			{
-				println("vertexCodes[" + i + "] = " + vertexCodes[i]);
-			}
-		}
+				this.rightArrow.setVisible(false);
+				this.leftArrow.setVisible(false);
+			} else {
+				this.rightArrow.setVisible(this.showRightArrow);
+				this.leftArrow.setVisible(!this.showRightArrow);
+			} // else
+		} // if - hide arrow
 
 		// Scale:
 		if(e.getSource() == this.buttons[2])
