@@ -2,6 +2,9 @@ package module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTempl
 
 import processing.core.*;
 import interfascia.*;
+
+import java.awt.Color;
+
 import addons.Buttons;
 import addons.HScrollbar;
 import core.Input;
@@ -852,17 +855,89 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), height - 20);
 		} // for
 	} // legend
-
+	
 	/**
-	 * Calls the other dichromatic function with saturation of 100 and hue of brightness of 50.
-	 * @param hue	int specifying the hue of the color at the root of the scale.
+	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
+	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
+	 * 
+	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
 	 */
-	private void dichromaticHSB(int hue)
+	public void dichromatic_OneRGB(int[] rgbVals)
 	{
-		dichromaticHSB(hue, 100, 100);
-	} // dichromatic(int)
+		float[]	hsbVals	= new float[3];
+		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
+		
+		for(int i = 0; i < hsbVals.length; i++)
+		{
+			println("dichromatic_OneRGB: hsbVals[" + i + "] = " + hsbVals[i]);
+		}
+		
+		this.dichromatic_OneHSB(hsbVals);
+	} // dichromatic_OneRGB
 
 	/**
+	 * Uses the given HSB color to find the color across it on the HSB wheel,
+	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 * 
+	 * @param hue	float[] of HSB values defining the color at the root of the current scale.
+	 */
+	private void dichromatic_OneHSB(float[] hsbVals)
+	{
+		if(hsbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
+		} // error checking
+		
+		// find the complement:
+		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
+		
+		for(int i = 0; i < hsbVals.length; i++)
+		{
+			println("    hsbVals[" + i + "] = " + hsbVals[i]);
+		}
+		
+		for(int i = 0; i < hsbComplement.length; i++)
+		{
+			println("    hsbComplement[" + i + "] = " + hsbComplement[i]);
+		}
+		
+		// convert them both to RGB;
+		float[]	rgbVals1	= new float[3];
+		float[]	rgbVals2	= new float[3];
+		
+		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
+		println("rgb1 = " + rgb1);
+		Color	rgbColor1	=  new Color(rgb1);
+	
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals1[0]	= rgbColor1.getRed();
+		rgbVals1[1]	= rgbColor1.getGreen();
+		rgbVals1[2]	= rgbColor1.getBlue();	
+		for(int i = 0; i < rgbVals1.length; i++)
+		{
+			println("    rgbVals1[" + i + "] = " + rgbVals1[i]);
+		}
+		
+		int	rgb2	= Color.HSBtoRGB(hsbComplement[0], hsbComplement[1], hsbComplement[2]);
+		println("rgb2 = " + rgb2);
+		Color	rgbColor2	=  new Color(rgb2);
+	
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals2[0]	= rgbColor2.getRed();
+		rgbVals2[1]	= rgbColor2.getGreen();
+		rgbVals2[2]	= rgbColor2.getBlue();	
+		for(int i = 0; i < rgbVals2.length; i++)
+		{
+			println("    rgbVals2[" + i + "] = " + rgbVals2[i]);
+		}
+		
+		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
+	} // dichromatic_OneHSB(int)
+
+	
+	/**
+	 * ** Don't think I will need this function -- it goes through the whole spectrum,
+	 * so I'm going to use RGB to make the spectrum.
+	 * 
 	 * Fills the color array with colors from the specified hue, saturation, and brightness,
 	 * to the color opposite on the color wheel (i.e., hue of new color = 360 - givenHue).
 	 * 
@@ -870,9 +945,17 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 * @param saturation	int specifying the saturation of the colors of the scale..
 	 * @param brightness	int specifying the brightness of the colors of the scale.
 	 */
-	private void dichromaticHSB(int hue, int saturation, int brightness)
+	/*
+	private void dichromatic_TwoHSB(int hue, int saturation, int brightness)
 	{
-		colorMode(HSB, 360, 100, 100);
+//		colorMode(HSB, 360, 100, 100);
+		float[]	redHSB	=	new float[3];
+		Color.RGBtoHSB(0, 255, 0, redHSB);
+		for(int i = 0; i < redHSB.length; i++)
+		{
+			println("redHSB[" + i + "] = " + redHSB[i]);
+		}
+		
 		float[]	color1	= new float[] { hue, saturation, brightness };
 		float[]	color2	= new float[] { (hue + 120) % 360, saturation, brightness };
 		float	newHue	= (hue + 120) % 360;
@@ -881,6 +964,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
 		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
 		 */
+	/*
 		float	hueDelta	= (newHue - hue) / this.colors.length;
 
 		this.colors[0]	= color1;
@@ -889,25 +973,27 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.colors[i][0]	= this.colors[i - 1][0] + hueDelta;
 			this.colors[i][1]	= saturation;
 			this.colors[i][2]	= brightness;
-			println("colors[" + i + "][0] = " + colors[i][0] +
-					"; colors[" + i + "][1] = " + colors[i][1] + 
-					"; colors[" + i + "][2] = " + colors[i][2]);
 		} // for - i
-	} // dichromatic
+	} // dichromatic_TwoHSB
+*/
 
-	private void dichromaticRGB()
+	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
 	{
+		if(rgbVals1 == null || rgbVals2 == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
+		} // error checking
+		
 		int[]	color1	= new int[] { 255, 0, 0 };
 		int[]	color2	= new int[] { 0, 255, 0 };
 
-		int	redDelta	= (color1[0] - color2[0]) / this.colors.length;
-		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
-		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
+		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.colors.length;
+		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.colors.length;
+		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.colors.length;
 		println("redDelta = " + redDelta + "; greenDelta = " + greenDelta + "; blueDelta = " + blueDelta);
 
-		for(int i = 0; i < color1.length; i++)
+		for(int i = 0; i < rgbVals1.length; i++)
 		{
-			this.colors[0][i]	= color1[i];
+			this.colors[0][i]	= rgbVals1[i];
 		}
 		for(int i = 1; i < this.colors.length; i++)
 		{
@@ -921,7 +1007,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 						"; colors[" + i + "][2] = " + colors[i][2]);
 			} // for - j
 		} // for - i
-	}
+	} // dichromatic_TwoRGB
 
 	public void mousePressed()
 	{
@@ -1009,9 +1095,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Dichromatic:
 		if(e.getSource() == this.buttons[4])
 		{
-			this.dichromaticHSB(0);
-			// Calculate the mathematical relationship between them.
-			// Should I just go red, green, blue, all together?
+//			this.dichromatic_OneHSB(new float[] { (float)0.333, 1, 1, } );
+			
+			this.dichromatic_OneRGB(new int[] { 255, 0, 0, });
 		} // dichromatic
 
 		// Trichromatic:
