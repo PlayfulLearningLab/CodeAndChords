@@ -40,6 +40,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	// Kanye:
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 
+	private	static	char	CS_RAINBOW	= 1;
+	private	static	char	CS_DICHROM	= 2;
+	private	static	char	CS_TRICHROM	= 3;
+	private	static	char	CS_CUSTOM	= 4;
+	private	char	curColorStyle;
+
+	// TODO: Make most variables private.
 	// Lable for the scrollbar:
 	GUIController controller;
 	IFTextField   textField;
@@ -90,11 +97,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	boolean  sidebarOut;
 	int      leftEdgeX;
 
-	HScrollbar[]  scrollbarArray;
+	HScrollbar[]	scrollbarArray;
 	HScrollbar[]	modulateScrollbarArray;
 
-	int    scrollbarX;
-	int		modulateScrollbarX;
+	int	scrollbarX;
+	int	modulateScrollbarX;
 
 	HScrollbar  thresholdScroll;
 	HScrollbar  attackScroll;
@@ -176,7 +183,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int		noteTextFieldWidth;
 	int		modulateTextFieldWidth;
 
-	float[][]	rainbowColors;
+	float[][][]	rainbowColors;
+
+	int	majMinChrom; //		//	0 = major, 1 = minor, 2 = chromatic
+	int	scaleLength; //
+
+	private int[]	rootColor;
 
 	public void settings()
 	{
@@ -189,23 +201,51 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		saturationMax  = 300;
 		brightnessMax  = 100;
 
-		this.rainbowColors	= new float[][] {
-			{ 255, 0, 0 }, 
-			{ 255, (float) 127.5, 0 }, 
-			{ 255, 255, 0 }, 
-			{ (float) 127.5, 255, 0 }, 
-			{ 0, 255, 0 }, 
-			{ 0, 255, (float) 127.5 }, 
-			{ 0, 255, 255 }, 
-			{ 0, (float) 127.5, 255 }, 
-			{ 0, 0, 255 }, 
-			{ (float) 127.5, 0, 255 }, 
-			{ 255, 0, 255 }, 
-			{ 255, 0, (float) 127.5 }, 
-			{ 255, 0, 0 }
-		};
+		this.rainbowColors	= new float[][][] { 
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 },
+				{ 0, 255, 255 },  
+				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 }
+			}, // major
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 },
+				{ 0, 255, 255 },  
+				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 }
+			}, // minor
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 }, 
+				{ 0, 255, 0 }, 
+				{ 0, 255, (float) 127.5 }, 
+				{ 0, 255, 255 }, 
+				{ 0, (float) 127.5, 255 }, 
+				{ 0, 0, 255 }, 
+				{ (float) 127.5, 0, 255 }, 
+				{ 255, 0, 255 }, 
+				{ 255, 0, (float) 127.5 }
+			} // chromatic
+		}; // rainbowColors
 
-		this.colors	= this.rainbowColors;
+		this.curColorStyle	= this.CS_RAINBOW;
+		this.colors	= new float[12][3];
+		// Start chromatic:
+		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
+			{
+				this.colors[i][j]	= this.rainbowColors[2][i][j];
+			} // for - j (going through rgb values)
+		} // for - i (going through colors)
 
 		//  input        = new Input(inputFile);
 		input  = new Input();
@@ -529,7 +569,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			// if want something other than C to be the "tonic" (i.e., red),
 			// add some number before multiplying.
-			newHuePos  = round(input.getAdjustedFundAsMidiNote(1) % 12);
+			newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
 			newHue  = colors[newHuePos];
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
 		} else {
@@ -749,6 +789,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			scalePos	= (scalePos + allScales[majMinChrom][i]) % allNotes.length;
 		}
 
+		this.scaleLength	= result.length;
+		this.majMinChrom	= majMinChrom;
+
 		return result;
 	} // getScale
 
@@ -815,7 +858,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	{
 
 		textSize(24);
-
+		/*
 		String[] notes = new String[] {
 				"C", 
 				"C#", 
@@ -831,19 +874,29 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"B", 
 				"C"
 		}; // notes
-
+		 */
+		String[]	notes	= this.getScale("C", 1);
 		// 12/19: updating to be on the side.
 		// 01/05: changing it back!
-		float  sideWidth   = (width - leftEdgeX) / colors.length;
-		float  sideHeight  = width / this.colors.length;
+		float  sideWidth   = (width - leftEdgeX) / notes.length;
+		float  sideHeight  = width / notes.length;
 		//  float  side = height / colors.length;
 
 		//	stroke(255);
 		noStroke();
 
-		for (int i = 0; i < this.colors.length; i++)
+		for (int i = 0; i < notes.length; i++)
 		{
 			fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
+			/*
+			if(i == 0)
+			{
+				for(int j = 0; j < this.colors[i].length; j++)
+				{
+					println("legend: colors[0][" + j + "] = " + colors[0][j]);
+				}
+			}
+			 */
 			if (i == goalHuePos) {
 				rect(leftEdgeX + (sideWidth * i), (float)(height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
@@ -855,7 +908,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), height - 20);
 		} // for
 	} // legend
-	
+
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
@@ -864,14 +917,18 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 */
 	public void dichromatic_OneRGB(int[] rgbVals)
 	{
+		if(rgbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
+		}
+
 		float[]	hsbVals	= new float[3];
 		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
-		
+
 		for(int i = 0; i < hsbVals.length; i++)
 		{
 			println("dichromatic_OneRGB: hsbVals[" + i + "] = " + hsbVals[i]);
 		}
-		
+
 		this.dichromatic_OneHSB(hsbVals);
 	} // dichromatic_OneRGB
 
@@ -886,28 +943,28 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		if(hsbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
 		} // error checking
-		
+
 		// find the complement:
 		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
-		
+
 		for(int i = 0; i < hsbVals.length; i++)
 		{
 			println("    hsbVals[" + i + "] = " + hsbVals[i]);
 		}
-		
+
 		for(int i = 0; i < hsbComplement.length; i++)
 		{
 			println("    hsbComplement[" + i + "] = " + hsbComplement[i]);
 		}
-		
+
 		// convert them both to RGB;
 		float[]	rgbVals1	= new float[3];
 		float[]	rgbVals2	= new float[3];
-		
+
 		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
 		println("rgb1 = " + rgb1);
 		Color	rgbColor1	=  new Color(rgb1);
-	
+
 		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
 		rgbVals1[0]	= rgbColor1.getRed();
 		rgbVals1[1]	= rgbColor1.getGreen();
@@ -916,11 +973,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("    rgbVals1[" + i + "] = " + rgbVals1[i]);
 		}
-		
+
 		int	rgb2	= Color.HSBtoRGB(hsbComplement[0], hsbComplement[1], hsbComplement[2]);
 		println("rgb2 = " + rgb2);
 		Color	rgbColor2	=  new Color(rgb2);
-	
+
 		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
 		rgbVals2[0]	= rgbColor2.getRed();
 		rgbVals2[1]	= rgbColor2.getGreen();
@@ -929,11 +986,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("    rgbVals2[" + i + "] = " + rgbVals2[i]);
 		}
-		
+
 		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
 	} // dichromatic_OneHSB(int)
 
-	
+	// TODO: delete this?
 	/**
 	 * ** Don't think I will need this function -- it goes through the whole spectrum,
 	 * so I'm going to use RGB to make the spectrum.
@@ -955,7 +1012,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("redHSB[" + i + "] = " + redHSB[i]);
 		}
-		
+
 		float[]	color1	= new float[] { hue, saturation, brightness };
 		float[]	color2	= new float[] { (hue + 120) % 360, saturation, brightness };
 		float	newHue	= (hue + 120) % 360;
@@ -963,7 +1020,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		int	redDelta	= (color1[0] - color2[0]) / this.colors.length;
 		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
 		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
-		 */
+	 */
 	/*
 		float	hueDelta	= (newHue - hue) / this.colors.length;
 
@@ -975,27 +1032,30 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.colors[i][2]	= brightness;
 		} // for - i
 	} // dichromatic_TwoHSB
-*/
+	 */
 
+	/**
+	 * This method fills colors with the spectrum of colors between the given rgb colors.
+	 * 
+	 * @param rgbVals1	float[] of rgb values defining rootColor.
+	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
+	 */
 	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
 		} // error checking
-		
-		int[]	color1	= new int[] { 255, 0, 0 };
-		int[]	color2	= new int[] { 0, 255, 0 };
 
-		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.colors.length;
-		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.colors.length;
-		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.colors.length;
+		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
+		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
+		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
 		println("redDelta = " + redDelta + "; greenDelta = " + greenDelta + "; blueDelta = " + blueDelta);
 
 		for(int i = 0; i < rgbVals1.length; i++)
 		{
 			this.colors[0][i]	= rgbVals1[i];
 		}
-		for(int i = 1; i < this.colors.length; i++)
+		for(int i = 1; i < this.scaleLength && i < this.colors.length; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
@@ -1008,6 +1068,248 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			} // for - j
 		} // for - i
 	} // dichromatic_TwoRGB
+	
+	/**
+	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
+	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
+	 * 
+	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
+	 */
+	public void trichromatic_OneRGB(int[] rgbVals)
+	{
+		if(rgbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
+		}
+
+		float[]	hsbVals	= new float[3];
+		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
+
+		for(int i = 0; i < hsbVals.length; i++)
+		{
+			println("trichromatic_OneRGB: hsbVals[" + i + "] = " + hsbVals[i]);
+		}
+
+		this.trichromatic_OneHSB(hsbVals);
+	} // trichromatic_OneRGB
+
+	/**
+	 * ** This method should not be called w/out setting rootColor before hand.
+	 * 
+	 * Uses the given HSB color to find the color across it on the HSB wheel,
+	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 *
+	 * @param hsbVals	float[] of HSB values defining the color at the root of the current scale.
+	 */
+	private void trichromatic_OneHSB(float[] hsbVals)
+	{
+		if(hsbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
+		} // error checking
+
+		// find the triad:
+		float[]	hsbTriad1	= new float[] { (float) ((hsbVals[0] + 0.33) % 1), 1, 1 };
+		float[]	hsbTriad2	= new float[] { (float) ((hsbVals[0] + 0.67) % 1), 1, 1 };
+
+		for(int i = 0; i < hsbVals.length; i++)
+		{
+			println("    hsbVals[" + i + "] = " + hsbVals[i]);
+		}
+
+		for(int i = 0; i < hsbTriad1.length; i++)
+		{
+			println("    hsbTriad1[" + i + "] = " + hsbTriad1[i]);
+		}
+
+		// convert them both to RGB;
+		float[]	rgbVals1	= new float[3];
+		float[]	rgbVals2	= new float[3];
+		float[]	rgbVals3	= new float[3];
+
+		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
+		println("rgb1 = " + rgb1);
+		Color	rgbColor1	=  new Color(rgb1);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals1[0]	= rgbColor1.getRed();
+		rgbVals1[1]	= rgbColor1.getGreen();
+		rgbVals1[2]	= rgbColor1.getBlue();	
+		for(int i = 0; i < rgbVals1.length; i++)
+		{
+			println("    rgbVals1[" + i + "] = " + rgbVals1[i]);
+		}
+
+		int	rgb2	= Color.HSBtoRGB(hsbTriad1[0], hsbTriad1[1], hsbTriad1[2]);
+		println("rgb2 = " + rgb2);
+		Color	rgbColor2	=  new Color(rgb2);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals2[0]	= rgbColor2.getRed();
+		rgbVals2[1]	= rgbColor2.getGreen();
+		rgbVals2[2]	= rgbColor2.getBlue();	
+		for(int i = 0; i < rgbVals2.length; i++)
+		{
+			println("    rgbVals2[" + i + "] = " + rgbVals2[i]);
+		}
+		
+		int	rgb3	= Color.HSBtoRGB(hsbTriad2[0], hsbTriad2[1], hsbTriad2[2]);
+		println("rgb3 = " + rgb3);
+		Color	rgbColor3	=  new Color(rgb3);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals3[0]	= rgbColor3.getRed();
+		rgbVals3[1]	= rgbColor3.getGreen();
+		rgbVals3[2]	= rgbColor3.getBlue();	
+		for(int i = 0; i < rgbVals3.length; i++)
+		{
+			println("    rgbVals3[" + i + "] = " + rgbVals3[i]);
+		}
+
+		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
+	} // trichromatic_OneHSB
+
+	public void trichromatic_ThreeRGB(float[] rgbVals1, float[] rgbVals2, float[] rgbVals3)
+	{
+		if(rgbVals1 == null || rgbVals2 == null || rgbVals3 == null) {
+			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
+		} // error checking
+
+		int	color1pos	= 0;
+		int	color2pos;
+		int	color3pos;
+
+		if(this.majMinChrom == 2)
+		{
+			// if chromatic scale, put the colors equally throughout:
+			color2pos	= this.scaleLength / 3;
+			color3pos	= (this.scaleLength / 3) * 2;
+		} else {
+			color2pos	= 3;	// subdominant
+			color3pos	= 4;	// dominant
+		}
+		println("color2pos = " + color2pos + "; color3pos = " + color3pos);
+
+		// TODO: this might need to be divided by 4 to make it to the actual color (or dichr. should be colors.length - 1?):
+		float	redDelta1	= (rgbVals1[0] - rgbVals2[0]) / (color2pos - color1pos);
+		float	greenDelta1	= (rgbVals1[1] - rgbVals2[1]) / (color2pos - color1pos);
+		float	blueDelta1	= (rgbVals1[2] - rgbVals2[2]) / (color2pos - color1pos);
+		println("redDelta1 = " + redDelta1 + "; greenDelta1 = " + greenDelta1 + "; blueDelta1 = " + blueDelta1);
+
+		float	redDelta2	= (rgbVals2[0] - rgbVals3[0]) / (color3pos - color2pos);
+		float	greenDelta2	= (rgbVals2[1] - rgbVals3[1]) / (color3pos - color2pos);
+		float	blueDelta2	= (rgbVals2[2] - rgbVals3[2]) / (color3pos - color2pos);
+		println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta2 + "; blueDelta2 = " + blueDelta2);
+
+		float	redDelta3	= (rgbVals3[0] - rgbVals1[0]) / (this.scaleLength - color3pos);
+		float	greenDelta3	= (rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos);
+		float	blueDelta3	= (rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos);
+		println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta2 + "; blueDelta2 = " + blueDelta2);
+
+		// fill first position with first color:
+		for(int i = 0; i < rgbVals1.length; i++)
+		{
+			this.colors[0][i]	= rgbVals1[i];
+		}
+
+		// fill from first color to second color:
+		for(int i = 1; i < color2pos + 1; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta1;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta1;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta1;
+			} // for - j
+
+			println("tri: colors[" + i + "][0] = " + colors[i][0] +
+					"; colors[" + i + "][1] = " + colors[i][1] + 
+					"; colors[" + i + "][2] = " + colors[i][2]);
+		} // for - first color to second color
+
+		/*
+		// put in the third color (the second should have been reached in the previous loop):
+		for(int i = 0; i < rgbVals3.length; i++)
+		{
+			this.colors[4][i]	= rgbVals3[i];
+		} // for - third color to first color
+		 */
+
+		// fill from second color to third color:
+		for(int i = color2pos + 1; i < color3pos + 1; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta2;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta2;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta2;
+			} // for - j
+
+			println("tri: colors[" + i + "][0] = " + colors[i][0] +
+					"; colors[" + i + "][1] = " + colors[i][1] + 
+					"; colors[" + i + "][2] = " + colors[i][2]);
+		} // for - first color to second color
+
+		// fill from third color back to first color:
+		for(int i = color3pos + 1; i < this.scaleLength; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta3;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta3;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta3;
+			} // for - j
+			println("tri: colors[" + i + "][0] = " + colors[i][0] +
+					"; colors[" + i + "][1] = " + colors[i][1] + 
+					"; colors[" + i + "][2] = " + colors[i][2]);
+		} // for - third color to first color
+	} //trichromatic_ThreeRGB
+
+	/**
+	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
+	 */
+	public void rainbow()
+	{
+		for(int i = 0; i < this.colors.length && i < this.rainbowColors[this.majMinChrom].length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[this.majMinChrom][i].length; j++)
+			{
+				this.colors[i][j]	= this.rainbowColors[this.majMinChrom][i][j];
+			} // for - j (going through rgb values)
+		} // for - i (going through colors)
+
+	} // rainbow
+
+	private void updateColors(char colorStyle)
+	{
+		if(colorStyle < 1 || colorStyle > 4) {
+			throw new IllegalArgumentException("Module_01_02.updateColors: char paramter " + colorStyle + " is not recognized; must be 1 - 4.");
+		}
+
+		this.curColorStyle	= colorStyle;
+
+		// Rainbow:
+		if(this.curColorStyle == this.CS_RAINBOW)
+		{
+			this.rainbow();
+		}
+
+		// Dichromatic:
+		if(this.curColorStyle == this.CS_DICHROM)
+		{
+			this.dichromatic_OneRGB(this.rootColor);
+		}
+
+		// Trichromatic:
+		if(this.curColorStyle == this.CS_TRICHROM)
+		{
+			this.trichromatic_OneRGB(this.rootColor);
+		}
+
+		// Custom:
+		if(this.curColorStyle == this.CS_CUSTOM)
+		{
+			println("Custom is still in the works.");
+		}
+	} // updateColors
 
 	public void mousePressed()
 	{
@@ -1089,21 +1391,33 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Rainbow:
 		if(e.getSource() == this.buttons[3])
 		{
-			this.colors	= this.rainbowColors;
-		}
+			this.rainbow();
+			/*
+			for(int i = 0; i < this.colors.length && i < this.rainbowColors[this.majMinChrom].length; i++)
+			{
+				for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[this.majMinChrom][i].length; j++)
+				{
+					this.colors[i][j]	= this.rainbowColors[this.majMinChrom][i][j];
+				} // for - j (going through rgb values)
+			} // for - i (going through colors)
+			 */
+		} // rainbow
 
 		// Dichromatic:
 		if(e.getSource() == this.buttons[4])
 		{
-//			this.dichromatic_OneHSB(new float[] { (float)0.333, 1, 1, } );
-			
-			this.dichromatic_OneRGB(new int[] { 255, 0, 0, });
+			//			this.dichromatic_OneHSB(new float[] { (float)0.333, 1, 1, } );
+
+			//			this.dichromatic_OneRGB(new int[] { 255, 0, 0, });
+			this.rootColor	= new int[] { 255, 0, 0, };
+			this.updateColors(this.CS_DICHROM);
 		} // dichromatic
 
 		// Trichromatic:
 		if(e.getSource() == this.buttons[5])
 		{
-			println("Color Style: Trichromatic was pressed.");
+			this.rootColor	= new int[] { 255, 0, 0 };
+			this.updateColors(this.CS_TRICHROM);
 		}
 
 		// Custom:
