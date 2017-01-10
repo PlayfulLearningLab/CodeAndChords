@@ -79,7 +79,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	PShape  stopButton;
 	boolean  showPlay;
 	boolean  showStop;
-	
+
 	PShape	rightArrow;
 	PShape	leftArrow;
 	boolean	showLeftArrow;
@@ -173,6 +173,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int		noteTextFieldWidth;
 	int		modulateTextFieldWidth;
 
+	float[][]	rainbowColors;
 
 	public void settings()
 	{
@@ -185,8 +186,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		saturationMax  = 300;
 		brightnessMax  = 100;
 
-		//  colorMode(HSB, hueMax, saturationMax, brightnessMax);
-		colors  = new float[][] {
+		this.rainbowColors	= new float[][] {
 			{ 255, 0, 0 }, 
 			{ 255, (float) 127.5, 0 }, 
 			{ 255, 255, 0 }, 
@@ -201,6 +201,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			{ 255, 0, (float) 127.5 }, 
 			{ 255, 0, 0 }
 		};
+
+		this.colors	= this.rainbowColors;
 
 		//  input        = new Input(inputFile);
 		input  = new Input();
@@ -276,8 +278,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.stopButton.setPath(5, stopButtonVerts);
 		this.showStop  = false;
 		this.stopButton.setVisible(false);
-		
-		
+
+
 		float	aX		=	width / 2;		// arrow X coordinate (x val of left edge)
 		float	aY		=	height / 2;		// arrow Y coordinate (y val of upmost point)
 		int	aW		= 100;				// arrow width
@@ -289,12 +291,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		float	oneY			= aY + aH;
 		float	oneHalfX		= (float)(aX + (0.5 * aW));
 		float	oneX			= aX + aW;
+		/*
 		println("oneQuarterY = " + oneQuarterY +
 				"\noneHalfY = " + oneHalfY +
 				"\nthreeQuartersY = " + threeQuartersY +
 				"\noneY = " + oneY +
 				"\noneHalfX = " + oneHalfX +
 				"\noneX = " + oneX);
+		 */
 		float[][]	leftArrowVerts	= new float[][] {
 			new float[]	{ aX, oneQuarterY },
 			new float[] { oneHalfX, oneHalfY },
@@ -502,7 +506,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 
-		
+
 	} // setup()
 
 	private void printArray(String[] array)
@@ -828,15 +832,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// 12/19: updating to be on the side.
 		// 01/05: changing it back!
 		float  sideWidth   = (width - leftEdgeX) / colors.length;
-		float  sideHeight  = width / colors.length;
+		float  sideHeight  = width / this.colors.length;
 		//  float  side = height / colors.length;
 
 		//	stroke(255);
 		noStroke();
 
-		for (int i = 0; i < colors.length; i++)
+		for (int i = 0; i < this.colors.length; i++)
 		{
-			fill(colors[i][0], colors[i][1], colors[i][2]);
+			fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
 			if (i == goalHuePos) {
 				rect(leftEdgeX + (sideWidth * i), (float)(height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
@@ -849,6 +853,75 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // for
 	} // legend
 
+	/**
+	 * Calls the other dichromatic function with saturation of 100 and hue of brightness of 50.
+	 * @param hue	int specifying the hue of the color at the root of the scale.
+	 */
+	private void dichromaticHSB(int hue)
+	{
+		dichromaticHSB(hue, 100, 100);
+	} // dichromatic(int)
+
+	/**
+	 * Fills the color array with colors from the specified hue, saturation, and brightness,
+	 * to the color opposite on the color wheel (i.e., hue of new color = 360 - givenHue).
+	 * 
+	 * @param hue	int specifying hue of the color at the root of the scale.
+	 * @param saturation	int specifying the saturation of the colors of the scale..
+	 * @param brightness	int specifying the brightness of the colors of the scale.
+	 */
+	private void dichromaticHSB(int hue, int saturation, int brightness)
+	{
+		colorMode(HSB, 360, 100, 100);
+		float[]	color1	= new float[] { hue, saturation, brightness };
+		float[]	color2	= new float[] { (hue + 120) % 360, saturation, brightness };
+		float	newHue	= (hue + 120) % 360;
+		/*
+		int	redDelta	= (color1[0] - color2[0]) / this.colors.length;
+		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
+		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
+		 */
+		float	hueDelta	= (newHue - hue) / this.colors.length;
+
+		this.colors[0]	= color1;
+		for(int i = 1; i < this.colors.length; i++)
+		{
+			this.colors[i][0]	= this.colors[i - 1][0] + hueDelta;
+			this.colors[i][1]	= saturation;
+			this.colors[i][2]	= brightness;
+			println("colors[" + i + "][0] = " + colors[i][0] +
+					"; colors[" + i + "][1] = " + colors[i][1] + 
+					"; colors[" + i + "][2] = " + colors[i][2]);
+		} // for - i
+	} // dichromatic
+
+	private void dichromaticRGB()
+	{
+		int[]	color1	= new int[] { 255, 0, 0 };
+		int[]	color2	= new int[] { 0, 255, 0 };
+
+		int	redDelta	= (color1[0] - color2[0]) / this.colors.length;
+		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
+		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
+		println("redDelta = " + redDelta + "; greenDelta = " + greenDelta + "; blueDelta = " + blueDelta);
+
+		for(int i = 0; i < color1.length; i++)
+		{
+			this.colors[0][i]	= color1[i];
+		}
+		for(int i = 1; i < this.colors.length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta;
+				println("colors[" + i + "][0] = " + colors[i][0] +
+						"; colors[" + i + "][1] = " + colors[i][1] + 
+						"; colors[" + i + "][2] = " + colors[i][2]);
+			} // for - j
+		} // for - i
+	}
 
 	public void mousePressed()
 	{
@@ -930,29 +1003,27 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Rainbow:
 		if(e.getSource() == this.buttons[3])
 		{
-			println("Color Style: Rainbow was pressed.");
-			this.playButton.setVisible(false);
+			this.colors	= this.rainbowColors;
 		}
 
 		// Dichromatic:
 		if(e.getSource() == this.buttons[4])
 		{
-			println("Color Style: Dichromatic was pressed.");
-			this.playButton.setVisible(false);
-		}
+			this.dichromaticHSB(0);
+			// Calculate the mathematical relationship between them.
+			// Should I just go red, green, blue, all together?
+		} // dichromatic
 
 		// Trichromatic:
 		if(e.getSource() == this.buttons[5])
 		{
 			println("Color Style: Trichromatic was pressed.");
-			this.playButton.setVisible(false);
 		}
 
 		// Custom:
 		if(e.getSource() == this.buttons[6])
 		{
 			println("Color Style: Custom was pressed.");
-			this.playButton.setVisible(false);
 		}
 	} // actionPerformed
 } // class
