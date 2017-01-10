@@ -58,6 +58,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	Input  input;
 	int  threshold;      // when amp is below this, the background will be black.
+	int[]	majorScaleDegrees;
+	int[]	minorScaleDegrees;
+	int[][]	scaleDegrees;
+	private	String[]	notesCtoBFlats;
+	private	String[]	notesCtoBSharps;
+	private	int		keyAddVal;		// this is added the Midi note values of the pitch before mod'ing, to get scale degree in correct key.
 
 	int  hue;
 	int  saturation;
@@ -187,6 +193,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	int	majMinChrom; //		//	0 = major, 1 = minor, 2 = chromatic
 	int	scaleLength; //
+	String	curKey;
 
 	private int[]	rootColor;
 
@@ -235,10 +242,49 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				{ 255, 0, (float) 127.5 }
 			} // chromatic
 		}; // rainbowColors
+		
+		this.notesCtoBFlats	= new String[] { 
+				"C", 
+				"Db", 
+				"D", 
+				"Eb",
+				"E",
+				"F", 
+				"Gb", 
+				"G",
+				"Ab",
+				"A",
+				"Bb",
+				"B"
+		};
+		
+		this.notesCtoBSharps	= new String[] { 
+				"C", 
+				"C#", 
+				"D", 
+				"D#",
+				"E",
+				"F", 
+				"F#", 
+				"G",
+				"G#",
+				"A",
+				"A#",
+				"B"
+		};
+
+		this.colors	= new float[12][3];
 
 		this.curColorStyle	= this.CS_RAINBOW;
-		this.colors	= new float[12][3];
-		// Start chromatic:
+		this.rootColor	= new int[] { 255, 0, 0, };
+		// Start chromatic, rainbow:
+		
+//		this.curKey	= "D";
+//		this.majMinChrom	= 2;
+		this.setCurKey("G", 2);
+		
+		this.rainbow();
+		/*
 		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
 		{
 			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
@@ -246,10 +292,36 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				this.colors[i][j]	= this.rainbowColors[2][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
+		*/
 
 		//  input        = new Input(inputFile);
 		input  = new Input();
 		threshold    = 15;
+
+		this.majorScaleDegrees  = new int[]  {
+				0, 
+				2, 
+				4, 
+				5, 
+				7, 
+				9, 
+				11
+		};
+
+		this.minorScaleDegrees  = new int[]  {
+				0, 
+				2, 
+				3, 
+				5, 
+				7, 
+				8, 
+				10
+		};
+
+		this.scaleDegrees	= new int[][] {
+			this.majorScaleDegrees,
+			this.minorScaleDegrees
+		};
 
 		noStroke();
 		background(0);
@@ -399,25 +471,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.scrollbarX  = (width / 3) / 4;
 		this.modulateScrollbarX	= this.scrollbarX;
 
-		/*
-		hideY         = 40;
-		thresholdY    = 65;
-		attackY       = 90;
-		releaseY      = 115;
-		transitionY   = 140;
-		keyY          = 165;
-		rootColorY    = 190;
-		colorStyleY   = 215;
-		pitchColorCodesY  = 240;
-	    a_deY			= 265;
-	    ab_eY;
-	    b_fY;
-	    cd_fgY;
-	    d_gaY;
-	    redModulateY;
-	    greenModulateY;
-	    blueModulateY;
-		 */
+
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	40;
 		// Given our height = 250 and "hide" (textYVals[0]) starts at 40,
@@ -554,8 +608,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.noteNameX1	= 40;
 		this.noteNameX2 = this.noteNameX1 + 135;
 
-		this.noteTextFieldWidth	= 65;
-		this.noteTextFieldX	= new int[] { this.scrollbarX, this.scrollbarX + this.noteTextFieldWidth + 70 };
+		this.noteTextFieldWidth	= 85;
+		this.noteTextFieldX	= new int[] { this.scrollbarX, this.scrollbarX + this.noteTextFieldWidth + 50 };
 
 		this.noteTextFieldArray	= new IFTextField[noteYVals.length * 2];
 		int	whichX;
@@ -585,24 +639,36 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	} // setup()
 
-	private void printArray(String[] array)
-	{
-		for(int i = 0; i < array.length - 1; i++)
-		{
-			print(array[i] + ", ");
-		}
-		print(array[array.length - 1] + ";\n");
-	}
-
 	public void draw()
 	{
 
 		stroke(255);
 		if (input.getAmplitude() > threshold)
 		{
-			// if want something other than C to be the "tonic" (i.e., red),
-			// add some number before multiplying.
-			newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
+			// subtracting keyAddVal gets the number into the correct key 
+			// (simply doing % 12 finds the scale degree in C major).
+			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
+			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.keyAddVal) % 12;
+			
+			// chromatic:
+			if(this.majMinChrom == 2)
+			{
+				newHuePos	= scaleDegree;
+			} else {
+				// major or minor:
+				int	inScale	= this.arrayContains(this.scaleDegrees[majMinChrom], scaleDegree);
+
+				if(inScale > -1)
+				{
+					newHuePos	= inScale;
+//					println(newHuePos + " is the position in this scale.");
+				} // if - check if degree is in the scale
+
+			} // if - current scale is Major or Minor		
+
+			if(newHuePos > colors.length || newHuePos < 0)	{
+				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ").");
+			}
 			newHue  = colors[newHuePos];
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
 		} else {
@@ -651,6 +717,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		shape(this.stopButton);
 		shape(this.leftArrow);
 		shape(this.rightArrow);
+
 		/*
 		if (mousePressed && (mouseX < (width / 3)))
 		{
@@ -667,6 +734,63 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // if - mousePressed
 		 */
 	} // draw()
+
+	/**
+	 * Used in draw for determining whether a particular scale degree is in the 
+	 * major or minor scale;
+	 * returns the position of the element if it exists in the array,
+	 * or -1 if the element is not in the array.
+	 * 
+	 * @param array		int[] to be searched for the given element
+	 * @param element	int whose position in the given array is to be returned.
+	 * @return		position of the given element in the given array, or -1 
+	 * 				if the element does not exist in the array.
+	 */
+	private int  arrayContains(int[] array, int element)
+	{
+		if(array == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(int[], int): array parameter is null.");
+		}
+		
+		//  println("array.length = " + array.length);
+		for (int i = 0; i < array.length; i++)
+		{
+			//    println("array[i] = " + array[i]);
+			if (array[i] == element) {
+				return i;
+			} // if
+		} // for
+
+		return -1;
+	} // arrayContains(int[], int)
+
+	private int arrayContains(String[] array, String element) {
+		if(array == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): array parameter is null.");
+		}
+		if(element == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): String parameter is null.");
+		}
+		
+		for (int i = 0; i < array.length; i++)
+		{
+			//    println("array[i] = " + array[i]);
+			if (array[i] == element) {
+				return i;
+			} // if
+		} // for
+
+		return -1;
+	}
+
+	private void printArray(String[] array)
+	{
+		for(int i = 0; i < array.length - 1; i++)
+		{
+			print(array[i] + ", ");
+		}
+		print(array[array.length - 1] + ";\n");
+	}
 
 	void displaySidebar()
 	{
@@ -912,7 +1036,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"C"
 		}; // notes
 		 */
-		String[]	notes	= this.getScale("C", 1);
+		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
 		// 12/19: updating to be on the side.
 		// 01/05: changing it back!
 		float  sideWidth   = (width - leftEdgeX) / notes.length;
@@ -1345,8 +1469,37 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		if(this.curColorStyle == this.CS_CUSTOM)
 		{
 			println("Custom is still in the works.");
+			
+			// Fill textBoxes with current colors (should I do this anyway?  I don't think so, since they can't use them.)
+			for(int i = 0; i < noteTextFieldArray.length; i++)
+			{
+				noteTextFieldArray[i].setValue("(" + this.colors[i][0] + "," + this.colors[i][1] + "," + this.colors[i][2] + ")");
+				noteTextFieldArray[i].setVisiblePortionEnd(Math.min(14, noteTextFieldArray[i].getValue().length()));
+				println("noteTextFieldArray[" + i + "] = " + noteTextFieldArray[i].getVisiblePortionStart() +
+						 "; [i].getVisiblePortionEnd() = " + noteTextFieldArray[i].getVisiblePortionEnd());
+			} // for - noteTextFieldArray
+			// if [text box event], check color;
+			// (if it doesn't pass, don't throw exception -- just make them try again).
+			
+			// if it does pass, then put that color into colors
+			
 		}
 	} // updateColors
+	
+	public void setCurKey(String key, int majMinChrom)
+	{
+		// Check both sharps and flats, and take whichever one doesn't return -1:
+		int	modPosition	= Math.max(this.arrayContains(this.notesCtoBFlats, key), this.arrayContains(this.notesCtoBSharps, key));
+		
+		if(modPosition == -1)	{
+			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
+		}
+		println("setCurKey: modPosition = " + modPosition);
+		
+		this.majMinChrom	= majMinChrom;
+		this.curKey			= key;
+		this.keyAddVal		= modPosition;
+	} // setCurKey
 
 	public void mousePressed()
 	{
@@ -1422,9 +1575,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// PlayButton:
 		if(e.getSource() == this.buttons[0])
 		{
-			this.playButton.setVisible(false);
-			this.stopButton.setVisible(false);
-		}
+			if(this.buttons[0].getState())
+			{
+				this.playButton.setVisible(false);
+				this.stopButton.setVisible(false);
+			} else {
+				this.playButton.setVisible(this.showPlay);
+				this.stopButton.setVisible(this.showStop);
+			}
+		} // playButton
 
 		// Arrow:
 		if(e.getSource() == this.buttons[1])
@@ -1450,15 +1609,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		if(e.getSource() == this.buttons[3])
 		{
 			this.rainbow();
-			/*
-			for(int i = 0; i < this.colors.length && i < this.rainbowColors[this.majMinChrom].length; i++)
+
+			for(int i = 4; i < this.buttons.length; i++)
 			{
-				for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[this.majMinChrom][i].length; j++)
-				{
-					this.colors[i][j]	= this.rainbowColors[this.majMinChrom][i][j];
-				} // for - j (going through rgb values)
-			} // for - i (going through colors)
-			 */
+				this.buttons[i].setState(false);
+			}
 		} // rainbow
 
 		// Dichromatic:
@@ -1468,20 +1623,38 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 			//			this.dichromatic_OneRGB(new int[] { 255, 0, 0, });
 			this.rootColor	= new int[] { 255, 0, 0, };
-			this.updateColors(this.CS_DICHROM);
+			this.updateColors(Module_01_02_PitchHueBackground_ModuleTemplate.CS_DICHROM);
+
+			for(int i = 3; i < this.buttons.length; i++)
+			{
+				if(i == 4 && i < this.buttons.length - 1) { 	i++;	}
+				this.buttons[i].setState(false);
+			}
 		} // dichromatic
 
 		// Trichromatic:
 		if(e.getSource() == this.buttons[5])
 		{
 			this.rootColor	= new int[] { 255, 0, 0 };
-			this.updateColors(this.CS_TRICHROM);
+			this.updateColors(Module_01_02_PitchHueBackground_ModuleTemplate.CS_TRICHROM);
+
+			for(int i = 3; i < this.buttons.length; i++)
+			{
+				if(i == 5 && i < this.buttons.length - 1) { 	i++;	}
+				this.buttons[i].setState(false);
+			}
 		}
 
 		// Custom:
 		if(e.getSource() == this.buttons[6])
 		{
 			println("Color Style: Custom was pressed.");
-		}
+			this.updateColors(Module_01_02_PitchHueBackground_ModuleTemplate.CS_CUSTOM);
+
+			for(int i = 3; i < 6; i++)
+			{
+				this.buttons[i].setState(false);
+			}
+		} // if
 	} // actionPerformed
 } // class

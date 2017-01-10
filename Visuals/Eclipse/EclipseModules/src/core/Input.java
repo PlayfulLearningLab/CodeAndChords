@@ -235,6 +235,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
 			uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
+			((SamplePlayer) uGenArray[i]).setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 		} // for
 
 		initInput(uGenArray);

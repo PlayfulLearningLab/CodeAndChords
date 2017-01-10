@@ -23,7 +23,13 @@
 // Updated for Processing 3 by Anna Terzaroli 2015
 // anna.giw (at) libero (dot) it
 //
-
+/**
+ * Emily Meuer
+ * Jan. 2017
+ * 
+ * Modifications:
+ *  - updated border color
+ */
 
 
 package interfascia;
@@ -356,6 +362,8 @@ public class IFTextField extends GUIComponent {
 
 	private void updateXPos() {
 		cursorXPos = controller.parent.textWidth(contents.substring(visiblePortionStart, cursorPos));
+//		controller.parent.fill(150, 50, 150);
+//		controller.parent.ellipse(cursorXPos, controller.parent.height / 2, 20, 20);
 		if (startSelect != -1 && endSelect != -1) {
 		
 			int tempStart, tempEnd;
@@ -395,21 +403,25 @@ public class IFTextField extends GUIComponent {
 	}
 	
 	private void adjustVisiblePortionEnd() {
-		//System.out.println(visiblePortionStart + " to " + visiblePortionEnd + " out of " + contents.length());
+		System.out.println(visiblePortionStart + " to " + visiblePortionEnd + " out of " + contents.length());
 		
-		// Temporarily correcting for an erroneus precondition. Looking for the real issue
+		int	buffer	= 5;
+		
+		// Temporarily correcting for an erroneous precondition. Looking for the real issue
 		visiblePortionEnd = Math.min(visiblePortionEnd, contents.length()); 
 		
-		if (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) < getWidth() - 12) {
-			while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) < getWidth() - 12) {
+		if (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) < getWidth() - buffer) {
+			while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) < getWidth() - buffer) {
 				if (visiblePortionEnd == contents.length())
 					break;
 				else
 					visiblePortionEnd++;
+				System.out.println("IFTextField.adjust...End: added to visible portion");
 			}
 		} else {
-			while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) > getWidth() - 12) {
+			while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) > getWidth() - buffer) {
 				visiblePortionEnd--;
+				System.out.println("IFTextField.adjust...End: subtracted from visible portion");
 			}
 		}
 	}

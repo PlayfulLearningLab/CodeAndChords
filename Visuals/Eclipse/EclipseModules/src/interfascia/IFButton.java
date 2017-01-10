@@ -23,6 +23,15 @@
 // Updated for Processing 3 by Anna Terzaroli 2015
 // anna.giw (at) libero (dot) it
 //
+/**
+ * Emily Meuer
+ * Jan., 2017
+ * 
+ * Modifications:
+ *  - added global variable "state"
+ *  - change color on click and stay changed until clicked again
+ *  - can only receive clicks when visible
+ */
 
 
 
@@ -55,12 +64,12 @@ public class IFButton extends GUIComponent {
 
 	public void mouseEvent(MouseEvent e) {
 		if (e.getAction() == MouseEvent.PRESS) {
-			if (isMouseOver (e.getX(), e.getY())) {
+			if (isMouseOver (e.getX(), e.getY()) && controller.getVisible()) {
 				wasClicked = true;
 				state	= !state;
 			}
 		} else if (e.getAction() == MouseEvent.RELEASE) {
-			if (wasClicked && isMouseOver (e.getX(), e.getY())) {
+			if (wasClicked && isMouseOver (e.getX(), e.getY()) && controller.getVisible()) {
 				fireEventNotification(this, "Clicked");
 				wasClicked = false;
 			}
