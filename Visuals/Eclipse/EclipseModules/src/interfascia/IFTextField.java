@@ -29,6 +29,7 @@
  * 
  * Modifications:
  *  - updated border color
+ *  - adjusting visible portion
  */
 
 
@@ -266,7 +267,10 @@ public class IFTextField extends GUIComponent {
 		
 		contents = t1 + s + t2;
 		cursorPos += s.length();
-				
+		
+		
+		//TODO: uncomment these
+		/*
 		// Adjust the start and end positions of the visible portion of the string
 		if (controller.parent.textWidth(contents) < getWidth() - 12) {
 			visiblePortionStart = 0;
@@ -286,6 +290,7 @@ public class IFTextField extends GUIComponent {
 				//	visiblePortionEnd++;
 			}
 		}
+		*/
 
 		fireEventNotification(this, "Modified");
 	}
@@ -362,8 +367,10 @@ public class IFTextField extends GUIComponent {
 
 	private void updateXPos() {
 		cursorXPos = controller.parent.textWidth(contents.substring(visiblePortionStart, cursorPos));
-//		controller.parent.fill(150, 50, 150);
-//		controller.parent.ellipse(cursorXPos, controller.parent.height / 2, 20, 20);
+		
+		controller.parent.fill(150, 50, 150);
+		controller.parent.ellipse(cursorXPos, controller.parent.height / 2, 20, 20);
+		
 		if (startSelect != -1 && endSelect != -1) {
 		
 			int tempStart, tempEnd;
@@ -403,8 +410,6 @@ public class IFTextField extends GUIComponent {
 	}
 	
 	private void adjustVisiblePortionEnd() {
-		System.out.println(visiblePortionStart + " to " + visiblePortionEnd + " out of " + contents.length());
-		
 		int	buffer	= 5;
 		
 		// Temporarily correcting for an erroneous precondition. Looking for the real issue
@@ -416,12 +421,10 @@ public class IFTextField extends GUIComponent {
 					break;
 				else
 					visiblePortionEnd++;
-				System.out.println("IFTextField.adjust...End: added to visible portion");
 			}
 		} else {
 			while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) > getWidth() - buffer) {
 				visiblePortionEnd--;
-				System.out.println("IFTextField.adjust...End: subtracted from visible portion");
 			}
 		}
 	}
@@ -431,7 +434,7 @@ public class IFTextField extends GUIComponent {
 
 	private void centerCursor() {
 		visiblePortionStart = visiblePortionEnd = cursorPos;
-		
+		System.out.println("centerCursor()");
 		while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) < getWidth() - 12) {
 			if (visiblePortionStart != 0)
 				visiblePortionStart--;
@@ -538,7 +541,8 @@ public class IFTextField extends GUIComponent {
 		// Adjust the start and end positions of the visible portion of the string
 		if (controller != null) {
 			if (controller.parent.textWidth(contents) > getWidth() - 12) {
-				adjustVisiblePortionEnd();
+//				adjustVisiblePortionEnd();
+				System.out.println("IFTextField.setValue: not adjusting visible portion end. Sorry!");
 			}
 		}
 
