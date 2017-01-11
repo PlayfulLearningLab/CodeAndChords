@@ -8,6 +8,7 @@ import java.awt.Color;
 import addons.Buttons;
 import addons.HScrollbar;
 import core.Input;
+import	controlP5.*;
 
 public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 {
@@ -196,6 +197,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	String	curKey;
 
 	private int[]	rootColor;
+	
+	ControlP5	cp5;
 
 	public void settings()
 	{
@@ -636,7 +639,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 
-
+		this.cp5	= new ControlP5(this);
+		this.cp5.addTextfield("")
+			.setPosition(300, 300) //new float[] { height / 2, width / 2 });
+			.setSize(100, 20);
+		
 	} // setup()
 
 	public void draw()
