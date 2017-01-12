@@ -206,7 +206,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	} // settings
 
 	public void setup() 
-	{
+	{		
 		hueMax         = 360;
 		saturationMax  = 300;
 		brightnessMax  = 100;
@@ -1157,50 +1157,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
 	} // dichromatic_OneHSB(int)
-
-	// TODO: delete this?
-	/**
-	 * ** Don't think I will need this function -- it goes through the whole spectrum,
-	 * so I'm going to use RGB to make the spectrum.
-	 * 
-	 * Fills the color array with colors from the specified hue, saturation, and brightness,
-	 * to the color opposite on the color wheel (i.e., hue of new color = 360 - givenHue).
-	 * 
-	 * @param hue	int specifying hue of the color at the root of the scale.
-	 * @param saturation	int specifying the saturation of the colors of the scale..
-	 * @param brightness	int specifying the brightness of the colors of the scale.
-	 */
-	/*
-	private void dichromatic_TwoHSB(int hue, int saturation, int brightness)
-	{
-//		colorMode(HSB, 360, 100, 100);
-		float[]	redHSB	=	new float[3];
-		Color.RGBtoHSB(0, 255, 0, redHSB);
-		for(int i = 0; i < redHSB.length; i++)
-		{
-			println("redHSB[" + i + "] = " + redHSB[i]);
-		}
-
-		float[]	color1	= new float[] { hue, saturation, brightness };
-		float[]	color2	= new float[] { (hue + 120) % 360, saturation, brightness };
-		float	newHue	= (hue + 120) % 360;
-		/*
-		int	redDelta	= (color1[0] - color2[0]) / this.colors.length;
-		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
-		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
-	 */
-	/*
-		float	hueDelta	= (newHue - hue) / this.colors.length;
-
-		this.colors[0]	= color1;
-		for(int i = 1; i < this.colors.length; i++)
-		{
-			this.colors[i][0]	= this.colors[i - 1][0] + hueDelta;
-			this.colors[i][1]	= saturation;
-			this.colors[i][2]	= brightness;
-		} // for - i
-	} // dichromatic_TwoHSB
-	 */
 
 	/**
 	 * This method fills colors with the spectrum of colors between the given rgb colors.
