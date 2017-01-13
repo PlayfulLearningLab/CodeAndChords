@@ -8,6 +8,7 @@ import java.awt.Color;
 import addons.Buttons;
 import addons.HScrollbar;
 import core.Input;
+import core.ModuleTemplate;
 import	controlP5.*;
 
 public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
@@ -199,6 +200,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	private int[]	rootColor;
 	
 	ControlP5	cp5;
+	ModuleTemplate	moduleTemplate;
 
 	public void settings()
 	{
@@ -206,7 +208,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	} // settings
 
 	public void setup() 
-	{		
+	{
+		input  = new Input();
+		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+		
 		hueMax         = 360;
 		saturationMax  = 300;
 		brightnessMax  = 100;
@@ -245,7 +250,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				{ 255, 0, (float) 127.5 }
 			} // chromatic
 		}; // rainbowColors
-		
+	/*	
 		this.notesCtoBFlats	= new String[] { 
 				"C", 
 				"Db", 
@@ -275,18 +280,19 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"A#",
 				"B"
 		};
-
-		this.colors	= new float[12][3];
-
+*/
+//		this.colors	= new float[12][3];
+/*
 		this.curColorStyle	= this.CS_RAINBOW;
 		this.rootColor	= new int[] { 255, 0, 0, };
 		// Start chromatic, rainbow:
-		
+	*/	
 //		this.curKey	= "D";
 //		this.majMinChrom	= 2;
-		this.setCurKey("G", 2);
+
+		//		this.setCurKey("G", 2);
 		
-		this.rainbow();
+//		this.rainbow();
 		/*
 		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
 		{
@@ -298,9 +304,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		*/
 
 		//  input        = new Input(inputFile);
-		input  = new Input();
 		threshold    = 15;
 
+		// TODO: keep this here? Move to Module Template?
 		this.majorScaleDegrees  = new int[]  {
 				0, 
 				2, 
@@ -327,11 +333,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		};
 
 		noStroke();
-		background(0);
+		background(150);
 
 		//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
-		curHue       = colors[curHuePos];
+		curHue       = this.moduleTemplate.getColors()[curHuePos];
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
 
@@ -346,7 +352,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		textSize(24);
 
 		// draws the legend
-		legend();
+		//legend();
 
 		scrollbar = new HScrollbar(this, 10, 45, (width / 2) - 10, 18, 5);
 
@@ -506,7 +512,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
 		}
 
-
+/*
 		hideWidth     = 71;
 		int hideSpace	= 4;
 
@@ -515,10 +521,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
    this.arrowX       = ((width / 3) / 4) * 2 + 15;
    this.scaleX       = ((width / 3) / 4) * 3 + 20;
 		 */
-		playButtonX  = scrollbarX;
+/*		playButtonX  = scrollbarX;
 		arrowX       = scrollbarX + hideWidth + hideSpace;
 		scaleX       = scrollbarX + (+ hideWidth + hideSpace) * 2;
-
+*/
 		int	colorStyleWidth	= 52;
 		int	colorStyleSpace	= 4;
 
@@ -639,11 +645,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 
-		this.cp5	= new ControlP5(this);
-		this.cp5.addTextfield("")
-			.setPosition(300, 300) //new float[] { height / 2, width / 2 });
-			.setSize(100, 20);
-		
 	} // setup()
 
 	public void draw()
@@ -673,10 +674,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 			} // if - current scale is Major or Minor		
 
-			if(newHuePos > colors.length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ").");
+			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
+				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
 			}
-			newHue  = colors[newHuePos];
+			newHue  = this.moduleTemplate.getColors()[newHuePos];
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
 		} else {
 			newHue  = new float[] { 0, 0, 0 };
@@ -687,7 +688,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			goalHuePos  = newHuePos;
 		} // if
-		goalHue  = colors[goalHuePos];
+		goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -702,14 +703,16 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);
-		rect(leftEdgeX, 0, width - leftEdgeX, height);
-
+		fill(100);
+		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
 		//  triangle( 710, 10, 710, 30, 730, 20);
 		if(!this.buttons[2].getState())
 		{
+			//TODO: if anything else in method needs to be called ever time in draw,
+			// 		we'll just set up a draw() method that does it all.
 			// draws the legend along the bottom of the screen:
-			legend();
+			this.moduleTemplate.legend(goalHuePos);
 		}
 
 		//  scrollbar.update();
@@ -720,11 +723,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		//  label.setLabel("attackTime: " + attackTime);
 
+		// TODO: remove traces of playButton/stopButton/leftArrow/rightArrow
+		/*
 		shape(this.playButton);
 		shape(this.stopButton);
 		shape(this.leftArrow);
 		shape(this.rightArrow);
-
+*/
+		
 		/*
 		if (mousePressed && (mouseX < (width / 3)))
 		{
@@ -741,6 +747,16 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // if - mousePressed
 		 */
 	} // draw()
+	
+	/**
+	 * All modules with a ModuleTemplate must include this method.
+	 * 
+	 * @param theControlEvent	a ControlEvent that will be passed to controlEvent in ModuleTemplate.
+	 */
+	public void controlEvent(ControlEvent theControlEvent)
+	{
+		this.moduleTemplate.controlEvent(theControlEvent);
+	} // controlEvent
 
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
@@ -798,7 +814,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		}
 		print(array[array.length - 1] + ";\n");
 	}
-
+/*
 	void displaySidebar()
 	{
 		this.controller.setVisible(true);
@@ -869,7 +885,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			modulateScrollbarArray[i].display();
 		} // for - update and display modulate color scrollbars
 	} // displaySidebar
-
+*/
+	/*
 	public String[] getScale(String key, int majMinChrom)
 	{
 		String[][] allNotes	= new String[][] {
@@ -962,7 +979,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		return result;
 	} // getScale
-
+*/
+	/*
 	private void testGetScale()
 	{
 		String[][] allNotes	= new String[][] {
@@ -1021,7 +1039,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			}
 		}
 	} // testGetScale
-
+/*
 	void legend()
 	{
 
@@ -1043,7 +1061,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"C"
 		}; // notes
 		 */
-		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
+/*			String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
 		// 12/19: updating to be on the side.
 		// 01/05: changing it back!
 		float  sideWidth   = (width - leftEdgeX) / notes.length;
@@ -1065,7 +1083,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				}
 			}
 			 */
-			if (i == goalHuePos) {
+/*			if (i == goalHuePos) {
 				rect(leftEdgeX + (sideWidth * i), (float)(height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
 			} else {
@@ -1076,6 +1094,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), height - 20);
 		} // for
 	} // legend
+*/
 
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
@@ -1390,7 +1409,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	/**
 	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
 	 */
-	public void rainbow()
+/*	public void rainbow()
 	{
 		for(int i = 0; i < this.colors.length && i < this.rainbowColors[this.majMinChrom].length; i++)
 		{
@@ -1401,7 +1420,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		} // for - i (going through colors)
 
 	} // rainbow
-
+*/
 	private void updateColors(char colorStyle)
 	{
 		if(colorStyle < 1 || colorStyle > 4) {
@@ -1413,7 +1432,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Rainbow:
 		if(this.curColorStyle == this.CS_RAINBOW)
 		{
-			this.rainbow();
+			this.moduleTemplate.rainbow();
 		}
 
 		// Dichromatic:
@@ -1448,7 +1467,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			
 		}
 	} // updateColors
-	
+	/*
 	public void setCurKey(String key, int majMinChrom)
 	{
 		// Check both sharps and flats, and take whichever one doesn't return -1:
@@ -1463,12 +1482,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.curKey			= key;
 		this.keyAddVal		= modPosition;
 	} // setCurKey
-
+*/
 	public void mousePressed()
 	{
 		// The following for loops stops either the SamplePlayers or the uGens getting audio input (and otherwise creating feedback):
 
-
+/*
 		if (this.showPlay)
 		{
 			for (int i = 0; i < input.getuGenArray().length; i++)
@@ -1503,7 +1522,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.playButton.setVisible(false);
 			this.playButton.setVisible(false);
 		}*/
-
+/*
 		if(this.rightArrow.contains(mouseX, mouseY))
 		{
 			this.showRightArrow	= false;
@@ -1524,7 +1543,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.rightArrow.setVisible(this.showRightArrow);
 			this.leftArrow.setVisible(!this.showRightArrow);
 		}
-
+*/
 	} // mousePressed
 
 	
@@ -1574,7 +1593,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		// Color Style:
 		// Rainbow:
-		if(e.getSource() == this.buttons[3])
+/*		if(e.getSource() == this.buttons[3])
 		{
 			this.rainbow();
 
@@ -1583,7 +1602,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				this.buttons[i].setState(false);
 			}
 		} // rainbow
-
+*/
 		// Dichromatic:
 		if(e.getSource() == this.buttons[4])
 		{
