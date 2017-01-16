@@ -211,6 +211,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	{
 		input  = new Input();
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+		this.moduleTemplate.initModuleTemplate();
 		
 		hueMax         = 360;
 		saturationMax  = 300;
@@ -746,6 +747,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			} // if - leftEdgeX
 		} // if - mousePressed
 		 */
+		
+//		this.moduleTemplate.update();
 	} // draw()
 	
 	/**
@@ -755,7 +758,16 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 */
 	public void controlEvent(ControlEvent theControlEvent)
 	{
-		this.moduleTemplate.controlEvent(theControlEvent);
+		try
+		{
+			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
+					"; this.moduleTemplate = " + this.moduleTemplate);
+			this.moduleTemplate.controlEvent(theControlEvent);	
+		} catch(Exception e)
+		{
+			println("Module_01_02.controlEvent: caught Exception " + e);
+			e.printStackTrace();
+		}
 	} // controlEvent
 
 	/**

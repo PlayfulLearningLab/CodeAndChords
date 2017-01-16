@@ -1,12 +1,16 @@
 package core;
 
 import java.awt.Color;
+import java.text.DecimalFormat;
 
 import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
 import controlP5.Controller;
+import controlP5.Slider;
+import controlP5.Textfield;
+import controlP5.Textlabel;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -16,6 +20,7 @@ import processing.core.PImage;
  *  - look into putting things into Groups -- either all in one, or each section its own group?
  *  - ControlListener that takes everything and doesn't require Modules to have controlEvent()?
  *    (see A.S. answer: https://forum.processing.org/two/discussion/2692/controlp5-problems-creating-a-toggle-controller-with-custom-images-on-a-second-tab)
+ * - Custom controllers: http://www.sojamo.de/libraries/controlP5/reference/controlP5/ControllerView.html
  * 
  * Emily Meuer
  * 01/11/2017
@@ -34,6 +39,9 @@ public class ModuleTemplate {
 	private	static	char	CS_CUSTOM	= 4;
 	private	char	curColorStyle;
 
+	// For rounding numbers in sliders to two digits:
+	private	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
+
 	// Choose input file here:
 	// Raw:
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
@@ -51,10 +59,25 @@ public class ModuleTemplate {
 	private Toggle		play;
 	private	Button		hamburger;
 	private	Button		menuX;
-	
+
+	private	Textlabel	hideLabel;
 	private	Toggle		hidePlayButton;
 	private	Toggle		hideMenuButton;
 	private	Toggle		hideScale;
+
+	// These are prob. extraneous, since I can get them from the ControlP5 by knowing their label...
+	private	Textlabel	thresholdLabel;
+	private	Slider		threshold;
+	private	Textfield	thresholdTF;
+	private	Textlabel	attackLabel;
+	private	Slider		attack;
+	private	Textfield	attackTF;
+	private	Textlabel	releaseLabel;
+	private	Slider		release;
+	private	Textfield	releaseTF;
+	private	Textlabel	transitionLabel;
+	private	Slider		transition;
+	private	Textfield	transitionTF;
 
 	private	int			leftAlign;
 	private	int			leftEdgeX;
@@ -87,7 +110,7 @@ public class ModuleTemplate {
 
 	private	float[][]	colors;
 	private int[] 		rootColor;
-	
+
 	int[]				textYVals;
 	int[]				noteYVals;
 	int[]				modulateYVals;
@@ -112,21 +135,21 @@ public class ModuleTemplate {
 
 		this.setCurKey("G", 2);
 		this.rainbow();
-		
+
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
 		this.modulateYVals	= new int[3];
 
-		this.initModuleTemplate();
+		//		this.initModuleTemplate();
 	} // ModuleTemplate
 
 	// Methods:
-
-	private void initModuleTemplate()
+	//TODO: make this private again
+	public void initModuleTemplate()
 	{
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
-		
+
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	40;
@@ -162,10 +185,13 @@ public class ModuleTemplate {
 		// leftAlign will be set in displaySidebar in relation to leftEdgeX, 
 		// but the button functions need to use it earlier:
 		this.leftAlign	= (this.parent.width / 3) / 4;
-		
+
 		// call add methods:
 		addHideButtons(textYVals[0]);
-		
+
+		// TODO: pass it one Y, a height and spacer or distance between y's.
+		addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
+
 		// Making everything invisible, and then displayModuleTemplate will show it?
 		// In that case, there should only be text in displaySidebar
 	} // initModuleTemplate
@@ -241,9 +267,7 @@ public class ModuleTemplate {
 		this.play	= this.nonSidebarCP5.addToggle("play")
 				.setPosition(playX, playY)
 				.setImages(images)
-				.updateSize()
-				.setId(1)
-				;
+				.updateSize();
 
 		int	hamburgerX		= 10;
 		int	hamburgerY		= 13;
@@ -255,8 +279,7 @@ public class ModuleTemplate {
 		this.hamburger	= this.nonSidebarCP5.addButton("hamburger")
 				.setPosition(hamburgerX, hamburgerY)
 				.setImage(hamburger)
-				.updateSize()
-				.setId(2);
+				.updateSize();
 
 		int	menuXX			= 5;
 		int	menuXY			= 5;
@@ -268,37 +291,173 @@ public class ModuleTemplate {
 		this.menuX	= this.sidebarCP5.addButton("menuX")
 				.setPosition(menuXX, menuXY)
 				.setImage(menuX)
-				.updateSize()
-				.setId(3);
+				.updateSize();
 	} // addOutsideButtons
-	
+
 	private void addHideButtons(int	hideY)
 	{
-		//TODO: play w/the labels
-		 // - maybe controller can be set to do them all the same?
-		int	hideWidth     = 150;
+		//TODO: can all labels connected to this controller be Center aligned automatically?
+		int	hideWidth     = 70;
 		int hideSpace	= 4;
 
 		int	playButtonX	= this.leftAlign;
 		int	menuButtonX	= this.leftAlign + hideWidth + hideSpace;
 		int	scaleX		= this.leftAlign + (+ hideWidth + hideSpace) * 2;
-		
-		this.hidePlayButton	= this.sidebarCP5.addToggle("PlayButton")
-											.setPosition(playButtonX, hideY)
-											.setWidth(hideWidth)
-											.setValue(0)
-											.setId(4);
-		this.hidePlayButton.getCaptionLabel().set("Play-Button").alignY(hideY - 20);
-		this.hideMenuButton	= this.sidebarCP5.addToggle("Menu Button")
-											.setPosition(menuButtonX, hideY)
-											.setWidth(hideWidth)
-											.setId(5);
-		this.hideScale	= this.sidebarCP5.addToggle("Scale")
-										.setPosition(scaleX, hideY)
-										.setWidth(hideWidth)
-										.setId(6);
+
+		this.hidePlayButton	= this.sidebarCP5.addToggle("playButton")
+				.setPosition(playButtonX, hideY - 15)
+				.setWidth(hideWidth)
+				.setId(4);
+		this.hidePlayButton.getCaptionLabel().set("Play Button").align(ControlP5.CENTER, ControlP5.CENTER);
+
+
+		this.hideMenuButton	= this.sidebarCP5.addToggle("menuButton")
+				.setPosition(menuButtonX, hideY - 15)
+				.setWidth(hideWidth)
+				.setId(5);
+		this.hideMenuButton.getCaptionLabel().set("Menu Button").align(ControlP5.CENTER, ControlP5.CENTER);
+
+
+		this.hideScale	= this.sidebarCP5.addToggle("scale")
+				.setPosition(scaleX, hideY - 15)
+				.setWidth(hideWidth)
+				.setId(6);
+		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
+
 	} // addHideButtons
-	
+
+	/**
+	 * Method called during initialization to instatiate the Threshold, Attack, Release,
+	 * and Transition sliders.
+	 * 
+	 * Sliders have an odd and Textfields an even ID number, all less than 10 (no duplicates allowed).
+	 * This will be used to connect them in controlEvent.
+	 * Names are based on ids; format: "slider" OR "textfield + [id]
+	 *  - thresholdSlider	= "slider0", thresholdTF	= "textfield1"
+	 *  - attackSlider	= "slider2", attackTF	= "textfield3"
+	 *  - releaseSlider	= "slider4", releaseTF	= "textfield5"
+	 *  - transitionSlider	= "slider6", transitionTF	= "textfield7"
+	 * 
+	 * @param thresholdY	y value of the Threshold slider group
+	 * @param attackY	y value of the Attack slider group
+	 * @param releaseY		y value of the Release slider group
+	 * @param transitionY	y value of the Transition slider group
+	 */
+	private void addSliders(int thresholdY, int attackY, int releaseY, int transitionY)
+	{
+		int	labelX			= 10;
+		int	labelWidth		= 70;
+
+		int	sliderWidth		= 145;
+		int	sliderHeight	= 20;
+
+		int	spacer			= 5;
+		int	tfWidth			= 70;
+
+		this.thresholdLabel	= this.sidebarCP5.addLabel("thresholdLabel")
+				.setPosition(labelX, thresholdY - 10)
+				.setWidth(labelWidth)
+				.setValue("Threshold");
+		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
+		
+		// Threshold slider:
+		this.threshold	= this.sidebarCP5.addSlider("slider0")
+				.setPosition(this.leftAlign, thresholdY - 14)
+				.setSize(sliderWidth, sliderHeight)
+				.setSliderMode(Slider.FLEXIBLE)
+				.setValue(10)
+				.setLabelVisible(false)
+				.setId(0);		
+
+		// Threshold textfield:
+		this.thresholdTF	= this.sidebarCP5.addTextfield("textfield1")
+				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY - 14)
+				.setSize(tfWidth, sliderHeight)
+				.setLabelVisible(false)
+				.setText(this.threshold.getValue() + "")
+				.setLabelVisible(false)
+				.setAutoClear(false)
+				.setId(1);
+
+		// Test: not adding them as variables, seeing how that goes. :)
+
+		// Attack group:
+		//	- Textlabel:
+		this.sidebarCP5.addLabel("attackLabel")
+		.setPosition(labelX, attackY - 10)
+		.setWidth(labelWidth)
+		.setValue("Attack");
+
+		//	- Slider:
+		this.sidebarCP5.addSlider("slider2")
+		.setPosition(this.leftAlign, attackY - 14)
+		.setSize(sliderWidth, sliderHeight)
+		.setSliderMode(Slider.FLEXIBLE)
+		.setValue(10)
+		.setLabelVisible(false)
+		.setId(2);
+		
+		//	- Textfield:
+		this.sidebarCP5.addTextfield("textfield3")
+		.setPosition(this.leftAlign + sliderWidth + spacer, attackY - 14)
+		.setSize(tfWidth, sliderHeight)
+		.setText(this.sidebarCP5.getController("slider2").getValue() + "")
+		.setLabelVisible(false)
+		.setAutoClear(false)
+		.setId(3);
+
+		// Release:
+		// - Textlabel:
+		this.sidebarCP5.addLabel("releaseLabel")
+		.setPosition(labelX, releaseY - 10)
+		.setWidth(labelWidth)
+		.setValue("Release");
+
+		//	- Slider:
+		this.sidebarCP5.addSlider("slider4")
+		.setPosition(this.leftAlign, releaseY - 14)
+		.setSize(sliderWidth, sliderHeight)
+		.setSliderMode(Slider.FLEXIBLE)
+		.setValue(10)
+		.setLabelVisible(false)
+		.setId(4);
+		
+		//	- Textlabel:
+		this.sidebarCP5.addTextfield("textfield5")
+		.setPosition(this.leftAlign + sliderWidth + spacer, releaseY - 14)
+		.setSize(tfWidth, sliderHeight)
+		.setText(this.sidebarCP5.getController("slider4").getValue() + "")
+		.setLabelVisible(false)
+		.setAutoClear(false)
+		.setId(5);
+		
+		// Transition:
+		// - Textlabel:
+		this.sidebarCP5.addLabel("transitionLabel")
+				.setPosition(labelX, transitionY - 10)
+				.setWidth(labelWidth)
+				.setValue("Transition");
+
+		//	- Slider:
+		this.sidebarCP5.addSlider("slider6")
+				.setPosition(this.leftAlign, transitionY - 14)
+				.setSize(sliderWidth, sliderHeight)
+				.setSliderMode(Slider.FLEXIBLE)
+				.setValue(10)
+				.setLabelVisible(false)
+				.setId(6);
+				
+		//	- Textlabel:
+		this.sidebarCP5.addTextfield("textfield7")
+				.setPosition(this.leftAlign + sliderWidth + spacer, transitionY - 14)
+				.setSize(tfWidth, sliderHeight)
+				.setText(this.sidebarCP5.getController("slider6").getValue() + "")
+				.setLabelVisible(false)
+				.setAutoClear(false)
+				.setId(7);
+
+	} // addSliders
+
 	private void addColorStyleButtons(int colorStyleY)
 	{
 		int	colorStyleWidth	= 52;
@@ -310,6 +469,14 @@ public class ModuleTemplate {
 		int customX			= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 3;
 
 	} // addColorStyleButtons
+
+	public void update()
+	{
+		this.thresholdTF.setValue(this.threshold.getValue());
+		this.thresholdTF.setText(this.threshold.getValue() + "");
+		System.out.println("this.threshold.getValue() = " + this.threshold.getValue() + 
+				"this.threshold.getValuePosition = " + this.threshold.getValuePosition());
+	} // update
 
 	// addSliders
 	/*
@@ -393,7 +560,7 @@ public class ModuleTemplate {
 	{
 		this.sidebarCP5.setVisible(true);
 		this.setLeftEdgeX(this.parent.width / 3);
-		this.leftAlign		= (this.getLeftEdgeX() / 4);
+		this.leftAlign	= (this.getLeftEdgeX() / 4);
 
 		this.parent.stroke(255);
 		this.parent.fill(0);
@@ -434,7 +601,7 @@ public class ModuleTemplate {
 
 		this.parent.textSize(10);
 		this.parent.text("Menu", this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 16);
-		
+
 		for(int i = 0; i < textArray.length; i++)
 		{
 			this.parent.text(textArray[i], textX, textYVals[i]);
@@ -453,7 +620,7 @@ public class ModuleTemplate {
 		{
 			this.parent.text(modulateText[i], textX, modulateYVals[i]);
 		}
-/*
+		/*
 		for(int i = 0; i < scrollbarArray.length; i++)
 		{
 			scrollbarArray[i].update();
@@ -897,8 +1064,9 @@ public class ModuleTemplate {
 	{
 		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
+		int	id	= controlEvent.getController().getId();
 		// Play button:
-		if(controlEvent.getController().getId() == this.play.getId())
+		if(controlEvent.getController().getName().equals("play"))
 		{
 			for (int i = 0; i < input.getuGenArray().length; i++)
 			{
@@ -914,19 +1082,61 @@ public class ModuleTemplate {
 		} // if - play
 
 		// Hamburger button:
-		if(controlEvent.getController().getId() == this.hamburger.getId())
+		if(controlEvent.getController().getName().equals("hamburger"))
 		{
 			this.displaySidebar();
 			this.hamburger.setVisible(false);
 		} // if - hamburger
 
 		// MenuX button:
-		if(controlEvent.getController().getId() == this.menuX.getId())
+		if(controlEvent.getController().getName().equals("menuX"))
 		{
 			this.setLeftEdgeX(0);
 			this.sidebarCP5.setVisible(false);
-			this.hamburger.setVisible(true);
+			this.hamburger.setVisible(!this.sidebarCP5.getController("menuButton").isActive());
 		} // if - menuX
+
+		// Hide play button button:
+		if(controlEvent.getController().getId() == this.hidePlayButton.getId())
+		{
+			this.play.setVisible(!this.play.isVisible());
+		} // if - hidePlayButton
+
+		// TODO: I need to still use the hamburger, whether or not it is visible....
+		// Hide menu button button:
+		if(controlEvent.getController().getId() == this.hideMenuButton.getId())
+		{
+			this.hamburger.setVisible(!this.hamburger.isVisible());
+		} // if - hidePlayButton
+
+		// Hide "scale" will be referred to in draw()
+		
+		//TODO: set this cutoff in a more relevant place - perhaps when sliders are created?
+		int	sliderCutoff	= 10;
+
+		// Sliders (sliders have odd id num and corresponding textfields have the next odd number)
+		if(id % 2 == 0 && id < sliderCutoff)
+		{
+			Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
+			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 1));
+			
+			curTextfield.setText(this.decimalFormat.format(curSlider.getValue()) + "");
+		}
+		
+		// Textfields
+		if(id % 2 == 1 && id < sliderCutoff && id > 0)
+		{
+			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + id);
+			Slider		curSlider		= (Slider)this.sidebarCP5.getController("slider" + (id - 1));
+			
+			try	{
+				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
+			} catch(NumberFormatException nfe) {
+				System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
+						"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
+			} // catch
+		} // textField
+		
 	} // controlEvent
 
 	public int getLeftEdgeX() {
