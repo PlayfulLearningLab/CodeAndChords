@@ -657,7 +657,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.keyAddVal) % 12;
+			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal()) % 12;
+			println("scaleDegree = " + scaleDegree);
 			
 			// chromatic:
 			if(this.majMinChrom == 2)
@@ -704,14 +705,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);
-		fill(100);
+//		fill(100);
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
 		//  triangle( 710, 10, 710, 30, 730, 20);
 		if(!this.buttons[2].getState())
 		{
-			//TODO: if anything else in method needs to be called ever time in draw,
-			// 		we'll just set up a draw() method that does it all.
+			//TODO: if anything else in ModuleTemplate needs to be called every time in draw,
+			// 		we'll just set up a draw() method in ModuleTemplate that does it all.
+			
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		}
@@ -1433,6 +1435,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	} // rainbow
 */
+	/*
 	private void updateColors(char colorStyle)
 	{
 		if(colorStyle < 1 || colorStyle > 4) {
@@ -1479,6 +1482,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			
 		}
 	} // updateColors
+	*/
 	/*
 	public void setCurKey(String key, int majMinChrom)
 	{
@@ -1615,6 +1619,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			}
 		} // rainbow
 */
+		/*
 		// Dichromatic:
 		if(e.getSource() == this.buttons[4])
 		{
@@ -1630,7 +1635,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				this.buttons[i].setState(false);
 			}
 		} // dichromatic
-
 		// Trichromatic:
 		if(e.getSource() == this.buttons[5])
 		{
@@ -1655,5 +1659,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				this.buttons[i].setState(false);
 			}
 		} // if
+		*/
 	} // actionPerformed
 } // class
