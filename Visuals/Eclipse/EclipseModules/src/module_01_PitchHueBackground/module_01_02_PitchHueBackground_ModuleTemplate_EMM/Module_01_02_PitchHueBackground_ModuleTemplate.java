@@ -652,13 +652,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	{
 
 		stroke(255);
-		if (input.getAmplitude() > threshold)
+		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
 			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal()) % 12;
-			println("scaleDegree = " + scaleDegree);
 			
 			// chromatic:
 			if(this.majMinChrom == 2)
@@ -694,12 +693,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		for (int i = 0; i < 3; i++)
 		{
-			if (curHue[i] > (goalHue[i] - attackTime))
+			if (curHue[i] > (goalHue[i] - this.moduleTemplate.getAttackTime()))
 			{
-				curHue[i] = curHue[i] - attackTime;
-			} else if (curHue[i] < (goalHue[i] + attackTime))
+				curHue[i] = curHue[i] - this.moduleTemplate.getAttackTime();
+			} else if (curHue[i] < (goalHue[i] + this.moduleTemplate.getAttackTime()))
 			{
-				curHue[i]  = curHue[i] + attackTime;
+				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackTime();
 			} // if
 		} // for
 

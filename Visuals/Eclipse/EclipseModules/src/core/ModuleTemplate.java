@@ -120,6 +120,12 @@ public class ModuleTemplate {
 	int[]				noteYVals;
 	int[]				modulateYVals;
 
+	private	boolean		showScale;
+	
+	private	float		thresholdLevel;
+	private	float		attackTime;
+	private	float		releaseTime;
+	private	float		transitionTime;
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -351,6 +357,7 @@ public class ModuleTemplate {
 				.setPosition(this.leftAlign, thresholdY)
 				.setSize(sliderWidth, sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
+				.setRange(2, 100)
 				.setValue(10)
 				.setLabelVisible(false)
 				.setId(0);		
@@ -379,6 +386,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, attackY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
+		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(2);
@@ -404,6 +412,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, releaseY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
+		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(4);
@@ -429,6 +438,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, transitionY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
+		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(6);
@@ -1250,9 +1260,6 @@ public class ModuleTemplate {
 	 * This method handles the functionality of all the buttons, sliders, and textFields;
 	 * Notate bene: any classes that include a moduleTemplate *must* include a controlEvent(ControlEvent) method that calls this method.
 	 * 
-	 * TODO: there's a NullPointer causing InvocationTargetException on startup,
-	 * and it seems to be related to this method.
-	 * 
 	 * @param theControlEvent	ControlEvent used to determine which controller needs to act.
 	 */
 	public void controlEvent(ControlEvent controlEvent)
@@ -1298,7 +1305,6 @@ public class ModuleTemplate {
 			this.play.setVisible(!this.play.isVisible());
 		} // if - hidePlayButton
 
-		// TODO: I need to still use the hamburger, whether or not it is visible....
 		// Hide menu button button:
 		if(controlEvent.getController().getId() == this.hideMenuButton.getId())
 		{
@@ -1316,8 +1322,35 @@ public class ModuleTemplate {
 		{
 			Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
 			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 1));
+			String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
 
-			curTextfield.setText(this.decimalFormat.format(curSlider.getValue()) + "");
+			curTextfield.setText(sliderValString);
+
+			float	sliderValFloat	= Float.parseFloat(sliderValString);
+			
+			// Threshold:
+			if(id == 0)
+			{
+				this.setThresholdLevel(sliderValFloat);
+			}
+			
+			// Attack:
+			if(id == 2)
+			{
+				this.setAttackTime(sliderValFloat);
+			}
+			
+			// Release:
+			if(id == 4)
+			{
+				this.setReleaseTime(sliderValFloat);
+			}
+			
+			// Transition:
+			if(id == 6)
+			{
+				this.setTransitionTime(sliderValFloat);
+			}
 		}
 
 		// Textfields
@@ -1508,6 +1541,46 @@ public class ModuleTemplate {
 
 	public void setKeyAddVal(int keyAddVal) {
 		this.keyAddVal = keyAddVal;
+	}
+
+	public boolean isShowScale() {
+		return showScale;
+	}
+
+	public void setShowScale(boolean showScale) {
+		this.showScale = showScale;
+	}
+
+	public float getThresholdLevel() {
+		return thresholdLevel;
+	}
+
+	public void setThresholdLevel(float thresholdLevel) {
+		this.thresholdLevel = thresholdLevel;
+	}
+
+	public float getAttackTime() {
+		return attackTime;
+	}
+
+	public void setAttackTime(float attackTime) {
+		this.attackTime = attackTime;
+	}
+
+	public float getReleaseTime() {
+		return releaseTime;
+	}
+
+	public void setReleaseTime(float releaseTime) {
+		this.releaseTime = releaseTime;
+	}
+
+	public float getTransitionTime() {
+		return transitionTime;
+	}
+
+	public void setTransitionTime(float transitionTime) {
+		this.transitionTime = transitionTime;
 	}
 
 
