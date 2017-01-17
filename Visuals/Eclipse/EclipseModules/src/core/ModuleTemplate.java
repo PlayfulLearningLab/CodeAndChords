@@ -203,8 +203,11 @@ public class ModuleTemplate {
 		addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 
 		addKeySelector(textYVals[5]);
+		
+		addRootColorSelector(textYVals[6]);
 
 		addModulateSliders(modulateYVals);
+		
 	} // initModuleTemplate
 
 	/*
@@ -498,12 +501,33 @@ public class ModuleTemplate {
 	 */
 	private void addRootColorSelector(int rootColorY)
 	{
-		int	labelX	= 10;
-		int	buttonWidth	= 50;
-		int	textfieldX	= this.leftAlign + buttonWidth + 5;
+		int	labelX			= 10;
+		int	buttonWidth		= 50;
+		int	textfieldX		= this.leftAlign + buttonWidth + 5;
+		int	textfieldWidth	= 90;
 		
-		this.sidebarCP5.addButton("rootColor")
-		.setPosition(this.leftAlign, rootColorY);
+		this.sidebarCP5.addTextlabel("rootColor")
+		.setPosition(labelX, rootColorY + 4)
+		.setValue("Root Color");
+		
+		this.sidebarCP5.addButton("root")
+		.setPosition(this.leftAlign, rootColorY)
+		.setWidth(buttonWidth)
+		.setLabel("Root");
+		
+		this.sidebarCP5.addTextfield("rootTF")
+		.setPosition(textfieldX, rootColorY)
+		.setWidth(textfieldWidth)
+		.setAutoClear(false)
+		.setText("Code#");
+		
+		// Next:
+		// - make this pop up on click
+		// - use it to populate the textfield
+		// - control it with the textfield?
+		
+		this.sidebarCP5.addColorWheel("rootColorWheel")
+		.setPosition(this.leftAlign, rootColorY + 20);
 	} // addRootColorSelector
 
 	/**
