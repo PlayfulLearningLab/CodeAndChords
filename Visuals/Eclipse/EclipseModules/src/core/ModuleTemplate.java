@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.Map;
 
 import controlP5.Button;
 import controlP5.ControlEvent;
@@ -261,9 +262,14 @@ public class ModuleTemplate {
 		int	hideWidth     = 70;
 		int hideSpace	= 4;
 
+		int	labelX		= 10;
 		int	playButtonX	= this.leftAlign;
 		int	menuButtonX	= this.leftAlign + hideWidth + hideSpace;
 		int	scaleX		= this.leftAlign + (+ hideWidth + hideSpace) * 2;
+		
+		this.sidebarCP5.addTextlabel("hide")
+						.setPosition(labelX, hideY + 4)
+						.setValue("Hide");
 
 		this.hidePlayButton	= this.sidebarCP5.addToggle("playButton")
 				.setPosition(playButtonX, hideY)
@@ -419,12 +425,14 @@ public class ModuleTemplate {
 
 	} // addSliders
 	
+	/**
+	 * Method called during instantiation to initialize the key selector drop-down menu (ScrollableList)
+	 * and major/minor/chromatic selection buttons.
+	 * 
+	 * @param keyY	y value of the menu and buttons.
+	 */
 	private void addKeySelector(int	keyY)
 	{
-		// TODO:
-		// - keep maj/min/chrom on (use Toggle? Can Toggle have a value?)
-		// - list stops scrolling when a key has been selected
-		// - access selected key
 		
 		int	labelX			= 10;
 		int	labelWidth		= 70;
@@ -432,10 +440,10 @@ public class ModuleTemplate {
 		int	listWidth		= 65;
 		int	spacer			= 5;
 
-		int	buttonWidth		= 40;
+		int	toggleWidth		= 45;
 		int	majorX			= this.leftAlign + listWidth + spacer;
-		int	minorX			= this.leftAlign + listWidth + spacer + (buttonWidth + spacer);
-		int	chromX			= this.leftAlign + listWidth + spacer + ((buttonWidth + spacer) * 2);
+		int	minorX			= this.leftAlign + listWidth + spacer + (toggleWidth + spacer);
+		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
 		
 		String[] keyOptions	= new String[] {
 				"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab"
@@ -443,12 +451,11 @@ public class ModuleTemplate {
 		
 		// "Key" Textlabel
 		this.sidebarCP5.addTextlabel("key")
-						.setPosition(labelX, keyY)
+						.setPosition(labelX, keyY + 4)
 						.setValue("Key");
 		
-		
 		// "Letter" drop-down menu (better name?)
-		this.sidebarCP5.addDropdownList("keyDropdown")
+		this.sidebarCP5.addScrollableList("keyDropdown")
 						.setPosition(this.leftAlign, keyY)
 						.setWidth(listWidth)
 						.setItems(keyOptions)
@@ -464,26 +471,29 @@ public class ModuleTemplate {
 		//  0 = Major, 1 = Minor, and 2 = Chromatic - and will set this.majMinChrom,
 		//  rather than simply being on or off.)
 		// Ids = 14-16 (start after modulateSliders)
-		this.sidebarCP5.addButton("major")
+		this.sidebarCP5.addToggle("major")
 						.setPosition(majorX, keyY)
-						.setWidth(buttonWidth)
-						.setValue(0)
+						.setWidth(toggleWidth)
 						.setCaptionLabel("Major")
-						.setId(14);
+						.setInternalValue(0);
+		this.sidebarCP5.getController("major").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
-		this.sidebarCP5.addButton("minor")
+		this.sidebarCP5.addToggle("minor")
 		.setPosition(minorX, keyY)
-		.setWidth(buttonWidth)
-		.setValue(1)
+		.setWidth(toggleWidth)
 		.setCaptionLabel("Minor")
-		.setId(15);
+		.setInternalValue(1);
+		this.sidebarCP5.getController("minor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
-		this.sidebarCP5.addButton("chrom")
+		
+		this.sidebarCP5.addToggle("chrom")
 		.setPosition(chromX, keyY)
-		.setWidth(buttonWidth)
-		.setValue(2)
+		.setWidth(toggleWidth)
 		.setCaptionLabel("Chromatic")
-		.setId(16);
+		.setInternalValue(2);
+		this.sidebarCP5.getController("chrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 	} // addKeySelector
 	
 	/**
@@ -652,12 +662,12 @@ public class ModuleTemplate {
 		int	noteNameX2 	= noteNameX1 + 135;
 
 		String[]	textArray	= new String[] {
-				"Hide",
-				"Threshold",
-				"Attack",
-				"Release",
-				"Transition",
-				"Key",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
 				"Root Color",
 				"Color Style",
 				"Pitch Color Codes"				
@@ -672,7 +682,7 @@ public class ModuleTemplate {
 		}; // noteNames2
 
 		String[]	modulateText	= new String[] {
-				"Red Modulate", "Green Mod.", "Blue Modulate"
+				"", "", ""
 		}; // modulateText
 
 
@@ -1222,10 +1232,54 @@ public class ModuleTemplate {
 		// Key dropdown ScrollableList:
 		if(controlEvent.getName().equals("keyDropdown"))
 		{
-			System.out.println("controlEvent.getController().getValueLabel() = " 
-					+ controlEvent.getController().getValueLabel().getText());
-			System.out.println("controlEvent.getController().getStringValue() = " + controlEvent.getController().getStringValue());
-		}
+			// keyPos is the position of the particular key in the Scrollable List:
+			int	keyPos	= (int)controlEvent.getValue();
+			
+			// getItem returns a Map of the color, state, value, name, etc. of that particular item
+			//  in the ScrollableList:
+			Map<String, Object> keyMap = this.sidebarCP5.get(ScrollableList.class, "keyDropdown").getItem(keyPos);
+			// All we want is the name:
+			String	key	= (String) keyMap.get("name");
+			
+			this.setCurKey(key, this.majMinChrom);
+			this.displaySidebar();
+		} // keyDropdown
+		
+		// Major/Minor/Chromatic buttons
+		if(controlEvent.getName().equals("major") ||
+				controlEvent.getName().equals("minor") ||
+				controlEvent.getName().equals("chrom"))
+		{
+			Toggle	curToggle	= (Toggle) controlEvent.getController();
+			System.out.println("Maj/Min/Chrom: internalValue() = " + curToggle.internalValue());
+			this.setCurKey(this.curKey, (int) curToggle.internalValue());
+			
+			// Turn off the other two:
+			Toggle[] toggleArray	= new Toggle[] {
+					(Toggle)this.sidebarCP5.getController("major"),
+					(Toggle)this.sidebarCP5.getController("minor"),
+					(Toggle)this.sidebarCP5.getController("chrom"),
+			};
+			boolean[]	broadcastState	= new boolean[toggleArray.length];
+			for(int i = 0; i < toggleArray.length; i++)
+			{
+				// save the current broadcast state of the controller:
+				broadcastState[i]	= toggleArray[i].isBroadcast();
+				
+				// turn off broadcasting to avoid endless looping in this method:
+				toggleArray[i].setBroadcast(false);
+				
+				// only switch off the ones that weren't just clicked:
+				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
+				{
+					toggleArray[i].setState(false);
+				}
+				
+				// set broadcasting back to original setting:
+				toggleArray[i].setBroadcast(broadcastState[i]);
+			} // for - switch off all Toggles:
+		
+		} // majMinChrom buttons
 	} // controlEvent
 
 	public int getLeftEdgeX() {
