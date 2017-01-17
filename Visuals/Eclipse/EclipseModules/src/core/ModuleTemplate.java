@@ -8,6 +8,7 @@ import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
 import controlP5.Controller;
+import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Textlabel;
@@ -133,33 +134,41 @@ public class ModuleTemplate {
 		this.curColorStyle	= this.CS_RAINBOW;
 		this.rootColor	= new int[] { 255, 0, 0, };
 
-		this.setCurKey("G", 2);
+		this.setCurKey("A", 2);
 		this.rainbow();
 
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
 		this.modulateYVals	= new int[3];
 
-		//		this.initModuleTemplate();
+		//this.initModuleTemplate();
 	} // ModuleTemplate
 
 	// Methods:
-	//TODO: make this private again
+	//TODO: make initModuleTemplate() private again, once it can be called from constructor.
+	
+	/**
+	 * Called from constructor to calculate Y vals and call the methods for instantiating the necessary buttons;
+	 * will eventually call different button methods depending on the module number.
+	 */
 	public void initModuleTemplate()
 	{
 		// Add play button, hamburger and menu x:
-		this.addOutsideButtons();
+		addOutsideButtons();
 
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
-		textYVals[0]	=	40;
-		// Given our height = 250 and "hide" (textYVals[0]) starts at 40,
+		textYVals[0]	=	26;
+		// Given our height = 250 and "hide" (textYVals[0]) starts at [40] - now 26 (1/17),
 		// We want a difference of 27.  This gets that:
 		int	yValDif = (int)((this.parent.height - textYVals[0]) / 18);//(textYVals.length + noteYVals.length + modulateYVals.length));
 		// ... but no smaller than 25:
 		if(yValDif < 25) {
 			yValDif	= 25;
 		}
+		System.out.println("yValDif = " + yValDif);
+		yValDif = 26;
+		
 		for(int i = 1; i < textYVals.length - 1; i++)
 		{
 			textYVals[i]	= textYVals[i - 1] + yValDif;
@@ -189,68 +198,20 @@ public class ModuleTemplate {
 		// call add methods:
 		addHideButtons(textYVals[0]);
 
-		// TODO: pass it one Y, a height and spacer or distance between y's.
+		// TODO: pass it one Y and either a height and spacer or a distance between y's.
 		addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
-
-		// Making everything invisible, and then displayModuleTemplate will show it?
-		// In that case, there should only be text in displaySidebar
+		
+		addKeySelector(textYVals[5]);
+		
+		addModulateSliders(modulateYVals);
 	} // initModuleTemplate
 
-	//	initModuleTemplate():  (not-in-sidebar items first, then: 
-	//		1) buttons; 2) sliders; 3) textFields. Each section responsible for its own text.)
 	/*
 	 *  - alignLeft (x var to pass to the add functions)
 	 *  - yValues (will pass the appropriate one to each of the functions)
 	 *  TODO: how calculate these y values?  (for now, imagine they are correct...)
-	 * 
-	 * vars:
-	 * 	- play/stop x and y
-	 *  - hamburger x and y
-	 *  - menuX x and y
-	 *  - yArray
-	 *  - playButtonX
-	 *  - arrowX
-	 *  - scaleX
-	 *  - rainbowX
-	 *  - dichromX
-	 *  - trichromX
-	 *  - customX
-	 *  - buttons: hideX;
-	 *  - buttons: colorStyleX;
-	 *  - buttons: hideWidth;
-	 *  - buttons: colorStyleWidth;
-	 *  - sliderX
-	 *  - sliderWidth
-	 *  - sliderNames (ArrayList<String>)
-	 *  - sliderTextFieldX
-	 *  - customColorTextFieldX1;
-	 *  - customColorTextFieldX2;
-	 *  - modulateTextFieldX;
-	 * 
-	 * -- set yArray
-	 * 
-	 * -- Buttons:
-	 * 		- set hideWith
-	 * 		- set colorStyleX;
-	 * 		- set buttonWidth;
-	 * 		- addButton() - individually for each
-	 * 
-	 * -- Sliders:
-	 * 		- set sliderX
-	 * 		- set sliderWidth;
-	 * 		- set names;
-	 * 		- addSliders() - in loops for each section
-	 * 
-	 * -- TextFields:
-	 * 		- set sliderTextFieldX
-	 * 		- addTextField() - individually
-	 * 		- set customColorTextFieldX1 and customColorTextFieldX2;
-	 * 		- addTextField() - in loop
-	 * 		- set modulateTextFieldX;
-	 * 		- addTextField() - in loop
+	 *  
 	 */
-
-	// ** all of the following functions are passed an alignLeft var and y val. **
 
 	private void addOutsideButtons()
 	{
@@ -305,21 +266,21 @@ public class ModuleTemplate {
 		int	scaleX		= this.leftAlign + (+ hideWidth + hideSpace) * 2;
 
 		this.hidePlayButton	= this.sidebarCP5.addToggle("playButton")
-				.setPosition(playButtonX, hideY - 15)
+				.setPosition(playButtonX, hideY)
 				.setWidth(hideWidth)
 				.setId(4);
 		this.hidePlayButton.getCaptionLabel().set("Play Button").align(ControlP5.CENTER, ControlP5.CENTER);
 
 
 		this.hideMenuButton	= this.sidebarCP5.addToggle("menuButton")
-				.setPosition(menuButtonX, hideY - 15)
+				.setPosition(menuButtonX, hideY)
 				.setWidth(hideWidth)
 				.setId(5);
 		this.hideMenuButton.getCaptionLabel().set("Menu Button").align(ControlP5.CENTER, ControlP5.CENTER);
 
 
 		this.hideScale	= this.sidebarCP5.addToggle("scale")
-				.setPosition(scaleX, hideY - 15)
+				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
 				.setId(6);
 		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
@@ -355,14 +316,14 @@ public class ModuleTemplate {
 		int	tfWidth			= 70;
 
 		this.thresholdLabel	= this.sidebarCP5.addLabel("thresholdLabel")
-				.setPosition(labelX, thresholdY - 10)
+				.setPosition(labelX, thresholdY + 4)
 				.setWidth(labelWidth)
 				.setValue("Threshold");
 		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
 		
 		// Threshold slider:
 		this.threshold	= this.sidebarCP5.addSlider("slider0")
-				.setPosition(this.leftAlign, thresholdY - 14)
+				.setPosition(this.leftAlign, thresholdY)
 				.setSize(sliderWidth, sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
 				.setValue(10)
@@ -371,7 +332,7 @@ public class ModuleTemplate {
 
 		// Threshold textfield:
 		this.thresholdTF	= this.sidebarCP5.addTextfield("textfield1")
-				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY - 14)
+				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
 				.setLabelVisible(false)
 				.setText(this.threshold.getValue() + "")
@@ -384,13 +345,13 @@ public class ModuleTemplate {
 		// Attack group:
 		//	- Textlabel:
 		this.sidebarCP5.addLabel("attackLabel")
-		.setPosition(labelX, attackY - 10)
+		.setPosition(labelX, attackY + 4)
 		.setWidth(labelWidth)
 		.setValue("Attack");
 
 		//	- Slider:
 		this.sidebarCP5.addSlider("slider2")
-		.setPosition(this.leftAlign, attackY - 14)
+		.setPosition(this.leftAlign, attackY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setValue(10)
@@ -399,7 +360,7 @@ public class ModuleTemplate {
 		
 		//	- Textfield:
 		this.sidebarCP5.addTextfield("textfield3")
-		.setPosition(this.leftAlign + sliderWidth + spacer, attackY - 14)
+		.setPosition(this.leftAlign + sliderWidth + spacer, attackY)
 		.setSize(tfWidth, sliderHeight)
 		.setText(this.sidebarCP5.getController("slider2").getValue() + "")
 		.setLabelVisible(false)
@@ -409,13 +370,13 @@ public class ModuleTemplate {
 		// Release:
 		// - Textlabel:
 		this.sidebarCP5.addLabel("releaseLabel")
-		.setPosition(labelX, releaseY - 10)
+		.setPosition(labelX, releaseY + 4)
 		.setWidth(labelWidth)
 		.setValue("Release");
 
 		//	- Slider:
 		this.sidebarCP5.addSlider("slider4")
-		.setPosition(this.leftAlign, releaseY - 14)
+		.setPosition(this.leftAlign, releaseY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setValue(10)
@@ -424,7 +385,7 @@ public class ModuleTemplate {
 		
 		//	- Textlabel:
 		this.sidebarCP5.addTextfield("textfield5")
-		.setPosition(this.leftAlign + sliderWidth + spacer, releaseY - 14)
+		.setPosition(this.leftAlign + sliderWidth + spacer, releaseY)
 		.setSize(tfWidth, sliderHeight)
 		.setText(this.sidebarCP5.getController("slider4").getValue() + "")
 		.setLabelVisible(false)
@@ -434,13 +395,13 @@ public class ModuleTemplate {
 		// Transition:
 		// - Textlabel:
 		this.sidebarCP5.addLabel("transitionLabel")
-				.setPosition(labelX, transitionY - 10)
+				.setPosition(labelX, transitionY + 4)
 				.setWidth(labelWidth)
 				.setValue("Transition");
 
 		//	- Slider:
 		this.sidebarCP5.addSlider("slider6")
-				.setPosition(this.leftAlign, transitionY - 14)
+				.setPosition(this.leftAlign, transitionY)
 				.setSize(sliderWidth, sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
 				.setValue(10)
@@ -449,7 +410,7 @@ public class ModuleTemplate {
 				
 		//	- Textlabel:
 		this.sidebarCP5.addTextfield("textfield7")
-				.setPosition(this.leftAlign + sliderWidth + spacer, transitionY - 14)
+				.setPosition(this.leftAlign + sliderWidth + spacer, transitionY)
 				.setSize(tfWidth, sliderHeight)
 				.setText(this.sidebarCP5.getController("slider6").getValue() + "")
 				.setLabelVisible(false)
@@ -457,6 +418,126 @@ public class ModuleTemplate {
 				.setId(7);
 
 	} // addSliders
+	
+	private void addKeySelector(int	keyY)
+	{
+		// TODO:
+		// - keep maj/min/chrom on (use Toggle? Can Toggle have a value?)
+		// - list stops scrolling when a key has been selected
+		// - access selected key
+		
+		int	labelX			= 10;
+		int	labelWidth		= 70;
+		
+		int	listWidth		= 65;
+		int	spacer			= 5;
+
+		int	buttonWidth		= 40;
+		int	majorX			= this.leftAlign + listWidth + spacer;
+		int	minorX			= this.leftAlign + listWidth + spacer + (buttonWidth + spacer);
+		int	chromX			= this.leftAlign + listWidth + spacer + ((buttonWidth + spacer) * 2);
+		
+		String[] keyOptions	= new String[] {
+				"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab"
+		};
+		
+		// "Key" Textlabel
+		this.sidebarCP5.addTextlabel("key")
+						.setPosition(labelX, keyY)
+						.setValue("Key");
+		
+		
+		// "Letter" drop-down menu (better name?)
+		this.sidebarCP5.addDropdownList("keyDropdown")
+						.setPosition(this.leftAlign, keyY)
+						.setWidth(listWidth)
+						.setItems(keyOptions)
+						.setOpen(false)
+						.setLabel("Select a key:")
+						.getCaptionLabel().toUpperCase(false);
+		
+		//	This is odd, but a way to get an item if we need it (see Processing examples for it in action):
+		//this.sidebarCP5.get(ScrollableList.class, "keyDropdown").getItem("A");
+		
+		// Maj/Min/Chrom buttons
+		// (These are buttons, rather than toggles, because they have a value -
+		//  0 = Major, 1 = Minor, and 2 = Chromatic - and will set this.majMinChrom,
+		//  rather than simply being on or off.)
+		// Ids = 14-16 (start after modulateSliders)
+		this.sidebarCP5.addButton("major")
+						.setPosition(majorX, keyY)
+						.setWidth(buttonWidth)
+						.setValue(0)
+						.setCaptionLabel("Major")
+						.setId(14);
+		
+		this.sidebarCP5.addButton("minor")
+		.setPosition(minorX, keyY)
+		.setWidth(buttonWidth)
+		.setValue(1)
+		.setCaptionLabel("Minor")
+		.setId(15);
+		
+		this.sidebarCP5.addButton("chrom")
+		.setPosition(chromX, keyY)
+		.setWidth(buttonWidth)
+		.setValue(2)
+		.setCaptionLabel("Chromatic")
+		.setId(16);
+	} // addKeySelector
+	
+	/**
+	 * Method called during instantiation, to initialize the color modulate slilders.
+	 * 
+	 * @param modulateYVals	int[] of the y values of the red, green, and blue sliders, respectively.
+	 */
+	private void addModulateSliders(int[] modulateYVals)
+	{
+		int	labelX			= 10;
+		int	labelWidth		= 70;
+
+		int	sliderWidth		= 145;
+		int	sliderHeight	= 20;
+
+		int	spacer			= 5;	// distance between slider and corresponding textfield
+		int	tfWidth			= 70;	// width of Textfields
+
+		String[]	names	= new String[] { "redModLabel", "greenModLabel", "blueModLabel" };
+		String[]	values	= new String[] { "Red Modulate", "Green mod.", "Blue modulate" };
+		
+		int	id	= 8;		// this id picks up where the transition textfield - "textfield7" - left off.
+
+		for(int i = 0; i < modulateYVals.length; i++)
+		{
+			// - Textlabel:
+			this.sidebarCP5.addLabel(names[i])
+					.setPosition(labelX, modulateYVals[i] + 4)
+					.setWidth(labelWidth)
+					.setValue(values[i]);
+
+			//	- Slider:
+			this.sidebarCP5.addSlider("slider" + id)
+					.setPosition(this.leftAlign, modulateYVals[i])
+					.setSize(sliderWidth, sliderHeight)
+					.setSliderMode(Slider.FLEXIBLE)
+					.setValue(10)
+					.setLabelVisible(false)
+					.setId(id);
+			
+			id	= id + 1;
+			
+			//	- Textlabel:
+			this.sidebarCP5.addTextfield("textfield" + id)
+					.setPosition(this.leftAlign + sliderWidth + spacer, modulateYVals[i])
+					.setSize(tfWidth, sliderHeight)
+					.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
+					.setLabelVisible(false)
+					.setAutoClear(false)
+					.setId(id);
+			
+			id	= id + 1;
+		} // for
+	} // addModulateSliders
 
 	private void addColorStyleButtons(int colorStyleY)
 	{
@@ -1112,7 +1193,8 @@ public class ModuleTemplate {
 		// Hide "scale" will be referred to in draw()
 		
 		//TODO: set this cutoff in a more relevant place - perhaps when sliders are created?
-		int	sliderCutoff	= 10;
+		// (If I have a numSliders, it would be (numSliders * 2).
+		int	sliderCutoff	= 14;
 
 		// Sliders (sliders have odd id num and corresponding textfields have the next odd number)
 		if(id % 2 == 0 && id < sliderCutoff)
@@ -1137,6 +1219,13 @@ public class ModuleTemplate {
 			} // catch
 		} // textField
 		
+		// Key dropdown ScrollableList:
+		if(controlEvent.getName().equals("keyDropdown"))
+		{
+			System.out.println("controlEvent.getController().getValueLabel() = " 
+					+ controlEvent.getController().getValueLabel().getText());
+			System.out.println("controlEvent.getController().getStringValue() = " + controlEvent.getController().getStringValue());
+		}
 	} // controlEvent
 
 	public int getLeftEdgeX() {
