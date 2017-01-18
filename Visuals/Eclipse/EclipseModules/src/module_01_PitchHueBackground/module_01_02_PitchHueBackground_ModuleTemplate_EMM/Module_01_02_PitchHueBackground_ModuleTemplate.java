@@ -347,7 +347,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
-			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of colors[]; setting to 0.");
+			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
 		}
 
