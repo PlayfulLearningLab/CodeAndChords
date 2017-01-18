@@ -346,7 +346,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
-		curHue       = this.moduleTemplate.getColors()[curHuePos];
+		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
+			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of colors[]; setting to 0.");
+			curHuePos	= 0;
+		}
+
+		curHue	= this.moduleTemplate.getColors()[curHuePos];
+		
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
 
@@ -713,7 +719,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			lowBound	= goalHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
 			highBound	= goalHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
 			
-			println("lowBound = " + lowBound + "; highBound = " + highBound);
 			
 			// First, check colors and add/subtract as necessary:
 			if (curHue[i] >= highBound)
@@ -723,6 +728,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			{
 				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
 			} // if - adjust colors
+			
 			
 			// Now check colors for whether they have moved into the boundaries:
 			if(curHue[i] < highBound && curHue[i] > lowBound) {
@@ -735,12 +741,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		
 		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
-/*		if(this.colorReached)
-		{
-			this.wasBelow	= false;
-		}
-*/		
-//		println("this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition) = " + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition));
 
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);

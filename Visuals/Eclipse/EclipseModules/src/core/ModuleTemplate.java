@@ -7,6 +7,7 @@ import java.util.Map;
 import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
+import controlP5.ControlFont;
 import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
 import controlP5.Controller;
@@ -16,6 +17,7 @@ import controlP5.Textfield;
 import controlP5.Textlabel;
 import controlP5.Toggle;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
@@ -58,7 +60,7 @@ public class ModuleTemplate {
 	private ControlP5 	nonSidebarCP5;
 	private ControlP5 	sidebarCP5;
 	private	ControlP5	colorWheelCP5;	// Need a separate CP5 so that I can turn off autoDraw on the others, 
-							// draw a transparent rectangle, and then draw only the ColorWheels on top of that.
+	// draw a transparent rectangle, and then draw only the ColorWheels on top of that.
 	private	Input		input;
 
 	private Toggle		play;
@@ -121,31 +123,35 @@ public class ModuleTemplate {
 	int[]				modulateYVals;
 
 	private	boolean		showScale;
-	
+
 	private	float		thresholdLevel;
 	private	float		attackTime;
 	private	float		releaseTime;
 	private	float		transitionTime;
-	
+
 	private	float[]		attackReleaseTransition	= new float[3];
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
 		this.input	= input;
-		
+
 		// ControlP5 for playButton and hamburger:
 		this.nonSidebarCP5	= new ControlP5(this.parent);
-		
+
 		// ControlP5 for most of the sidebar elements:
 		this.sidebarCP5		= new ControlP5(this.parent);
+
+		// This technically works, but it horribly blurry:
+		//		this.sidebarCP5.setFont(this.parent.createFont("Consolas", 10) );
+
 		this.sidebarCP5.setVisible(false);
-		
+
 		// ControlP5 for ColorWheels (having a separate one allows us to setAutoDraw(false) on the other CP5,
 		// draw a transparent rectangle over those controllers, and then draw the ColorWheel on top of that):
 		this.colorWheelCP5	= new ControlP5(this.parent);
 		this.colorWheelCP5.setVisible(false);
-		
+
 		this.sidebarTitle	= sidebarTitle;
 
 		//		this.leftEdgeXArray	= new int[] { 0, this.parent.width / 3 };
@@ -177,6 +183,21 @@ public class ModuleTemplate {
 	{
 		// Add play button, hamburger and menu x:
 		addOutsideButtons();
+
+		// Add Menu and Title labels (after menuX, because it gets its x values from that):
+		ControlFont	largerStandard	= new ControlFont(ControlP5.BitFontStandard58, 13);
+
+		this.sidebarCP5.addTextlabel("title")
+		.setPosition((this.parent.width / 3) / 4, 5)	// This x val is usually this.leftAlign, but doesn't get set until sidebar is open.
+		// TODO: is this ^ wise?  Maybe always set leftAlign to be (this.parent.width / 3) / 4?
+		.setFont(largerStandard)
+		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
+		.setValue(this.sidebarTitle);
+
+		this.sidebarCP5.addTextlabel("menu")
+		.setPosition(this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 10)
+		.setHeight(15)
+		.setValue("Menu");
 
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
@@ -224,13 +245,15 @@ public class ModuleTemplate {
 		addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 
 		addKeySelector(textYVals[5]);
-		
+
 		addRootColorSelector(textYVals[6]);
-		
+
 		addColorStyleButtons(textYVals[7]);
 
+		this.addCustomPitchColor(textYVals[8], noteYVals);
+
 		addModulateSliders(modulateYVals);
-		
+
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
@@ -394,7 +417,7 @@ public class ModuleTemplate {
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(2);
-		
+
 		// Setting attack for reference by Module:
 		this.attackReleaseTransition[0]	= 10;
 
@@ -423,7 +446,7 @@ public class ModuleTemplate {
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(4);
-		
+
 		// Setting release for reference by Module:
 		this.attackReleaseTransition[1]	= 10;
 
@@ -452,7 +475,7 @@ public class ModuleTemplate {
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(6);
-		
+
 		// Setting transition for reference by Module:
 		this.attackReleaseTransition[2]	= 10;
 
@@ -532,7 +555,7 @@ public class ModuleTemplate {
 
 		((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 	} // addKeySelector
-	
+
 	/**
 	 * Method called during instantiation to initialize the root color selector.
 	 * 
@@ -544,29 +567,30 @@ public class ModuleTemplate {
 		int	buttonWidth		= 50;
 		int	textfieldX		= this.leftAlign + buttonWidth + 5;
 		int	textfieldWidth	= 90;
-		
+
 		this.sidebarCP5.addTextlabel("rootColor")
 		.setPosition(labelX, rootColorY + 4)
 		.setValue("Root Color");
-		
+
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
-		
+
 		// Needs to be added to colorWheelCP5 so it is still visible to turn off the ColorWheel:
-		this.colorWheelCP5.addButton("root")
+		// (name follows conventions for customPitchColor buttons)
+		this.colorWheelCP5.addButton("button21")
 		.setPosition(this.leftAlign, rootColorY)
 		.setWidth(buttonWidth)
 		.setLabel("Root")
 		.setId(21);
 
-		this.colorWheelCP5.addColorWheel("rootColorWheel")
+		this.colorWheelCP5.addColorWheel("colorWheel22")
 		.setPosition(this.leftAlign, rootColorY + 20)
 		.setRGB(this.parent.color(102, 0, 102))
 		.setLabelVisible(false)
 		.setVisible(false)
 		.setId(22);
-		
-		this.colorWheelCP5.addTextfield("rootColorTF")
+
+		this.colorWheelCP5.addTextfield("textfield23")
 		.setPosition(textfieldX, rootColorY)
 		.setWidth(textfieldWidth)
 		.setAutoClear(false)
@@ -575,11 +599,17 @@ public class ModuleTemplate {
 		.setId(23);
 	} // addRootColorSelector
 
+	/**
+	 * Method called during instantiation to initialize the color style Toggles
+	 * (Rainbow, Dichromatic, Trichromatic, and Custom).
+	 * 
+	 * @param colorStyleY	y value of the colorStyle Toggles
+	 */
 	private void addColorStyleButtons(int colorStyleY)
 	{
 		int	colorStyleWidth	= 50;
 		int	colorStyleSpace	= 6;
-		
+
 		int	labelX			= 10;
 
 		int rainbowX     	= this.leftAlign;
@@ -588,39 +618,154 @@ public class ModuleTemplate {
 		int customX			= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 3;
 
 		this.sidebarCP5.addTextlabel("colorStyle")
-			.setPosition(labelX, colorStyleY + 4)
-			.setValue("Color Style");
-		
+		.setPosition(labelX, colorStyleY + 4)
+		.setValue("Color Style");
+
 		this.sidebarCP5.addToggle("rainbow")
-			.setPosition(rainbowX, colorStyleY)
-			.setWidth(colorStyleWidth)
-			.setCaptionLabel("Rainbow")
-			.setState(true)
-			.setInternalValue(this.CS_RAINBOW);
+		.setPosition(rainbowX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Rainbow")
+		.setState(true)
+		.setInternalValue(this.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("dichrom")
-			.setPosition(dichromaticX, colorStyleY)
-			.setWidth(colorStyleWidth)
-			.setCaptionLabel("Dichrom.")
-			.setInternalValue(this.CS_DICHROM);
+		.setPosition(dichromaticX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Dichrom.")
+		.setInternalValue(this.CS_DICHROM);
 		this.sidebarCP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("trichrom")
-			.setPosition(trichromaticX, colorStyleY)
-			.setWidth(colorStyleWidth)
-			.setCaptionLabel("Trichrom.")
-			.setInternalValue(this.CS_TRICHROM);
+		.setPosition(trichromaticX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Trichrom.")
+		.setInternalValue(this.CS_TRICHROM);
 		this.sidebarCP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("custom")
-			.setPosition(customX, colorStyleY)
-			.setWidth(colorStyleWidth)
-			.setCaptionLabel("Custom")
-			.setInternalValue(this.CS_CUSTOM);
+		.setPosition(customX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Custom")
+		.setInternalValue(this.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 	} // addColorStyleButtons
-	
+
+	/**
+	 * Method called during instantiation to initialize note buttons and their corresponding ColorWheels.
+	 * 
+	 * @param noteYVals	int[] of y values for each note button
+	 */
+	private void addCustomPitchColor(int labelYVal, int[] noteYVals)
+	{
+		int spacer1			= 5;	// between buttons and textfields
+		int	spacer2			= 15;	// between the two rows of pitches
+		int	labelX			= 10;
+
+		int	buttonWidth		= 30;
+		int	textfieldWidth	= 90;
+
+		int	noteX1			= this.leftAlign - 40;
+		int	textfieldX1		= noteX1 + buttonWidth + spacer1;
+
+		int	noteX2			= textfieldX1 + textfieldWidth + spacer2;
+		int	textfieldX2		= noteX2 + buttonWidth + spacer1;
+
+
+		String[]	noteNames1	= new String[] {
+				"A", "A#/Bb", "B", "C", "C#/Db", "D"
+		}; // noteNames
+		String[]	noteNames2	= new String[] {
+				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
+		}; // noteNames2
+
+		this.sidebarCP5.addTextlabel("customPitchColor")
+		.setPosition(labelX, labelYVal + 4)
+		.setValue("Custom Pitch Color");
+
+		// Note Buttons, ColorWheels and corresponding Textfields will have id's of 24 or over;
+		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
+		int	namePos	= 0;
+		int	id		= 24;
+
+		// First row of pitches:
+		for(int i = 0; i < noteNames1.length; i++)
+		{
+			// Needs to be added to colorWheelCP5 so it is still visible to turn off the ColorWheel:
+			this.colorWheelCP5.addButton("button" + id)
+			.setPosition(noteX1, noteYVals[i])
+			.setWidth(buttonWidth)
+			.setLabel(noteNames1[namePos])
+			.setId(id)
+			.getCaptionLabel().toUpperCase(false);
+
+			id = id + 1;
+
+			this.colorWheelCP5.addColorWheel("colorWheel" + id)
+			.setPosition(noteX1, noteYVals[i] + 20)
+			.setRGB(this.parent.color(102, 0, 102))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setId(id);
+
+			id = id + 1;
+
+			this.colorWheelCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX1, noteYVals[i])
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setLabelVisible(false)
+			.setText("Code#")
+			.setId(id);
+
+			id = id + 1;
+			namePos	= namePos + 1;
+		} // first row of pitches
+
+		namePos	= 0;
+		// Second row of pitches:
+		for(int i = 0; i < noteNames1.length; i++)
+		{
+			// Needs to be added to colorWheelCP5 so it is still visible to turn off the ColorWheel:
+			this.colorWheelCP5.addButton("button" + id)
+			.setPosition(noteX2, noteYVals[i])
+			.setWidth(buttonWidth)
+			.setLabel(noteNames2[namePos])
+			.setId(id)
+			.getCaptionLabel().toUpperCase(false);
+
+			id = id + 1;
+
+			this.colorWheelCP5.addColorWheel("colorWheel" + id)
+			.setPosition(noteX2, noteYVals[i] + 20)
+			.setRGB(this.parent.color(102, 0, 102))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setId(id);
+
+			id = id + 1;
+
+			this.colorWheelCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX2, noteYVals[i])
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setLabelVisible(false)
+			.setText("Code#")
+			.setId(id);
+
+			id = id + 1;
+			namePos	= namePos + 1;
+		} // for - second row of pitches
+		
+		Color	transparentBlack	= new Color(0, 0, 0, 150);
+		int		transBlackInt		= transparentBlack.getRGB();
+		
+		this.colorWheelCP5.addBackground("background")
+			.setPosition(0, 0)
+			.setSize(this.parent.width / 3, this.parent.height)
+			.setColorBackground(transBlackInt)
+			.setVisible(false);
+	} // addNoteColorSelectors
 
 	/**
 	 * Method called during instantiation, to initialize the color modulate slilders.
@@ -693,28 +838,28 @@ public class ModuleTemplate {
 		this.curColorStyle	= colorStyle;
 
 		// Rainbow:
-		if(this.curColorStyle == this.CS_RAINBOW)
+		if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 		{
 			this.rainbow();
 		}
 
 		// Dichromatic:
-		if(this.curColorStyle == this.CS_DICHROM)
+		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
 			this.dichromatic_OneRGB(this.rootColor);
 		}
 
 		// Trichromatic:
-		if(this.curColorStyle == this.CS_TRICHROM)
+		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
 			this.trichromatic_OneRGB(this.rootColor);
 		}
 
 		// Custom:
-		if(this.curColorStyle == this.CS_CUSTOM)
+		if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
 		{
 			System.out.println("Custom is still in the works.");
-			
+
 		}
 	} // updateColors
 
@@ -783,7 +928,7 @@ public class ModuleTemplate {
 		this.parent.stroke(255);
 		this.parent.fill(0);
 		this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-
+		/*
 		int textX  		= 5;
 		int	noteNameX1	= 40;
 		int	noteNameX2 	= noteNameX1 + 135;
@@ -797,12 +942,12 @@ public class ModuleTemplate {
 				"",
 				"",
 				"",
-				"Pitch Color Codes"				
+				""				
 		}; // textArray
 
 
 		String[]	noteNames1	= new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D"
+				"", "", "", "", "", ""
 		}; // noteNames
 		String[]	noteNames2	= new String[] {
 				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
@@ -811,20 +956,22 @@ public class ModuleTemplate {
 		String[]	modulateText	= new String[] {
 				"", "", ""
 		}; // modulateText
+		 */
 
 
+		/*
 		this.parent.fill(255);
 		this.parent.textSize(12);
 		this.parent.text(this.sidebarTitle, this.leftAlign, 17);
-
 		this.parent.textSize(10);
 		this.parent.text("Menu", this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 16);
+		 */	
+		/*
 
 		for(int i = 0; i < textArray.length; i++)
 		{
 			this.parent.text(textArray[i], textX, textYVals[i]);
 		}
-
 		for(int i = 0; i < noteNames1.length; i++)
 		{
 			this.parent.text(noteNames1[i], noteNameX1, noteYVals[i]);
@@ -833,12 +980,12 @@ public class ModuleTemplate {
 		{
 			this.parent.text(noteNames2[i], noteNameX2, noteYVals[i]);
 		}
-
+		 */
+		/*
 		for(int i = 0; i < modulateText.length; i++)
 		{
 			this.parent.text(modulateText[i], textX, modulateYVals[i]);
 		}
-		/*
 		for(int i = 0; i < scrollbarArray.length; i++)
 		{
 			scrollbarArray[i].update();
@@ -1344,14 +1491,13 @@ public class ModuleTemplate {
 			curTextfield.setText(sliderValString);
 
 			float	sliderValFloat	= Float.parseFloat(sliderValString);
-			System.out.println("sliderValFloat = " + sliderValFloat);
-			
+
 			// Threshold:
 			if(id == 0)
 			{
 				this.setThresholdLevel(sliderValFloat);
 			}
-			
+
 			// Attack, Release, and Transition:
 			if(id == 2 || id == 4 || id == 6)
 			{
@@ -1423,16 +1569,100 @@ public class ModuleTemplate {
 				// set broadcasting back to original setting:
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
-			
+
 			this.updateColors(this.curColorStyle);
 
 		} // majMinChrom buttons
-		
+
 		// Color Selection: 
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
-		
+
+		// Custom pitch color selector buttons:
+		if(controlEvent.getId() > 20 && (controlEvent.getId() % 3 == 0))
+		{
+			Button	curButton	= (Button)controlEvent.getController();
+
+			// draw slightly transparent rectangle:
+			if(curButton.getBooleanValue())
+			{
+				// Want to turn off automatic drawing so that our transparent rectangle can go on top of the controllers.
+				this.sidebarCP5.setAutoDraw(false);
+//				this.colorWheelCP5.setAutoDraw(false);
+
+				// Draw all the controllers:
+				this.sidebarCP5.draw();
+//				this.colorWheelCP5.draw();
+
+				// Then cover with a rectangle (black, w/alpha of 50):
+				this.parent.fill(0, 150);
+//				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
+				System.out.println("this.colorWheelCP5 = " + this.colorWheelCP5);
+				this.colorWheelCP5.getGroup("background").setVisible(true);
+//				this.colorWheelCP5.getController("background").setVisible(true);
+	/*			
+				this.colorWheelCP5.getController("button" + controlEvent.getId()).draw(this.parent.g);
+				this.colorWheelCP5.getController("button" + controlEvent.getId()).setVisible(true);
+				this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).draw(this.parent.g);
+				this.colorWheelCP5.getController("textfield" + (controlEvent.getId() + 2)).draw(this.parent.g);
+				*/
+				
+//				this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
+//				this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
+			} else {
+				this.sidebarCP5.setAutoDraw(true);
+				this.colorWheelCP5.setAutoDraw(true);
+				this.colorWheelCP5.getGroup("background").setVisible(false);
+				this.displaySidebar();
+			}
+			/*
+			while(((Button)(this.colorWheelCP5.getController("button" + controlEvent.getId()))).getBooleanValue())
+			{
+				this.colorWheelCP5.getController("button" + controlEvent.getId()).draw(this.parent.g);
+				this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).draw(this.parent.g);
+				this.colorWheelCP5.getController("textfield" + (controlEvent.getId() + 2)).draw(this.parent.g);
+				System.out.println("Still in the while...");
+			}*/
+			
+//			this.colorWheelCP5.draw();
+//			this.colorWheelCP5.setAutoDraw(true);
+			this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
+			
+			this.colorWheelCP5.getController("button" + (controlEvent.getId())).bringToFront();
+			this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
+			this.colorWheelCP5.getController("textfield" + (controlEvent.getId() + 2)).bringToFront();
+			
+			System.out.println("this.colorWheelCP5.getController('button' + controlEvent.getId()).isBroadcast() = " + 
+					this.colorWheelCP5.getController("button" + controlEvent.getId()).isBroadcast());
+			System.out.println("this.colorWheelCP5.getController('colorWheel' + (controlEvent.getId() + 1)).isVisible() = " +
+					this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).isVisible());
+			this.colorWheelCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
+			this.updateColors(this.curColorStyle);
+		} // custom pitch color selectors (i.e., show color wheel)
+
+		// Custom pitch ColorWheels
+		if(controlEvent.getId() > 20 && (controlEvent.getId() % 3 == 1))
+		{
+			ColorWheel	rootCW	= (ColorWheel)controlEvent.getController();
+			int	rgbColor	= rootCW.getRGB();
+			Color	color	= new Color(rgbColor);
+
+			Textfield	rootColorTF	= (Textfield)this.colorWheelCP5.getController("textfield" + (controlEvent.getId() + 1));
+			rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
+			this.rootColor[0]	= color.getRed();
+			this.rootColor[1]	= color.getGreen();
+			this.rootColor[2]	= color.getBlue();
+
+			this.colors[0][0]	= color.getRed();
+			this.colors[0][1]	= color.getGreen();
+			this.colors[0][2]	= color.getBlue();
+
+			this.updateColors(this.curColorStyle);
+		} // custom pitch color wheels
+/*
 		// Root color selector button:
+		// TODO: combine this w/previous section?
 		if(controlEvent.getId() > 20 && (controlEvent.getId() % 3 == 0))
 		{
 			Button	rootButton	= (Button)controlEvent.getController();
@@ -1441,10 +1671,10 @@ public class ModuleTemplate {
 			{
 				// Want to turn off automatic drawing so that our transparent rectangle can go on top of the controllers.
 				this.sidebarCP5.setAutoDraw(false);
-				
+
 				// Draw all the controllers:
 				this.sidebarCP5.draw();
-				
+
 				// Then cover with a rectangle (black, w/alpha of 50):
 				this.parent.fill(0, 150);
 				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
@@ -1452,40 +1682,41 @@ public class ModuleTemplate {
 				this.sidebarCP5.setAutoDraw(true);
 				this.displaySidebar();
 			}
-			
+
 			this.colorWheelCP5.getController("rootColorWheel").setVisible(rootButton.getBooleanValue());
 			this.updateColors(this.curColorStyle);
-		} // root color selector (i.e., show color wheel)
-		
+		} // custom pitch color selectors (i.e., show color wheel)
+
+		// Root Color selector
 		// ColorWheels (all have id 20 or over; id % 3 == 1):
-//		if(controlEvent.getName().equals("rootColorWheel"))
+		//		if(controlEvent.getName().equals("rootColorWheel"))
 		if(controlEvent.getId() > 20 && (controlEvent.getId() % 3 == 1))
 		{
 			ColorWheel	rootCW	= (ColorWheel)controlEvent.getController();
 			int	rgbColor	= rootCW.getRGB();
 			Color	color	= new Color(rgbColor);
-			
+
 			Textfield	rootColorTF	= (Textfield)this.colorWheelCP5.getController("rootColorTF");
 			rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-			
+
 			this.rootColor[0]	= color.getRed();
 			this.rootColor[1]	= color.getGreen();
 			this.rootColor[2]	= color.getBlue();
-			
+
 			this.colors[0][0]	= color.getRed();
 			this.colors[0][1]	= color.getGreen();
 			this.colors[0][2]	= color.getBlue();
-			
+
 			this.updateColors(this.curColorStyle);
 		} // root color wheel
-		
+*/
 		// ColorWheel Textfields (id 20 or over; id % 3 == 2):
 		if(controlEvent.getId() > 20 && (controlEvent.getId() % 3 == 2))
 		{
 			System.out.println("ModuleTemplate.controlEvent: Entering your own color is not yet supported. Sorry! Please try again later.");
 		} // ColorWheel Textfields
-		
-		
+
+
 		// Color Style:
 		if(controlEvent.getName().equals("rainbow") ||
 				controlEvent.getName().equals("dichrom") ||
@@ -1525,7 +1756,7 @@ public class ModuleTemplate {
 			} // for - switch off all Toggles:
 
 		} // colorStyle buttons
-		
+
 	} // controlEvent
 
 	public int getLeftEdgeX() {
@@ -1591,14 +1822,14 @@ public class ModuleTemplate {
 	public void setTransitionTime(float transitionTime) {
 		this.transitionTime = transitionTime;
 	}
-	
+
 	public float getAttackReleaseTransition(int arORt)
 	{
 		if(arORt < 0 || arORt > this.attackReleaseTransition.length)
 		{
 			throw new IllegalArgumentException("ModuleTemplate.getAttackReleaseTransition: parameter " + arORt + " is not a valid position in the array this.attackReleaseTransition.");
 		} // error checking
-		
+
 		return	this.attackReleaseTransition[arORt];
 	} // getAttackReleaseTransition
 
