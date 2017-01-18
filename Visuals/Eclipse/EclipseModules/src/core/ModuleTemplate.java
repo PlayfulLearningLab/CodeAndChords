@@ -126,6 +126,8 @@ public class ModuleTemplate {
 	private	float		attackTime;
 	private	float		releaseTime;
 	private	float		transitionTime;
+	
+	private	float[]		attackReleaseTransition	= new float[3];
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -360,7 +362,8 @@ public class ModuleTemplate {
 				.setRange(2, 100)
 				.setValue(10)
 				.setLabelVisible(false)
-				.setId(0);		
+				.setId(0);
+		this.setThresholdLevel(10);
 
 		// Threshold textfield:
 		this.thresholdTF	= this.sidebarCP5.addTextfield("textfield1")
@@ -390,6 +393,9 @@ public class ModuleTemplate {
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(2);
+		
+		// Setting attack for reference by Module:
+		this.attackReleaseTransition[0]	= 10;
 
 		//	- Textfield:
 		this.sidebarCP5.addTextfield("textfield3")
@@ -416,6 +422,9 @@ public class ModuleTemplate {
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(4);
+		
+		// Setting release for reference by Module:
+		this.attackReleaseTransition[1]	= 10;
 
 		//	- Textlabel:
 		this.sidebarCP5.addTextfield("textfield5")
@@ -442,6 +451,9 @@ public class ModuleTemplate {
 		.setValue(10)
 		.setLabelVisible(false)
 		.setId(6);
+		
+		// Setting transition for reference by Module:
+		this.attackReleaseTransition[2]	= 10;
 
 		//	- Textlabel:
 		this.sidebarCP5.addTextfield("textfield7")
@@ -1327,13 +1339,14 @@ public class ModuleTemplate {
 			curTextfield.setText(sliderValString);
 
 			float	sliderValFloat	= Float.parseFloat(sliderValString);
+			System.out.println("sliderValFloat = " + sliderValFloat);
 			
 			// Threshold:
 			if(id == 0)
 			{
 				this.setThresholdLevel(sliderValFloat);
 			}
-			
+			/*
 			// Attack:
 			if(id == 2)
 			{
@@ -1350,6 +1363,14 @@ public class ModuleTemplate {
 			if(id == 6)
 			{
 				this.setTransitionTime(sliderValFloat);
+			}
+			*/
+			
+			// Attack, Release, and Transition:
+			if(id == 2 || id == 4 || id == 6)
+			{
+				int	pos	= (id / 2) - 1;
+				this.attackReleaseTransition[pos]	= sliderValFloat;
 			}
 		}
 
@@ -1582,6 +1603,16 @@ public class ModuleTemplate {
 	public void setTransitionTime(float transitionTime) {
 		this.transitionTime = transitionTime;
 	}
+	
+	public float getAttackReleaseTransition(int arORt)
+	{
+		if(arORt < 0 || arORt > this.attackReleaseTransition.length)
+		{
+			throw new IllegalArgumentException("ModuleTemplate.getAttackReleaseTransition: parameter " + arORt + " is not a valid position in the array this.attackReleaseTransition.");
+		} // error checking
+		
+		return	this.attackReleaseTransition[arORt];
+	} // getAttackReleaseTransition
 
 
 	/*

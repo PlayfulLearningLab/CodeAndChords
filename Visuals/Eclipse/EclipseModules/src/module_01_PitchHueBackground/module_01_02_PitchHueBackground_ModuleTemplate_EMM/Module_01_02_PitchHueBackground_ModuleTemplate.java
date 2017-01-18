@@ -201,6 +201,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	
 	ControlP5	cp5;
 	ModuleTemplate	moduleTemplate;
+	
+	boolean	aboveThreshold	= false;
+	boolean	belowThreshold	= true;
+	
+	int			envelopeState		= 0;
+	boolean		wasBelow			= true;
+	boolean[]	colorReachedArray	= new boolean[] { false, false, false };
+	boolean		colorReached		= false;
+	int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
 
 	public void settings()
 	{
@@ -650,8 +659,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void draw()
 	{
-
 		stroke(255);
+		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 			// subtracting keyAddVal gets the number into the correct key 
@@ -680,34 +689,63 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			}
 			newHue  = this.moduleTemplate.getColors()[newHuePos];
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
+			
+			// set goalHue to the color indicated by the current pitch:
+			if (newHuePos != goalHuePos)
+			{
+				goalHuePos  = newHuePos;
+			} // if
+			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 		} else {
-			newHue  = new float[] { 0, 0, 0 };
+			// volume not above the threshold:
+//			newHue  = new float[] { 0, 0, 0 };
+			goalHue	= new float[] { 0, 0, 0 };
+			/*
+			goalHue[0]	= 0;
+			goalHue[1]	= 0;
+			goalHue[2]	= 0;
+			*/
+			this.wasBelow	= true;
 		} // else
 
-		// set goalHue to the color indicated by the current pitch:
-		if (newHuePos != goalHuePos)
+		
+		
+		for(int i = 0; i < goalHue.length; i++)
 		{
-			goalHuePos  = newHuePos;
-		} // if
-		goalHue  = this.moduleTemplate.getColors()[goalHuePos];
+			println("    goalHue[" + i + "] = " + goalHue[i]);
+			println("    curHue[" + i + "] = " + curHue[i]);
+		}
 
 		for (int i = 0; i < 3; i++)
 		{
-			if (curHue[i] > (goalHue[i] - this.moduleTemplate.getAttackTime()))
+			if (curHue[i] > (goalHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition)))
 			{
-				curHue[i] = curHue[i] - this.moduleTemplate.getAttackTime();
-			} else if (curHue[i] < (goalHue[i] + this.moduleTemplate.getAttackTime()))
+				this.colorReachedArray[i]	= false;
+				curHue[i] = curHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			} else if (curHue[i] < (goalHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition)))
 			{
-				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackTime();
-			} // if
+				this.colorReachedArray[i]	= false;
+				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			} else {
+				// if here, color has been reached.
+				this.colorReachedArray[i]	= true;
+			}
 		} // for
+		
+		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
+		if(this.colorReached)
+		{
+			this.wasBelow	= false;
+		}
+		
+		println("this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition) = " + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition));
+		println("input.getAmplitude	= " + input.getAmplitude() + "; wasBelow = " + wasBelow + "; colorReached = " + colorReached);
 
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);
-//		fill(100);
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
-		//  triangle( 710, 10, 710, 30, 730, 20);
+
 		if(!this.buttons[2].getState())
 		{
 			//TODO: if anything else in ModuleTemplate needs to be called every time in draw,
@@ -717,39 +755,22 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.moduleTemplate.legend(goalHuePos);
 		}
 
-		//  scrollbar.update();
-		//  scrollbar.display();
-
-		scrollbarPos  = scrollbar.getPos();
-		attackTime      = map(scrollbarPos, scrollbar.getSposMin(), scrollbar.getSposMax(), attackTimeMin, attackTimeMax);
-
-		//  label.setLabel("attackTime: " + attackTime);
-
-		// TODO: remove traces of playButton/stopButton/leftArrow/rightArrow
-		/*
-		shape(this.playButton);
-		shape(this.stopButton);
-		shape(this.leftArrow);
-		shape(this.rightArrow);
-*/
+		// If coming from a low amplitude note and not yet reaching a color,
+		// use the attack value to control the color change:
+		if(wasBelow && !colorReached) {
+			this.attackReleaseTransition	= 0;
+		} // if
 		
-		/*
-		if (mousePressed && (mouseX < (width / 3)))
-		{
-			this.sidebarOut  = !this.sidebarOut;
-
-			if (sidebarOut)
-			{
-				this.leftEdgeX  = width / 3;
-				this.displaySidebar();
-			} else {
-				this.leftEdgeX  = 0;
-				this.controller.setVisible(false);
-			} // if - leftEdgeX
-		} // if - mousePressed
-		 */
+		// Or, if coming from one super-threshold note to another, use the transition value:
+		if(!wasBelow) {
+			this.attackReleaseTransition	= 2;
+		}
 		
-//		this.moduleTemplate.update();
+		// Or, if volume fell below the threshold, switch to release value:
+		if(wasBelow) {
+			this.attackReleaseTransition	= 1;
+		}
+
 	} // draw()
 	
 	/**
