@@ -315,6 +315,7 @@ public class ModuleTemplate {
 		this.hideScale	= this.sidebarCP5.addToggle("scale")
 				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
+				.toggle()
 				.setId(6);
 		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1323,7 +1324,11 @@ public class ModuleTemplate {
 			this.hamburger.setVisible(!this.hamburger.isVisible());
 		} // if - hidePlayButton
 
-		// Hide "scale" will be referred to in draw()
+		// Hide scale:
+		if(controlEvent.getName().equals("scale"))
+		{
+			this.setShowScale(((Toggle) (controlEvent.getController())).getState());
+		}
 
 		//TODO: set this cutoff in a more relevant place - perhaps when sliders are created?
 		// (If I have a numSliders, it would be (numSliders * 2).
@@ -1346,25 +1351,6 @@ public class ModuleTemplate {
 			{
 				this.setThresholdLevel(sliderValFloat);
 			}
-			/*
-			// Attack:
-			if(id == 2)
-			{
-				this.setAttackTime(sliderValFloat);
-			}
-			
-			// Release:
-			if(id == 4)
-			{
-				this.setReleaseTime(sliderValFloat);
-			}
-			
-			// Transition:
-			if(id == 6)
-			{
-				this.setTransitionTime(sliderValFloat);
-			}
-			*/
 			
 			// Attack, Release, and Transition:
 			if(id == 2 || id == 4 || id == 6)
@@ -1437,6 +1423,8 @@ public class ModuleTemplate {
 				// set broadcasting back to original setting:
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
+			
+			this.updateColors(this.curColorStyle);
 
 		} // majMinChrom buttons
 		

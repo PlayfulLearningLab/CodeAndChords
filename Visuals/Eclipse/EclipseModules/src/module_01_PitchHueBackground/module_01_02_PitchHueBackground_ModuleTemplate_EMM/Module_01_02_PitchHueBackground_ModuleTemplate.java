@@ -205,8 +205,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	boolean	aboveThreshold	= false;
 	boolean	belowThreshold	= true;
 	
-	int			envelopeState		= 0;
-	boolean		wasBelow			= true;
+	boolean		nowBelow			= false;
 	boolean[]	colorReachedArray	= new boolean[] { false, false, false };
 	boolean		colorReached		= false;
 	int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
@@ -660,9 +659,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public void draw()
 	{
 		stroke(255);
-		
+
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
+			this.nowBelow	= false;
+			
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
@@ -698,55 +699,55 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 		} else {
 			// volume not above the threshold:
-//			newHue  = new float[] { 0, 0, 0 };
+			this.nowBelow	= true;
+			
 			goalHue	= new float[] { 0, 0, 0 };
-			/*
-			goalHue[0]	= 0;
-			goalHue[1]	= 0;
-			goalHue[2]	= 0;
-			*/
-			this.wasBelow	= true;
 		} // else
 
 		
-		
-		for(int i = 0; i < goalHue.length; i++)
-		{
-			println("    goalHue[" + i + "] = " + goalHue[i]);
-			println("    curHue[" + i + "] = " + curHue[i]);
-		}
+		float	lowBound;
+		float	highBound;
 
 		for (int i = 0; i < 3; i++)
 		{
-			if (curHue[i] > (goalHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition)))
+			lowBound	= goalHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			highBound	= goalHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			
+			println("lowBound = " + lowBound + "; highBound = " + highBound);
+			
+			// First, check colors and add/subtract as necessary:
+			if (curHue[i] >= highBound)
 			{
-				this.colorReachedArray[i]	= false;
 				curHue[i] = curHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
-			} else if (curHue[i] < (goalHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition)))
+			} else if (curHue[i] <= lowBound)
 			{
-				this.colorReachedArray[i]	= false;
 				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
-			} else {
+			} // if - adjust colors
+			
+			// Now check colors for whether they have moved into the boundaries:
+			if(curHue[i] < highBound && curHue[i] > lowBound) {
 				// if here, color has been reached.
 				this.colorReachedArray[i]	= true;
+			} else {
+				this.colorReachedArray[i]	= false;
 			}
 		} // for
 		
+		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
-		if(this.colorReached)
+/*		if(this.colorReached)
 		{
 			this.wasBelow	= false;
 		}
-		
-		println("this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition) = " + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition));
-		println("input.getAmplitude	= " + input.getAmplitude() + "; wasBelow = " + wasBelow + "; colorReached = " + colorReached);
+*/		
+//		println("this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition) = " + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition));
 
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
 
-		if(!this.buttons[2].getState())
+		if(this.moduleTemplate.isShowScale())
 		{
 			//TODO: if anything else in ModuleTemplate needs to be called every time in draw,
 			// 		we'll just set up a draw() method in ModuleTemplate that does it all.
@@ -757,17 +758,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
-		if(wasBelow && !colorReached) {
+		if(!this.nowBelow && !colorReached) {
 			this.attackReleaseTransition	= 0;
-		} // if
-		
-		// Or, if coming from one super-threshold note to another, use the transition value:
-		if(!wasBelow) {
+			
+		} else if(!this.nowBelow && colorReached) {
+			// Or, if coming from one super-threshold note to another, use the transition value:
 			this.attackReleaseTransition	= 2;
-		}
-		
-		// Or, if volume fell below the threshold, switch to release value:
-		if(wasBelow) {
+		} else if(this.nowBelow) {
+			// Or, if volume fell below the threshold, switch to release value:
 			this.attackReleaseTransition	= 1;
 		}
 
