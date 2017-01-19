@@ -803,7 +803,8 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign, modulateYVals[i])
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
-			.setValue(10)
+			.setRange(-255, 255)
+			.setValue(0)
 			.setLabelVisible(false)
 			.setId(id);
 
@@ -877,9 +878,8 @@ public class ModuleTemplate {
 				id	= id + 3;
 			} // for - colorPos
 			
-			this.originalColors	= this.colors;
 			
-			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
+			// (The functionality in controlEvent for ColorWheels will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
 	} // updateColors
@@ -1665,42 +1665,16 @@ public class ModuleTemplate {
 			// draw slightly transparent rectangle:
 			if(curButton.getBooleanValue())
 			{
-				// Want to turn off automatic drawing so that our transparent rectangle can go on top of the controllers.
-//				this.sidebarCP5.setAutoDraw(false);
-//				this.sidebarCP5.setAutoDraw(false);
 
-				// Draw all the controllers:
-//				this.sidebarCP5.draw();
-//				this.sidebarCP5.draw();
-
-				// Then cover with a rectangle (black, w/alpha of 50):
-//				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-				System.out.println("this.sidebarCP5 = " + this.sidebarCP5);
 				this.sidebarCP5.getGroup("background").setVisible(true);
 				this.sidebarCP5.getGroup("background").bringToFront();
-//				this.sidebarCP5.getController("background").setVisible(true);
-	/*			
-				this.sidebarCP5.getController("button" + controlEvent.getId()).draw(this.parent.g);
-				this.sidebarCP5.getController("button" + controlEvent.getId()).setVisible(true);
-				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).draw(this.parent.g);
-				this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).draw(this.parent.g);
-				*/
-				
-//				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
-//				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
+
 			} else {
+			
 				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
-			/*
-			while(((Button)(this.sidebarCP5.getController("button" + controlEvent.getId()))).getBooleanValue())
-			{
-				this.sidebarCP5.getController("button" + controlEvent.getId()).draw(this.parent.g);
-				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).draw(this.parent.g);
-				this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).draw(this.parent.g);
-				System.out.println("Still in the while...");
-			}*/
 			
 			this.sidebarCP5.getController("button" + (controlEvent.getId())).bringToFront();
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
@@ -1726,9 +1700,9 @@ public class ModuleTemplate {
 
 			if(this.sidebarCP5.getController("custom").getValue() == 1)
 			{
-				this.colors[notePos][0]	= color.getRed();
-				this.colors[notePos][1]	= color.getGreen();
-				this.colors[notePos][2]	= color.getBlue();
+				this.colors[notePos][0]	= this.originalColors[notePos][0] + color.getRed();
+				this.colors[notePos][1]	= this.originalColors[notePos][1] + color.getGreen();
+				this.colors[notePos][2]	= this.originalColors[notePos][2] + color.getBlue();
 			}
 
 			this.updateColors(this.curColorStyle);
