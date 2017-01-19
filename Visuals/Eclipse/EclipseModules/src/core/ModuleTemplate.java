@@ -117,6 +117,7 @@ public class ModuleTemplate {
 
 	private	float[][]	colors;
 	private int[] 		rootColor;
+	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
 
 	int[]				textYVals;
 	int[]				noteYVals;
@@ -809,7 +810,8 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign, modulateYVals[i])
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
-			.setValue(10)
+			.setRange(-255, 255)
+			.setValue(0)
 			.setLabelVisible(false)
 			.setId(id);
 
@@ -883,10 +885,12 @@ public class ModuleTemplate {
 				id	= id + 3;
 			} // for - colorPos
 			
+
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
-			this.applyColorModulate();
+			this.applyColorModulate(this.colors, this.originalColors);
 			
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
+
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
 	} // updateColors
@@ -912,7 +916,8 @@ public class ModuleTemplate {
 				"C"
 		}; // notes
 		 */
-		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
+		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
+
 		// 12/19: updating to be on the side.
 		// 01/05: changing it back!
 		float  sideWidth   = (this.parent.width - leftEdgeX) / notes.length;
@@ -1116,7 +1121,7 @@ public class ModuleTemplate {
 		}
 
 		this.scaleLength	= result.length;
-		this.majMinChrom	= majMinChrom;
+		this.setMajMinChrom(majMinChrom);
 
 		return result;
 	} // getScale
@@ -1130,7 +1135,7 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
 		}
 
-		this.majMinChrom	= majMinChrom;
+		this.setMajMinChrom(majMinChrom);
 		this.curKey			= key;
 		this.setKeyAddVal(modPosition);
 	} // setCurKey
@@ -1330,7 +1335,7 @@ public class ModuleTemplate {
 		int	color2pos;
 		int	color3pos;
 
-		if(this.majMinChrom == 2)
+		if(this.getMajMinChrom() == 2)
 		{
 			// if chromatic scale, put the colors equally throughout:
 			color2pos	= this.scaleLength / 3;
@@ -1434,11 +1439,11 @@ public class ModuleTemplate {
 			} // chromatic
 		}; // rainbowColors
 
-		for(int i = 0; i < this.getColors().length && i < rainbowColors[this.majMinChrom].length; i++)
+		for(int i = 0; i < this.getColors().length && i < rainbowColors[this.getMajMinChrom()].length; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length && j < rainbowColors[this.majMinChrom][i].length; j++)
+			for(int j = 0; j < this.getColors()[i].length && j < rainbowColors[this.getMajMinChrom()][i].length; j++)
 			{
-				this.getColors()[i][j]	= rainbowColors[this.majMinChrom][i][j];
+				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
 
@@ -1447,14 +1452,20 @@ public class ModuleTemplate {
 	/**
 	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
 	 */
-	private void applyColorModulate()
+	private void applyColorModulate(float[][] colors, float[][] originalColors)
 	{
+		if(colors == null || originalColors == null) {
+			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
+		} // error checking
+		
 		for(int i = 0; i < this.colors.length; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
 				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
-				this.colors[i][j]	= this.colors[i][j] + this.redGreenBlueMod[j];
+				colors[i][j]	= originalColors[i][j] + this.redGreenBlueMod[j];
+				
+				//TODO: Also pass in redGreenBlueMod?
 			} // for - j
 		} // for - i
 	} // applyColorModulate
@@ -1554,7 +1565,10 @@ public class ModuleTemplate {
 				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
 				this.redGreenBlueMod[pos]	= sliderValFloat;
 				
-				this.applyColorModulate();
+				if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
+				{
+					this.applyColorModulate(this.colors, this.originalColors);
+				}
 			} // red/green/blue mod
 		}
 
@@ -1586,7 +1600,7 @@ public class ModuleTemplate {
 			// All we want is the name:
 			String	key	= (String) keyMap.get("name");
 
-			this.setCurKey(key, this.majMinChrom);
+			this.setCurKey(key, this.getMajMinChrom());
 			this.displaySidebar();
 		} // keyDropdown
 
@@ -1653,6 +1667,23 @@ public class ModuleTemplate {
 				this.parent.fill(0, 150);
 				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
 				*/
+				
+				ColorWheel	rootCW	= (ColorWheel)this.sidebarCP5.getController("rootColorWheel");
+				int	rgbColor	= rootCW.getRGB();
+				Color	color	= new Color(rgbColor);
+
+				Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("rootColorTF");
+				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
+				this.rootColor[0]	= color.getRed();
+				this.rootColor[1]	= color.getGreen();
+				this.rootColor[2]	= color.getBlue();
+
+				this.colors[0][0]	= color.getRed();
+				this.colors[0][1]	= color.getGreen();
+				this.colors[0][2]	= color.getBlue();
+
+				this.updateColors(this.curColorStyle);
 			} else {
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
@@ -1696,42 +1727,16 @@ public class ModuleTemplate {
 			// draw slightly transparent rectangle:
 			if(curButton.getBooleanValue())
 			{
-				// Want to turn off automatic drawing so that our transparent rectangle can go on top of the controllers.
-//				this.sidebarCP5.setAutoDraw(false);
-//				this.sidebarCP5.setAutoDraw(false);
 
-				// Draw all the controllers:
-//				this.sidebarCP5.draw();
-//				this.sidebarCP5.draw();
-
-				// Then cover with a rectangle (black, w/alpha of 50):
-//				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-				System.out.println("this.sidebarCP5 = " + this.sidebarCP5);
 				this.sidebarCP5.getGroup("background").setVisible(true);
 				this.sidebarCP5.getGroup("background").bringToFront();
-//				this.sidebarCP5.getController("background").setVisible(true);
-	/*			
-				this.sidebarCP5.getController("button" + controlEvent.getId()).draw(this.parent.g);
-				this.sidebarCP5.getController("button" + controlEvent.getId()).setVisible(true);
-				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).draw(this.parent.g);
-				this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).draw(this.parent.g);
-				*/
-				
-//				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
-//				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
+
 			} else {
+			
 				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
-			/*
-			while(((Button)(this.sidebarCP5.getController("button" + controlEvent.getId()))).getBooleanValue())
-			{
-				this.sidebarCP5.getController("button" + controlEvent.getId()).draw(this.parent.g);
-				this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).draw(this.parent.g);
-				this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).draw(this.parent.g);
-				System.out.println("Still in the while...");
-			}*/
 			
 			this.sidebarCP5.getController("button" + (controlEvent.getId())).bringToFront();
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
@@ -1792,6 +1797,19 @@ public class ModuleTemplate {
 				controlEvent.getName().equals("custom"))
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
+			
+			// TODO: might need to only call when curToggle is Custom
+			if(this.originalColors == null) {
+				this.originalColors = new float[this.colors.length][3];
+			}
+			for(int i = 0; i < this.originalColors.length; i++)
+			{
+				for(int j = 0; j < this.originalColors[i].length; j++)
+				{
+					this.originalColors[i][j]	= this.colors[i][j];
+				}
+			}
+
 			// Set root color/call correct function for the new colorStyle:
 			this.updateColors(curToggle.internalValue());
 
@@ -1802,6 +1820,7 @@ public class ModuleTemplate {
 					(Toggle)this.sidebarCP5.getController("trichrom"),
 					(Toggle)this.sidebarCP5.getController("custom")
 			};
+			
 			boolean[]	broadcastState	= new boolean[toggleArray.length];
 			for(int i = 0; i < toggleArray.length; i++)
 			{
@@ -1913,6 +1932,14 @@ public class ModuleTemplate {
 
 	public float getBlueModulate() {
 		return this.redGreenBlueMod[2];
+	}
+
+	public int getMajMinChrom() {
+		return majMinChrom;
+	}
+
+	public void setMajMinChrom(int majMinChrom) {
+		this.majMinChrom = majMinChrom;
 	}
 
 
