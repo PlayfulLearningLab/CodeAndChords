@@ -851,27 +851,18 @@ public class ModuleTemplate {
 		if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 		{
 			this.rainbow();
-			
-			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
-//						this.applyColorModulate();
 		}
 
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
 			this.dichromatic_OneRGB(this.rootColor);
-			
-			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
-//						this.applyColorModulate();
 		}
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
 			this.trichromatic_OneRGB(this.rootColor);
-			
-			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
-//			this.applyColorModulate();
 		}
 
 		// Custom:
@@ -896,7 +887,7 @@ public class ModuleTemplate {
 			
 
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
-//			this.applyColorModulate(this.colors, this.originalColors);
+			this.applyColorModulate(this.colors, this.originalColors);
 			
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 
@@ -925,7 +916,8 @@ public class ModuleTemplate {
 				"C"
 		}; // notes
 		 */
-		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
+		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
+
 		// 12/19: updating to be on the side.
 		// 01/05: changing it back!
 		float  sideWidth   = (this.parent.width - leftEdgeX) / notes.length;
@@ -1129,7 +1121,7 @@ public class ModuleTemplate {
 		}
 
 		this.scaleLength	= result.length;
-		this.majMinChrom	= majMinChrom;
+		this.setMajMinChrom(majMinChrom);
 
 		return result;
 	} // getScale
@@ -1143,7 +1135,7 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
 		}
 
-		this.majMinChrom	= majMinChrom;
+		this.setMajMinChrom(majMinChrom);
 		this.curKey			= key;
 		this.setKeyAddVal(modPosition);
 	} // setCurKey
@@ -1343,7 +1335,7 @@ public class ModuleTemplate {
 		int	color2pos;
 		int	color3pos;
 
-		if(this.majMinChrom == 2)
+		if(this.getMajMinChrom() == 2)
 		{
 			// if chromatic scale, put the colors equally throughout:
 			color2pos	= this.scaleLength / 3;
@@ -1447,11 +1439,11 @@ public class ModuleTemplate {
 			} // chromatic
 		}; // rainbowColors
 
-		for(int i = 0; i < this.getColors().length && i < rainbowColors[this.majMinChrom].length; i++)
+		for(int i = 0; i < this.getColors().length && i < rainbowColors[this.getMajMinChrom()].length; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length && j < rainbowColors[this.majMinChrom][i].length; j++)
+			for(int j = 0; j < this.getColors()[i].length && j < rainbowColors[this.getMajMinChrom()][i].length; j++)
 			{
-				this.getColors()[i][j]	= rainbowColors[this.majMinChrom][i][j];
+				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
 
@@ -1573,10 +1565,10 @@ public class ModuleTemplate {
 				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
 				this.redGreenBlueMod[pos]	= sliderValFloat;
 				
-//				if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
-//				{
+				if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
+				{
 					this.applyColorModulate(this.colors, this.originalColors);
-//				}
+				}
 			} // red/green/blue mod
 		}
 
@@ -1608,7 +1600,7 @@ public class ModuleTemplate {
 			// All we want is the name:
 			String	key	= (String) keyMap.get("name");
 
-			this.setCurKey(key, this.majMinChrom);
+			this.setCurKey(key, this.getMajMinChrom());
 			this.displaySidebar();
 		} // keyDropdown
 
@@ -1675,6 +1667,23 @@ public class ModuleTemplate {
 				this.parent.fill(0, 150);
 				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
 				*/
+				
+				ColorWheel	rootCW	= (ColorWheel)this.sidebarCP5.getController("rootColorWheel");
+				int	rgbColor	= rootCW.getRGB();
+				Color	color	= new Color(rgbColor);
+
+				Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("rootColorTF");
+				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
+				this.rootColor[0]	= color.getRed();
+				this.rootColor[1]	= color.getGreen();
+				this.rootColor[2]	= color.getBlue();
+
+				this.colors[0][0]	= color.getRed();
+				this.colors[0][1]	= color.getGreen();
+				this.colors[0][2]	= color.getBlue();
+
+				this.updateColors(this.curColorStyle);
 			} else {
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
@@ -1923,6 +1932,14 @@ public class ModuleTemplate {
 
 	public float getBlueModulate() {
 		return this.redGreenBlueMod[2];
+	}
+
+	public int getMajMinChrom() {
+		return majMinChrom;
+	}
+
+	public void setMajMinChrom(int majMinChrom) {
+		this.majMinChrom = majMinChrom;
 	}
 
 

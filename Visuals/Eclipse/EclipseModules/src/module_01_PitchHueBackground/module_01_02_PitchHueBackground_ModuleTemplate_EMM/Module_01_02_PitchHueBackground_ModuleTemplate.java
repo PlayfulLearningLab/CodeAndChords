@@ -192,11 +192,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int		modulateTextFieldWidth;
 
 	float[][][]	rainbowColors;
-
+/*
 	int	majMinChrom; //		//	0 = major, 1 = minor, 2 = chromatic
 	int	scaleLength; //
 	String	curKey;
-
+*/
 	private int[]	rootColor;
 	
 	ControlP5	cp5;
@@ -673,19 +673,21 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal()) % 12;
+			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+			System.out.println("scaleDegree = " + scaleDegree);
 			
 			// chromatic:
-			if(this.majMinChrom == 2)
+			if(this.moduleTemplate.getMajMinChrom() == 2)
 			{
 				newHuePos	= scaleDegree;
 			} else {
 				// major or minor:
-				int	inScale	= this.arrayContains(this.scaleDegrees[majMinChrom], scaleDegree);
+				int	inScale	= this.arrayContains(this.scaleDegrees[this.moduleTemplate.getMajMinChrom()], scaleDegree);
 
 				if(inScale > -1)
 				{
 					newHuePos	= inScale;
+					System.out.println("in a major or minor scale; newHuePos = " + newHuePos);
 //					println(newHuePos + " is the position in this scale.");
 				} // if - check if degree is in the scale
 
@@ -701,6 +703,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			if (newHuePos != goalHuePos)
 			{
 				goalHuePos  = newHuePos;
+				System.out.println("  goalHuePos = " + goalHuePos);
 			} // if
 			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 		} else {
@@ -1128,13 +1131,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	} // legend
 */
 
+	
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
 	 */
-	public void dichromatic_OneRGB(int[] rgbVals)
+/*	public void dichromatic_OneRGB(int[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
@@ -1157,7 +1161,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 * 
 	 * @param hue	float[] of HSB values defining the color at the root of the current scale.
 	 */
-	private void dichromatic_OneHSB(float[] hsbVals)
+/*	private void dichromatic_OneHSB(float[] hsbVals)
 	{
 		if(hsbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
@@ -1215,7 +1219,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 * @param rgbVals1	float[] of rgb values defining rootColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
-	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
+/*	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
@@ -1250,7 +1254,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
 	 */
-	public void trichromatic_OneRGB(int[] rgbVals)
+/*	public void trichromatic_OneRGB(int[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
@@ -1275,7 +1279,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	 *
 	 * @param hsbVals	float[] of HSB values defining the color at the root of the current scale.
 	 */
-	private void trichromatic_OneHSB(float[] hsbVals)
+/*	private void trichromatic_OneHSB(float[] hsbVals)
 	{
 		if(hsbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
@@ -1352,7 +1356,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		int	color2pos;
 		int	color3pos;
 
-		if(this.majMinChrom == 2)
+		if(this.moduleTemplate.getMajMinChrom() == 2)
 		{
 			// if chromatic scale, put the colors equally throughout:
 			color2pos	= this.scaleLength / 3;
@@ -1409,7 +1413,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		 */
 
 		// fill from second color to third color:
-		for(int i = color2pos + 1; i < color3pos + 1; i++)
+/*		for(int i = color2pos + 1; i < color3pos + 1; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
