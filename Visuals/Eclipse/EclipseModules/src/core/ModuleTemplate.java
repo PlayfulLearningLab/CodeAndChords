@@ -132,11 +132,11 @@ public class ModuleTemplate {
 	private	float		transitionTime;
 
 	private	float[]		attackReleaseTransition	= new float[3];
-	
+
 	private	float	redModulate;
 	private	float	greenModulate;
 	private	float	blueModulate;
-	
+
 	private	float[]	redGreenBlueMod	= new float[3];	// this will store the red/green/blue modulate values
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
@@ -157,8 +157,8 @@ public class ModuleTemplate {
 
 		// ControlP5 for ColorWheels (having a separate one allows us to setAutoDraw(false) on the other CP5,
 		// draw a transparent rectangle over those controllers, and then draw the ColorWheel on top of that):
-//		this.colorWheelCP5	= new ControlP5(this.parent);
-//		this.sidebarCP5.setVisible(false);
+		//		this.colorWheelCP5	= new ControlP5(this.parent);
+		//		this.sidebarCP5.setVisible(false);
 
 		this.sidebarTitle	= sidebarTitle;
 
@@ -678,7 +678,7 @@ public class ModuleTemplate {
 
 		int	noteX2			= textfieldX1 + textfieldWidth + spacer2;
 		int	textfieldX2		= noteX2 + buttonWidth + spacer1;
-		
+
 		int	colorWheelX		= textfieldX1;
 
 
@@ -765,15 +765,15 @@ public class ModuleTemplate {
 			id = id + 1;
 			namePos	= namePos + 1;
 		} // for - second row of pitches
-		
+
 		Color	transparentBlack	= new Color(0, 0, 0, 200);
 		int		transBlackInt		= transparentBlack.getRGB();
-		
+
 		this.sidebarCP5.addBackground("background")
-			.setPosition(0, 0)
-			.setSize(this.parent.width / 3, this.parent.height)
-			.setBackgroundColor(transBlackInt)
-			.setVisible(false);
+		.setPosition(0, 0)
+		.setSize(this.parent.width / 3, this.parent.height)
+		.setBackgroundColor(transBlackInt)
+		.setVisible(false);
 	} // addNoteColorSelectors
 
 	/**
@@ -856,13 +856,13 @@ public class ModuleTemplate {
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
-			this.dichromatic_OneRGB(this.rootColor);
+			this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
 		}
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
-			this.trichromatic_OneRGB(this.rootColor);
+			this.trichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
 		}
 
 		// Custom:
@@ -870,25 +870,24 @@ public class ModuleTemplate {
 		{			
 			// First, set the key to chromatic:
 			this.setCurKey("A", 2);
-			
+
 			// Then populate the textfields with the current colors in the colors array:
 			// (textfield id's start at 23 and go up by 3)
 			int	id	= 26;
 			int	notePos	= 0;
 			Textfield	curTextfield;
-			
+
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
 			{
 				curTextfield 	= (Textfield)this.sidebarCP5.getController("textfield" + id);
-				System.out.println("curextfield = " + curTextfield);
 				curTextfield.setText("rgb(" + this.colors[colorPos][0] + ", " + this.colors[colorPos][1] + ", " + this.colors[colorPos][2] + ")");
 				id	= id + 3;
 			} // for - colorPos
-			
+
 
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
 			this.applyColorModulate(this.colors, this.originalColors);
-			
+
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 
 			// (Will they need to check to make sure that the key is actually chromatic?)
@@ -899,27 +898,9 @@ public class ModuleTemplate {
 	{
 
 		this.parent.textSize(24);
-		/*
-		String[] notes = new String[] {
-				"C", 
-				"C#", 
-				"D", 
-				"D#", 
-				"E", 
-				"F", 
-				"F#", 
-				"G", 
-				"G#", 
-				"A", 
-				"A#", 
-				"B", 
-				"C"
-		}; // notes
-		 */
+
 		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
 
-		// 12/19: updating to be on the side.
-		// 01/05: changing it back!
 		float  sideWidth   = (this.parent.width - leftEdgeX) / notes.length;
 		float  sideHeight  = this.parent.width / notes.length;
 		//  float  side = height / colors.length;
@@ -930,15 +911,16 @@ public class ModuleTemplate {
 		for (int i = 0; i < notes.length; i++)
 		{
 			this.parent.fill(this.getColors()[i][0], this.getColors()[i][1], this.getColors()[i][2]);
-			/*
+			//			this.parent.fill(255);
+			/*	
 			if(i == 0)
 			{
 				for(int j = 0; j < this.colors[i].length; j++)
 				{
-					println("legend: colors[0][" + j + "] = " + colors[0][j]);
+					System.out.println("legend: colors[0][" + j + "] = " + colors[0][j]);
 				}
 			}
-			 */
+			 */	 
 			if (i == goalHuePos) {
 				this.parent.rect(leftEdgeX + (sideWidth * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
@@ -1176,14 +1158,14 @@ public class ModuleTemplate {
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
 	 */
-	public void dichromatic_OneRGB(int[] rgbVals)
+	public void dichromatic_OneRGB(float[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
 		}
 
 		float[]	hsbVals	= new float[3];
-		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
+		Color.RGBtoHSB((int)rgbVals[0], (int)rgbVals[1], (int)rgbVals[2], hsbVals);
 
 		this.dichromatic_OneHSB(hsbVals);
 	} // dichromatic_OneRGB
@@ -1263,14 +1245,14 @@ public class ModuleTemplate {
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
 	 */
-	public void trichromatic_OneRGB(int[] rgbVals)
+	public void trichromatic_OneRGB(float[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
 		}
 
 		float[]	hsbVals	= new float[3];
-		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
+		Color.RGBtoHSB((int)rgbVals[0], (int)rgbVals[1], (int)rgbVals[2], hsbVals);
 
 		this.trichromatic_OneHSB(hsbVals);
 	} // trichromatic_OneRGB
@@ -1404,7 +1386,7 @@ public class ModuleTemplate {
 	 */
 	public void rainbow()
 	{
-		float[][][] rainbowColors = rainbowColors	= new float[][][] { 
+		float[][][] rainbowColors	= new float[][][] { 
 			new float[][] {
 				{ 255, 0, 0 }, 
 				{ 255, (float) 127.5, 0 }, 
@@ -1439,16 +1421,17 @@ public class ModuleTemplate {
 			} // chromatic
 		}; // rainbowColors
 
-		for(int i = 0; i < this.getColors().length && i < rainbowColors[this.getMajMinChrom()].length; i++)
+		for(int i = 0; i < this.colors.length && i < rainbowColors[this.getMajMinChrom()].length; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length && j < rainbowColors[this.getMajMinChrom()][i].length; j++)
+			for(int j = 0; j < this.colors[i].length && j < rainbowColors[this.getMajMinChrom()][i].length; j++)
 			{
-				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
+				//				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
+				this.colors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
 
 	} // rainbow
-	
+
 	/**
 	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
 	 */
@@ -1457,14 +1440,14 @@ public class ModuleTemplate {
 		if(colors == null || originalColors == null) {
 			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
 		} // error checking
-		
+
 		for(int i = 0; i < this.colors.length; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
 				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
 				colors[i][j]	= originalColors[i][j] + this.redGreenBlueMod[j];
-				
+
 				//TODO: Also pass in redGreenBlueMod?
 			} // for - j
 		} // for - i
@@ -1558,13 +1541,13 @@ public class ModuleTemplate {
 				int	pos	= (id / 2) - 1;
 				this.attackReleaseTransition[pos]	= sliderValFloat;
 			}
-			
+
 			// Red Modulate/Green Modulate/Blue Modulate:
 			if(id == 8 || id == 10 || id == 12)
 			{
 				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
 				this.redGreenBlueMod[pos]	= sliderValFloat;
-				
+
 				if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
 				{
 					this.applyColorModulate(this.colors, this.originalColors);
@@ -1590,7 +1573,7 @@ public class ModuleTemplate {
 		if(controlEvent.getName().equals("keyDropdown"))
 		{
 			controlEvent.getController().bringToFront();
-			
+
 			// keyPos is the position of the particular key in the Scrollable List:
 			int	keyPos	= (int)controlEvent.getValue();
 
@@ -1641,7 +1624,7 @@ public class ModuleTemplate {
 			this.updateColors(this.curColorStyle);
 
 		} // majMinChrom buttons
-		
+
 
 		// Root color selector button:
 		if(controlEvent.getName().equals("rootColorButton"))
@@ -1651,10 +1634,10 @@ public class ModuleTemplate {
 			if(rootButton.getBooleanValue())
 			{
 				// Want to turn off automatic drawing so that our transparent rectangle can go on top of the controllers.
-//				this.sidebarCP5.setAutoDraw(false);
+				//				this.sidebarCP5.setAutoDraw(false);
 
 				// Draw all the controllers:
-//				this.sidebarCP5.draw();
+				//				this.sidebarCP5.draw();
 
 				// Then cover with a rectangle (black, w/alpha of 50):
 				this.sidebarCP5.getGroup("background").setVisible(true);
@@ -1666,8 +1649,8 @@ public class ModuleTemplate {
 				/*
 				this.parent.fill(0, 150);
 				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-				*/
-				
+				 */
+
 				ColorWheel	rootCW	= (ColorWheel)this.sidebarCP5.getController("rootColorWheel");
 				int	rgbColor	= rootCW.getRGB();
 				Color	color	= new Color(rgbColor);
@@ -1683,7 +1666,7 @@ public class ModuleTemplate {
 				this.colors[0][1]	= color.getGreen();
 				this.colors[0][2]	= color.getBlue();
 
-				this.updateColors(this.curColorStyle);
+				//				this.updateColors(this.curColorStyle);
 			} else {
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
@@ -1692,6 +1675,48 @@ public class ModuleTemplate {
 			this.sidebarCP5.getController("rootColorWheel").setVisible(rootButton.getBooleanValue());
 			this.updateColors(this.curColorStyle);
 		} // Root color selector button (i.e., show color wheel)
+
+		// Root color Textfield
+		if(controlEvent.getName().equals("rootColorTF"))
+		{
+			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
+			for(int i = 0; i < tfValues.length; i++)
+			{
+				tfValues[i]	= tfValues[i].trim().toLowerCase();
+				System.out.println("tfValues[" + i + "] = " + tfValues[i]);
+			} // for
+
+			try
+			{
+				if(tfValues[0].equals("rgb"))
+				{
+					// Get color values:
+					float	red		= Float.parseFloat(tfValues[1]);
+					float	green	= Float.parseFloat(tfValues[2]);
+					float	blue	= Float.parseFloat(tfValues[3]);
+
+					// Constrain to 0-255:
+					red		= Math.min(255, Math.max(0, red));
+					green	= Math.min(255, Math.max(0, green));
+					blue	= Math.min(255, Math.max(0, blue));
+
+					// Set root color and update all colors:
+					this.rootColor[0]	= (int) red;
+					this.rootColor[1]	= (int) green;
+					this.rootColor[2]	= (int) blue;
+
+					this.updateColors(this.curColorStyle);
+
+					// Set corresponding ColorWheel:
+					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
+					int		rgbInt		= rgbColor.getRGB();
+					((ColorWheel)this.sidebarCP5.getController("rootColorWheel")).setRGB(rgbInt);
+				}
+
+			} catch(Exception e) {
+				System.out.println("Sorry, that is not recognized as a valid color. Please try again.");
+			}
+		} // root color Textfield
 
 		// Root Color Wheel
 		if(controlEvent.getName().equals("rootColorWheel"))
@@ -1732,61 +1757,103 @@ public class ModuleTemplate {
 				this.sidebarCP5.getGroup("background").bringToFront();
 
 			} else {
-			
+
 				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
-			
+
 			this.sidebarCP5.getController("button" + (controlEvent.getId())).bringToFront();
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).bringToFront();
 
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
-			this.updateColors(this.curColorStyle);
+//			this.updateColors(this.curColorStyle);
 		} // custom pitch color selectors (i.e., show color wheel)
 
 		// Custom pitch ColorWheels
 		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 1))
 		{
-			ColorWheel	rootCW	= (ColorWheel)controlEvent.getController();
-			int	rgbColor	= rootCW.getRGB();
-			Color	color	= new Color(rgbColor);
-
-			Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 1));
-			rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-
-			id	= controlEvent.getId();
-			int	notePos	= ((id + 2) / 3) - 9;
-//			notePos	= (notePos + keyAddVal - 3 + this.colors.length) % this.colors.length;
-
-			if(this.sidebarCP5.getController("custom").getValue() == 1)
+			if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
 			{
+				// get current color:
+				ColorWheel	rootCW	= (ColorWheel)controlEvent.getController();
+				int	rgbColor	= rootCW.getRGB();
+				Color	color	= new Color(rgbColor);
+
+				// Set corresponding Textfield with color value:
+				Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 1));
+				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
+				id	= controlEvent.getId();
+				int	notePos	= ((id + 2) / 3) - 9;
+				//			notePos	= (notePos + keyAddVal - 3 + this.colors.length) % this.colors.length;
+
 				this.colors[notePos][0]	= color.getRed();
 				this.colors[notePos][1]	= color.getGreen();
 				this.colors[notePos][2]	= color.getBlue();
-			}
 
-			this.updateColors(this.curColorStyle);
-			
-			
-			System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+
+				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+			}
 		} // custom pitch color wheels
 
-		// ColorWheel Textfields (id 20 or over; id % 3 == 2):
-		if(controlEvent.getId() > 20 && (controlEvent.getId() % 3 == 2))
+		// ColorWheel Textfields (id 23 or over; id % 3 == 2):
+		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 2))
 		{
-			id	= controlEvent.getId();
-			int	notePos	= ((id + 2) / 3) - 9;
-			
-			if(notePos > -1 && notePos < this.colors.length)
+			if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
 			{
-				
-			}
-			
-			System.out.println(controlEvent.getController() + ": notePos = " + notePos);
-			
-			System.out.println("ModuleTemplate.controlEvent: Entering your own color is not yet supported. Sorry! Please try again later.");
+				id	= controlEvent.getId();
+				int	notePos	= ((id + 2) / 3) - 9;
+
+				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+
+				// error checking
+				if(notePos < 0 || notePos > this.colors.length)	{
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
+							"notePos " + notePos + " from id " + id + " is not a valid note position; " +
+							"it should be between 0 and " + this.colors.length);
+				} // error checking
+
+				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+
+				// Getting color value from the Textfield:
+				String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
+				for(int i = 0; i < tfValues.length; i++)
+				{
+					tfValues[i]	= tfValues[i].trim().toLowerCase();
+					System.out.println("tfValues[" + i + "] = " + tfValues[i]);
+				} // for
+
+				try
+				{
+					if(tfValues[0].equals("rgb"))
+					{
+						// Get color values:
+						float	red		= Float.parseFloat(tfValues[1]);
+						float	green	= Float.parseFloat(tfValues[2]);
+						float	blue	= Float.parseFloat(tfValues[3]);
+
+						// Constrain to 0-255:
+						red		= Math.min(255, Math.max(0, red));
+						green	= Math.min(255, Math.max(0, green));
+						blue	= Math.min(255, Math.max(0, blue));
+
+						// Set corresponding ColorWheel:
+						Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
+						int		rgbInt		= rgbColor.getRGB();
+						((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 1))).setRGB(rgbInt);
+
+						this.colors[notePos][0]	= red;
+						this.colors[notePos][1]	= green;
+						this.colors[notePos][2]	= blue;
+					} // if - rgb
+
+				} catch(Exception e) {
+					System.out.println("Sorry, that is not recognized as a valid color. Please try again.");
+				} // catch
+			} // if - CS_Custom
+
 		} // ColorWheel Textfields
 
 
@@ -1797,7 +1864,7 @@ public class ModuleTemplate {
 				controlEvent.getName().equals("custom"))
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
-			
+
 			// TODO: might need to only call when curToggle is Custom
 			if(this.originalColors == null) {
 				this.originalColors = new float[this.colors.length][3];
@@ -1820,7 +1887,7 @@ public class ModuleTemplate {
 					(Toggle)this.sidebarCP5.getController("trichrom"),
 					(Toggle)this.sidebarCP5.getController("custom")
 			};
-			
+
 			boolean[]	broadcastState	= new boolean[toggleArray.length];
 			for(int i = 0; i < toggleArray.length; i++)
 			{
@@ -1843,7 +1910,7 @@ public class ModuleTemplate {
 			} // for - switch off all Toggles:
 
 		} // colorStyle buttons
-		
+
 		// ModulateSliders:
 
 	} // controlEvent
@@ -1857,7 +1924,7 @@ public class ModuleTemplate {
 	}
 
 	public float[][] getColors() {
-		return colors;
+		return this.colors;
 	}
 
 	public void setColors(float[][] colors) {
