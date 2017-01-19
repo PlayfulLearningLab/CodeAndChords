@@ -31,28 +31,25 @@ public class IFLookAndFeel {
 	public IFPGraphicsState defaultGraphicsState;
 	public static final char DEFAULT = 1;
 	public static final char MOD_TEMPLATE = 2;
-	public	char	type;
 	
 	public IFLookAndFeel(char type) {
+		System.out.println("DEFAULT type was initialized.");
 		defaultGraphicsState = new IFPGraphicsState();
 	}
 	
 	public IFLookAndFeel(PApplet parent, char type) {
-		defaultGraphicsState = new IFPGraphicsState();
-
-		// Play nicely with other people's draw methods. They
-		// may have changed the color mode.
-		IFPGraphicsState temp = new IFPGraphicsState(parent);
+		IFPGraphicsState	temp;		
 		
-		parent.colorMode(PApplet.RGB, 255);
-		
-		this.type	= type;
-		parent.println("(int)type = " + (int)type);
-		
+		// Such long, ugly if's in an attempt to find the noSmooth and textMode(0) problems.
 		if (type == DEFAULT) {
-//			IllegalArgumentException iae = new IllegalArgumentException("Hi");
-//			iae.printStackTrace();
+			defaultGraphicsState = new IFPGraphicsState();
 
+			// Play nicely with other people's draw methods. They
+			// may have changed the color mode.
+			temp = new IFPGraphicsState(parent);
+			
+			parent.colorMode(PApplet.RGB, 255);
+						
 			baseColor = parent.color(153, 153, 204);
 			highlightColor = parent.color(102, 102, 204);
 			activeColor = parent.color (255, 153, 51);
@@ -72,21 +69,55 @@ public class IFLookAndFeel {
 			
 //			PFont tempFont = parent.loadFont ("FrutigerLight-13.vlw");
 //			parent.textFont(tempFont, 13);
+			
+			parent.textAlign(PApplet.LEFT);
+			
+			parent.rectMode(PApplet.CORNER);
+			parent.ellipseMode(PApplet.CORNER);
+			
+			parent.strokeWeight(1);
+			
+			parent.colorMode(PApplet.RGB, 255);
+			
+			try {
+				parent.smooth();
+			} catch (RuntimeException e) {
+				// Can't smooth in P3D, throws exception
+			}
+
+			/*
+			System.out.println("\n===== INTERFASCIA SETUP ======\ntextAlign:\t" + parent.g.textAlign +
+					"\nrectMode:\t" + parent.g.rectMode +
+					"\nellipseMode:\t" + parent.g.ellipseMode +
+					"\ncolorMode:\t" + parent.g.colorMode + ", " + parent.g.colorModeX +
+					"\nsmooth:\t" + parent.g.smooth);
+			*/
+			
+			defaultGraphicsState.saveSettingsForApplet(parent);
+			// System.out.println("Class: " + parent.g.getClass() + "/n");
+			// Set the color mode back
+			temp.restoreSettingsToApplet(parent);
 		} else if(type == MOD_TEMPLATE)
 		{
-			parent.println("The MOD_TEMPLATE type was selected!");
+			defaultGraphicsState = new IFPGraphicsState();
+
+			// Play nicely with other people's draw methods. They
+			// may have changed the color mode.
+			temp = new IFPGraphicsState(parent);
+			
+			parent.colorMode(PApplet.RGB, 255);
+						
 			baseColor = parent.color(204);
-			highlightColor = parent.color(0, 51, 204);
-			activeColor = parent.color (240, 100, 30);
-			selectionColor = parent.color(240, 100, 30);
-			borderColor = parent.color (255);
-			textColor = parent.color(255);
+			highlightColor = parent.color(150);
+			activeColor = parent.color (80);
+			selectionColor = parent.color(242);
+			borderColor = parent.color (0);		// don't want it to look like there is a border
+			textColor = parent.color(0);
 			lightGrayColor = parent.color(100);
 			darkGrayColor = parent.color(50);
 			
 //			PFont tempFont = parent.loadFont ("FrutigerLight-13.vlw");
 //			parent.textFont(tempFont, 13);
-		} // if
 		
 			parent.textAlign(PApplet.LEFT);
 			
@@ -115,6 +146,6 @@ public class IFLookAndFeel {
 			// System.out.println("Class: " + parent.g.getClass() + "/n");
 			// Set the color mode back
 			temp.restoreSettingsToApplet(parent);
-//		}
+		} // if
 	} // constructor
 } // class

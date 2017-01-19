@@ -23,6 +23,15 @@
 // Updated for Processing 3 by Anna Terzaroli 2015
 // anna.giw (at) libero (dot) it
 //
+/**
+ * Emily Meuer
+ * Jan., 2017
+ * 
+ * Modifications:
+ *  - added global variable "state"
+ *  - change color on click and stay changed until clicked again
+ *  - can only receive clicks when visible
+ */
 
 
 
@@ -32,6 +41,7 @@ import processing.event.*;
 
 public class IFButton extends GUIComponent {
 	private int currentColor;
+	private	boolean	state;
 
 	public IFButton (String newLabel, int newX, int newY) {
 		this (newLabel, newX, newY, 100, 21);
@@ -45,6 +55,7 @@ public class IFButton extends GUIComponent {
 		setLabel(newLabel);
 		setPosition(newX, newY);
 		setSize(newWidth, newHeight);
+		this.setState(false);
 	}
 
 	public void initWithParent () {
@@ -53,12 +64,15 @@ public class IFButton extends GUIComponent {
 
 	public void mouseEvent(MouseEvent e) {
 		if (e.getAction() == MouseEvent.PRESS) {
-			if (isMouseOver (e.getX(), e.getY())) {
+			if (isMouseOver (e.getX(), e.getY()) && controller.getVisible()) {
 				wasClicked = true;
+				state	= !state;
+//				controller.parent.println("IFButton.mouseEvent: mouse click on button has begun.");
 			}
 		} else if (e.getAction() == MouseEvent.RELEASE) {
-			if (wasClicked && isMouseOver (e.getX(), e.getY())) {
+			if (wasClicked && isMouseOver (e.getX(), e.getY()) && controller.getVisible()) {
 				fireEventNotification(this, "Clicked");
+//				controller.parent.println("IFButton.mouseEvent: mouse click on button was registered.");
 				wasClicked = false;
 			}
 		}
@@ -67,7 +81,7 @@ public class IFButton extends GUIComponent {
 	public void draw () {
 		boolean hasFocus = controller.getFocusStatusForComponent(this);
 	
-		if (wasClicked) {
+		if (wasClicked || state) {
 			 currentColor = lookAndFeel.activeColor;
 		} else if (isMouseOver (controller.parent.mouseX, controller.parent.mouseY) || hasFocus) {
 			 currentColor = lookAndFeel.highlightColor;
@@ -93,12 +107,20 @@ public class IFButton extends GUIComponent {
 			controller.parent.stroke(255,0,0);
 			controller.parent.rect(x, y, wid, hgt);
 		}
+	} // draw
+
+	public boolean getState() {
+		return state;
+	}
+
+	public void setState(boolean state) {
+		this.state = state;
 	}
 		
 	public void keyEvent(KeyEvent e) {
 		if (e.getAction() == KeyEvent.TYPE && e.getKey() == ' ') {
 			fireEventNotification(this, "Selected");
 		}
-	}
+	} // keyEvent
 
 }
