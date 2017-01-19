@@ -378,6 +378,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		controller.setLookAndFeel(modTemplate);
 		controller.setVisible(false);
 
+		/*
 		// Making the play button:
 		int  playDistanceFromEdge  = 20;
 		int  playWidth  = 25;
@@ -440,7 +441,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"\noneHalfX = " + oneHalfX +
 				"\noneX = " + oneX);
 		 */
-		float[][]	rightArrowVerts	= new float[][] {
+/*		float[][]	rightArrowVerts	= new float[][] {
 			new float[]	{ aX, oneQuarterY },
 			new float[] { oneHalfX, oneQuarterY },
 			new float[]	{ oneHalfX, aY },
@@ -488,7 +489,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.leftArrow.noFill();
 		this.leftArrow.endShape();
 		this.leftArrow.setVisible(false);
-
+*/
 		this.sidebarOut  = false;
 		this.leftEdgeX   = 0;
 
@@ -674,7 +675,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
 			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
-			System.out.println("scaleDegree = " + scaleDegree);
 			
 			// chromatic:
 			if(this.moduleTemplate.getMajMinChrom() == 2)
@@ -687,7 +687,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				if(inScale > -1)
 				{
 					newHuePos	= inScale;
-					System.out.println("in a major or minor scale; newHuePos = " + newHuePos);
 //					println(newHuePos + " is the position in this scale.");
 				} // if - check if degree is in the scale
 
@@ -703,7 +702,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			if (newHuePos != goalHuePos)
 			{
 				goalHuePos  = newHuePos;
-				System.out.println("  goalHuePos = " + goalHuePos);
 			} // if
 			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 		} else {
