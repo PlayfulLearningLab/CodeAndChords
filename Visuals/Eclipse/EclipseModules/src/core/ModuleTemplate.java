@@ -1103,7 +1103,7 @@ public class ModuleTemplate {
 		}
 
 		this.scaleLength	= result.length;
-		this.setMajMinChrom(majMinChrom);
+		this.majMinChrom	= majMinChrom;
 
 		return result;
 	} // getScale
@@ -1117,7 +1117,7 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
 		}
 
-		this.setMajMinChrom(majMinChrom);
+		this.majMinChrom	= majMinChrom;
 		this.curKey			= key;
 		this.setKeyAddVal(modPosition);
 	} // setCurKey
@@ -1955,6 +1955,7 @@ public class ModuleTemplate {
 		this.thresholdLevel = thresholdLevel;
 	}
 
+	// TODO: I think these variables are extraneous, so their getters/setters could prob. go.
 	public float getAttackTime() {
 		return attackTime;
 	}
@@ -2003,10 +2004,6 @@ public class ModuleTemplate {
 
 	public int getMajMinChrom() {
 		return majMinChrom;
-	}
-
-	public void setMajMinChrom(int majMinChrom) {
-		this.majMinChrom = majMinChrom;
 	}
 
 
