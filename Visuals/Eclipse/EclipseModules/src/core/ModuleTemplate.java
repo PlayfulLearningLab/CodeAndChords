@@ -125,11 +125,18 @@ public class ModuleTemplate {
 	private	boolean		showScale;
 
 	private	float		thresholdLevel;
+	// TODO: the following three var's are probably extraneous, and their getters and setters as well?
 	private	float		attackTime;
 	private	float		releaseTime;
 	private	float		transitionTime;
 
 	private	float[]		attackReleaseTransition	= new float[3];
+	
+	private	float	redModulate;
+	private	float	greenModulate;
+	private	float	blueModulate;
+	
+	private	float[]	redGreenBlueMod	= new float[3];	// this will store the red/green/blue modulate values
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -142,7 +149,7 @@ public class ModuleTemplate {
 		// ControlP5 for most of the sidebar elements:
 		this.sidebarCP5		= new ControlP5(this.parent);
 
-		// This technically works, but it horribly blurry:
+		// This technically works, but it's horribly blurry:
 		//		this.sidebarCP5.setFont(this.parent.createFont("Consolas", 10) );
 
 		this.sidebarCP5.setVisible(false);
@@ -785,7 +792,7 @@ public class ModuleTemplate {
 		int	tfWidth			= 70;	// width of Textfields
 
 		String[]	names	= new String[] { "redModLabel", "greenModLabel", "blueModLabel" };
-		String[]	values	= new String[] { "Red Modulate", "Green mod.", "Blue modulate" };
+		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
 		int	id	= 8;		// this id picks up where the transition textfield - "textfield7" - left off.
 
@@ -875,6 +882,9 @@ public class ModuleTemplate {
 				curTextfield.setText("rgb(" + this.colors[colorPos][0] + ", " + this.colors[colorPos][1] + ", " + this.colors[colorPos][2] + ")");
 				id	= id + 3;
 			} // for - colorPos
+			
+			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
+			this.applyColorModulate();
 			
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			// (Will they need to check to make sure that the key is actually chromatic?)
@@ -1433,6 +1443,21 @@ public class ModuleTemplate {
 		} // for - i (going through colors)
 
 	} // rainbow
+	
+	/**
+	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
+	 */
+	private void applyColorModulate()
+	{
+		for(int i = 0; i < this.colors.length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
+				this.colors[i][j]	= this.colors[i][j] + this.redGreenBlueMod[j];
+			} // for - j
+		} // for - i
+	} // applyColorModulate
 
 	/**
 	 * This method handles the functionality of all the buttons, sliders, and textFields;
@@ -1522,6 +1547,15 @@ public class ModuleTemplate {
 				int	pos	= (id / 2) - 1;
 				this.attackReleaseTransition[pos]	= sliderValFloat;
 			}
+			
+			// Red Modulate/Green Modulate/Blue Modulate:
+			if(id == 8 || id == 10 || id == 12)
+			{
+				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
+				this.redGreenBlueMod[pos]	= sliderValFloat;
+				
+				this.applyColorModulate();
+			} // red/green/blue mod
 		}
 
 		// Textfields
@@ -1790,6 +1824,8 @@ public class ModuleTemplate {
 			} // for - switch off all Toggles:
 
 		} // colorStyle buttons
+		
+		// ModulateSliders:
 
 	} // controlEvent
 
@@ -1866,6 +1902,18 @@ public class ModuleTemplate {
 
 		return	this.attackReleaseTransition[arORt];
 	} // getAttackReleaseTransition
+
+	public float getRedModulate() {
+		return this.redGreenBlueMod[0];
+	}
+
+	public float getGreenModulate() {
+		return this.redGreenBlueMod[1];
+	}
+
+	public float getBlueModulate() {
+		return this.redGreenBlueMod[2];
+	}
 
 
 	/*
