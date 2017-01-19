@@ -117,6 +117,7 @@ public class ModuleTemplate {
 
 	private	float[][]	colors;
 	private int[] 		rootColor;
+	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
 
 	int[]				textYVals;
 	int[]				noteYVals;
@@ -875,6 +876,8 @@ public class ModuleTemplate {
 				curTextfield.setText("rgb(" + this.colors[colorPos][0] + ", " + this.colors[colorPos][1] + ", " + this.colors[colorPos][2] + ")");
 				id	= id + 3;
 			} // for - colorPos
+			
+			this.originalColors	= this.colors;
 			
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			// (Will they need to check to make sure that the key is actually chromatic?)
