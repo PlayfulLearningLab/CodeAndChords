@@ -17,8 +17,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	/**
  1/4/2016
  Emily
- Current struggle = since they're on top of each other, they both contain....
- Probably set a boolean to see which if it goes to?
 
 	 * 08/01/2016
 	 * Emily Meuer
@@ -224,7 +222,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		hueMax         = 360;
 		saturationMax  = 300;
 		brightnessMax  = 100;
-
+/*
 		this.rainbowColors	= new float[][][] { 
 			new float[][] {
 				{ 255, 0, 0 }, 
@@ -259,6 +257,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				{ 255, 0, (float) 127.5 }
 			} // chromatic
 		}; // rainbowColors
+		*/
 	/*	
 		this.notesCtoBFlats	= new String[] { 
 				"C", 
@@ -290,27 +289,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"B"
 		};
 */
-//		this.colors	= new float[12][3];
-/*
-		this.curColorStyle	= this.CS_RAINBOW;
-		this.rootColor	= new int[] { 255, 0, 0, };
-		// Start chromatic, rainbow:
-	*/	
-//		this.curKey	= "D";
-//		this.majMinChrom	= 2;
 
-		//		this.setCurKey("G", 2);
-		
-//		this.rainbow();
-		/*
-		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
-		{
-			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
-			{
-				this.colors[i][j]	= this.rainbowColors[2][i][j];
-			} // for - j (going through rgb values)
-		} // for - i (going through colors)
-		*/
 
 		//  input        = new Input(inputFile);
 		threshold    = 15;

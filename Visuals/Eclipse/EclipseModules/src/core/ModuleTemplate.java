@@ -943,76 +943,7 @@ public class ModuleTemplate {
 		this.parent.stroke(255);
 		this.parent.fill(0);
 		this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-		/*
-		int textX  		= 5;
-		int	noteNameX1	= 40;
-		int	noteNameX2 	= noteNameX1 + 135;
-
-		String[]	textArray	= new String[] {
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				""				
-		}; // textArray
-
-
-		String[]	noteNames1	= new String[] {
-				"", "", "", "", "", ""
-		}; // noteNames
-		String[]	noteNames2	= new String[] {
-				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames2
-
-		String[]	modulateText	= new String[] {
-				"", "", ""
-		}; // modulateText
-		 */
-
-
-		/*
-		this.parent.fill(255);
-		this.parent.textSize(12);
-		this.parent.text(this.sidebarTitle, this.leftAlign, 17);
-		this.parent.textSize(10);
-		this.parent.text("Menu", this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 16);
-		 */	
-		/*
-
-		for(int i = 0; i < textArray.length; i++)
-		{
-			this.parent.text(textArray[i], textX, textYVals[i]);
-		}
-		for(int i = 0; i < noteNames1.length; i++)
-		{
-			this.parent.text(noteNames1[i], noteNameX1, noteYVals[i]);
-		}
-		for(int i = 0; i < noteNames2.length; i++)
-		{
-			this.parent.text(noteNames2[i], noteNameX2, noteYVals[i]);
-		}
-		 */
-		/*
-		for(int i = 0; i < modulateText.length; i++)
-		{
-			this.parent.text(modulateText[i], textX, modulateYVals[i]);
-		}
-		for(int i = 0; i < scrollbarArray.length; i++)
-		{
-			scrollbarArray[i].update();
-			scrollbarArray[i].display();
-		} // for - update and display first set of scrollbars
-
-		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
-		{
-			modulateScrollbarArray[i].update();
-			modulateScrollbarArray[i].display();
-		} // for - update and display modulate color scrollbars
-		 */
+		
 	} // displaySidebar
 
 	public String[] getScale(String key, int majMinChrom)
@@ -1386,6 +1317,7 @@ public class ModuleTemplate {
 	 */
 	public void rainbow()
 	{
+		/*
 		float[][][] rainbowColors	= new float[][][] { 
 			new float[][] {
 				{ 255, 0, 0 }, 
@@ -1403,6 +1335,53 @@ public class ModuleTemplate {
 				{ (float) 127.5, 255, 0 },
 				{ 0, 255, 255 },  
 				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 }
+			}, // minor
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 }, 
+				{ 0, 255, 0 }, 
+				{ 0, 255, (float) 127.5 }, 
+				{ 0, 255, 255 }, 
+				{ 0, (float) 127.5, 255 }, 
+				{ 0, 0, 255 }, 
+				{ (float) 127.5, 0, 255 }, 
+				{ 255, 0, 255 }, 
+				{ 255, 0, (float) 127.5 }
+			} // chromatic
+		}; // rainbowColors
+		*/
+		// Filling colors all the way, regardless of the scale,
+		// and then we'll just pick out the colors at scaleDegrees[majMinChrom] for major or minor:
+		float[][][] rainbowColors	= new float[][][] { 
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, 0, 0 },
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 },
+				{ 0, 255, 255 },
+				{ 0, 255, 255 },
+				{ 0, 255, 255 },  
+				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 },
+				{ (float) 127.5, 0, 255 }
+			}, // major
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, 0, 0 },
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 },
+				{ 0, 255, 255 },
+				{ 0, 255, 255 },
+				{ 0, 0, 255 },
+				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 },
 				{ (float) 127.5, 0, 255 }
 			}, // minor
 			new float[][] {
