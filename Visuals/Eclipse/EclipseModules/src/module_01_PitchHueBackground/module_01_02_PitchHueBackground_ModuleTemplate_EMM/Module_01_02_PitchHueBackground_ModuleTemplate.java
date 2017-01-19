@@ -8,6 +8,8 @@ import java.awt.Color;
 import addons.Buttons;
 import addons.HScrollbar;
 import core.Input;
+import core.ModuleTemplate;
+import	controlP5.*;
 
 public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 {
@@ -191,11 +193,24 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	float[][][]	rainbowColors;
 
+/*
 	int	majMinChrom; //		//	0 = major, 1 = minor, 2 = chromatic
 	int	scaleLength; //
 	String	curKey;
-
+*/
 	private int[]	rootColor;
+	
+	ControlP5	cp5;
+	ModuleTemplate	moduleTemplate;
+	
+	boolean	aboveThreshold	= false;
+	boolean	belowThreshold	= true;
+	
+	boolean		nowBelow			= false;
+	boolean[]	colorReachedArray	= new boolean[] { false, false, false };
+	boolean		colorReached		= false;
+	int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
+
 
 	public void settings()
 	{
@@ -204,6 +219,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void setup() 
 	{
+		input  = new Input();
+		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+		this.moduleTemplate.initModuleTemplate();
+		
 		hueMax         = 360;
 		saturationMax  = 300;
 		brightnessMax  = 100;
@@ -242,7 +261,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				{ 255, 0, (float) 127.5 }
 			} // chromatic
 		}; // rainbowColors
-		
+
+	/*	
+>>>>>>> 476dc8c67112247b85a37a36efc01294187c230d
 		this.notesCtoBFlats	= new String[] { 
 				"C", 
 				"Db", 
@@ -272,6 +293,28 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				"A#",
 				"B"
 		};
+*/
+//		this.colors	= new float[12][3];
+/*
+		this.curColorStyle	= this.CS_RAINBOW;
+		this.rootColor	= new int[] { 255, 0, 0, };
+		// Start chromatic, rainbow:
+	*/	
+//		this.curKey	= "D";
+//		this.majMinChrom	= 2;
+
+		//		this.setCurKey("G", 2);
+		
+//		this.rainbow();
+		/*
+		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
+			{
+				this.colors[i][j]	= this.rainbowColors[2][i][j];
+			} // for - j (going through rgb values)
+		} // for - i (going through colors)
+		*/
 
 		this.colors	= new float[12][3];
 
@@ -281,9 +324,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		
 //		this.curKey	= "D";
 //		this.majMinChrom	= 2;
-		this.setCurKey("G", 2);
+		this.moduleTemplate.setCurKey("G", 2);
 		
-		this.rainbow();
+	
 		/*
 		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
 		{
@@ -295,8 +338,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		*/
 
 		//  input        = new Input(inputFile);
-		input  = new Input();
 		threshold    = 15;
+
 
 		this.majorScaleDegrees  = new int[]  {
 				0, 
@@ -324,11 +367,17 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		};
 
 		noStroke();
-		background(0);
+		background(150);
 
 		//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
-		curHue       = colors[curHuePos];
+		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
+			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
+			curHuePos	= 0;
+		}
+
+		curHue	= this.moduleTemplate.getColors()[curHuePos];
+		
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
 
@@ -343,7 +392,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		textSize(24);
 
 		// draws the legend
-		legend();
+		//legend();
 
 		scrollbar = new HScrollbar(this, 10, 45, (width / 2) - 10, 18, 5);
 
@@ -471,7 +520,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.scrollbarX  = (width / 3) / 4;
 		this.modulateScrollbarX	= this.scrollbarX;
 
-
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	40;
 		// Given our height = 250 and "hide" (textYVals[0]) starts at 40,
@@ -504,6 +552,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		}
 
 
+/*
+>>>>>>> 476dc8c67112247b85a37a36efc01294187c230d
 		hideWidth     = 71;
 		int hideSpace	= 4;
 
@@ -512,9 +562,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
    this.arrowX       = ((width / 3) / 4) * 2 + 15;
    this.scaleX       = ((width / 3) / 4) * 3 + 20;
 		 */
-		playButtonX  = scrollbarX;
+
+
+/*		playButtonX  = scrollbarX;
 		arrowX       = scrollbarX + hideWidth + hideSpace;
 		scaleX       = scrollbarX + (+ hideWidth + hideSpace) * 2;
+*/
 
 		int	colorStyleWidth	= 52;
 		int	colorStyleSpace	= 4;
@@ -641,99 +694,146 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void draw()
 	{
-
 		stroke(255);
-		if (input.getAmplitude() > threshold)
+
+		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
+
+			this.nowBelow	= false;
+			
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.keyAddVal) % 12;
+			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+			System.out.println("scaleDegree = " + scaleDegree);
 			
 			// chromatic:
-			if(this.majMinChrom == 2)
+			if(this.moduleTemplate.getMajMinChrom() == 2)
+
 			{
 				newHuePos	= scaleDegree;
 			} else {
 				// major or minor:
-				int	inScale	= this.arrayContains(this.scaleDegrees[majMinChrom], scaleDegree);
+
+				int	inScale	= this.arrayContains(this.scaleDegrees[this.moduleTemplate.getMajMinChrom()], scaleDegree);
+
 
 				if(inScale > -1)
 				{
 					newHuePos	= inScale;
+			
+
 //					println(newHuePos + " is the position in this scale.");
 				} // if - check if degree is in the scale
 
 			} // if - current scale is Major or Minor		
 
-			if(newHuePos > colors.length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ").");
+
+			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
+				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
 			}
-			newHue  = colors[newHuePos];
+			newHue  = this.moduleTemplate.getColors()[newHuePos];
+
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
+			
+			// set goalHue to the color indicated by the current pitch:
+			if (newHuePos != goalHuePos)
+			{
+				goalHuePos  = newHuePos;
+				System.out.println("  goalHuePos = " + goalHuePos);
+			} // if
+			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 		} else {
-			newHue  = new float[] { 0, 0, 0 };
+			// volume not above the threshold:
+			this.nowBelow	= true;
+			
+			goalHue	= new float[] { 0, 0, 0 };
 		} // else
 
-		// set goalHue to the color indicated by the current pitch:
-		if (newHuePos != goalHuePos)
-		{
-			goalHuePos  = newHuePos;
-		} // if
-		goalHue  = colors[goalHuePos];
+		
+		float	lowBound;
+		float	highBound;
 
 		for (int i = 0; i < 3; i++)
 		{
-			if (curHue[i] > (goalHue[i] - attackTime))
+			lowBound	= goalHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			highBound	= goalHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			
+			
+			// First, check colors and add/subtract as necessary:
+			if (curHue[i] >= highBound)
 			{
-				curHue[i] = curHue[i] - attackTime;
-			} else if (curHue[i] < (goalHue[i] + attackTime))
+				curHue[i] = curHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			} else if (curHue[i] <= lowBound)
 			{
-				curHue[i]  = curHue[i] + attackTime;
-			} // if
+				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+			} // if - adjust colors
+			
+			
+			// Now check colors for whether they have moved into the boundaries:
+			if(curHue[i] < highBound && curHue[i] > lowBound) {
+				// if here, color has been reached.
+				this.colorReachedArray[i]	= true;
+			} else {
+				this.colorReachedArray[i]	= false;
+			}
 		} // for
+		
+		// If all elements of the color are in range, then the color has been reached:
+		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);
-		rect(leftEdgeX, 0, width - leftEdgeX, height);
-
+		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
-		//  triangle( 710, 10, 710, 30, 730, 20);
-		if(!this.buttons[2].getState())
+
+
+
+		if(this.moduleTemplate.isShowScale())
 		{
+			//TODO: if anything else in ModuleTemplate needs to be called every time in draw,
+			// 		we'll just set up a draw() method in ModuleTemplate that does it all.
+			
 			// draws the legend along the bottom of the screen:
-			legend();
+			this.moduleTemplate.legend(goalHuePos);
 		}
 
-		//  scrollbar.update();
-		//  scrollbar.display();
+		// If coming from a low amplitude note and not yet reaching a color,
+		// use the attack value to control the color change:
+		if(!this.nowBelow && !colorReached) {
+			this.attackReleaseTransition	= 0;
+			
+		} else if(!this.nowBelow && colorReached) {
+			// Or, if coming from one super-threshold note to another, use the transition value:
+			this.attackReleaseTransition	= 2;
+		} else if(this.nowBelow) {
+			// Or, if volume fell below the threshold, switch to release value:
+			this.attackReleaseTransition	= 1;
+		}
 
-		scrollbarPos  = scrollbar.getPos();
-		attackTime      = map(scrollbarPos, scrollbar.getSposMin(), scrollbar.getSposMax(), attackTimeMin, attackTimeMax);
-
-		//  label.setLabel("attackTime: " + attackTime);
-
-		shape(this.playButton);
-		shape(this.stopButton);
-		shape(this.leftArrow);
-		shape(this.rightArrow);
-
-		/*
-		if (mousePressed && (mouseX < (width / 3)))
-		{
-			this.sidebarOut  = !this.sidebarOut;
-
-			if (sidebarOut)
-			{
-				this.leftEdgeX  = width / 3;
-				this.displaySidebar();
-			} else {
-				this.leftEdgeX  = 0;
-				this.controller.setVisible(false);
-			} // if - leftEdgeX
-		} // if - mousePressed
-		 */
 	} // draw()
+	
+	/**
+	 * All modules with a ModuleTemplate must include this method.
+	 * 
+	 * @param theControlEvent	a ControlEvent that will be passed to controlEvent in ModuleTemplate.
+	 */
+	public void controlEvent(ControlEvent theControlEvent)
+	{
+		try
+		{
+			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
+					"; this.moduleTemplate = " + this.moduleTemplate);
+			this.moduleTemplate.controlEvent(theControlEvent);	
+		} catch(Exception e)
+		{
+			println("Module_01_02.controlEvent: caught Exception " + e);
+			e.printStackTrace();
+		}
+	} // controlEvent
+
+
+
 
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
@@ -783,6 +883,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		return -1;
 	}
 
+
 	private void printArray(String[] array)
 	{
 		for(int i = 0; i < array.length - 1; i++)
@@ -792,874 +893,4 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		print(array[array.length - 1] + ";\n");
 	}
 
-	void displaySidebar()
-	{
-		this.controller.setVisible(true);
-		this.leftEdgeX  = width / 3;
-
-		stroke(255);
-		fill(0);
-		rect(0, 0, leftEdgeX, height);
-
-		int  textX  = 5;
-
-		String[]	textArray	= new String[] {
-				"Hide",
-				"Threshold",
-				"Attack",
-				"Release",
-				"Transition",
-				"Key",
-				"Root Color",
-				"Color Style",
-				"Pitch Color Codes"				
-		}; // textArray
-
-
-		String[]	noteNames1	= new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D"
-		}; // noteNames
-		String[]	noteNames2	= new String[] {
-				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames2
-
-		String[]	modulateText	= new String[] {
-				"Red Modulate", "Green Mod.", "Blue Modulate"
-		}; // modulateText
-
-		textSize(10);
-		fill(255);
-		text("Module_01_01_PitchHueBackground", 10, 15);
-
-		for(int i = 0; i < textArray.length; i++)
-		{
-			text(textArray[i], textX, textYVals[i]);
-		}
-
-		for(int i = 0; i < noteNames1.length; i++)
-		{
-			text(noteNames1[i], noteNameX1, noteYVals[i]);
-		}
-		for(int i = 0; i < noteNames2.length; i++)
-		{
-			text(noteNames2[i], noteNameX2, noteYVals[i]);
-		}
-
-		for(int i = 0; i < modulateText.length; i++)
-		{
-			text(modulateText[i], textX, modulateYVals[i]);
-		}
-
-		for(int i = 0; i < scrollbarArray.length; i++)
-		{
-			scrollbarArray[i].update();
-			scrollbarArray[i].display();
-		} // for - update and display first set of scrollbars
-
-		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
-		{
-			modulateScrollbarArray[i].update();
-			modulateScrollbarArray[i].display();
-		} // for - update and display modulate color scrollbars
-	} // displaySidebar
-
-	public String[] getScale(String key, int majMinChrom)
-	{
-		String[][] allNotes	= new String[][] {
-			new String[] { "A" , "A" }, 
-			new String[] { "A#", "Bb" }, 
-			new String[] { "B" , "Cb" },
-			new String[] { "C" , "C" },
-			new String[] { "C#", "Db" }, 
-			new String[] { "D" , "D" }, 
-			new String[] { "D#", "Eb" }, 
-			new String[] { "E" , "E" }, 
-			new String[] { "F" , "F"}, 
-			new String[] { "F#", "Gb" }, 
-			new String[] { "G" , "G" }, 
-			new String[] { "G#", "Ab" }
-		};
-		int[]	majorScale	= new int[] {
-				2, 2, 1, 2, 2, 2, 1
-		};
-		int[]	minorScale	= new int[] {
-				2, 1, 2, 2, 1, 2, 2
-		};
-		int[]	chromaticScale	= new int[] {
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-		};
-		int[][]	allScales	= new int[][] {
-			majorScale,
-			minorScale,
-			chromaticScale
-		};
-
-		// find starting position in allNotes:
-		boolean	flag	= false;
-		int[]		startHere	= new int[2];
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				if(allNotes[i][j] == key && flag == false)
-				{
-					startHere[0]	= i;
-					startHere[1]	= j;
-					flag	= true;
-				} // if
-			} // for - j
-		} // for - i
-		if(flag == false) 
-		{
-			throw new IllegalArgumentException("Module_01_02_PHB_ModuleTemplate.getScale: key " + key + " is not a valid key.");
-		} // if - throw exception if key not found
-
-		// Determine whether the key should use sharps or flats when choosing from enharmonic notes:
-		// Be sure to include the space when doing indexOf - to avoid false positives with keys that are sharped
-		String	sharps;
-		String	flats;
-		if(majMinChrom == 0 || majMinChrom == 2)
-		{
-			sharps	= "C G D A E B ";
-			flats	= "F Bb Eb Ab Db Gb ";
-		} else {
-			sharps	= "A E B F# C# G# D#";
-			flats	= "D G C F Bb Eb ";
-		}
-		String[]	sharpsAndFlats	= new String[] { sharps, flats };
-
-		int	sharpOrFlat	= -1;
-		for(int i = 0; i < sharpsAndFlats.length; i++)
-		{
-			if(sharpsAndFlats[i].indexOf(key + " ") > -1)
-			{
-				sharpOrFlat	= i;
-			}
-		}
-		if(sharpOrFlat == -1) {
-			throw new IllegalArgumentException("Module_01_02.getScale: key " + key + " is not supported at this time. Sorry! Try an enharmonic equivalent.");
-		}
-
-		String[]	result	= new String[allScales[majMinChrom].length];
-		int	scalePos	= startHere[0];
-		// i is position in result;
-		// scalePos is position in allNotes
-		for(int i = 0; i < result.length; i++)
-		{
-			result[i]	= allNotes[scalePos][sharpOrFlat];
-			scalePos	= (scalePos + allScales[majMinChrom][i]) % allNotes.length;
-		}
-
-		this.scaleLength	= result.length;
-		this.majMinChrom	= majMinChrom;
-
-		return result;
-	} // getScale
-
-	private void testGetScale()
-	{
-		String[][] allNotes	= new String[][] {
-			new String[] { "A" , "A" }, 
-			new String[] { "A#", "Bb" }, 
-			new String[] { "B" , "B" },
-			new String[] { "C" , "C" },
-			new String[] { "C#", "Db" }, 
-			new String[] { "D" , "D" }, 
-			new String[] { "D#", "Eb" }, 
-			new String[] { "E" , "E" }, 
-			new String[] { "F" , "F"}, 
-			new String[] { "F#", "Gb" }, 
-			new String[] { "G" , "G" }, 
-			new String[] { "G#", "Ab" }
-		}; // allNotes
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				try {
-					String[]	scale	= getScale(allNotes[i][j], 0);
-					println(allNotes[i][j] + " Major: ");
-					printArray(scale);
-				} catch(IllegalArgumentException iae) {
-					println(iae.getMessage());
-				}
-			}
-		}
-		println();
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				try {
-					String[]	scale	= getScale(allNotes[i][j], 1);
-					println(allNotes[i][j] + " Minor: ");
-					printArray(scale);
-				} catch(IllegalArgumentException iae) {
-					println(iae.getMessage());
-				}
-			}
-		}
-		println();
-		for(int i = 0; i < allNotes.length; i++)
-		{
-			for(int j = 0; j < allNotes[i].length; j++)
-			{
-				try {
-					String[]	scale	= getScale(allNotes[i][j], 2);
-					println(allNotes[i][j] + " Chromatic: ");
-					printArray(scale);
-				} catch(IllegalArgumentException iae) {
-					println(iae.getMessage());
-				}
-			}
-		}
-	} // testGetScale
-
-	void legend()
-	{
-
-		textSize(24);
-		/*
-		String[] notes = new String[] {
-				"C", 
-				"C#", 
-				"D", 
-				"D#", 
-				"E", 
-				"F", 
-				"F#", 
-				"G", 
-				"G#", 
-				"A", 
-				"A#", 
-				"B", 
-				"C"
-		}; // notes
-		 */
-		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
-		// 12/19: updating to be on the side.
-		// 01/05: changing it back!
-		float  sideWidth   = (width - leftEdgeX) / notes.length;
-		float  sideHeight  = width / notes.length;
-		//  float  side = height / colors.length;
-
-		//	stroke(255);
-		noStroke();
-
-		for (int i = 0; i < notes.length; i++)
-		{
-			fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
-			/*
-			if(i == 0)
-			{
-				for(int j = 0; j < this.colors[i].length; j++)
-				{
-					println("legend: colors[0][" + j + "] = " + colors[0][j]);
-				}
-			}
-			 */
-			if (i == goalHuePos) {
-				rect(leftEdgeX + (sideWidth * i), (float)(height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
-				//      rect(0, (side * i), side * 1.5, side);
-			} else {
-				rect(leftEdgeX + (sideWidth * i), height - sideHeight, sideWidth, sideHeight);
-				//      rect(0, (side * i), side, side);
-			}
-			fill(0);
-			text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), height - 20);
-		} // for
-	} // legend
-
-	/**
-	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
-	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
-	 * 
-	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
-	 */
-	public void dichromatic_OneRGB(int[] rgbVals)
-	{
-		if(rgbVals == null) {
-			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
-		}
-
-		float[]	hsbVals	= new float[3];
-		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
-
-		for(int i = 0; i < hsbVals.length; i++)
-		{
-			println("dichromatic_OneRGB: hsbVals[" + i + "] = " + hsbVals[i]);
-		}
-
-		this.dichromatic_OneHSB(hsbVals);
-	} // dichromatic_OneRGB
-
-	/**
-	 * Uses the given HSB color to find the color across it on the HSB wheel,
-	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
-	 * 
-	 * @param hue	float[] of HSB values defining the color at the root of the current scale.
-	 */
-	private void dichromatic_OneHSB(float[] hsbVals)
-	{
-		if(hsbVals == null) {
-			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
-		} // error checking
-
-		// find the complement:
-		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
-
-		for(int i = 0; i < hsbVals.length; i++)
-		{
-			println("    hsbVals[" + i + "] = " + hsbVals[i]);
-		}
-
-		for(int i = 0; i < hsbComplement.length; i++)
-		{
-			println("    hsbComplement[" + i + "] = " + hsbComplement[i]);
-		}
-
-		// convert them both to RGB;
-		float[]	rgbVals1	= new float[3];
-		float[]	rgbVals2	= new float[3];
-
-		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
-		println("rgb1 = " + rgb1);
-		Color	rgbColor1	=  new Color(rgb1);
-
-		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
-		rgbVals1[0]	= rgbColor1.getRed();
-		rgbVals1[1]	= rgbColor1.getGreen();
-		rgbVals1[2]	= rgbColor1.getBlue();	
-		for(int i = 0; i < rgbVals1.length; i++)
-		{
-			println("    rgbVals1[" + i + "] = " + rgbVals1[i]);
-		}
-
-		int	rgb2	= Color.HSBtoRGB(hsbComplement[0], hsbComplement[1], hsbComplement[2]);
-		println("rgb2 = " + rgb2);
-		Color	rgbColor2	=  new Color(rgb2);
-
-		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
-		rgbVals2[0]	= rgbColor2.getRed();
-		rgbVals2[1]	= rgbColor2.getGreen();
-		rgbVals2[2]	= rgbColor2.getBlue();	
-		for(int i = 0; i < rgbVals2.length; i++)
-		{
-			println("    rgbVals2[" + i + "] = " + rgbVals2[i]);
-		}
-
-		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
-	} // dichromatic_OneHSB(int)
-
-	// TODO: delete this?
-	/**
-	 * ** Don't think I will need this function -- it goes through the whole spectrum,
-	 * so I'm going to use RGB to make the spectrum.
-	 * 
-	 * Fills the color array with colors from the specified hue, saturation, and brightness,
-	 * to the color opposite on the color wheel (i.e., hue of new color = 360 - givenHue).
-	 * 
-	 * @param hue	int specifying hue of the color at the root of the scale.
-	 * @param saturation	int specifying the saturation of the colors of the scale..
-	 * @param brightness	int specifying the brightness of the colors of the scale.
-	 */
-	/*
-	private void dichromatic_TwoHSB(int hue, int saturation, int brightness)
-	{
-//		colorMode(HSB, 360, 100, 100);
-		float[]	redHSB	=	new float[3];
-		Color.RGBtoHSB(0, 255, 0, redHSB);
-		for(int i = 0; i < redHSB.length; i++)
-		{
-			println("redHSB[" + i + "] = " + redHSB[i]);
-		}
-
-		float[]	color1	= new float[] { hue, saturation, brightness };
-		float[]	color2	= new float[] { (hue + 120) % 360, saturation, brightness };
-		float	newHue	= (hue + 120) % 360;
-		/*
-		int	redDelta	= (color1[0] - color2[0]) / this.colors.length;
-		int	greenDelta	= (color1[1] - color2[1]) / this.colors.length;
-		int	blueDelta	= (color1[2] - color2[2]) / this.colors.length;
-	 */
-	/*
-		float	hueDelta	= (newHue - hue) / this.colors.length;
-
-		this.colors[0]	= color1;
-		for(int i = 1; i < this.colors.length; i++)
-		{
-			this.colors[i][0]	= this.colors[i - 1][0] + hueDelta;
-			this.colors[i][1]	= saturation;
-			this.colors[i][2]	= brightness;
-		} // for - i
-	} // dichromatic_TwoHSB
-	 */
-
-	/**
-	 * This method fills colors with the spectrum of colors between the given rgb colors.
-	 * 
-	 * @param rgbVals1	float[] of rgb values defining rootColor.
-	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
-	 */
-	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
-	{
-		if(rgbVals1 == null || rgbVals2 == null) {
-			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
-		} // error checking
-
-		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
-		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
-		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
-		println("redDelta = " + redDelta + "; greenDelta = " + greenDelta + "; blueDelta = " + blueDelta);
-
-		for(int i = 0; i < rgbVals1.length; i++)
-		{
-			this.colors[0][i]	= rgbVals1[i];
-		}
-		for(int i = 1; i < this.scaleLength && i < this.colors.length; i++)
-		{
-			for(int j = 0; j < this.colors[i].length; j++)
-			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta;
-				println("colors[" + i + "][0] = " + colors[i][0] +
-						"; colors[" + i + "][1] = " + colors[i][1] + 
-						"; colors[" + i + "][2] = " + colors[i][2]);
-			} // for - j
-		} // for - i
-	} // dichromatic_TwoRGB
-
-	/**
-	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
-	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
-	 * 
-	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
-	 */
-	public void trichromatic_OneRGB(int[] rgbVals)
-	{
-		if(rgbVals == null) {
-			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
-		}
-
-		float[]	hsbVals	= new float[3];
-		Color.RGBtoHSB(rgbVals[0], rgbVals[1], rgbVals[2], hsbVals);
-
-		for(int i = 0; i < hsbVals.length; i++)
-		{
-			println("trichromatic_OneRGB: hsbVals[" + i + "] = " + hsbVals[i]);
-		}
-
-		this.trichromatic_OneHSB(hsbVals);
-	} // trichromatic_OneRGB
-
-	/**
-	 * ** This method should not be called w/out setting rootColor before hand.
-	 * 
-	 * Uses the given HSB color to find the color across it on the HSB wheel,
-	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
-	 *
-	 * @param hsbVals	float[] of HSB values defining the color at the root of the current scale.
-	 */
-	private void trichromatic_OneHSB(float[] hsbVals)
-	{
-		if(hsbVals == null) {
-			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
-		} // error checking
-
-		// find the triad:
-		float[]	hsbTriad1	= new float[] { (float) ((hsbVals[0] + 0.33) % 1), 1, 1 };
-		float[]	hsbTriad2	= new float[] { (float) ((hsbVals[0] + 0.67) % 1), 1, 1 };
-
-		for(int i = 0; i < hsbVals.length; i++)
-		{
-			println("    hsbVals[" + i + "] = " + hsbVals[i]);
-		}
-
-		for(int i = 0; i < hsbTriad1.length; i++)
-		{
-			println("    hsbTriad1[" + i + "] = " + hsbTriad1[i]);
-		}
-
-		// convert them both to RGB;
-		float[]	rgbVals1	= new float[3];
-		float[]	rgbVals2	= new float[3];
-		float[]	rgbVals3	= new float[3];
-
-		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
-		println("rgb1 = " + rgb1);
-		Color	rgbColor1	=  new Color(rgb1);
-
-		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
-		rgbVals1[0]	= rgbColor1.getRed();
-		rgbVals1[1]	= rgbColor1.getGreen();
-		rgbVals1[2]	= rgbColor1.getBlue();	
-		for(int i = 0; i < rgbVals1.length; i++)
-		{
-			println("    rgbVals1[" + i + "] = " + rgbVals1[i]);
-		}
-
-		int	rgb2	= Color.HSBtoRGB(hsbTriad1[0], hsbTriad1[1], hsbTriad1[2]);
-		println("rgb2 = " + rgb2);
-		Color	rgbColor2	=  new Color(rgb2);
-
-		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
-		rgbVals2[0]	= rgbColor2.getRed();
-		rgbVals2[1]	= rgbColor2.getGreen();
-		rgbVals2[2]	= rgbColor2.getBlue();	
-		for(int i = 0; i < rgbVals2.length; i++)
-		{
-			println("    rgbVals2[" + i + "] = " + rgbVals2[i]);
-		}
-
-		int	rgb3	= Color.HSBtoRGB(hsbTriad2[0], hsbTriad2[1], hsbTriad2[2]);
-		println("rgb3 = " + rgb3);
-		Color	rgbColor3	=  new Color(rgb3);
-
-		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
-		rgbVals3[0]	= rgbColor3.getRed();
-		rgbVals3[1]	= rgbColor3.getGreen();
-		rgbVals3[2]	= rgbColor3.getBlue();	
-		for(int i = 0; i < rgbVals3.length; i++)
-		{
-			println("    rgbVals3[" + i + "] = " + rgbVals3[i]);
-		}
-
-		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
-	} // trichromatic_OneHSB
-
-	public void trichromatic_ThreeRGB(float[] rgbVals1, float[] rgbVals2, float[] rgbVals3)
-	{
-		if(rgbVals1 == null || rgbVals2 == null || rgbVals3 == null) {
-			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
-		} // error checking
-
-		int	color1pos	= 0;
-		int	color2pos;
-		int	color3pos;
-
-		if(this.majMinChrom == 2)
-		{
-			// if chromatic scale, put the colors equally throughout:
-			color2pos	= this.scaleLength / 3;
-			color3pos	= (this.scaleLength / 3) * 2;
-		} else {
-			color2pos	= 3;	// subdominant
-			color3pos	= 4;	// dominant
-		}
-		println("color2pos = " + color2pos + "; color3pos = " + color3pos);
-
-		// TODO: this might need to be divided by 4 to make it to the actual color (or dichr. should be colors.length - 1?):
-		float	redDelta1	= (rgbVals1[0] - rgbVals2[0]) / (color2pos - color1pos);
-		float	greenDelta1	= (rgbVals1[1] - rgbVals2[1]) / (color2pos - color1pos);
-		float	blueDelta1	= (rgbVals1[2] - rgbVals2[2]) / (color2pos - color1pos);
-		println("redDelta1 = " + redDelta1 + "; greenDelta1 = " + greenDelta1 + "; blueDelta1 = " + blueDelta1);
-
-		float	redDelta2	= (rgbVals2[0] - rgbVals3[0]) / (color3pos - color2pos);
-		float	greenDelta2	= (rgbVals2[1] - rgbVals3[1]) / (color3pos - color2pos);
-		float	blueDelta2	= (rgbVals2[2] - rgbVals3[2]) / (color3pos - color2pos);
-		println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta2 + "; blueDelta2 = " + blueDelta2);
-
-		float	redDelta3	= (rgbVals3[0] - rgbVals1[0]) / (this.scaleLength - color3pos);
-		float	greenDelta3	= (rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos);
-		float	blueDelta3	= (rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos);
-		println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta2 + "; blueDelta2 = " + blueDelta2);
-
-		// fill first position with first color:
-		for(int i = 0; i < rgbVals1.length; i++)
-		{
-			this.colors[0][i]	= rgbVals1[i];
-		}
-
-		// fill from first color to second color:
-		for(int i = 1; i < color2pos + 1; i++)
-		{
-			for(int j = 0; j < this.colors[i].length; j++)
-			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta1;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta1;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta1;
-			} // for - j
-
-			println("tri: colors[" + i + "][0] = " + colors[i][0] +
-					"; colors[" + i + "][1] = " + colors[i][1] + 
-					"; colors[" + i + "][2] = " + colors[i][2]);
-		} // for - first color to second color
-
-		/*
-		// put in the third color (the second should have been reached in the previous loop):
-		for(int i = 0; i < rgbVals3.length; i++)
-		{
-			this.colors[4][i]	= rgbVals3[i];
-		} // for - third color to first color
-		 */
-
-		// fill from second color to third color:
-		for(int i = color2pos + 1; i < color3pos + 1; i++)
-		{
-			for(int j = 0; j < this.colors[i].length; j++)
-			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta2;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta2;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta2;
-			} // for - j
-
-			println("tri: colors[" + i + "][0] = " + colors[i][0] +
-					"; colors[" + i + "][1] = " + colors[i][1] + 
-					"; colors[" + i + "][2] = " + colors[i][2]);
-		} // for - first color to second color
-
-		// fill from third color back to first color:
-		for(int i = color3pos + 1; i < this.scaleLength; i++)
-		{
-			for(int j = 0; j < this.colors[i].length; j++)
-			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta3;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta3;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta3;
-			} // for - j
-			println("tri: colors[" + i + "][0] = " + colors[i][0] +
-					"; colors[" + i + "][1] = " + colors[i][1] + 
-					"; colors[" + i + "][2] = " + colors[i][2]);
-		} // for - third color to first color
-	} //trichromatic_ThreeRGB
-
-	/**
-	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
-	 */
-	public void rainbow()
-	{
-		for(int i = 0; i < this.colors.length && i < this.rainbowColors[this.majMinChrom].length; i++)
-		{
-			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[this.majMinChrom][i].length; j++)
-			{
-				this.colors[i][j]	= this.rainbowColors[this.majMinChrom][i][j];
-			} // for - j (going through rgb values)
-		} // for - i (going through colors)
-
-	} // rainbow
-
-	private void updateColors(char colorStyle)
-	{
-		if(colorStyle < 1 || colorStyle > 4) {
-			throw new IllegalArgumentException("Module_01_02.updateColors: char paramter " + colorStyle + " is not recognized; must be 1 - 4.");
-		}
-
-		this.curColorStyle	= colorStyle;
-
-		// Rainbow:
-		if(this.curColorStyle == this.CS_RAINBOW)
-		{
-			this.rainbow();
-		}
-
-		// Dichromatic:
-		if(this.curColorStyle == this.CS_DICHROM)
-		{
-			this.dichromatic_OneRGB(this.rootColor);
-		}
-
-		// Trichromatic:
-		if(this.curColorStyle == this.CS_TRICHROM)
-		{
-			this.trichromatic_OneRGB(this.rootColor);
-		}
-
-		// Custom:
-		if(this.curColorStyle == this.CS_CUSTOM)
-		{
-			println("Custom is still in the works.");
-			
-			// Fill textBoxes with current colors (should I do this anyway?  I don't think so, since they can't use them.)
-			for(int i = 0; i < noteTextFieldArray.length; i++)
-			{
-				noteTextFieldArray[i].setValue("(" + this.colors[i][0] + "," + this.colors[i][1] + "," + this.colors[i][2] + ")");
-				noteTextFieldArray[i].setVisiblePortionEnd(Math.min(14, noteTextFieldArray[i].getValue().length()));
-				println("noteTextFieldArray[" + i + "] = " + noteTextFieldArray[i].getVisiblePortionStart() +
-						 "; [i].getVisiblePortionEnd() = " + noteTextFieldArray[i].getVisiblePortionEnd());
-			} // for - noteTextFieldArray
-			// if [text box event], check color;
-			// (if it doesn't pass, don't throw exception -- just make them try again).
-			
-			// if it does pass, then put that color into colors
-			
-		}
-	} // updateColors
-	
-	public void setCurKey(String key, int majMinChrom)
-	{
-		// Check both sharps and flats, and take whichever one doesn't return -1:
-		int	modPosition	= Math.max(this.arrayContains(this.notesCtoBFlats, key), this.arrayContains(this.notesCtoBSharps, key));
-		
-		if(modPosition == -1)	{
-			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
-		}
-		println("setCurKey: modPosition = " + modPosition);
-		
-		this.majMinChrom	= majMinChrom;
-		this.curKey			= key;
-		this.keyAddVal		= modPosition;
-	} // setCurKey
-
-	public void mousePressed()
-	{
-		// The following for loops stops either the SamplePlayers or the uGens getting audio input (and otherwise creating feedback):
-
-
-		if (this.showPlay)
-		{
-			for (int i = 0; i < input.getuGenArray().length; i++)
-			{
-				input.getuGenArray()[i].pause(true);
-			} // for
-			if (this.playButton.contains(mouseX, mouseY))
-			{
-				this.showPlay  = false;
-				this.showStop  = true;
-
-				this.input.uGenArrayFromSample(inputFile);
-			} // if - playButton
-		} else if (this.stopButton.contains(mouseX, mouseY))
-		{
-			for (int i = 0; i < input.getuGenArray().length; i++)
-			{
-				input.getuGenArray()[i].pause(true);
-			} // for
-			this.showStop  = false;
-			this.showPlay  = true;
-
-			this.input.uGenArrayFromNumInputs(1);
-		} // if - stopButton
-
-		// if the hidePlayButton button was NOT pressed:
-		if(!this.buttons[0].getState())
-		{
-			this.playButton.setVisible(this.showPlay);
-			this.stopButton.setVisible(this.showStop);
-		} /*else {
-			this.playButton.setVisible(false);
-			this.playButton.setVisible(false);
-		}*/
-
-		if(this.rightArrow.contains(mouseX, mouseY))
-		{
-			this.showRightArrow	= false;
-
-			this.displaySidebar();
-
-		} else if(this.leftArrow.contains(mouseX, mouseY))
-		{
-			this.showRightArrow	= true;
-
-			this.leftEdgeX  = 0;
-			this.controller.setVisible(false);
-		}
-
-		// if the hideArrowButton button was NOT pressed:
-		if(!this.buttons[1].getState())
-		{
-			this.rightArrow.setVisible(this.showRightArrow);
-			this.leftArrow.setVisible(!this.showRightArrow);
-		}
-
-	} // mousePressed
-
-	
-	public void actionPerformed(GUIEvent e) {
-		if (e.getMessage().equals("Completed")) {
-			// This .setLabel prob. has value for getting values:
-			label.setLabel(textField.getValue());
-		}
-		
-		if(e.getSource() == buttons[0])
-		{
-			println("buttons[0] was clicked!");
-		}
-
-		//Hide buttons:
-		// PlayButton:
-		if(e.getSource() == this.buttons[0])
-		{
-			if(this.buttons[0].getState())
-			{
-				this.playButton.setVisible(false);
-				this.stopButton.setVisible(false);
-			} else {
-				this.playButton.setVisible(this.showPlay);
-				this.stopButton.setVisible(this.showStop);
-			}
-		} // playButton
-
-		// Arrow:
-		if(e.getSource() == this.buttons[1])
-		{
-			if(this.buttons[1].getState())
-			{
-				this.rightArrow.setVisible(false);
-				this.leftArrow.setVisible(false);
-			} else {
-				this.rightArrow.setVisible(this.showRightArrow);
-				this.leftArrow.setVisible(!this.showRightArrow);
-			} // else
-		} // if - hide arrow
-
-		// Scale:
-		if(e.getSource() == this.buttons[2])
-		{
-			// draw() looks at buttons[2].getState() and does not display if the button has been pressed.
-		}
-
-		// Color Style:
-		// Rainbow:
-		if(e.getSource() == this.buttons[3])
-		{
-			this.rainbow();
-
-			for(int i = 4; i < this.buttons.length; i++)
-			{
-				this.buttons[i].setState(false);
-			}
-		} // rainbow
-
-		// Dichromatic:
-		if(e.getSource() == this.buttons[4])
-		{
-			//			this.dichromatic_OneHSB(new float[] { (float)0.333, 1, 1, } );
-
-			//			this.dichromatic_OneRGB(new int[] { 255, 0, 0, });
-			this.rootColor	= new int[] { 255, 0, 0, };
-			this.updateColors(Module_01_02_PitchHueBackground_ModuleTemplate.CS_DICHROM);
-
-			for(int i = 3; i < this.buttons.length; i++)
-			{
-				if(i == 4 && i < this.buttons.length - 1) { 	i++;	}
-				this.buttons[i].setState(false);
-			}
-		} // dichromatic
-
-		// Trichromatic:
-		if(e.getSource() == this.buttons[5])
-		{
-			this.rootColor	= new int[] { 255, 0, 0 };
-			this.updateColors(Module_01_02_PitchHueBackground_ModuleTemplate.CS_TRICHROM);
-
-			for(int i = 3; i < this.buttons.length; i++)
-			{
-				if(i == 5 && i < this.buttons.length - 1) { 	i++;	}
-				this.buttons[i].setState(false);
-			}
-		}
-
-		// Custom:
-		if(e.getSource() == this.buttons[6])
-		{
-			println("Color Style: Custom was pressed.");
-			this.updateColors(Module_01_02_PitchHueBackground_ModuleTemplate.CS_CUSTOM);
-
-			for(int i = 3; i < 6; i++)
-			{
-				this.buttons[i].setState(false);
-			}
-		} // if
-	} // actionPerformed
-} // class
+}

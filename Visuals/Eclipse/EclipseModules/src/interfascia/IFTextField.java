@@ -29,6 +29,10 @@
  * 
  * Modifications:
  *  - updated border color
+<<<<<<< HEAD
+=======
+ *  - adjusting visible portion
+>>>>>>> 476dc8c67112247b85a37a36efc01294187c230d
  */
 
 
@@ -266,7 +270,8 @@ public class IFTextField extends GUIComponent {
 		
 		contents = t1 + s + t2;
 		cursorPos += s.length();
-				
+		
+		
 		// Adjust the start and end positions of the visible portion of the string
 		if (controller.parent.textWidth(contents) < getWidth() - 12) {
 			visiblePortionStart = 0;
@@ -403,8 +408,7 @@ public class IFTextField extends GUIComponent {
 	}
 	
 	private void adjustVisiblePortionEnd() {
-		System.out.println(visiblePortionStart + " to " + visiblePortionEnd + " out of " + contents.length());
-		
+
 		int	buffer	= 5;
 		
 		// Temporarily correcting for an erroneous precondition. Looking for the real issue
@@ -431,7 +435,6 @@ public class IFTextField extends GUIComponent {
 
 	private void centerCursor() {
 		visiblePortionStart = visiblePortionEnd = cursorPos;
-		
 		while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) < getWidth() - 12) {
 			if (visiblePortionStart != 0)
 				visiblePortionStart--;
