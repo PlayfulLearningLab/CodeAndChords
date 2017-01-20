@@ -59,36 +59,19 @@ public class ModuleTemplate {
 	private	PApplet		parent;
 	private ControlP5 	nonSidebarCP5;
 	private ControlP5 	sidebarCP5;
-	private	ControlP5	colorWheelCP5;	// Need a separate CP5 so that I can turn off autoDraw on the others, 
-	// draw a transparent rectangle, and then draw only the ColorWheels on top of that.
 	private	Input		input;
 
 	private Toggle		play;
 	private	Button		hamburger;
 	private	Button		menuX;
 
-	private	Textlabel	hideLabel;
 	private	Toggle		hidePlayButton;
 	private	Toggle		hideMenuButton;
 	private	Toggle		hideScale;
 
-	// These are prob. extraneous, since I can get them from the ControlP5 by knowing their label...
-	private	Textlabel	thresholdLabel;
-	private	Slider		threshold;
-	private	Textfield	thresholdTF;
-	private	Textlabel	attackLabel;
-	private	Slider		attack;
-	private	Textfield	attackTF;
-	private	Textlabel	releaseLabel;
-	private	Slider		release;
-	private	Textfield	releaseTF;
-	private	Textlabel	transitionLabel;
-	private	Slider		transition;
-	private	Textfield	transitionTF;
 
 	private	int			leftAlign;
 	private	int			leftEdgeX;
-	private	int[]		leftEdgeXArray;
 
 	private	String		sidebarTitle;
 
@@ -112,6 +95,9 @@ public class ModuleTemplate {
 		},
 		// minor:
 		new int[]  { 0, 2, 3, 5, 7, 8, 10
+		},
+		// chromatic:
+		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 		}
 	}; // scaleDegrees
 
@@ -132,10 +118,6 @@ public class ModuleTemplate {
 	private	float		transitionTime;
 
 	private	float[]		attackReleaseTransition	= new float[3];
-
-	private	float	redModulate;
-	private	float	greenModulate;
-	private	float	blueModulate;
 
 	private	float[]	redGreenBlueMod	= new float[3];	// this will store the red/green/blue modulate values
 
@@ -380,14 +362,14 @@ public class ModuleTemplate {
 		int	spacer			= 5;
 		int	tfWidth			= 70;
 
-		this.thresholdLabel	= this.sidebarCP5.addLabel("thresholdLabel")
+		this.sidebarCP5.addLabel("thresholdLabel")
 				.setPosition(labelX, thresholdY + 4)
 				.setWidth(labelWidth)
 				.setValue("Threshold");
 		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
 
 		// Threshold slider:
-		this.threshold	= this.sidebarCP5.addSlider("slider0")
+		this.sidebarCP5.addSlider("slider0")
 				.setPosition(this.leftAlign, thresholdY)
 				.setSize(sliderWidth, sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
@@ -398,11 +380,11 @@ public class ModuleTemplate {
 		this.setThresholdLevel(10);
 
 		// Threshold textfield:
-		this.thresholdTF	= this.sidebarCP5.addTextfield("textfield1")
+		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
 				.setLabelVisible(false)
-				.setText(this.threshold.getValue() + "")
+				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
 				.setLabelVisible(false)
 				.setAutoClear(false)
 				.setId(1);
@@ -633,10 +615,9 @@ public class ModuleTemplate {
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
-		.setState(true)
 		.setInternalValue(this.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-
+		
 		this.sidebarCP5.addToggle("dichrom")
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
@@ -657,6 +638,8 @@ public class ModuleTemplate {
 		.setCaptionLabel("Custom")
 		.setInternalValue(this.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
 	} // addColorStyleButtons
 
 	/**
@@ -833,10 +816,9 @@ public class ModuleTemplate {
 
 	public void update()
 	{
-		this.thresholdTF.setValue(this.threshold.getValue());
-		this.thresholdTF.setText(this.threshold.getValue() + "");
-		System.out.println("this.threshold.getValue() = " + this.threshold.getValue() + 
-				"this.threshold.getValuePosition = " + this.threshold.getValuePosition());
+		this.sidebarCP5.getController("textfield1").setValue(this.sidebarCP5.getController("slider0").getValue());
+		((Textfield)this.sidebarCP5.getController("textfield1")).setText(this.sidebarCP5.getController("slider0").getValue() + "");
+
 	} // update
 
 	private void updateColors(float colorStyle)
@@ -908,11 +890,15 @@ public class ModuleTemplate {
 		//	stroke(255);
 		this.parent.noStroke();
 
+		int	scaleDegree;
+		
 		for (int i = 0; i < notes.length; i++)
 		{
-			this.parent.fill(this.getColors()[i][0], this.getColors()[i][1], this.getColors()[i][2]);
+			this.parent.fill(255);
+			scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
+			this.parent.fill(this.getColors()[scaleDegree][0], this.getColors()[scaleDegree][1], this.getColors()[scaleDegree][2]);
 			//			this.parent.fill(255);
-			/*	
+				
 			if(i == 0)
 			{
 				for(int j = 0; j < this.colors[i].length; j++)
@@ -920,7 +906,7 @@ public class ModuleTemplate {
 					System.out.println("legend: colors[0][" + j + "] = " + colors[0][j]);
 				}
 			}
-			 */	 
+			 
 			if (i == goalHuePos) {
 				this.parent.rect(leftEdgeX + (sideWidth * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
@@ -1471,7 +1457,6 @@ public class ModuleTemplate {
 		{
 			this.setLeftEdgeX(0);
 			this.sidebarCP5.setVisible(false);
-			this.sidebarCP5.setVisible(false);
 			this.hamburger.setVisible(!this.sidebarCP5.getController("menuButton").isActive());
 		} // if - menuX
 
@@ -1705,7 +1690,10 @@ public class ModuleTemplate {
 			Color	color	= new Color(rgbColor);
 
 			Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("rootColorTF");
-			rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+			if(rootColorTF != null)
+			{
+				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+			}
 
 			this.rootColor[0]	= color.getRed();
 			this.rootColor[1]	= color.getGreen();
@@ -1983,6 +1971,10 @@ public class ModuleTemplate {
 
 	public int getMajMinChrom() {
 		return majMinChrom;
+	}
+
+	public int[][] getScaleDegrees() {
+		return scaleDegrees;
 	}
 
 

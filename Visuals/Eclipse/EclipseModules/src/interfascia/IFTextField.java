@@ -29,7 +29,10 @@
  * 
  * Modifications:
  *  - updated border color
+<<<<<<< HEAD
+=======
  *  - adjusting visible portion
+>>>>>>> 476dc8c67112247b85a37a36efc01294187c230d
  */
 
 
@@ -364,6 +367,8 @@ public class IFTextField extends GUIComponent {
 
 	private void updateXPos() {
 		cursorXPos = controller.parent.textWidth(contents.substring(visiblePortionStart, cursorPos));
+//		controller.parent.fill(150, 50, 150);
+//		controller.parent.ellipse(cursorXPos, controller.parent.height / 2, 20, 20);
 		if (startSelect != -1 && endSelect != -1) {
 		
 			int tempStart, tempEnd;
@@ -403,6 +408,7 @@ public class IFTextField extends GUIComponent {
 	}
 	
 	private void adjustVisiblePortionEnd() {
+
 		int	buffer	= 5;
 		
 		// Temporarily correcting for an erroneous precondition. Looking for the real issue
@@ -414,10 +420,12 @@ public class IFTextField extends GUIComponent {
 					break;
 				else
 					visiblePortionEnd++;
+				System.out.println("IFTextField.adjust...End: added to visible portion");
 			}
 		} else {
 			while (controller.parent.textWidth(contents.substring(visiblePortionStart, visiblePortionEnd)) > getWidth() - buffer) {
 				visiblePortionEnd--;
+				System.out.println("IFTextField.adjust...End: subtracted from visible portion");
 			}
 		}
 	}

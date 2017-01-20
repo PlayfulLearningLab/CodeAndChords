@@ -58,9 +58,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	Input  input;
 	int  threshold;      // when amp is below this, the background will be black.
+	/*
 	int[]	majorScaleDegrees;
 	int[]	minorScaleDegrees;
 	int[][]	scaleDegrees;
+	*/
 	private	String[]	notesCtoBFlats;
 	private	String[]	notesCtoBSharps;
 	private	int		keyAddVal;		// this is added the Midi note values of the pitch before mod'ing, to get scale degree in correct key.
@@ -190,12 +192,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int		modulateTextFieldWidth;
 
 	float[][][]	rainbowColors;
-/*
-	int	majMinChrom; //		//	0 = major, 1 = minor, 2 = chromatic
-	int	scaleLength; //
-	String	curKey;
-*/
-	private int[]	rootColor;
+
 	
 	ControlP5	cp5;
 	ModuleTemplate	moduleTemplate;
@@ -207,6 +204,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	boolean[]	colorReachedArray	= new boolean[] { false, false, false };
 	boolean		colorReached		= false;
 	int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
+
 
 	public void settings()
 	{
@@ -222,42 +220,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		hueMax         = 360;
 		saturationMax  = 300;
 		brightnessMax  = 100;
-/*
-		this.rainbowColors	= new float[][][] { 
-			new float[][] {
-				{ 255, 0, 0 }, 
-				{ 255, (float) 127.5, 0 }, 
-				{ 255, 255, 0 }, 
-				{ (float) 127.5, 255, 0 },
-				{ 0, 255, 255 },  
-				{ 0, 0, 255 },
-				{ (float) 127.5, 0, 255 }
-			}, // major
-			new float[][] {
-				{ 255, 0, 0 }, 
-				{ 255, (float) 127.5, 0 }, 
-				{ 255, 255, 0 }, 
-				{ (float) 127.5, 255, 0 },
-				{ 0, 255, 255 },  
-				{ 0, 0, 255 },
-				{ (float) 127.5, 0, 255 }
-			}, // minor
-			new float[][] {
-				{ 255, 0, 0 }, 
-				{ 255, (float) 127.5, 0 }, 
-				{ 255, 255, 0 }, 
-				{ (float) 127.5, 255, 0 }, 
-				{ 0, 255, 0 }, 
-				{ 0, 255, (float) 127.5 }, 
-				{ 0, 255, 255 }, 
-				{ 0, (float) 127.5, 255 }, 
-				{ 0, 0, 255 }, 
-				{ (float) 127.5, 0, 255 }, 
-				{ 255, 0, 255 }, 
-				{ 255, 0, (float) 127.5 }
-			} // chromatic
-		}; // rainbowColors
-		*/
+
 	/*	
 		this.notesCtoBFlats	= new String[] { 
 				"C", 
@@ -291,34 +254,29 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 */
 
 
+		this.colors	= new float[12][3];
+
+		this.curColorStyle	= this.CS_RAINBOW;
+//		this.rootColor	= new int[] { 255, 0, 0, };
+		// Start chromatic, rainbow:
+		
+//		this.curKey	= "D";
+//		this.majMinChrom	= 2;
+		this.moduleTemplate.setCurKey("G", 2);
+		
+	
+		/*
+		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
+			{
+				this.colors[i][j]	= this.rainbowColors[2][i][j];
+			} // for - j (going through rgb values)
+		} // for - i (going through colors)
+		*/
+
 		//  input        = new Input(inputFile);
 		threshold    = 15;
-
-		// TODO: keep this here? Move to Module Template?
-		this.majorScaleDegrees  = new int[]  {
-				0, 
-				2, 
-				4, 
-				5, 
-				7, 
-				9, 
-				11
-		};
-
-		this.minorScaleDegrees  = new int[]  {
-				0, 
-				2, 
-				3, 
-				5, 
-				7, 
-				8, 
-				10
-		};
-
-		this.scaleDegrees	= new int[][] {
-			this.majorScaleDegrees,
-			this.minorScaleDegrees
-		};
 
 		noStroke();
 		background(150);
@@ -359,7 +317,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		this.scrollbarX  = (width / 3) / 4;
 		this.modulateScrollbarX	= this.scrollbarX;
-
 
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	40;
@@ -512,6 +469,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 
+
 	} // setup()
 
 	public void draw()
@@ -520,6 +478,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
+
 			this.nowBelow	= false;
 			
 			// subtracting keyAddVal gets the number into the correct key 
@@ -529,11 +488,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			
 			// chromatic:
 			if(this.moduleTemplate.getMajMinChrom() == 2)
+
 			{
 				newHuePos	= scaleDegree;
 			} else {
 				// major or minor:
-				int	inScale	= this.arrayContains(this.scaleDegrees[this.moduleTemplate.getMajMinChrom()], scaleDegree);
+
+				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
 
 				if(inScale > -1)
 				{
@@ -543,10 +504,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 			} // if - current scale is Major or Minor		
 
+
 			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
 				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
 			}
 			newHue  = this.moduleTemplate.getColors()[newHuePos];
+
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
 			
 			// set goalHue to the color indicated by the current pitch:
@@ -554,7 +517,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			{
 				goalHuePos  = newHuePos;
 			} // if
-			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
+//			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
+			goalHue	= new float[] { 255, 255, 255 };
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
@@ -595,15 +559,18 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
 		//  background(curHue[0], curHue[1], curHue[2]);
-		fill(curHue[0], curHue[1], curHue[2]);
+//		fill(curHue[0], curHue[1], curHue[2]);
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
+
+
 
 		if(this.moduleTemplate.isShowScale())
 		{
 			//TODO: if anything else in ModuleTemplate needs to be called every time in draw,
 			// 		we'll just set up a draw() method in ModuleTemplate that does it all.
 			
+			fill(255);
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		}
@@ -649,6 +616,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			e.printStackTrace();
 		}
 	} // controlEvent
+
+
+
 
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
