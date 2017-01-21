@@ -101,7 +101,7 @@ public class ModuleTemplate {
 		}
 	}; // scaleDegrees
 
-	private	float[][]	colors;
+	public	float[][]	colors;
 	private int[] 		rootColor;
 	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
 
@@ -894,11 +894,11 @@ public class ModuleTemplate {
 		
 		for (int i = 0; i < notes.length; i++)
 		{
-			this.parent.fill(255);
+//			this.parent.fill(255);
 			scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
 			this.parent.fill(this.getColors()[scaleDegree][0], this.getColors()[scaleDegree][1], this.getColors()[scaleDegree][2]);
 			//			this.parent.fill(255);
-				
+		/*		
 			if(i == 0)
 			{
 				for(int j = 0; j < this.colors[i].length; j++)
@@ -906,7 +906,7 @@ public class ModuleTemplate {
 					System.out.println("legend: colors[0][" + j + "] = " + colors[0][j]);
 				}
 			}
-			 
+		*/	 
 			if (i == goalHuePos) {
 				this.parent.rect(leftEdgeX + (sideWidth * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);

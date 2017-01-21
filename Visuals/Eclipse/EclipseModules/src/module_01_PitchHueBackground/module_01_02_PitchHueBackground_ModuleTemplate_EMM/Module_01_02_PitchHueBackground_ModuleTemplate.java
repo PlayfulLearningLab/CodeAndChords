@@ -71,7 +71,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	int  saturation;
 
 	float[]  newHue;
-	float[]  goalHue;
+	// TODO: initialize in a better place.
+	float[]  goalHue	= new float[3];
 	float[]  curHue;
 	float    attackTime;
 
@@ -254,7 +255,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 */
 
 
-		this.colors	= new float[12][3];
+//		this.colors	= new float[12][3];
 
 		this.curColorStyle	= this.CS_RAINBOW;
 //		this.rootColor	= new int[] { 255, 0, 0, };
@@ -280,15 +281,20 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 		noStroke();
 		background(150);
-
-		//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
-		curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
+		
+		// Round, because the Midi notes come out with decimal places, and we want to get
+		// to the real closest note, not just the next note down.
+		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
+		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
 			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
 		}
 
-		curHue	= this.moduleTemplate.getColors()[curHuePos];
+		// TODO:
+//		curHue	= this.moduleTemplate.colors[curHuePos];
+		curHue	= new float[] { 255, 255, 255 };
+		System.out.println("curHue[0] = " + curHue[0] + "curHue[1] = " + curHue[1] + "curHue[2] = " + curHue[2]);
 		
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
@@ -518,12 +524,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				goalHuePos  = newHuePos;
 			} // if
 //			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
-			goalHue	= new float[] { 255, 255, 255 };
+//			goalHue	= new float[] { 255, 255, 255 };
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
 			
-			goalHue	= new float[] { 0, 0, 0 };
+//			goalHue	= new float[] { 0, 0, 0 };
+			goalHue	= new float[] { 150, 50, 150 };
+			
 		} // else
 
 		
@@ -559,7 +567,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
 		//  background(curHue[0], curHue[1], curHue[2]);
-//		fill(curHue[0], curHue[1], curHue[2]);
+		fill(curHue[0], curHue[1], curHue[2]);
+		System.out.println("curHue[0] = " + curHue[0] + "; curHue[1] = " + curHue[1] + "; curHue[2] = " + curHue[2]);
+
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
 
@@ -569,8 +579,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			//TODO: if anything else in ModuleTemplate needs to be called every time in draw,
 			// 		we'll just set up a draw() method in ModuleTemplate that does it all.
-			
-			fill(255);
+
+			// This fill() is having no effect:
+//			fill(150, 50, 150);
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		}
@@ -587,12 +598,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// Or, if volume fell below the threshold, switch to release value:
 			this.attackReleaseTransition	= 1;
 		}
-	/*	
+	
+		/*
 		for(int i = 0; i < this.moduleTemplate.getColors().length; i++)
 		{
-			System.out.println("this.moduleTemplate.getColors()[" + i + "][0] = " + this.moduleTemplate.getColors()[i][0] + 
-					"; this.moduleTemplate.getColors()[" + i + "][1] = " + this.moduleTemplate.getColors()[i][1] + 
-					"; this.moduleTemplate.getColors()[" + i + "][2] = " + this.moduleTemplate.getColors()[i][2]);
+			System.out.println("this.moduleTemplate.getColors()[" + i + "][0] = " + this.moduleTemplate.colors[i][0] + 
+					"; this.moduleTemplate.getColors()[" + i + "][1] = " + this.moduleTemplate.colors[i][1] + 
+					"; this.moduleTemplate.getColors()[" + i + "][2] = " + this.moduleTemplate.colors[i][2]);
 		}
 */
 		
