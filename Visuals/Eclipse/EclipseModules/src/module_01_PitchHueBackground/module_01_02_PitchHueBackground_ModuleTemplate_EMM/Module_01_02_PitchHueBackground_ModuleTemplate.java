@@ -262,38 +262,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			} // chromatic
 		}; // rainbowColors
 
-	/*	
->>>>>>> 476dc8c67112247b85a37a36efc01294187c230d
-		this.notesCtoBFlats	= new String[] { 
-				"C", 
-				"Db", 
-				"D", 
-				"Eb",
-				"E",
-				"F", 
-				"Gb", 
-				"G",
-				"Ab",
-				"A",
-				"Bb",
-				"B"
-		};
-		
-		this.notesCtoBSharps	= new String[] { 
-				"C", 
-				"C#", 
-				"D", 
-				"D#",
-				"E",
-				"F", 
-				"F#", 
-				"G",
-				"G#",
-				"A",
-				"A#",
-				"B"
-		};
-*/
+	
 //		this.colors	= new float[12][3];
 /*
 		this.curColorStyle	= this.CS_RAINBOW;
@@ -326,18 +295,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 //		this.majMinChrom	= 2;
 		this.moduleTemplate.setCurKey("G", 2);
 		
-	
-		/*
-		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
-		{
-			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
-			{
-				this.colors[i][j]	= this.rainbowColors[2][i][j];
-			} // for - j (going through rgb values)
-		} // for - i (going through colors)
-		*/
-
-		//  input        = new Input(inputFile);
 		threshold    = 15;
 
 
@@ -369,15 +326,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		noStroke();
 		background(150);
 
-		//  curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12) * 30;
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(1) % 12);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
 			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
 		}
 
-		curHue	= this.moduleTemplate.getColors()[curHuePos];
 		
+		curHue      = new float[] { 255, 255, 255};
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
 
