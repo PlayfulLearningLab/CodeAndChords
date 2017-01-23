@@ -218,6 +218,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
 		this.moduleTemplate.initModuleTemplate();
 		
+		this.moduleTemplate.setCurKey("A", 2);
+		this.moduleTemplate.rainbow();
+		
 		hueMax         = 360;
 		saturationMax  = 300;
 		brightnessMax  = 100;
@@ -263,8 +266,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		
 //		this.curKey	= "D";
 //		this.majMinChrom	= 2;
+
 		this.moduleTemplate.setCurKey("G", 2);
-		
+//		((ScrollableList)(this.moduleTemplate.sidebarCP5.getController("keyDropdown"))).setValue(3);
+
 	
 		/*
 		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
@@ -291,10 +296,11 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			curHuePos	= 0;
 		}
 
-		// TODO:
-//		curHue	= this.moduleTemplate.colors[curHuePos];
 		curHue	= new float[] { 255, 255, 255 };
-		System.out.println("curHue[0] = " + curHue[0] + "curHue[1] = " + curHue[1] + "curHue[2] = " + curHue[2]);
+		// The following line caused problems!
+		// (That is, it made that position in colors follow curHue as the latter changed.)
+		// Never use it.
+//		curHue	= this.moduleTemplate.colors[curHuePos];
 		
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
@@ -565,12 +571,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
 		//  background(curHue[0], curHue[1], curHue[2]);
-		fill(curHue[0], curHue[1], curHue[2]);
-		System.out.println("curHue[0] = " + curHue[0] + "; curHue[1] = " + curHue[1] + "; curHue[2] = " + curHue[2]);
-
+		fill(curHue[0], curHue[1], curHue[2]);		
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 		stroke(255);
-
 
 
 		if(this.moduleTemplate.isShowScale())

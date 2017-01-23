@@ -58,7 +58,7 @@ public class ModuleTemplate {
 	// Global vars - TODO: all private!
 	private	PApplet		parent;
 	private ControlP5 	nonSidebarCP5;
-	private ControlP5 	sidebarCP5;
+	public ControlP5 	sidebarCP5;
 	private	Input		input;
 
 	private Toggle		play;
@@ -81,12 +81,12 @@ public class ModuleTemplate {
 	private int 		keyAddVal;		// amount that must be subtracted in legend() 
 	// to line pitches up with the correct scale degree of the current key.
 
-	private	final String[]	notesCtoBFlats	= new String[] { 
-			"C", "Db", "D", "Eb", "E", "F", "Gb",  "G", "Ab", "A", "Bb", "B"
+	private	final String[]	notesAtoAbFlats	= new String[] { 
+			 "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb",  "G", "Ab"
 	};
 
-	private final String[]	notesCtoBSharps	= new String[] { 
-			"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
+	private final String[]	notesAtoGSharps	= new String[] { 
+			 "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
 	};
 
 	private	final	int[][] scaleDegrees = new int[][] {
@@ -152,8 +152,9 @@ public class ModuleTemplate {
 		this.curColorStyle	= this.CS_RAINBOW;
 		this.rootColor	= new int[] { 255, 0, 0, };
 
-		this.setCurKey("A", 2);
-		this.rainbow();
+		// TODO: these will need to be called here:
+//		this.setCurKey("A", 2);
+//		this.rainbow();
 
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
@@ -501,7 +502,7 @@ public class ModuleTemplate {
 		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
 
 		String[] keyOptions	= new String[] {
-				"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab"
+				"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"
 		};
 
 		// "Key" Textlabel
@@ -1028,15 +1029,26 @@ public class ModuleTemplate {
 	public void setCurKey(String key, int majMinChrom)
 	{
 		// Check both sharps and flats, and take whichever one doesn't return -1:
-		int	modPosition	= Math.max(this.arrayContains(this.notesCtoBFlats, key), this.arrayContains(this.notesCtoBSharps, key));
+		int	modPosition	= Math.max(this.arrayContains(this.notesAtoAbFlats, key), this.arrayContains(this.notesAtoGSharps, key));
 
 		if(modPosition == -1)	{
 			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
 		}
+		
+		System.out.println("key = " + key + "; modPosition = " + modPosition);
+
 
 		this.majMinChrom	= majMinChrom;
+		this.scaleLength	= this.getScale(key, majMinChrom).length;
+		
+		this.sidebarCP5.getController("keyDropdown").setValue(modPosition);
+
+		// The following happen in controlEvent - "keyDropdown"
+		/*
 		this.curKey			= key;
 		this.setKeyAddVal(modPosition);
+		*/
+		
 	} // setCurKey
 
 	/**
@@ -1536,6 +1548,7 @@ public class ModuleTemplate {
 		// Key dropdown ScrollableList:
 		if(controlEvent.getName().equals("keyDropdown"))
 		{
+			System.out.println("controlEvent.getValue() = " + controlEvent.getValue());
 			controlEvent.getController().bringToFront();
 
 			// keyPos is the position of the particular key in the Scrollable List:
@@ -1547,7 +1560,13 @@ public class ModuleTemplate {
 			// All we want is the name:
 			String	key	= (String) keyMap.get("name");
 
-			this.setCurKey(key, this.getMajMinChrom());
+//			this.setCurKey(key, this.getMajMinChrom());
+			this.curKey			= key;
+			this.keyAddVal		= keyPos;
+			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
+			
+			System.out.println("key = " + key + "; keyPos = " + keyPos);
+			
 			this.displaySidebar();
 		} // keyDropdown
 
@@ -1557,8 +1576,8 @@ public class ModuleTemplate {
 				controlEvent.getName().equals("chrom"))
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
-			System.out.println("Maj/Min/Chrom: internalValue() = " + curToggle.internalValue());
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
+//			this.majMinChrom	= (int) curToggle.internalValue();
 
 			// Turn off the other two:
 			Toggle[] toggleArray	= new Toggle[] {
