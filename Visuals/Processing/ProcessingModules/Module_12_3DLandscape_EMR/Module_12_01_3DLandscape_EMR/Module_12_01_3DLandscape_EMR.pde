@@ -3,6 +3,8 @@
   * Sketch 3D Attempt
   * 11/14/16
   * SourceCode Derived: https://www.openprocessing.org/sketch/11381#
+  * Helpful Documentation can be found at: http://www.beadsproject.net/doc/
+  * <<FFT Capabilities to be added to Input class
 */
 
 
@@ -47,7 +49,7 @@ void draw(){
     float yoff = 0.0;   // For every xoff, start yoff at 0
     for (int y = 0; y < height/d; y++) {
       yoff += increment; // Increment yoff
-      float z = noise(input.getAmplitude(),yoff,zoff)*600;
+      float z = noise(xoff ,yoff,zoff)*600;
       val[x][y] = z;
     }
   }
