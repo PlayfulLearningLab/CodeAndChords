@@ -523,14 +523,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			{
 				goalHuePos  = newHuePos;
 			} // if
-//			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
-//			goalHue	= new float[] { 255, 255, 255 };
+			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
 			
-//			goalHue	= new float[] { 0, 0, 0 };
-			goalHue	= new float[] { 150, 50, 150 };
+			goalHue	= new float[] { 0, 0, 0 };
 			
 		} // else
 
