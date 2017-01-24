@@ -58,37 +58,20 @@ public class ModuleTemplate {
 	// Global vars - TODO: all private!
 	private	PApplet		parent;
 	private ControlP5 	nonSidebarCP5;
-	private ControlP5 	sidebarCP5;
-	private	ControlP5	colorWheelCP5;	// Need a separate CP5 so that I can turn off autoDraw on the others, 
-	// draw a transparent rectangle, and then draw only the ColorWheels on top of that.
+	public ControlP5 	sidebarCP5;
 	private	Input		input;
 
 	private Toggle		play;
 	private	Button		hamburger;
 	private	Button		menuX;
 
-	private	Textlabel	hideLabel;
 	private	Toggle		hidePlayButton;
 	private	Toggle		hideMenuButton;
 	private	Toggle		hideScale;
 
-	// These are prob. extraneous, since I can get them from the ControlP5 by knowing their label...
-	private	Textlabel	thresholdLabel;
-	private	Slider		threshold;
-	private	Textfield	thresholdTF;
-	private	Textlabel	attackLabel;
-	private	Slider		attack;
-	private	Textfield	attackTF;
-	private	Textlabel	releaseLabel;
-	private	Slider		release;
-	private	Textfield	releaseTF;
-	private	Textlabel	transitionLabel;
-	private	Slider		transition;
-	private	Textfield	transitionTF;
 
 	private	int			leftAlign;
 	private	int			leftEdgeX;
-	private	int[]		leftEdgeXArray;
 
 	private	String		sidebarTitle;
 
@@ -98,12 +81,12 @@ public class ModuleTemplate {
 	private int 		keyAddVal;		// amount that must be subtracted in legend() 
 	// to line pitches up with the correct scale degree of the current key.
 
-	private	final String[]	notesCtoBFlats	= new String[] { 
-			"C", "Db", "D", "Eb", "E", "F", "Gb",  "G", "Ab", "A", "Bb", "B"
+	private	final String[]	notesAtoAbFlats	= new String[] { 
+			 "A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb",  "G", "Ab"
 	};
 
-	private final String[]	notesCtoBSharps	= new String[] { 
-			"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
+	private final String[]	notesAtoGSharps	= new String[] { 
+			 "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
 	};
 
 	private	final	int[][] scaleDegrees = new int[][] {
@@ -112,10 +95,13 @@ public class ModuleTemplate {
 		},
 		// minor:
 		new int[]  { 0, 2, 3, 5, 7, 8, 10
+		},
+		// chromatic:
+		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 		}
 	}; // scaleDegrees
 
-	private	float[][]	colors;
+	public	float[][]	colors;
 	private int[] 		rootColor;
 	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
 
@@ -132,10 +118,6 @@ public class ModuleTemplate {
 	private	float		transitionTime;
 
 	private	float[]		attackReleaseTransition	= new float[3];
-
-	private	float	redModulate;
-	private	float	greenModulate;
-	private	float	blueModulate;
 
 	private	float[]	redGreenBlueMod	= new float[3];	// this will store the red/green/blue modulate values
 
@@ -170,8 +152,9 @@ public class ModuleTemplate {
 		this.curColorStyle	= this.CS_RAINBOW;
 		this.rootColor	= new int[] { 255, 0, 0, };
 
-		this.setCurKey("A", 2);
-		this.rainbow();
+		// TODO: these will need to be called here:
+//		this.setCurKey("A", 2);
+//		this.rainbow();
 
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
@@ -382,14 +365,14 @@ public class ModuleTemplate {
 		int	spacer			= 5;
 		int	tfWidth			= 70;
 
-		this.thresholdLabel	= this.sidebarCP5.addLabel("thresholdLabel")
+		this.sidebarCP5.addLabel("thresholdLabel")
 				.setPosition(labelX, thresholdY + 4)
 				.setWidth(labelWidth)
 				.setValue("Threshold");
 		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
 
 		// Threshold slider:
-		this.threshold	= this.sidebarCP5.addSlider("slider0")
+		this.sidebarCP5.addSlider("slider0")
 				.setPosition(this.leftAlign, thresholdY)
 				.setSize(sliderWidth, sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
@@ -400,13 +383,19 @@ public class ModuleTemplate {
 		this.setThresholdLevel(10);
 
 		// Threshold textfield:
-		this.thresholdTF	= this.sidebarCP5.addTextfield("textfield1")
+		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
+<<<<<<< HEAD
 				//.getValueLabel().setLabelVisible(false)
 				//.getCaptionLabel().setLabelVisible(false)
 				.setText(this.threshold.getValue() + "")
 				//.setLabelVisible(false)
+=======
+				.setLabelVisible(false)
+				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+				.setLabelVisible(false)
+>>>>>>> 2dfbbf221d051bdd0cb6bfd362c73434d0bada1a
 				.setAutoClear(false)
 				.setId(1);
 
@@ -525,7 +514,7 @@ public class ModuleTemplate {
 		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
 
 		String[] keyOptions	= new String[] {
-				"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab"
+				"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"
 		};
 
 		// "Key" Textlabel
@@ -639,10 +628,9 @@ public class ModuleTemplate {
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
-		.setState(true)
 		.setInternalValue(this.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-
+		
 		this.sidebarCP5.addToggle("dichrom")
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
@@ -663,6 +651,8 @@ public class ModuleTemplate {
 		.setCaptionLabel("Custom")
 		.setInternalValue(this.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
 	} // addColorStyleButtons
 
 	/**
@@ -862,10 +852,9 @@ public class ModuleTemplate {
 
 	public void update()
 	{
-		this.thresholdTF.setValue(this.threshold.getValue());
-		this.thresholdTF.setText(this.threshold.getValue() + "");
-		System.out.println("this.threshold.getValue() = " + this.threshold.getValue() + 
-				"this.threshold.getValuePosition = " + this.threshold.getValuePosition());
+		this.sidebarCP5.getController("textfield1").setValue(this.sidebarCP5.getController("slider0").getValue());
+		((Textfield)this.sidebarCP5.getController("textfield1")).setText(this.sidebarCP5.getController("slider0").getValue() + "");
+
 	} // update
 
 	private void updateColors(float colorStyle)
@@ -937,11 +926,15 @@ public class ModuleTemplate {
 		//	stroke(255);
 		this.parent.noStroke();
 
+		int	scaleDegree;
+		
 		for (int i = 0; i < notes.length; i++)
 		{
-			this.parent.fill(this.getColors()[i][0], this.getColors()[i][1], this.getColors()[i][2]);
+//			this.parent.fill(255);
+			scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
+			this.parent.fill(this.getColors()[scaleDegree][0], this.getColors()[scaleDegree][1], this.getColors()[scaleDegree][2]);
 			//			this.parent.fill(255);
-			/*	
+		/*		
 			if(i == 0)
 			{
 				for(int j = 0; j < this.colors[i].length; j++)
@@ -949,7 +942,7 @@ public class ModuleTemplate {
 					System.out.println("legend: colors[0][" + j + "] = " + colors[0][j]);
 				}
 			}
-			 */	 
+		*/	 
 			if (i == goalHuePos) {
 				this.parent.rect(leftEdgeX + (sideWidth * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
@@ -972,76 +965,7 @@ public class ModuleTemplate {
 		this.parent.stroke(255);
 		this.parent.fill(0);
 		this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-		/*
-		int textX  		= 5;
-		int	noteNameX1	= 40;
-		int	noteNameX2 	= noteNameX1 + 135;
-
-		String[]	textArray	= new String[] {
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				""				
-		}; // textArray
-
-
-		String[]	noteNames1	= new String[] {
-				"", "", "", "", "", ""
-		}; // noteNames
-		String[]	noteNames2	= new String[] {
-				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames2
-
-		String[]	modulateText	= new String[] {
-				"", "", ""
-		}; // modulateText
-		 */
-
-
-		/*
-		this.parent.fill(255);
-		this.parent.textSize(12);
-		this.parent.text(this.sidebarTitle, this.leftAlign, 17);
-		this.parent.textSize(10);
-		this.parent.text("Menu", this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 16);
-		 */	
-		/*
-
-		for(int i = 0; i < textArray.length; i++)
-		{
-			this.parent.text(textArray[i], textX, textYVals[i]);
-		}
-		for(int i = 0; i < noteNames1.length; i++)
-		{
-			this.parent.text(noteNames1[i], noteNameX1, noteYVals[i]);
-		}
-		for(int i = 0; i < noteNames2.length; i++)
-		{
-			this.parent.text(noteNames2[i], noteNameX2, noteYVals[i]);
-		}
-		 */
-		/*
-		for(int i = 0; i < modulateText.length; i++)
-		{
-			this.parent.text(modulateText[i], textX, modulateYVals[i]);
-		}
-		for(int i = 0; i < scrollbarArray.length; i++)
-		{
-			scrollbarArray[i].update();
-			scrollbarArray[i].display();
-		} // for - update and display first set of scrollbars
-
-		for(int i = 0; i < this.modulateScrollbarArray.length; i++)
-		{
-			modulateScrollbarArray[i].update();
-			modulateScrollbarArray[i].display();
-		} // for - update and display modulate color scrollbars
-		 */
+		
 	} // displaySidebar
 
 	public String[] getScale(String key, int majMinChrom)
@@ -1140,15 +1064,26 @@ public class ModuleTemplate {
 	public void setCurKey(String key, int majMinChrom)
 	{
 		// Check both sharps and flats, and take whichever one doesn't return -1:
-		int	modPosition	= Math.max(this.arrayContains(this.notesCtoBFlats, key), this.arrayContains(this.notesCtoBSharps, key));
+		int	modPosition	= Math.max(this.arrayContains(this.notesAtoAbFlats, key), this.arrayContains(this.notesAtoGSharps, key));
 
 		if(modPosition == -1)	{
 			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
 		}
+		
+		System.out.println("key = " + key + "; modPosition = " + modPosition);
+
 
 		this.majMinChrom	= majMinChrom;
+		this.scaleLength	= this.getScale(key, majMinChrom).length;
+		
+		this.sidebarCP5.getController("keyDropdown").setValue(modPosition);
+
+		// The following happen in controlEvent - "keyDropdown"
+		/*
 		this.curKey			= key;
 		this.setKeyAddVal(modPosition);
+		*/
+		
 	} // setCurKey
 
 	/**
@@ -1415,6 +1350,7 @@ public class ModuleTemplate {
 	 */
 	public void rainbow()
 	{
+		/*
 		float[][][] rainbowColors	= new float[][][] { 
 			new float[][] {
 				{ 255, 0, 0 }, 
@@ -1432,6 +1368,53 @@ public class ModuleTemplate {
 				{ (float) 127.5, 255, 0 },
 				{ 0, 255, 255 },  
 				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 }
+			}, // minor
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 }, 
+				{ 0, 255, 0 }, 
+				{ 0, 255, (float) 127.5 }, 
+				{ 0, 255, 255 }, 
+				{ 0, (float) 127.5, 255 }, 
+				{ 0, 0, 255 }, 
+				{ (float) 127.5, 0, 255 }, 
+				{ 255, 0, 255 }, 
+				{ 255, 0, (float) 127.5 }
+			} // chromatic
+		}; // rainbowColors
+		*/
+		// Filling colors all the way, regardless of the scale,
+		// and then we'll just pick out the colors at scaleDegrees[majMinChrom] for major or minor:
+		float[][][] rainbowColors	= new float[][][] { 
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, 0, 0 },
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 },
+				{ 0, 255, 255 },
+				{ 0, 255, 255 },
+				{ 0, 255, 255 },  
+				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 },
+				{ (float) 127.5, 0, 255 }
+			}, // major
+			new float[][] {
+				{ 255, 0, 0 }, 
+				{ 255, 0, 0 },
+				{ 255, (float) 127.5, 0 }, 
+				{ 255, 255, 0 }, 
+				{ 255, 255, 0 }, 
+				{ (float) 127.5, 255, 0 },
+				{ 0, 255, 255 },
+				{ 0, 255, 255 },
+				{ 0, 0, 255 },
+				{ 0, 0, 255 },
+				{ (float) 127.5, 0, 255 },
 				{ (float) 127.5, 0, 255 }
 			}, // minor
 			new float[][] {
@@ -1521,7 +1504,6 @@ public class ModuleTemplate {
 		{
 			this.setLeftEdgeX(0);
 			this.sidebarCP5.setVisible(false);
-			this.sidebarCP5.setVisible(false);
 			this.hamburger.setVisible(!this.sidebarCP5.getController("menuButton").isActive());
 		} // if - menuX
 
@@ -1601,6 +1583,7 @@ public class ModuleTemplate {
 		// Key dropdown ScrollableList:
 		if(controlEvent.getName().equals("keyDropdown"))
 		{
+			System.out.println("controlEvent.getValue() = " + controlEvent.getValue());
 			controlEvent.getController().bringToFront();
 
 			// keyPos is the position of the particular key in the Scrollable List:
@@ -1612,18 +1595,27 @@ public class ModuleTemplate {
 			// All we want is the name:
 			String	key	= (String) keyMap.get("name");
 
-			this.setCurKey(key, this.getMajMinChrom());
-			this.displaySidebar();
+//			this.setCurKey(key, this.getMajMinChrom());
+			this.curKey			= key;
+			this.keyAddVal		= keyPos;
+			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
+			
+			System.out.println("key = " + key + "; keyPos = " + keyPos);
+			
+			if(!(this.getLeftEdgeX() == 0))
+			{
+				this.displaySidebar();
+			}
 		} // keyDropdown
 
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
 				controlEvent.getName().equals("minor") ||
 				controlEvent.getName().equals("chrom"))
-		{
+		{		
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
-			System.out.println("Maj/Min/Chrom: internalValue() = " + curToggle.internalValue());
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
+//			this.majMinChrom	= (int) curToggle.internalValue();
 
 			// Turn off the other two:
 			Toggle[] toggleArray	= new Toggle[] {
@@ -1651,7 +1643,6 @@ public class ModuleTemplate {
 			} // for - switch off all Toggles:
 
 			this.updateColors(this.curColorStyle);
-
 		} // majMinChrom buttons
 
 
@@ -1755,7 +1746,10 @@ public class ModuleTemplate {
 			Color	color	= new Color(rgbColor);
 
 			Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("rootColorTF");
-			rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+			if(rootColorTF != null)
+			{
+				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+			}
 
 			this.rootColor[0]	= color.getRed();
 			this.rootColor[1]	= color.getGreen();
@@ -2033,6 +2027,10 @@ public class ModuleTemplate {
 
 	public int getMajMinChrom() {
 		return majMinChrom;
+	}
+
+	public int[][] getScaleDegrees() {
+		return scaleDegrees;
 	}
 
 
