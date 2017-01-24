@@ -454,6 +454,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				System.out.println("this.moduleTemplate.sidebarCP5.getController('menuButton').isBroadcast() = " + 
 				this.moduleTemplate.sidebarCP5.getController("menuButton").isBroadcast());
 */
+//		System.out.println("this.moduleTemplate.sidebarCP5.isUpdate() = " );
+		
+		this.moduleTemplate.sidebarCP5.draw();
 		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
