@@ -391,9 +391,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
-				.setLabelVisible(false)
 				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
-				.setLabelVisible(false)
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
 				.setId(1);
@@ -427,7 +425,6 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign + sliderWidth + spacer, attackY)
 		.setSize(tfWidth, sliderHeight)
 		.setText(this.sidebarCP5.getController("slider2").getValue() + "")
-		.setLabelVisible(false)
 		.setAutoClear(false)
 		.setGroup("sidebarGroup")
 		.setId(3);
@@ -460,7 +457,6 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign + sliderWidth + spacer, releaseY)
 		.setSize(tfWidth, sliderHeight)
 		.setText(this.sidebarCP5.getController("slider4").getValue() + "")
-		.setLabelVisible(false)
 		.setAutoClear(false)
 		.setGroup("sidebarGroup")
 		.setId(5);
@@ -492,7 +488,6 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign + sliderWidth + spacer, transitionY)
 		.setSize(tfWidth, sliderHeight)
 		.setText(this.sidebarCP5.getController("slider6").getValue() + "")
-		.setLabelVisible(false)
 		.setAutoClear(false)
 		.setGroup("sidebarGroup")
 		.setId(7);
@@ -612,7 +607,6 @@ public class ModuleTemplate {
 		.setPosition(textfieldX, rootColorY)
 		.setWidth(textfieldWidth)
 		.setAutoClear(false)
-		.setLabelVisible(false)
 		.setText("Code#")
 		.setGroup("sidebarGroup")
 		.setId(23);
@@ -744,7 +738,6 @@ public class ModuleTemplate {
 			.setPosition(textfieldX1, noteYVals[i])
 			.setWidth(textfieldWidth)
 			.setAutoClear(false)
-			.setLabelVisible(false)
 			.setText("Code#")
 			.setGroup("sidebarGroup")
 			.setId(id);
@@ -781,7 +774,6 @@ public class ModuleTemplate {
 			.setPosition(textfieldX2, noteYVals[i])
 			.setWidth(textfieldWidth)
 			.setAutoClear(false)
-			.setLabelVisible(false)
 			.setText("Code#")
 			.setGroup("sidebarGroup")
 			.setId(id);
@@ -860,7 +852,7 @@ public class ModuleTemplate {
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(-255, 255)
 			.setValue(0)
-			.setLabelVisible(false)
+			//.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
 
@@ -871,7 +863,6 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign + sliderWidth + spacer, modulateYVals[i])
 			.setSize(tfWidth, sliderHeight)
 			.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
-			.setLabelVisible(false)
 			.setAutoClear(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
