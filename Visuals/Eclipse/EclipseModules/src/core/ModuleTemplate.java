@@ -8,9 +8,11 @@ import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlFont;
+import controlP5.ControlGroup;
 import controlP5.ControlP5;
 import controlP5.ControlP5Constants;
 import controlP5.Controller;
+import controlP5.Group;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
@@ -57,7 +59,7 @@ public class ModuleTemplate {
 
 	// Global vars - TODO: all private!
 	private	PApplet		parent;
-	private ControlP5 	nonSidebarCP5;
+//	public ControlP5 	nonSidebarCP5;
 	public ControlP5 	sidebarCP5;
 	private	Input		input;
 
@@ -127,7 +129,7 @@ public class ModuleTemplate {
 		this.input	= input;
 
 		// ControlP5 for playButton and hamburger:
-		this.nonSidebarCP5	= new ControlP5(this.parent);
+//		this.nonSidebarCP5	= new ControlP5(this.parent);
 
 		// ControlP5 for most of the sidebar elements:
 		this.sidebarCP5		= new ControlP5(this.parent);
@@ -135,7 +137,6 @@ public class ModuleTemplate {
 		// This technically works, but it's horribly blurry:
 		//		this.sidebarCP5.setFont(this.parent.createFont("Consolas", 10) );
 
-		this.sidebarCP5.setVisible(false);
 
 		// ControlP5 for ColorWheels (having a separate one allows us to setAutoDraw(false) on the other CP5,
 		// draw a transparent rectangle over those controllers, and then draw the ColorWheel on top of that):
@@ -172,6 +173,13 @@ public class ModuleTemplate {
 	 */
 	public void initModuleTemplate()
 	{
+		this.sidebarCP5.addGroup("sidebarGroup")
+			.setBackgroundColor(this.parent.color(0))
+//			.setColorBackground(this.parent.color(0))
+			.setSize(this.parent.width / 3, this.parent.height + 1)
+			.activateEvent(true)
+			.setVisible(false);
+		
 		// Add play button, hamburger and menu x:
 		addOutsideButtons();
 
@@ -179,6 +187,7 @@ public class ModuleTemplate {
 		ControlFont	largerStandard	= new ControlFont(ControlP5.BitFontStandard58, 13);
 
 		this.sidebarCP5.addTextlabel("title")
+		.setGroup("sidebarGroup")
 		.setPosition((this.parent.width / 3) / 4, 5)	// This x val is usually this.leftAlign, but doesn't get set until sidebar is open.
 		// TODO: is this ^ wise?  Maybe always set leftAlign to be (this.parent.width / 3) / 4?
 		.setFont(largerStandard)
@@ -188,6 +197,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextlabel("menu")
 		.setPosition(this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 10)
 		.setHeight(15)
+		.setGroup("sidebarGroup")
 		.setValue("Menu");
 
 		// calculate y's
@@ -267,7 +277,7 @@ public class ModuleTemplate {
 
 		images[0].resize(playWidth - 5, playHeight);
 		images[1].resize(playWidth, playHeight);
-		this.play	= this.nonSidebarCP5.addToggle("play")
+		this.play	= this.sidebarCP5.addToggle("play")
 				.setPosition(playX, playY)
 				.setImages(images)
 				.updateSize();
@@ -279,7 +289,7 @@ public class ModuleTemplate {
 
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
-		this.hamburger	= this.nonSidebarCP5.addButton("hamburger")
+		this.hamburger	= this.sidebarCP5.addButton("hamburger")
 				.setPosition(hamburgerX, hamburgerY)
 				.setImage(hamburger)
 				.updateSize();
@@ -294,6 +304,7 @@ public class ModuleTemplate {
 		this.menuX	= this.sidebarCP5.addButton("menuX")
 				.setPosition(menuXX, menuXY)
 				.setImage(menuX)
+				.setGroup("sidebarGroup")
 				.updateSize();
 	} // addOutsideButtons
 
@@ -310,11 +321,13 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Hide");
 
 		this.hidePlayButton	= this.sidebarCP5.addToggle("playButton")
 				.setPosition(playButtonX, hideY)
 				.setWidth(hideWidth)
+				.setGroup("sidebarGroup")
 				.setId(4);
 		this.hidePlayButton.getCaptionLabel().set("Play Button").align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -322,6 +335,7 @@ public class ModuleTemplate {
 		this.hideMenuButton	= this.sidebarCP5.addToggle("menuButton")
 				.setPosition(menuButtonX, hideY)
 				.setWidth(hideWidth)
+				.setGroup("sidebarGroup")
 				.setId(5);
 		this.hideMenuButton.getCaptionLabel().set("Menu Button").align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -330,6 +344,7 @@ public class ModuleTemplate {
 				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
 				.toggle()
+				.setGroup("sidebarGroup")
 				.setId(6);
 		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -366,6 +381,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("thresholdLabel")
 				.setPosition(labelX, thresholdY + 4)
 				.setWidth(labelWidth)
+				.setGroup("sidebarGroup")
 				.setValue("Threshold");
 		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
 
@@ -377,6 +393,7 @@ public class ModuleTemplate {
 				.setRange(2, 100)
 				.setValue(10)
 				.setLabelVisible(false)
+				.setGroup("sidebarGroup")
 				.setId(0);
 		this.setThresholdLevel(10);
 
@@ -388,6 +405,7 @@ public class ModuleTemplate {
 				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
 				.setLabelVisible(false)
 				.setAutoClear(false)
+				.setGroup("sidebarGroup")
 				.setId(1);
 
 		// Test: not adding them as variables, seeing how that goes. :)
@@ -397,6 +415,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("attackLabel")
 		.setPosition(labelX, attackY + 4)
 		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
 		.setValue("Attack");
 
 		//	- Slider:
@@ -407,6 +426,7 @@ public class ModuleTemplate {
 		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(2);
 
 		// Setting attack for reference by Module:
@@ -419,6 +439,7 @@ public class ModuleTemplate {
 		.setText(this.sidebarCP5.getController("slider2").getValue() + "")
 		.setLabelVisible(false)
 		.setAutoClear(false)
+		.setGroup("sidebarGroup")
 		.setId(3);
 
 		// Release:
@@ -426,6 +447,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("releaseLabel")
 		.setPosition(labelX, releaseY + 4)
 		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
 		.setValue("Release");
 
 		//	- Slider:
@@ -436,6 +458,7 @@ public class ModuleTemplate {
 		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(4);
 
 		// Setting release for reference by Module:
@@ -448,6 +471,7 @@ public class ModuleTemplate {
 		.setText(this.sidebarCP5.getController("slider4").getValue() + "")
 		.setLabelVisible(false)
 		.setAutoClear(false)
+		.setGroup("sidebarGroup")
 		.setId(5);
 
 		// Transition:
@@ -455,6 +479,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("transitionLabel")
 		.setPosition(labelX, transitionY + 4)
 		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
 		.setValue("Transition");
 
 		//	- Slider:
@@ -465,6 +490,7 @@ public class ModuleTemplate {
 		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(6);
 
 		// Setting transition for reference by Module:
@@ -477,6 +503,7 @@ public class ModuleTemplate {
 		.setText(this.sidebarCP5.getController("slider6").getValue() + "")
 		.setLabelVisible(false)
 		.setAutoClear(false)
+		.setGroup("sidebarGroup")
 		.setId(7);
 
 	} // addSliders
@@ -508,6 +535,7 @@ public class ModuleTemplate {
 		// "Key" Textlabel
 		this.sidebarCP5.addTextlabel("key")
 		.setPosition(labelX, keyY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Key");
 
 		// "Letter" drop-down menu (better name?)
@@ -517,6 +545,7 @@ public class ModuleTemplate {
 		.setItems(keyOptions)
 		.setOpen(false)
 		.setLabel("Select a key:")
+		.setGroup("sidebarGroup")
 		.getCaptionLabel().toUpperCase(false);
 
 		// Maj/Min/Chrom Toggles
@@ -526,6 +555,7 @@ public class ModuleTemplate {
 		.setPosition(majorX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Major")
+		.setGroup("sidebarGroup")
 		.setInternalValue(0);
 		this.sidebarCP5.getController("major").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -533,6 +563,7 @@ public class ModuleTemplate {
 		.setPosition(minorX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Minor")
+		.setGroup("sidebarGroup")
 		.setInternalValue(1);
 		this.sidebarCP5.getController("minor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -541,6 +572,7 @@ public class ModuleTemplate {
 		.setPosition(chromX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Chromatic")
+		.setGroup("sidebarGroup")
 		.setInternalValue(2);
 		this.sidebarCP5.getController("chrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -561,6 +593,7 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("rootColor")
 		.setPosition(labelX, rootColorY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Root Color");
 
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
@@ -572,6 +605,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, rootColorY)
 		.setWidth(buttonWidth)
 		.setLabel("Root")
+		.setGroup("sidebarGroup")
 		.setId(21);
 
 		this.sidebarCP5.addColorWheel("rootColorWheel")
@@ -579,6 +613,7 @@ public class ModuleTemplate {
 		.setRGB(this.parent.color(102, 0, 102))
 		.setLabelVisible(false)
 		.setVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(22);
 
 		this.sidebarCP5.addTextfield("rootColorTF")
@@ -587,6 +622,7 @@ public class ModuleTemplate {
 		.setAutoClear(false)
 		.setLabelVisible(false)
 		.setText("Code#")
+		.setGroup("sidebarGroup")
 		.setId(23);
 	} // addRootColorSelector
 
@@ -610,12 +646,14 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("colorStyle")
 		.setPosition(labelX, colorStyleY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Color Style");
 
 		this.sidebarCP5.addToggle("rainbow")
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
+		.setGroup("sidebarGroup")
 		.setInternalValue(this.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
@@ -623,6 +661,7 @@ public class ModuleTemplate {
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
+		.setGroup("sidebarGroup")
 		.setInternalValue(this.CS_DICHROM);
 		this.sidebarCP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -630,6 +669,7 @@ public class ModuleTemplate {
 		.setPosition(trichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
+		.setGroup("sidebarGroup")
 		.setInternalValue(this.CS_TRICHROM);
 		this.sidebarCP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -637,6 +677,7 @@ public class ModuleTemplate {
 		.setPosition(customX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
+		.setGroup("sidebarGroup")
 		.setInternalValue(this.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
@@ -675,6 +716,7 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("customPitchColor")
 		.setPosition(labelX, labelYVal + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Custom Pitch Color");
 
 		// Note Buttons, ColorWheels and corresponding Textfields will have id's of 24 or over;
@@ -691,6 +733,7 @@ public class ModuleTemplate {
 			.setWidth(buttonWidth)
 			.setLabel(noteNames1[namePos])
 			.setId(id)
+			.setGroup("sidebarGroup")
 			.getCaptionLabel().toUpperCase(false);
 
 			id = id + 1;
@@ -700,6 +743,7 @@ public class ModuleTemplate {
 			.setRGB(this.parent.color(102, 0, 102))
 			.setLabelVisible(false)
 			.setVisible(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -710,6 +754,7 @@ public class ModuleTemplate {
 			.setAutoClear(false)
 			.setLabelVisible(false)
 			.setText("Code#")
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -725,6 +770,7 @@ public class ModuleTemplate {
 			.setWidth(buttonWidth)
 			.setLabel(noteNames2[namePos])
 			.setId(id)
+			.setGroup("sidebarGroup")
 			.getCaptionLabel().toUpperCase(false);
 
 			id = id + 1;
@@ -734,6 +780,7 @@ public class ModuleTemplate {
 			.setRGB(this.parent.color(102, 0, 102))
 			.setLabelVisible(false)
 			.setVisible(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -744,6 +791,7 @@ public class ModuleTemplate {
 			.setAutoClear(false)
 			.setLabelVisible(false)
 			.setText("Code#")
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -757,6 +805,7 @@ public class ModuleTemplate {
 		.setPosition(0, 0)
 		.setSize(this.parent.width / 3, this.parent.height)
 		.setBackgroundColor(transBlackInt)
+		.setGroup("sidebarGroup")
 		.setVisible(false);
 	} // addNoteColorSelectors
 
@@ -787,12 +836,14 @@ public class ModuleTemplate {
 			this.sidebarCP5.addLabel(names[i])
 			.setPosition(labelX, modulateYVals[i] + 4)
 			.setWidth(labelWidth)
+			.setGroup("sidebarGroup")
 			.setValue(values[i]);
 
 			//	- Slider:
 			this.sidebarCP5.addSlider("slider" + id)
 			.setPosition(this.leftAlign, modulateYVals[i])
 			.setSize(sliderWidth, sliderHeight)
+			.setGroup("sidebarGroup")
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(-255, 255)
 			.setValue(0)
@@ -808,6 +859,7 @@ public class ModuleTemplate {
 			.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
 			.setLabelVisible(false)
 			.setAutoClear(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id	= id + 1;
@@ -922,15 +974,24 @@ public class ModuleTemplate {
 
 	void displaySidebar()
 	{
-		this.sidebarCP5.setVisible(true);
-		this.sidebarCP5.setVisible(true);
+//		this.sidebarCP5.setVisible(true);
+//		this.parent.fill(0);
+		this.parent.stroke(255);	
+		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
+		this.sidebarCP5.getGroup("sidebarGroup").continuousUpdateEvents();
+		
 		this.setLeftEdgeX(this.parent.width / 3);
 		this.leftAlign	= (this.getLeftEdgeX() / 4);
-
+/*
 		this.parent.stroke(255);
 		this.parent.fill(0);
 		this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-		
+		*/
+/*		
+		this.nonSidebarCP5.getController("play").bringToFront();
+		System.out.println("this.nonSidebarCP5.getController('play').isBroadcast() = " + this.nonSidebarCP5.getController("play").isBroadcast());
+		this.nonSidebarCP5.getController("play").isActive();
+		*/
 	} // displaySidebar
 
 	public String[] getScale(String key, int majMinChrom)
@@ -1440,6 +1501,7 @@ public class ModuleTemplate {
 	{
 		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
+		
 		int	id	= controlEvent.getController().getId();
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
@@ -1468,8 +1530,13 @@ public class ModuleTemplate {
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
 			this.setLeftEdgeX(0);
-			this.sidebarCP5.setVisible(false);
-			this.hamburger.setVisible(!this.sidebarCP5.getController("menuButton").isActive());
+//			this.sidebarCP5.setVisible(false);
+			
+			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+			
+			// This doesn't work, b/c "isActive" == "mouse hovering over"
+			//this.hamburger.setVisible(!this.sidebarCP5.getController("menuButton").isActive());
+			this.hamburger.setVisible(true);
 		} // if - menuX
 
 		// Hide play button button:

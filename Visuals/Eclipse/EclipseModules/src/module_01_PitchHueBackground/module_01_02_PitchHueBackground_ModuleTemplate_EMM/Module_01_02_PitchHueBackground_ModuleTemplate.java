@@ -225,47 +225,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		saturationMax  = 300;
 		brightnessMax  = 100;
 
-	/*	
-		this.notesCtoBFlats	= new String[] { 
-				"C", 
-				"Db", 
-				"D", 
-				"Eb",
-				"E",
-				"F", 
-				"Gb", 
-				"G",
-				"Ab",
-				"A",
-				"Bb",
-				"B"
-		};
-		
-		this.notesCtoBSharps	= new String[] { 
-				"C", 
-				"C#", 
-				"D", 
-				"D#",
-				"E",
-				"F", 
-				"F#", 
-				"G",
-				"G#",
-				"A",
-				"A#",
-				"B"
-		};
-*/
-
-
-//		this.colors	= new float[12][3];
-
-		this.curColorStyle	= this.CS_RAINBOW;
-//		this.rootColor	= new int[] { 255, 0, 0, };
-		// Start chromatic, rainbow:
-		
-//		this.curKey	= "D";
-//		this.majMinChrom	= 2;
 
 		this.moduleTemplate.setCurKey("G", 2);
 //		((ScrollableList)(this.moduleTemplate.sidebarCP5.getController("keyDropdown"))).setValue(3);
@@ -487,6 +446,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public void draw()
 	{
 		stroke(255);
+
+//		System.out.println("this.moduleTemplate.nonSidebarCP5.getController('play').isBroadcast() = " + 
+	//			this.moduleTemplate.nonSidebarCP5.getController("play").isBroadcast());
 
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
