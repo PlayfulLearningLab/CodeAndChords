@@ -922,60 +922,75 @@ public class ModuleTemplate {
 
 		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
 
-		float  sideWidth   = (this.parent.width - leftEdgeX) / notes.length;
+		float  sideWidth1   = (this.parent.width - leftEdgeX) / notes.length;
 		float  sideHeight  = this.parent.width / notes.length;
+		
+		float	addToLastRect	= (this.parent.width - this.getLeftEdgeX()) - (sideWidth1 * notes.length);
+		float	sideWidth2	= sideWidth1;
 		//  float  side = height / colors.length;
 
 		//	stroke(255);
 		this.parent.noStroke();
 
 		int	scaleDegree;
+		int	colorPos;
 		
+		// All notes but the last:
 		for (int i = 0; i < notes.length; i++)
-		{
-//			this.parent.fill(255);
-			scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
-			this.parent.fill(this.getColors()[scaleDegree][0], this.getColors()[scaleDegree][1], this.getColors()[scaleDegree][2]);
-			//			this.parent.fill(255);
-		/*		
-			if(i == 0)
+		{			
+			if(i == notes.length - 1)
 			{
-				for(int j = 0; j < this.colors[i].length; j++)
-				{
-					System.out.println("legend: colors[0][" + j + "] = " + colors[0][j]);
-				}
+				sideWidth2	= sideWidth1 + addToLastRect;
 			}
-		*/	 
+			
+			if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
+			{
+				// Rainbow colors are filled all the way and picked at the desired notes:
+				scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
+				colorPos	= scaleDegree;
+			} else {
+				// Dichrom. and Trichrom. only fill the first scaleLength of colors
+				// and use them sequentially:
+				colorPos	= i;
+			}
+			this.parent.fill(this.colors[colorPos][0], this.colors[colorPos][1], this.colors[colorPos][2]);
+			//			this.parent.fill(255);
+
 			if (i == goalHuePos) {
-				this.parent.rect(leftEdgeX + (sideWidth * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth, (float) (sideHeight * 1.5));
+				this.parent.rect(leftEdgeX + (sideWidth1 * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth2, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
 			} else {
-				this.parent.rect(leftEdgeX + (sideWidth * i), this.parent.height - sideHeight, sideWidth, sideHeight);
+				this.parent.rect(leftEdgeX + (sideWidth1 * i), this.parent.height - sideHeight, sideWidth2, sideHeight);
 				//      rect(0, (side * i), side, side);
 			}
 			this.parent.fill(0);
-			this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), this.parent.height - 20);
+			this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.35)), this.parent.height - 20);
 		} // for
+/*
+		// Last note:
+		int	i	= notes.length - 1;
+		
+		scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
+		this.parent.fill(this.colors[scaleDegree][0], this.colors[scaleDegree][1], this.colors[scaleDegree][2]);
+		//			this.parent.fill(255);
+
+		if (i == goalHuePos) {
+			this.parent.rect(leftEdgeX + (sideWidth * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth + addToLastRect, (float) (sideHeight * 1.5));
+			//      rect(0, (side * i), side * 1.5, side);
+		} else {
+			this.parent.rect(leftEdgeX + (sideWidth * i), this.parent.height - sideHeight, sideWidth + addToLastRect, sideHeight);
+			//      rect(0, (side * i), side, side);
+		}
+		this.parent.fill(0);
+		this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), this.parent.height - 20);
+		*/
 	} // legend
 
 	void displaySidebar()
-	{
-//		this.sidebarCP5.setVisible(true);
-//		this.parent.fill(0);	
+	{	
 		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
-//		this.sidebarCP5.getGroup("sidebarGroup").continuousUpdateEvents();
-		
 		this.setLeftEdgeX(this.parent.width / 3);
-/*
-		this.parent.stroke(255);
-		this.parent.fill(0);
-		this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-		*/
-/*		
-		this.nonSidebarCP5.getController("play").bringToFront();
-		System.out.println("this.nonSidebarCP5.getController('play').isBroadcast() = " + this.nonSidebarCP5.getController("play").isBroadcast());
-		this.nonSidebarCP5.getController("play").isActive();
-		*/
+
 	} // displaySidebar
 
 	public String[] getScale(String key, int majMinChrom)
@@ -1193,22 +1208,22 @@ public class ModuleTemplate {
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
 		} // error checking
-
+		
 		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
 		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
 		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
 
 		for(int i = 0; i < rgbVals1.length; i++)
 		{
-			this.getColors()[0][i]	= rgbVals1[i];
+			this.colors[0][i]	= rgbVals1[i];
 		}
-		for(int i = 1; i < this.scaleLength && i < this.getColors().length; i++)
+		for(int i = 1; i < this.scaleLength && i < this.colors.length; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length; j++)
+			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				this.getColors()[i][0]	= this.getColors()[i - 1][0] - redDelta;
-				this.getColors()[i][1]	= this.getColors()[i - 1][1] - greenDelta;
-				this.getColors()[i][2]	= this.getColors()[i - 1][2] - blueDelta;
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta;
 			} // for - j
 		} // for - i
 	} // dichromatic_TwoRGB
@@ -1317,17 +1332,17 @@ public class ModuleTemplate {
 		// fill first position with first color:
 		for(int i = 0; i < rgbVals1.length; i++)
 		{
-			this.getColors()[0][i]	= rgbVals1[i];
+			this.colors[0][i]	= rgbVals1[i];
 		}
 
 		// fill from first color to second color:
 		for(int i = 1; i < color2pos + 1; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length; j++)
+			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				this.getColors()[i][0]	= this.getColors()[i - 1][0] - redDelta1;
-				this.getColors()[i][1]	= this.getColors()[i - 1][1] - greenDelta1;
-				this.getColors()[i][2]	= this.getColors()[i - 1][2] - blueDelta1;
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta1;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta1;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta1;
 			} // for - j
 		} // for - first color to second color
 
@@ -1335,22 +1350,22 @@ public class ModuleTemplate {
 		// fill from second color to third color:
 		for(int i = color2pos + 1; i < color3pos + 1; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length; j++)
+			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				this.getColors()[i][0]	= this.getColors()[i - 1][0] - redDelta2;
-				this.getColors()[i][1]	= this.getColors()[i - 1][1] - greenDelta2;
-				this.getColors()[i][2]	= this.getColors()[i - 1][2] - blueDelta2;
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta2;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta2;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta2;
 			} // for - j
 		} // for - first color to second color
 
 		// fill from third color back to first color:
 		for(int i = color3pos + 1; i < this.scaleLength; i++)
 		{
-			for(int j = 0; j < this.getColors()[i].length; j++)
+			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				this.getColors()[i][0]	= this.getColors()[i - 1][0] - redDelta3;
-				this.getColors()[i][1]	= this.getColors()[i - 1][1] - greenDelta3;
-				this.getColors()[i][2]	= this.getColors()[i - 1][2] - blueDelta3;
+				this.colors[i][0]	= this.colors[i - 1][0] - redDelta3;
+				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta3;
+				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta3;
 			} // for - j
 		} // for - third color to first color
 	} //trichromatic_ThreeRGB
@@ -1959,11 +1974,6 @@ public class ModuleTemplate {
 	public void setLeftEdgeX(int leftEdgeX) {
 		this.leftEdgeX = leftEdgeX;
 	}
-
-	public float[][] getColors() {
-		return this.colors;
-	}
-
 
 	public int getKeyAddVal() {
 		return keyAddVal;
