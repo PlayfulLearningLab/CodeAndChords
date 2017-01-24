@@ -146,9 +146,13 @@ public class ModuleTemplate {
 		// The following will happen in rainbow():
 //		this.rootColor	= new int[] { 255, 0, 0, };
 
-		// TODO: these will need to be called here:
-//		this.setCurKey("A", 2);
-//		this.rainbow();
+		this.curKey			= "A";
+		this.majMinChrom	= 2;
+		
+		// Can't call setCurKey just yet, because the dropdown list hasn't been initialized,
+		// and it is called as part of setCurKey.
+//		this.setCurKey(this.curKey, this.majMinChrom);
+		this.rainbow();
 
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
@@ -157,11 +161,11 @@ public class ModuleTemplate {
 		this.attackReleaseTransition	= new float[3];
 		this.redGreenBlueMod		 	= new float[3];
 
+		//TODO: make initModuleTemplate() private again, once it can be called from constructor.
 		//this.initModuleTemplate();
 	} // ModuleTemplate
 
 	// Methods:
-	//TODO: make initModuleTemplate() private again, once it can be called from constructor.
 
 	/**
 	 * Called from constructor to calculate Y vals and call the methods for instantiating the necessary buttons;
@@ -835,11 +839,11 @@ public class ModuleTemplate {
 			this.sidebarCP5.addSlider("slider" + id)
 			.setPosition(this.leftAlign, modulateYVals[i])
 			.setSize(sliderWidth, sliderHeight)
-			.setGroup("sidebarGroup")
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(-255, 255)
 			.setValue(0)
 			.setLabelVisible(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id	= id + 1;
@@ -966,10 +970,9 @@ public class ModuleTemplate {
 	void displaySidebar()
 	{
 //		this.sidebarCP5.setVisible(true);
-//		this.parent.fill(0);
-		this.parent.stroke(255);	
+//		this.parent.fill(0);	
 		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
-		this.sidebarCP5.getGroup("sidebarGroup").continuousUpdateEvents();
+//		this.sidebarCP5.getGroup("sidebarGroup").continuousUpdateEvents();
 		
 		this.setLeftEdgeX(this.parent.width / 3);
 /*

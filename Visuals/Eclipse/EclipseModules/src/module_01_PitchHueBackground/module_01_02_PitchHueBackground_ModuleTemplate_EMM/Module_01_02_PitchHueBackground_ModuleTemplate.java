@@ -446,10 +446,15 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public void draw()
 	{
 		stroke(255);
-
-//		System.out.println("this.moduleTemplate.nonSidebarCP5.getController('play').isBroadcast() = " + 
-	//			this.moduleTemplate.nonSidebarCP5.getController("play").isBroadcast());
-
+/*
+		System.out.println("this.moduleTemplate.sidebarCP5.getGroup('sidebarGroup').isBroadcast() = " + 
+				(this.moduleTemplate.sidebarCP5.getGroup("sidebarGroup")).bringToFront());
+		
+				
+				System.out.println("this.moduleTemplate.sidebarCP5.getController('menuButton').isBroadcast() = " + 
+				this.moduleTemplate.sidebarCP5.getController("menuButton").isBroadcast());
+*/
+		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 
@@ -584,6 +589,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
 					"; this.moduleTemplate = " + this.moduleTemplate);
+			println("Module_01_02.controlEvent: theControlEvent.isGroup() = " + theControlEvent.isGroup());
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
