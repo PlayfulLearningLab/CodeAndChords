@@ -4,6 +4,7 @@ import processing.core.*;
 import interfascia.*;
 
 import java.awt.Color;
+import java.util.List;
 
 import addons.Buttons;
 import addons.HScrollbar;
@@ -445,10 +446,20 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				
 				System.out.println("this.moduleTemplate.sidebarCP5.getController('menuButton').isBroadcast() = " + 
 				this.moduleTemplate.sidebarCP5.getController("menuButton").isBroadcast());
-*/
-		System.out.println("this.moduleTemplate.sidebarCP5.getTooltip().isEnabled() = " + 
-				this.moduleTemplate.sidebarCP5.getTooltip().isEnabled());
+
 		
+		System.out.println("this.moduleTemplate.sidebarCP5.getWindow() = " + 
+				this.moduleTemplate.sidebarCP5.getWindow());
+		
+	*/
+		System.out.println("mouseX = " + mouseX + "; mouseY = " + mouseY);
+		/*
+		List<ControllerInterface<?>>	mouseOverList	= this.moduleTemplate.sidebarCP5.getMouseOverList();
+		for(int i = 0; i < mouseOverList.size(); i++)
+		{
+			println("mouseOverList.get(" + i + ") = " + mouseOverList.get(i));
+		}
+		*/
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 
