@@ -175,7 +175,6 @@ public class ModuleTemplate {
 	{
 		this.sidebarCP5.addGroup("sidebarGroup")
 			.setBackgroundColor(this.parent.color(0))
-//			.setColorBackground(this.parent.color(0))
 			.setSize(this.parent.width / 3, this.parent.height + 1)
 			.setVisible(false);
 		

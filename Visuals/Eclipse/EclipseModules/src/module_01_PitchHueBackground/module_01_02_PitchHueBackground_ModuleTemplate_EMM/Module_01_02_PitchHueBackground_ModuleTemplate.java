@@ -58,14 +58,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	Input  input;
 	int  threshold;      // when amp is below this, the background will be black.
-	/*
-	int[]	majorScaleDegrees;
-	int[]	minorScaleDegrees;
-	int[][]	scaleDegrees;
-	*/
-	private	String[]	notesCtoBFlats;
-	private	String[]	notesCtoBSharps;
-	private	int		keyAddVal;		// this is added the Midi note values of the pitch before mod'ing, to get scale degree in correct key.
 
 	int  hue;
 	int  saturation;
@@ -454,9 +446,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 				System.out.println("this.moduleTemplate.sidebarCP5.getController('menuButton').isBroadcast() = " + 
 				this.moduleTemplate.sidebarCP5.getController("menuButton").isBroadcast());
 */
-//		System.out.println("this.moduleTemplate.sidebarCP5.isUpdate() = " );
-		
-		this.moduleTemplate.sidebarCP5.draw();
+		System.out.println("this.moduleTemplate.sidebarCP5.getTooltip().isEnabled() = " + 
+				this.moduleTemplate.sidebarCP5.getTooltip().isEnabled());
 		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
