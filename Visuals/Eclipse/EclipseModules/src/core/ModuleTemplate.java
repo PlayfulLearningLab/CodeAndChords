@@ -9,20 +9,15 @@ import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
-import controlP5.ControlP5Constants;
-import controlP5.Controller;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
-import controlP5.Textlabel;
 import controlP5.Toggle;
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
  * Future:
- *  - look into putting things into Groups -- either all in one, or each section its own group?
  *  - ControlListener that takes everything and doesn't require Modules to have controlEvent()?
  *    (see A.S. answer: https://forum.processing.org/two/discussion/2692/controlp5-problems-creating-a-toggle-controller-with-custom-images-on-a-second-tab)
  * - Custom controllers: http://www.sojamo.de/libraries/controlP5/reference/controlP5/ControllerView.html
@@ -57,17 +52,9 @@ public class ModuleTemplate {
 
 	// Global vars - TODO: all private!
 	private	PApplet		parent;
-	private ControlP5 	nonSidebarCP5;
+//	public ControlP5 	nonSidebarCP5;
 	public ControlP5 	sidebarCP5;
 	private	Input		input;
-
-	private Toggle		play;
-	private	Button		hamburger;
-	private	Button		menuX;
-
-	private	Toggle		hidePlayButton;
-	private	Toggle		hideMenuButton;
-	private	Toggle		hideScale;
 
 
 	private	int			leftAlign;
@@ -75,9 +62,9 @@ public class ModuleTemplate {
 
 	private	String		sidebarTitle;
 
-	private	int			scaleLength;
 	private	int			majMinChrom;
 	private	String		curKey;
+	private	int			scaleLength;
 	private int 		keyAddVal;		// amount that must be subtracted in legend() 
 	// to line pitches up with the correct scale degree of the current key.
 
@@ -112,22 +99,18 @@ public class ModuleTemplate {
 	private	boolean		showScale;
 
 	private	float		thresholdLevel;
-	// TODO: the following three var's are probably extraneous, and their getters and setters as well?
-	private	float		attackTime;
-	private	float		releaseTime;
-	private	float		transitionTime;
 
-	private	float[]		attackReleaseTransition	= new float[3];
+	private	float[]		attackReleaseTransition;
 
-	private	float[]	redGreenBlueMod	= new float[3];	// this will store the red/green/blue modulate values
+	private	float[]	redGreenBlueMod;	// this will store the red/green/blue modulate values
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
 		this.input	= input;
 
-		// ControlP5 for playButton and hamburger:
-		this.nonSidebarCP5	= new ControlP5(this.parent);
+		// ControlP5 for playButton and hamburger - now put them on the same ControlP5, with a group for the sidebar controls:
+//		this.nonSidebarCP5	= new ControlP5(this.parent);
 
 		// ControlP5 for most of the sidebar elements:
 		this.sidebarCP5		= new ControlP5(this.parent);
@@ -135,36 +118,47 @@ public class ModuleTemplate {
 		// This technically works, but it's horribly blurry:
 		//		this.sidebarCP5.setFont(this.parent.createFont("Consolas", 10) );
 
-		this.sidebarCP5.setVisible(false);
 
 		// ControlP5 for ColorWheels (having a separate one allows us to setAutoDraw(false) on the other CP5,
 		// draw a transparent rectangle over those controllers, and then draw the ColorWheel on top of that):
 		//		this.colorWheelCP5	= new ControlP5(this.parent);
 		//		this.sidebarCP5.setVisible(false);
 
-		this.sidebarTitle	= sidebarTitle;
 
 		//		this.leftEdgeXArray	= new int[] { 0, this.parent.width / 3 };
 		this.setLeftEdgeX(0);
+		this.leftAlign	= (this.parent.width / 3) / 4;
+		
+		this.sidebarTitle	= sidebarTitle;
+		
+		this.colors 		= new float[12][3];
+		this.rootColor		= new int[3];
+		this.originalColors	= new float[12][3];
 
-		this.setColors(new float[12][3]);
+		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
+		// The following will happen in rainbow():
+//		this.rootColor	= new int[] { 255, 0, 0, };
 
-		this.curColorStyle	= this.CS_RAINBOW;
-		this.rootColor	= new int[] { 255, 0, 0, };
-
-		// TODO: these will need to be called here:
-//		this.setCurKey("A", 2);
-//		this.rainbow();
+		this.curKey			= "A";
+		this.majMinChrom	= 2;
+		
+		// Can't call setCurKey just yet, because the dropdown list hasn't been initialized,
+		// and it is called as part of setCurKey.
+//		this.setCurKey(this.curKey, this.majMinChrom);
+		this.rainbow();
 
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
 		this.modulateYVals	= new int[3];
+		
+		this.attackReleaseTransition	= new float[3];
+		this.redGreenBlueMod		 	= new float[3];
 
+		//TODO: make initModuleTemplate() private again, once it can be called from constructor.
 		//this.initModuleTemplate();
 	} // ModuleTemplate
 
 	// Methods:
-	//TODO: make initModuleTemplate() private again, once it can be called from constructor.
 
 	/**
 	 * Called from constructor to calculate Y vals and call the methods for instantiating the necessary buttons;
@@ -172,6 +166,11 @@ public class ModuleTemplate {
 	 */
 	public void initModuleTemplate()
 	{
+		this.sidebarCP5.addGroup("sidebarGroup")
+			.setBackgroundColor(this.parent.color(0))
+			.setSize(this.parent.width / 3, this.parent.height + 1)
+			.setVisible(false);
+		
 		// Add play button, hamburger and menu x:
 		addOutsideButtons();
 
@@ -179,15 +178,19 @@ public class ModuleTemplate {
 		ControlFont	largerStandard	= new ControlFont(ControlP5.BitFontStandard58, 13);
 
 		this.sidebarCP5.addTextlabel("title")
-		.setPosition((this.parent.width / 3) / 4, 5)	// This x val is usually this.leftAlign, but doesn't get set until sidebar is open.
-		// TODO: is this ^ wise?  Maybe always set leftAlign to be (this.parent.width / 3) / 4?
+		.setGroup("sidebarGroup")
+		.setPosition(this.leftAlign, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
 		.setValue(this.sidebarTitle);
 
+		float	menuXX		= this.sidebarCP5.getController("menuX").getPosition()[0];
+		float	menuWidth	= this.sidebarCP5.getController("menuX").getWidth();
+		
 		this.sidebarCP5.addTextlabel("menu")
-		.setPosition(this.menuX.getPosition()[0] + this.menuX.getWidth() + 3, 10)
+		.setPosition(menuXX + menuWidth + 3, 10)
 		.setHeight(15)
+		.setGroup("sidebarGroup")
 		.setValue("Menu");
 
 		// calculate y's
@@ -224,10 +227,6 @@ public class ModuleTemplate {
 		{
 			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
 		}
-
-		// leftAlign will be set in displaySidebar in relation to leftEdgeX, 
-		// but the button functions need to use it earlier:
-		this.leftAlign	= (this.parent.width / 3) / 4;
 
 		// call add methods:
 		addHideButtons(textYVals[0]);
@@ -269,7 +268,7 @@ public class ModuleTemplate {
 
 		images[0].resize(playWidth - 5, playHeight);
 		images[1].resize(playWidth, playHeight);
-		this.play	= this.nonSidebarCP5.addToggle("play")
+		this.sidebarCP5.addToggle("play")
 				.setPosition(playX, playY)
 				.setImages(images)
 				.updateSize();
@@ -281,7 +280,7 @@ public class ModuleTemplate {
 
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
-		this.hamburger	= this.nonSidebarCP5.addButton("hamburger")
+		this.sidebarCP5.addButton("hamburger")
 				.setPosition(hamburgerX, hamburgerY)
 				.setImage(hamburger)
 				.updateSize();
@@ -289,13 +288,13 @@ public class ModuleTemplate {
 		int	menuXX			= 5;
 		int	menuXY			= 5;
 		int	menuXWidth		= 15;
-		int	menuXHeight		= 15;
 
 		PImage	menuX	= this.parent.loadImage("menuX.png");
 		menuX.resize(menuXWidth, 0);
-		this.menuX	= this.sidebarCP5.addButton("menuX")
+		this.sidebarCP5.addButton("menuX")
 				.setPosition(menuXX, menuXY)
 				.setImage(menuX)
+				.setGroup("sidebarGroup")
 				.updateSize();
 	} // addOutsideButtons
 
@@ -312,28 +311,32 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Hide");
 
-		this.hidePlayButton	= this.sidebarCP5.addToggle("playButton")
+		this.sidebarCP5.addToggle("playButton")
 				.setPosition(playButtonX, hideY)
 				.setWidth(hideWidth)
+				.setGroup("sidebarGroup")
 				.setId(4);
-		this.hidePlayButton.getCaptionLabel().set("Play Button").align(ControlP5.CENTER, ControlP5.CENTER);
+		this.sidebarCP5.getController("playButton").getCaptionLabel().set("Play Button").align(ControlP5.CENTER, ControlP5.CENTER);
 
 
-		this.hideMenuButton	= this.sidebarCP5.addToggle("menuButton")
+		this.sidebarCP5.addToggle("menuButton")
 				.setPosition(menuButtonX, hideY)
 				.setWidth(hideWidth)
+				.setGroup("sidebarGroup")
 				.setId(5);
-		this.hideMenuButton.getCaptionLabel().set("Menu Button").align(ControlP5.CENTER, ControlP5.CENTER);
+		this.sidebarCP5.getController("menuButton").getCaptionLabel().set("Menu Button").align(ControlP5.CENTER, ControlP5.CENTER);
 
 
-		this.hideScale	= this.sidebarCP5.addToggle("scale")
+		this.sidebarCP5.addToggle("scale")
 				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
 				.toggle()
+				.setGroup("sidebarGroup")
 				.setId(6);
-		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
+		this.sidebarCP5.getController("scale").getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
 
 	} // addHideButtons
 
@@ -368,6 +371,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("thresholdLabel")
 				.setPosition(labelX, thresholdY + 4)
 				.setWidth(labelWidth)
+				.setGroup("sidebarGroup")
 				.setValue("Threshold");
 		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
 
@@ -379,6 +383,7 @@ public class ModuleTemplate {
 				.setRange(2, 100)
 				.setValue(10)
 				.setLabelVisible(false)
+				.setGroup("sidebarGroup")
 				.setId(0);
 		this.setThresholdLevel(10);
 
@@ -386,17 +391,11 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
-<<<<<<< HEAD
-				//.getValueLabel().setLabelVisible(false)
-				//.getCaptionLabel().setLabelVisible(false)
-				.setText(this.threshold.getValue() + "")
-				//.setLabelVisible(false)
-=======
 				.setLabelVisible(false)
 				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
 				.setLabelVisible(false)
->>>>>>> 2dfbbf221d051bdd0cb6bfd362c73434d0bada1a
 				.setAutoClear(false)
+				.setGroup("sidebarGroup")
 				.setId(1);
 
 		// Test: not adding them as variables, seeing how that goes. :)
@@ -406,6 +405,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("attackLabel")
 		.setPosition(labelX, attackY + 4)
 		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
 		.setValue("Attack");
 
 		//	- Slider:
@@ -416,6 +416,7 @@ public class ModuleTemplate {
 		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(2);
 
 		// Setting attack for reference by Module:
@@ -428,6 +429,7 @@ public class ModuleTemplate {
 		.setText(this.sidebarCP5.getController("slider2").getValue() + "")
 		.setLabelVisible(false)
 		.setAutoClear(false)
+		.setGroup("sidebarGroup")
 		.setId(3);
 	
 		
@@ -436,6 +438,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("releaseLabel")
 		.setPosition(labelX, releaseY + 4)
 		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
 		.setValue("Release");
 
 		//	- Slider:
@@ -446,6 +449,7 @@ public class ModuleTemplate {
 		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(4);
 
 		// Setting release for reference by Module:
@@ -458,6 +462,7 @@ public class ModuleTemplate {
 		.setText(this.sidebarCP5.getController("slider4").getValue() + "")
 		.setLabelVisible(false)
 		.setAutoClear(false)
+		.setGroup("sidebarGroup")
 		.setId(5);
 
 		// Transition:
@@ -465,6 +470,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addLabel("transitionLabel")
 		.setPosition(labelX, transitionY + 4)
 		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
 		.setValue("Transition");
 
 		//	- Slider:
@@ -475,6 +481,7 @@ public class ModuleTemplate {
 		.setRange(2, 20)
 		.setValue(10)
 		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(6);
 
 		// Setting transition for reference by Module:
@@ -487,6 +494,7 @@ public class ModuleTemplate {
 		.setText(this.sidebarCP5.getController("slider6").getValue() + "")
 		.setLabelVisible(false)
 		.setAutoClear(false)
+		.setGroup("sidebarGroup")
 		.setId(7);
 
 	} // addSliders
@@ -503,7 +511,6 @@ public class ModuleTemplate {
 	{
 
 		int	labelX			= 10;
-		int	labelWidth		= 70;
 
 		int	listWidth		= 65;
 		int	spacer			= 5;
@@ -520,6 +527,7 @@ public class ModuleTemplate {
 		// "Key" Textlabel
 		this.sidebarCP5.addTextlabel("key")
 		.setPosition(labelX, keyY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Key");
 
 		// "Letter" drop-down menu (better name?)
@@ -529,6 +537,7 @@ public class ModuleTemplate {
 		.setItems(keyOptions)
 		.setOpen(false)
 		.setLabel("Select a key:")
+		.setGroup("sidebarGroup")
 		.getCaptionLabel().toUpperCase(false);
 
 		// Maj/Min/Chrom Toggles
@@ -538,6 +547,7 @@ public class ModuleTemplate {
 		.setPosition(majorX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Major")
+		.setGroup("sidebarGroup")
 		.setInternalValue(0);
 		this.sidebarCP5.getController("major").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -545,6 +555,7 @@ public class ModuleTemplate {
 		.setPosition(minorX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Minor")
+		.setGroup("sidebarGroup")
 		.setInternalValue(1);
 		this.sidebarCP5.getController("minor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -553,6 +564,7 @@ public class ModuleTemplate {
 		.setPosition(chromX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Chromatic")
+		.setGroup("sidebarGroup")
 		.setInternalValue(2);
 		this.sidebarCP5.getController("chrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -573,6 +585,7 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("rootColor")
 		.setPosition(labelX, rootColorY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Root Color");
 
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
@@ -584,6 +597,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, rootColorY)
 		.setWidth(buttonWidth)
 		.setLabel("Root")
+		.setGroup("sidebarGroup")
 		.setId(21);
 
 		this.sidebarCP5.addColorWheel("rootColorWheel")
@@ -591,6 +605,7 @@ public class ModuleTemplate {
 		.setRGB(this.parent.color(102, 0, 102))
 		.setLabelVisible(false)
 		.setVisible(false)
+		.setGroup("sidebarGroup")
 		.setId(22);
 
 		this.sidebarCP5.addTextfield("rootColorTF")
@@ -599,6 +614,7 @@ public class ModuleTemplate {
 		.setAutoClear(false)
 		.setLabelVisible(false)
 		.setText("Code#")
+		.setGroup("sidebarGroup")
 		.setId(23);
 	} // addRootColorSelector
 
@@ -622,34 +638,39 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("colorStyle")
 		.setPosition(labelX, colorStyleY + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Color Style");
 
 		this.sidebarCP5.addToggle("rainbow")
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
-		.setInternalValue(this.CS_RAINBOW);
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		this.sidebarCP5.addToggle("dichrom")
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
-		.setInternalValue(this.CS_DICHROM);
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate.CS_DICHROM);
 		this.sidebarCP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("trichrom")
 		.setPosition(trichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
-		.setInternalValue(this.CS_TRICHROM);
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate.CS_TRICHROM);
 		this.sidebarCP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("custom")
 		.setPosition(customX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
-		.setInternalValue(this.CS_CUSTOM);
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
@@ -687,6 +708,7 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("customPitchColor")
 		.setPosition(labelX, labelYVal + 4)
+		.setGroup("sidebarGroup")
 		.setValue("Custom Pitch Color");
 
 		// Note Buttons, ColorWheels and corresponding Textfields will have id's of 24 or over;
@@ -703,6 +725,7 @@ public class ModuleTemplate {
 			.setWidth(buttonWidth)
 			.setLabel(noteNames1[namePos])
 			.setId(id)
+			.setGroup("sidebarGroup")
 			.getCaptionLabel().toUpperCase(false);
 
 			id = id + 1;
@@ -712,6 +735,7 @@ public class ModuleTemplate {
 			.setRGB(this.parent.color(102, 0, 102))
 			.setLabelVisible(false)
 			.setVisible(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -722,6 +746,7 @@ public class ModuleTemplate {
 			.setAutoClear(false)
 			.setLabelVisible(false)
 			.setText("Code#")
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -737,6 +762,7 @@ public class ModuleTemplate {
 			.setWidth(buttonWidth)
 			.setLabel(noteNames2[namePos])
 			.setId(id)
+			.setGroup("sidebarGroup")
 			.getCaptionLabel().toUpperCase(false);
 
 			id = id + 1;
@@ -746,6 +772,7 @@ public class ModuleTemplate {
 			.setRGB(this.parent.color(102, 0, 102))
 			.setLabelVisible(false)
 			.setVisible(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -756,6 +783,7 @@ public class ModuleTemplate {
 			.setAutoClear(false)
 			.setLabelVisible(false)
 			.setText("Code#")
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id = id + 1;
@@ -769,6 +797,7 @@ public class ModuleTemplate {
 		.setPosition(0, 0)
 		.setSize(this.parent.width / 3, this.parent.height)
 		.setBackgroundColor(transBlackInt)
+		.setGroup("sidebarGroup")
 		.setVisible(false);
 	} // addNoteColorSelectors
 	
@@ -821,6 +850,7 @@ public class ModuleTemplate {
 			this.sidebarCP5.addLabel(names[i])
 			.setPosition(labelX, modulateYVals[i] + 4)
 			.setWidth(labelWidth)
+			.setGroup("sidebarGroup")
 			.setValue(values[i]);
 
 			//	- Slider:
@@ -831,6 +861,7 @@ public class ModuleTemplate {
 			.setRange(-255, 255)
 			.setValue(0)
 			.setLabelVisible(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id	= id + 1;
@@ -842,6 +873,7 @@ public class ModuleTemplate {
 			.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
 			.setLabelVisible(false)
 			.setAutoClear(false)
+			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id	= id + 1;
@@ -892,7 +924,6 @@ public class ModuleTemplate {
 			// Then populate the textfields with the current colors in the colors array:
 			// (textfield id's start at 23 and go up by 3)
 			int	id	= 26;
-			int	notePos	= 0;
 			Textfield	curTextfield;
 
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
@@ -957,15 +988,22 @@ public class ModuleTemplate {
 
 	void displaySidebar()
 	{
-		this.sidebarCP5.setVisible(true);
-		this.sidebarCP5.setVisible(true);
+//		this.sidebarCP5.setVisible(true);
+//		this.parent.fill(0);	
+		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
+//		this.sidebarCP5.getGroup("sidebarGroup").continuousUpdateEvents();
+		
 		this.setLeftEdgeX(this.parent.width / 3);
-		this.leftAlign	= (this.getLeftEdgeX() / 4);
-
+/*
 		this.parent.stroke(255);
 		this.parent.fill(0);
 		this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-		
+		*/
+/*		
+		this.nonSidebarCP5.getController("play").bringToFront();
+		System.out.println("this.nonSidebarCP5.getController('play').isBroadcast() = " + this.nonSidebarCP5.getController("play").isBroadcast());
+		this.nonSidebarCP5.getController("play").isActive();
+		*/
 	} // displaySidebar
 
 	public String[] getScale(String key, int majMinChrom)
@@ -1475,6 +1513,7 @@ public class ModuleTemplate {
 	{
 		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
+		
 		int	id	= controlEvent.getController().getId();
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
@@ -1484,7 +1523,7 @@ public class ModuleTemplate {
 				input.getuGenArray()[i].pause(true);
 			} // for
 
-			if(this.play.getBooleanValue())
+			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
 				this.input.uGenArrayFromSample(this.inputFile);
 			} else {
@@ -1496,27 +1535,30 @@ public class ModuleTemplate {
 		if(controlEvent.getController().getName().equals("hamburger"))
 		{
 			this.displaySidebar();
-			this.hamburger.setVisible(false);
+			controlEvent.getController().setVisible(false);
+			this.sidebarCP5.getWindow().resetMouseOver();
 		} // if - hamburger
 
 		// MenuX button:
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
 			this.setLeftEdgeX(0);
-			this.sidebarCP5.setVisible(false);
-			this.hamburger.setVisible(!this.sidebarCP5.getController("menuButton").isActive());
+//			this.sidebarCP5.setVisible(false);
+			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+			this.sidebarCP5.getController("hamburger").setVisible(true);
 		} // if - menuX
 
 		// Hide play button button:
-		if(controlEvent.getController().getId() == this.hidePlayButton.getId())
+		if(controlEvent.getName().equals("playButton"))
 		{
-			this.play.setVisible(!this.play.isVisible());
+			// Set the actual play button to visible/invisible:
+			this.sidebarCP5.getController("play").setVisible(!this.sidebarCP5.getController("play").isVisible());
 		} // if - hidePlayButton
 
 		// Hide menu button button:
-		if(controlEvent.getController().getId() == this.hideMenuButton.getId())
+		if(controlEvent.getName().equals("menuButton"))
 		{
-			this.hamburger.setVisible(!this.hamburger.isVisible());
+			this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
 		} // if - hidePlayButton
 
 		// Hide scale:
@@ -1950,9 +1992,6 @@ public class ModuleTemplate {
 		return this.colors;
 	}
 
-	public void setColors(float[][] colors) {
-		this.colors = colors;
-	}
 
 	public int getKeyAddVal() {
 		return keyAddVal;
@@ -1978,30 +2017,6 @@ public class ModuleTemplate {
 		this.thresholdLevel = thresholdLevel;
 	}
 
-	// TODO: I think these variables are extraneous, so their getters/setters could prob. go.
-	public float getAttackTime() {
-		return attackTime;
-	}
-
-	public void setAttackTime(float attackTime) {
-		this.attackTime = attackTime;
-	}
-
-	public float getReleaseTime() {
-		return releaseTime;
-	}
-
-	public void setReleaseTime(float releaseTime) {
-		this.releaseTime = releaseTime;
-	}
-
-	public float getTransitionTime() {
-		return transitionTime;
-	}
-
-	public void setTransitionTime(float transitionTime) {
-		this.transitionTime = transitionTime;
-	}
 
 	public float getAttackReleaseTransition(int arORt)
 	{
