@@ -63,7 +63,7 @@ public class ModuleTemplate {
 	private	String		sidebarTitle;
 
 	private	int			majMinChrom;
-	private	String		curKey;
+	public	String		curKey;
 	private	int			scaleLength;
 	private int 		keyAddVal;		// amount that must be subtracted in legend() 
 	// to line pitches up with the correct scale degree of the current key.
@@ -1626,7 +1626,7 @@ public class ModuleTemplate {
 
 //			this.setCurKey(key, this.getMajMinChrom());
 			this.curKey			= key;
-			this.keyAddVal		= keyPos;
+			this.keyAddVal		= (keyPos - 4 + this.scaleLength) % this.scaleLength;
 			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
 			
 			System.out.println("key = " + key + "; keyPos = " + keyPos);
