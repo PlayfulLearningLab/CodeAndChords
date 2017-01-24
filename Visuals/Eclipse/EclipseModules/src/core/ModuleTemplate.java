@@ -1515,6 +1515,7 @@ public class ModuleTemplate {
 		{
 			this.displaySidebar();
 			controlEvent.getController().setVisible(false);
+			this.sidebarCP5.getWindow().resetMouseOver();
 		} // if - hamburger
 
 		// MenuX button:

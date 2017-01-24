@@ -439,27 +439,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public void draw()
 	{
 		stroke(255);
-/*
-		System.out.println("this.moduleTemplate.sidebarCP5.getGroup('sidebarGroup').isBroadcast() = " + 
-				(this.moduleTemplate.sidebarCP5.getGroup("sidebarGroup")).bringToFront());
 		
-				
-				System.out.println("this.moduleTemplate.sidebarCP5.getController('menuButton').isBroadcast() = " + 
-				this.moduleTemplate.sidebarCP5.getController("menuButton").isBroadcast());
-
-		
-		System.out.println("this.moduleTemplate.sidebarCP5.getWindow() = " + 
-				this.moduleTemplate.sidebarCP5.getWindow());
-		
-	*/
-		System.out.println("mouseX = " + mouseX + "; mouseY = " + mouseY);
-		/*
-		List<ControllerInterface<?>>	mouseOverList	= this.moduleTemplate.sidebarCP5.getMouseOverList();
-		for(int i = 0; i < mouseOverList.size(); i++)
-		{
-			println("mouseOverList.get(" + i + ") = " + mouseOverList.get(i));
-		}
-		*/
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 
@@ -594,7 +574,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
 					"; this.moduleTemplate = " + this.moduleTemplate);
-			println("Module_01_02.controlEvent: theControlEvent.isGroup() = " + theControlEvent.isGroup());
+			
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
