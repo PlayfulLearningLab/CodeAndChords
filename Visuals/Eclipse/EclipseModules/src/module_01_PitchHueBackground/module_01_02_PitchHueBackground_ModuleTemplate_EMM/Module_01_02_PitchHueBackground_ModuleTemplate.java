@@ -82,7 +82,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// to the real closest note, not just the next note down.
 		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
 		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
-		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
+		if(curHuePos < 0 || curHuePos > this.moduleTemplate.colors.length) {
 			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
 		}
@@ -98,8 +98,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void draw()
 	{
-		stroke(255);
-
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 
@@ -109,6 +107,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
 			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+			System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
+					moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
 			
 			// chromatic:
 			if(this.moduleTemplate.getMajMinChrom() == 2) {
@@ -126,7 +126,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			} // if - current scale is Major or Minor		
 
 
-			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
+			if(newHuePos > this.moduleTemplate.colors.length || newHuePos < 0)	{
 				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
 			}
 
@@ -136,7 +136,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			if (newHuePos != goalHuePos) {
 				goalHuePos  = newHuePos;
 			} // if
-			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
+			goalHue  = this.moduleTemplate.colors[goalHuePos];
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
@@ -180,7 +180,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);		
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
-		stroke(255);
+//		stroke(255);
 
 
 		if(this.moduleTemplate.isShowScale())
