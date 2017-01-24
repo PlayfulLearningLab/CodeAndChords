@@ -8,23 +8,16 @@ import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlFont;
-import controlP5.ControlGroup;
 import controlP5.ControlP5;
-import controlP5.ControlP5Constants;
-import controlP5.Controller;
-import controlP5.Group;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
-import controlP5.Textlabel;
 import controlP5.Toggle;
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 /**
  * Future:
- *  - look into putting things into Groups -- either all in one, or each section its own group?
  *  - ControlListener that takes everything and doesn't require Modules to have controlEvent()?
  *    (see A.S. answer: https://forum.processing.org/two/discussion/2692/controlp5-problems-creating-a-toggle-controller-with-custom-images-on-a-second-tab)
  * - Custom controllers: http://www.sojamo.de/libraries/controlP5/reference/controlP5/ControllerView.html
