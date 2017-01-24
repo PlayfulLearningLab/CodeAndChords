@@ -261,6 +261,8 @@ public class ModuleTemplate {
 		this.addCustomPitchColor(textYVals[8], noteYVals);
 
 		addModulateSliders(modulateYVals);
+		
+		hideTextLabels();
 
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
@@ -401,9 +403,10 @@ public class ModuleTemplate {
 		this.thresholdTF	= this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
-				.setLabelVisible(false)
+				//.getValueLabel().setLabelVisible(false)
+				//.getCaptionLabel().setLabelVisible(false)
 				.setText(this.threshold.getValue() + "")
-				.setLabelVisible(false)
+				//.setLabelVisible(false)
 				.setAutoClear(false)
 				.setId(1);
 
@@ -437,7 +440,8 @@ public class ModuleTemplate {
 		.setLabelVisible(false)
 		.setAutoClear(false)
 		.setId(3);
-
+	
+		
 		// Release:
 		// - Textlabel:
 		this.sidebarCP5.addLabel("releaseLabel")
@@ -498,6 +502,8 @@ public class ModuleTemplate {
 
 	} // addSliders
 
+
+	
 	/**
 	 * Method called during instantiation to initialize the key selector drop-down menu (ScrollableList)
 	 * and major/minor/chromatic selection buttons.
@@ -775,6 +781,28 @@ public class ModuleTemplate {
 		.setBackgroundColor(transBlackInt)
 		.setVisible(false);
 	} // addNoteColorSelectors
+	
+	/**
+	 * Method called during instatiation to hide text labels of text fields
+	 * Elena Ryan
+	 * Added 1/24/17
+	 */	
+	private void hideTextLabels() {
+		for(int i = 1; i<14; i++){
+			if(i%2 == 1){
+				this.sidebarCP5.getController("textfield"+i).getCaptionLabel().setVisible(false);
+			}
+		}//hides slider labels
+		
+		this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
+				
+		for(int i = 24;i<60; i++){
+			if(i%3 == 2){
+			this.sidebarCP5.getController("textfield"+i).getCaptionLabel().setVisible(false);
+			}
+		}//hides text labels for colors
+				
+	}//hideTextLabels
 
 	/**
 	 * Method called during instantiation, to initialize the color modulate sliders.
@@ -829,6 +857,7 @@ public class ModuleTemplate {
 			id	= id + 1;
 		} // for
 	} // addModulateSliders
+	
 
 
 	public void update()

@@ -513,7 +513,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			this.controller.add(this.modulateTextFieldArray[i]);
 		} // for - initialize modulate textField array
 
-
+	
 	} // setup()
 
 	public void draw()
