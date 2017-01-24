@@ -4,6 +4,7 @@ import processing.core.*;
 import interfascia.*;
 
 import java.awt.Color;
+import java.util.List;
 
 import addons.Buttons;
 import addons.HScrollbar;
@@ -40,6 +41,12 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	// Kanye:
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 
+	private	static	char	CS_RAINBOW	= 1;
+	private	static	char	CS_DICHROM	= 2;
+	private	static	char	CS_TRICHROM	= 3;
+	private	static	char	CS_CUSTOM	= 4;
+	private	char	curColorStyle;
+
 	// TODO: Make most variables private.
 	// Lable for the scrollbar:
 	GUIController controller;
@@ -52,14 +59,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	Input  input;
 	int  threshold;      // when amp is below this, the background will be black.
-	/*
-	int[]	majorScaleDegrees;
-	int[]	minorScaleDegrees;
-	int[][]	scaleDegrees;
-	*/
-	private	String[]	notesCtoBFlats;
-	private	String[]	notesCtoBSharps;
-	private	int		keyAddVal;		// this is added the Midi note values of the pitch before mod'ing, to get scale degree in correct key.
 
 	int  hue;
 	int  saturation;
@@ -221,17 +220,29 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 
 		this.moduleTemplate.setCurKey("G", 2);
+//		((ScrollableList)(this.moduleTemplate.sidebarCP5.getController("keyDropdown"))).setValue(3);
 
+	
+		/*
+		for(int i = 0; i < this.colors.length && i < this.rainbowColors[2].length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[2][i].length; j++)
+			{
+				this.colors[i][j]	= this.rainbowColors[2][i][j];
+			} // for - j (going through rgb values)
+		} // for - i (going through colors)
+		*/
+
+		//  input        = new Input(inputFile);
 		threshold    = 15;
 
 		noStroke();
 		background(150);
-
+		
 		// Round, because the Midi notes come out with decimal places, and we want to get
 		// to the real closest note, not just the next note down.
 		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
 		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
-
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
 			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
@@ -242,6 +253,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// (That is, it made that position in colors follow curHue as the latter changed.)
 		// Never use it.
 //		curHue	= this.moduleTemplate.colors[curHuePos];
+		
 		// would like to change more quickly, but there's a weird flicker if attackTime gets bigger:
 		attackTime  = 10;
 
@@ -427,7 +439,27 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public void draw()
 	{
 		stroke(255);
+/*
+		System.out.println("this.moduleTemplate.sidebarCP5.getGroup('sidebarGroup').isBroadcast() = " + 
+				(this.moduleTemplate.sidebarCP5.getGroup("sidebarGroup")).bringToFront());
+		
+				
+				System.out.println("this.moduleTemplate.sidebarCP5.getController('menuButton').isBroadcast() = " + 
+				this.moduleTemplate.sidebarCP5.getController("menuButton").isBroadcast());
 
+		
+		System.out.println("this.moduleTemplate.sidebarCP5.getWindow() = " + 
+				this.moduleTemplate.sidebarCP5.getWindow());
+		
+	*/
+		System.out.println("mouseX = " + mouseX + "; mouseY = " + mouseY);
+		/*
+		List<ControllerInterface<?>>	mouseOverList	= this.moduleTemplate.sidebarCP5.getMouseOverList();
+		for(int i = 0; i < mouseOverList.size(); i++)
+		{
+			println("mouseOverList.get(" + i + ") = " + mouseOverList.get(i));
+		}
+		*/
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 
@@ -562,6 +594,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		{
 			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
 					"; this.moduleTemplate = " + this.moduleTemplate);
+			println("Module_01_02.controlEvent: theControlEvent.isGroup() = " + theControlEvent.isGroup());
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
