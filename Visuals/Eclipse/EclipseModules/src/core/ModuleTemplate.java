@@ -1567,14 +1567,17 @@ public class ModuleTemplate {
 			
 			System.out.println("key = " + key + "; keyPos = " + keyPos);
 			
-			this.displaySidebar();
+			if(!(this.getLeftEdgeX() == 0))
+			{
+				this.displaySidebar();
+			}
 		} // keyDropdown
 
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
 				controlEvent.getName().equals("minor") ||
 				controlEvent.getName().equals("chrom"))
-		{
+		{		
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 //			this.majMinChrom	= (int) curToggle.internalValue();
@@ -1605,7 +1608,6 @@ public class ModuleTemplate {
 			} // for - switch off all Toggles:
 
 			this.updateColors(this.curColorStyle);
-
 		} // majMinChrom buttons
 
 
