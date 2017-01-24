@@ -93,7 +93,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Never use it.
 //		curHue	= this.moduleTemplate.colors[curHuePos];
 
-
+	
 	} // setup()
 
 	public void draw()
