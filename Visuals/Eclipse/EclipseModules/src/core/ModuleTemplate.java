@@ -186,8 +186,7 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("title")
 		.setGroup("sidebarGroup")
-		.setPosition((this.parent.width / 3) / 4, 5)	// This x val is usually this.leftAlign, but doesn't get set until sidebar is open.
-		// TODO: is this ^ wise?  Maybe always set leftAlign to be (this.parent.width / 3) / 4?
+		.setPosition(this.leftAlign, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
 		.setValue(this.sidebarTitle);
