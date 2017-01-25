@@ -397,15 +397,11 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
-<<<<<<< HEAD
-				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
-=======
-
-				//.setText(this.threshold.getValue() + "")
+/*				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
 				.setLabelVisible(false)
 				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
 				.setLabelVisible(false)
->>>>>>> wilder
+>>>>>>> wilder*/
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
 				.setId(1);
