@@ -249,12 +249,20 @@ public class ModuleTemplate {
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
+	
+	
+	void mousePressed() {
+		this.sidebarCP5.getController("hamburger").setVisible(true);		  
+	}//show menu event on mouseClicked
+	
+	
 	/*
 	 *  - alignLeft (x var to pass to the add functions)
 	 *  - yValues (will pass the appropriate one to each of the functions)
 	 *  TODO: how calculate these y values?  (for now, imagine they are correct...)
 	 *  
 	 */
+	
 
 	private void addOutsideButtons()
 	{
@@ -1555,7 +1563,7 @@ public class ModuleTemplate {
 			this.setLeftEdgeX(0);
 //			this.sidebarCP5.setVisible(false);
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
-			this.sidebarCP5.getController("hamburger").setVisible(true);
+			//this.sidebarCP5.getController("hamburger").setVisible(true);
 		} // if - menuX
 
 		// Hide play button button:
