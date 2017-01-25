@@ -1648,7 +1648,6 @@ public class ModuleTemplate {
 			this.keyAddVal		= (keyPos - 4 + this.scaleLength) % this.scaleLength;
 			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
 			
-			System.out.println("key = " + key + "; keyPos = " + keyPos);
 			
 			if(!(this.getLeftEdgeX() == 0))
 			{

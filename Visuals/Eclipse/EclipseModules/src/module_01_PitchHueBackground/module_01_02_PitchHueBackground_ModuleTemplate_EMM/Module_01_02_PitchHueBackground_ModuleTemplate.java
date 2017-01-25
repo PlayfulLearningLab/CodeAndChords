@@ -107,9 +107,9 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
 			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
-			System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
+/*			System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
 					moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
-			
+	*/		
 			// chromatic:
 			if(this.moduleTemplate.getMajMinChrom() == 2) {
 				newHuePos	= scaleDegree;
