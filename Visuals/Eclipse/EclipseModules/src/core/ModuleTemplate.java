@@ -333,17 +333,11 @@ public class ModuleTemplate {
 		this.sidebarCP5.addToggle("scale")
 				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
-<<<<<<< HEAD
-				.toggle()
 				.setGroup("sidebarGroup")
 				.setId(6);
-		this.sidebarCP5.getController("scale").getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
-=======
-				.setId(6);
 		this.showScale = true;
-		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
->>>>>>> wilder
-
+		this.sidebarCP5.getController("scale").getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
+		
 	} // addHideButtons
 
 	/**
