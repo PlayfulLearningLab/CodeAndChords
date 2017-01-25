@@ -36,8 +36,8 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 
 
-	private Input  input;
-
+	private Input  leftInput;
+	private	Input	rightInput;
 
 	// TODO: initialize in a better place.
 	private float[]  goalHue	= new float[3];
@@ -62,8 +62,8 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 
 	public void setup() 
 	{
-		input  = new Input();
-		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+		leftInput  = new Input(true);
+		this.moduleTemplate	= new ModuleTemplate(this, this.leftInput, "Module_01_02_PitchHueBackground");
 		this.moduleTemplate.initModuleTemplate();
 		
 		this.moduleTemplate.setCurKey("A", 2);
@@ -81,7 +81,7 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 		// Round, because the Midi notes come out with decimal places, and we want to get
 		// to the real closest note, not just the next note down.
 		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
-		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
+		curHuePos    = Math.min(round(leftInput.getAdjustedFundAsMidiNote(1) % 12), 11);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.colors.length) {
 			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
@@ -98,15 +98,16 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 
 	public void draw()
 	{
-		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
+		if (leftInput.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
-
+			System.out.println("leftInput.getAmplitude(1) = " + leftInput.getAmplitude(1) +
+					"; leftInput.getAmplitude(2) = " + leftInput.getAmplitude(2));
 			this.nowBelow	= false;
 			
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+			int	scaleDegree	= (round(leftInput.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
 /*			System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
 					moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
 	*/		
