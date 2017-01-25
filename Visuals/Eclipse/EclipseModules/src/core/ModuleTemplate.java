@@ -333,10 +333,16 @@ public class ModuleTemplate {
 		this.sidebarCP5.addToggle("scale")
 				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
+<<<<<<< HEAD
 				.toggle()
 				.setGroup("sidebarGroup")
 				.setId(6);
 		this.sidebarCP5.getController("scale").getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
+=======
+				.setId(6);
+		this.showScale = true;
+		this.hideScale.getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
+>>>>>>> wilder
 
 	} // addHideButtons
 
@@ -391,7 +397,15 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
+<<<<<<< HEAD
 				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+=======
+
+				//.setText(this.threshold.getValue() + "")
+				.setLabelVisible(false)
+				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+				.setLabelVisible(false)
+>>>>>>> wilder
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
 				.setId(1);
@@ -1570,7 +1584,7 @@ public class ModuleTemplate {
 		// Hide scale:
 		if(controlEvent.getName().equals("scale"))
 		{
-			this.setShowScale(((Toggle) (controlEvent.getController())).getState());
+			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
 
 		//TODO: set this cutoff in a more relevant place - perhaps when sliders are created?
