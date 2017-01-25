@@ -249,11 +249,14 @@ public class ModuleTemplate {
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
+	/**
+	 * the mouse pressed idea is cute, but it might need to be
+	 * implemented organically
+	 */
 	
-	
-	void mousePressed() {
+	/*void mousePressed() {
 		this.sidebarCP5.getController("hamburger").setVisible(true);		  
-	}//show menu event on mouseClicked
+	}//show menu event on mouseClicked*/
 	
 	
 	/*
@@ -1563,7 +1566,7 @@ public class ModuleTemplate {
 			this.setLeftEdgeX(0);
 //			this.sidebarCP5.setVisible(false);
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
-			//this.sidebarCP5.getController("hamburger").setVisible(true);
+			this.sidebarCP5.getController("hamburger").setVisible(true);
 		} // if - menuX
 
 		// Hide play button button:
