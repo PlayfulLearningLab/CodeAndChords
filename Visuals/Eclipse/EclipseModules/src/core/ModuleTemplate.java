@@ -929,7 +929,8 @@ public class ModuleTemplate {
 			this.applyColorModulate(this.colors, this.originalColors);
 
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
-
+			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
+			
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
 	} // updateColors
