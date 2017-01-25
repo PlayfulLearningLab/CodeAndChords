@@ -249,12 +249,23 @@ public class ModuleTemplate {
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
+	/**
+	 * the mouse pressed idea is cute, but it might need to be
+	 * implemented organically
+	 */
+	
+	/*void mousePressed() {
+		this.sidebarCP5.getController("hamburger").setVisible(true);		  
+	}//show menu event on mouseClicked*/
+	
+	
 	/*
 	 *  - alignLeft (x var to pass to the add functions)
 	 *  - yValues (will pass the appropriate one to each of the functions)
 	 *  TODO: how calculate these y values?  (for now, imagine they are correct...)
 	 *  
 	 */
+	
 
 	private void addOutsideButtons()
 	{
@@ -333,11 +344,11 @@ public class ModuleTemplate {
 		this.sidebarCP5.addToggle("scale")
 				.setPosition(scaleX, hideY)
 				.setWidth(hideWidth)
-				.toggle()
 				.setGroup("sidebarGroup")
 				.setId(6);
+		this.showScale = true;
 		this.sidebarCP5.getController("scale").getCaptionLabel().set("Scale").align(ControlP5.CENTER, ControlP5.CENTER);
-
+		
 	} // addHideButtons
 
 	/**
@@ -391,7 +402,11 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextfield("textfield1")
 				.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 				.setSize(tfWidth, sliderHeight)
+/*				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+				.setLabelVisible(false)
 				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+				.setLabelVisible(false)
+>>>>>>> wilder*/
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
 				.setId(1);
@@ -1571,7 +1586,7 @@ public class ModuleTemplate {
 		// Hide scale:
 		if(controlEvent.getName().equals("scale"))
 		{
-			this.setShowScale(((Toggle) (controlEvent.getController())).getState());
+			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
 
 		//TODO: set this cutoff in a more relevant place - perhaps when sliders are created?
