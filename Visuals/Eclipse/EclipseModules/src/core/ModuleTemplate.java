@@ -38,6 +38,7 @@ public class ModuleTemplate {
 	private	static	float	CS_TRICHROM	= 3;
 	private	static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
+	private boolean menuVis = false;
 
 	// For rounding numbers in sliders to two digits:
 	private	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
@@ -253,9 +254,12 @@ public class ModuleTemplate {
 	 * the mouse pressed idea is cute, but it might need to be
 	 * implemented organically
 	 */
-	
-	/*void mousePressed() {
-		this.sidebarCP5.getController("hamburger").setVisible(true);		  
+	public void setMenuVal() {
+		this.menuVis = this.menuVis;		
+	}//set menu val
+	void mousePressed() {
+		this.menuVis = true;
+		this.sidebarCP5.getController("hamburger").setVisible(this.menuVis);		  
 	}//show menu event on mouseClicked*/
 	
 	
@@ -1130,7 +1134,7 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
 		}
 		
-		System.out.println("key = " + key + "; modPosition = " + modPosition);
+		//System.out.println("key = " + key + "; modPosition = " + modPosition);
 
 
 		this.majMinChrom	= majMinChrom;
@@ -1663,7 +1667,7 @@ public class ModuleTemplate {
 			this.curKey			= key;
 			this.keyAddVal		= (keyPos - 4 + this.scaleLength) % this.scaleLength;
 			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
-			
+
 			
 			if(!(this.getLeftEdgeX() == 0))
 			{
