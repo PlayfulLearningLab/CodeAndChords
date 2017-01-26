@@ -228,6 +228,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 	public void uGenArrayFromSample(String sampleFilename)
 	{
+		System.out.println("Input.uGenArrayFromSample: sampleFilename = " + sampleFilename);
 		this.uGenArrayFromSample(new String[] { sampleFilename });
 	} // uGenArrayFromSample
 
@@ -246,6 +247,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			{
 				samples[i]  = new Sample(sketchPath(sampleFilenames[i]));
 //				samples[i]  = new Sample("./" + sampleFilenames[i]);
+				
+				System.out.println("    Input.uGenArrayFromSample: samples[i].getFileName() = " + samples[i].getFileName());
 			} // for
 		}
 		catch(Exception e)

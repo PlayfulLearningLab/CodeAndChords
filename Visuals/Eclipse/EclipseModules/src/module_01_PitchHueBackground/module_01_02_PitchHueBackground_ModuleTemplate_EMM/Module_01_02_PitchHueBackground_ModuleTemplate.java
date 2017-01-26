@@ -107,7 +107,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) + this.moduleTemplate.getCurKeyEnharmonicOffset() + 12) % 12;
 
 			// chromatic:
 ///			if(this.moduleTemplate.getMajMinChrom() == 2) {
@@ -176,13 +176,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
-
+/*
 		System.out.println("newHuePos = " + newHuePos + "; colors[newHuePos][0] = " + moduleTemplate.colors[newHuePos][0] +
 				"; colors[newHuePos][1] = " + moduleTemplate.colors[newHuePos][1] +
 				"; colors[newHuePos][2] = " + moduleTemplate.colors[newHuePos][2] +
 						"; \n    curHue[0] = " + curHue[0] +
 						"; curHue[1] = " + curHue[1] +
 						"; curHue[2] = " + curHue[2]);
+						*/
 		
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);		

@@ -115,7 +115,7 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(leftInput.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+			int	scaleDegree	= (round(leftInput.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getCurKeyEnharmonicOffset() + 12) % 12;
 /*			System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
 					moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
 	*/		
