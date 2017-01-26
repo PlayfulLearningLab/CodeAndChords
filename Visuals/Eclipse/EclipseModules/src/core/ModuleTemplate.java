@@ -2148,6 +2148,7 @@ public class ModuleTemplate {
 	
 	public void setMenuVal() {
 		//this.menuVis = true;	
+		((Toggle)this.sidebarCP5.getController("menuButton")).setState(false);
 		this.sidebarCP5.getController("hamburger").setVisible(true);
 	}//set menu val
 	/*void mousePressed() {
