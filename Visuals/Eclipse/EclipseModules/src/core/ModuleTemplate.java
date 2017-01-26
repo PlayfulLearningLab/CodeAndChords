@@ -41,7 +41,7 @@ public class ModuleTemplate {
 	private	static	float	CS_TRICHROM	= 3;
 	private	static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
-	private boolean menuVis = false;
+//	private boolean menuVis = false;
 
 	// For rounding numbers in sliders to two digits:
 	private	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
@@ -325,27 +325,13 @@ public class ModuleTemplate {
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
-	/**
-	 * the mouse pressed idea is cute, but it might need to be
-	 * implemented organically
-	 */
-	public void setMenuVal() {
-		this.menuVis = this.menuVis;		
-	}//set menu val
-	void mousePressed() {
-		this.menuVis = true;
-		this.sidebarCP5.getController("hamburger").setVisible(this.menuVis);		  
-	}//show menu event on mouseClicked*/
-
-
+	
 	/*
 	 *  - alignLeft (x var to pass to the add functions)
 	 *  - yValues (will pass the appropriate one to each of the functions)
 	 *  TODO: how calculate these y values?  (for now, imagine they are correct...)
 	 *  
 	 */
-
-
 	private void addOutsideButtons()
 	{
 		int	playX		= this.parent.width - 45;
@@ -1020,15 +1006,13 @@ public class ModuleTemplate {
 				id	= id + 3;
 			} // for - colorPos
 
-
+			
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
 			this.applyColorModulate(this.colors, this.originalColors);
-
-			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
-
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
+		
 	} // updateColors
 
 	public void legend(int goalHuePos)
@@ -1709,7 +1693,7 @@ public class ModuleTemplate {
 			this.setLeftEdgeX(0);
 			//			this.sidebarCP5.setVisible(false);
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
-			this.sidebarCP5.getController("hamburger").setVisible(true);
+			//this.sidebarCP5.getController("hamburger").setVisible(true);
 		} // if - menuX
 
 		// Hide play button button:
@@ -1722,7 +1706,8 @@ public class ModuleTemplate {
 		// Hide menu button button:
 		if(controlEvent.getName().equals("menuButton"))
 		{
-			this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
+			this.sidebarCP5.getController("hamburger").setVisible(false);
+			//this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
 		} // if - hidePlayButton
 
 		// Hide scale:
@@ -1839,7 +1824,6 @@ public class ModuleTemplate {
 				this.sidebarCP5.setAutoDraw(true);
 			}
 			 */
-
 
 		} // keyDropdown
 
@@ -2232,6 +2216,21 @@ public class ModuleTemplate {
 	public int getCurKeyOffset() {
 		return curKeyOffset;
 	}
+	
+	
+	
+	
+	/**
+	 * communicates with keyPressed event in draw() of driver
+	 * shows menu button on key press
+	 * added 1/26/17 Elena Ryan
+	 */
+	public void setMenuVal() {
+		//this.menuVis = true;	
+		((Toggle)this.sidebarCP5.getController("menuButton")).setState(false);
+		this.sidebarCP5.getController("hamburger").setVisible(true);
+	}//set menu val
+	
 
 
 }
