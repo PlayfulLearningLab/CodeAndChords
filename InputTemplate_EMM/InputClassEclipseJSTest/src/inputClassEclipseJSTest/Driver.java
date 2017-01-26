@@ -77,6 +77,8 @@ public class Driver extends PApplet {
 	} // settings
 
 	public void setup() {
+		this.printMixers();
+		
 		AudioFormat defaultAF = new AudioFormat(44100, 16, 1, true, false);
 		Mixer inputMixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[3]);
 		Mixer outputMixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[3]);
@@ -231,8 +233,8 @@ public void draw() {
 	stroke(255);
 	for(int i = 0; i < data1.length - 1; i++)
 	{
-		println("data[" + i + "] = " + data[i]);
-		println("data1[" + i + "] = " + data1[i]);
+//		println("data[" + i + "] = " + data[i]);
+//		println("data1[" + i + "] = " + data1[i]);
 		x1 = map(i, 0, data1.length, 0, width);
 		x2 = map(i + 1, 0, data1.length, 0, width);
 		// System.out.println("data[" + i + "] = " + data[i]);
@@ -277,4 +279,15 @@ private void printMixers() {
 	}
 
 } // printMixers
+
+private void printMixerInfo()
+{
+	Mixer.Info[] mixerInfo  = AudioSystem.getMixerInfo();
+
+	  for (int i = 0; i < mixerInfo.length; i++)
+	  {
+	    println(i + " = " + mixerInfo[i].getName());
+	  }
+} // printMixerInfo
+}
 } // Driver
