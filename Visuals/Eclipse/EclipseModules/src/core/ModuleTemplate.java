@@ -962,14 +962,8 @@ public class ModuleTemplate {
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
 			this.applyColorModulate(this.colors, this.originalColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
-			((Toggle)(this.sidebarCP5.getController("major"))).setState(false);
-			((Toggle)(this.sidebarCP5.getController("minor"))).setState(false);
-			
+	
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
-<<<<<<< HEAD
-=======
-			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
->>>>>>> 3c81d3b9f8f429f356de4b97d526aa114965ff86
 			
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
@@ -1758,12 +1752,9 @@ public class ModuleTemplate {
 			this.curKey			= key;
 			this.keyAddVal		= (keyPos - 3 + this.scaleLength) % this.scaleLength;
 			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
-<<<<<<< HEAD
 			
 			//System.out.println("key = " + key + "; keyPos = " + keyPos);
-=======
 
->>>>>>> 3c81d3b9f8f429f356de4b97d526aa114965ff86
 			
 			if(!(this.getLeftEdgeX() == 0))
 			{
