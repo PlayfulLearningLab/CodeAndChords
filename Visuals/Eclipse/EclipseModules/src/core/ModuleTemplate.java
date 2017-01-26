@@ -951,15 +951,16 @@ public class ModuleTemplate {
 				id	= id + 3;
 			} // for - colorPos
 
-
+			
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
 			this.applyColorModulate(this.colors, this.originalColors);
-
-			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
+	
+			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
+		
 	} // updateColors
 
 	public void legend(int goalHuePos)
@@ -1744,6 +1745,8 @@ public class ModuleTemplate {
 			this.curKey			= key;
 			this.keyAddVal		= (keyPos - 3 + this.scaleLength) % this.scaleLength;
 			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
+			
+			//System.out.println("key = " + key + "; keyPos = " + keyPos);
 
 			
 			if(!(this.getLeftEdgeX() == 0))
