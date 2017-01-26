@@ -622,13 +622,16 @@ public class ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setId(21);
 
+		//for(int i = 0; i < ; i++)
+		//{
 		this.sidebarCP5.addColorWheel("rootColorWheel")
 		.setPosition(this.leftAlign, rootColorY + 20)
-		.setRGB(this.parent.color(102, 0, 102))
+		.setRGB(this.parent.color(255,255,255))
 		.setLabelVisible(false)
 		.setVisible(false)
 		.setGroup("sidebarGroup")
 		.setId(22);
+		//}
 
 		this.sidebarCP5.addTextfield("rootColorTF")
 		.setPosition(textfieldX, rootColorY)
@@ -753,7 +756,7 @@ public class ModuleTemplate {
 
 			this.sidebarCP5.addColorWheel("colorWheel" + id)
 			.setPosition(colorWheelX, noteYVals[i] - 200)		// 200 = height of ColorWheel
-			.setRGB(this.parent.color(102, 0, 102))
+			.setRGB(this.parent.color(colors[i][0], colors[i][1], colors[i][2]))
 			.setLabelVisible(false)
 			.setVisible(false)
 			.setGroup("sidebarGroup")
@@ -789,7 +792,7 @@ public class ModuleTemplate {
 
 			this.sidebarCP5.addColorWheel("colorWheel" + id)
 			.setPosition(noteX2, noteYVals[i] - 200)
-			.setRGB(this.parent.color(102, 0, 102))
+			.setRGB(this.parent.color(colors[i][0], colors[i][1], colors[i][2]))
 			.setLabelVisible(false)
 			.setVisible(false)
 			.setGroup("sidebarGroup")
