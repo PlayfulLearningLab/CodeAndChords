@@ -1,6 +1,7 @@
 package core;
 
 import processing.core.PApplet;
+import processing.sound.*;
 
 //import org.jaudiolibs.beads.AudioServerIO;
 //import org.jaudiolibs.beads.*;
@@ -15,6 +16,7 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.beadsproject.beads.ugens.Throughput;
 import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
+import net.beadsproject.beads.analysis.featureextractors.FFT;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
@@ -156,6 +158,10 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 */
 	public Input(boolean leftAndRight)
 	{
+		this.numInputs	= 1;
+		AudioIn	in1	= new AudioIn(this, 0);
+		in1.play();
+		/*
 		this.numInputs	= 2;
 		this.ac = new AudioContext();
 
@@ -190,8 +196,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			// getAudioInput needs an int[] with the number of the particular line.
 			getuGenArray()[i]  = ac.getAudioInput(new int[] {(i + 1)});
 		}
-*/
+
 		initInput(this.uGenArray);
+		*/
 	} // constructor(boolean, boolean)
 	
 	/**

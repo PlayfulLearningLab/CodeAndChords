@@ -1179,6 +1179,32 @@ public class ModuleTemplate {
 
 		return -1;
 	}
+	
+	/**
+	 * Used in draw for determining whether a particular scale degree is in the 
+	 * major or minor scale;
+	 * returns the position of the element if it exists in the array,
+	 * or -1 if the element is not in the array.
+	 * 
+	 * @param array		String[] to be searched for the given element
+	 * @param element	String whose position in the given array is to be returned.
+	 * @return		position of the given element in the given array, or -1 
+	 * 				if the element does not exist in the array.
+	 */
+	private int arrayContains(int[] array, int element) {
+		if(array == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(int[], int): array parameter is null.");
+		}
+		for (int i = 0; i < array.length; i++)
+		{
+			//    println("array[i] = " + array[i]);
+			if (array[i] == element) {
+				return i;
+			} // if
+		} // for
+
+		return -1;
+	}
 
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
@@ -1251,20 +1277,42 @@ public class ModuleTemplate {
 		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
 		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
 		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
+		
+		// Create an array the lenght of the current scale
+		// and fill it with the dichromatic spectrum:
+		float[][]	dichromColors	= new float[this.scaleLength][3];
 
 		for(int i = 0; i < rgbVals1.length; i++)
 		{
-			this.colors[0][i]	= rgbVals1[i];
+			dichromColors[0][i]	= rgbVals1[i];
 		}
-		for(int i = 1; i < this.scaleLength && i < this.colors.length; i++)
+		for(int i = 1; i < dichromColors.length; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta;
+				dichromColors[i][0]	= dichromColors[i - 1][0] - redDelta;
+				dichromColors[i][1]	= dichromColors[i - 1][1] - greenDelta;
+				dichromColors[i][2]	= dichromColors[i - 1][2] - blueDelta;
 			} // for - j
+			
+			System.out.println("dichromColors[" + i + "][0] = " + dichromColors[i][0] + 
+					"; dichromColors[" + i + "][1] = " + dichromColors[i][1] +
+					"; dichromColors[" + i + "][2] = " + dichromColors[i][2]);
 		} // for - i
+		
+		// Fill colors with either the contents of the dichromatic color array
+		// or with black, depending on whether or not a scale degree is diatonic:
+		int	dichromColorPos	= 0;
+		for(int i = 0; i < this.colors.length; i++)
+		{
+			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
+			{
+				// if scale degree is diatonic:
+				this.colors[i][0]	= dichromColors[dichromColorPos][0];
+				this.colors[i][1]	= dichromColors[dichromColorPos][1];
+				this.colors[i][2]	= dichromColors[dichromColorPos][2];
+			} 
+		} // for
 	} // dichromatic_TwoRGB
 
 	/**

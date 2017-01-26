@@ -1,6 +1,7 @@
 package module_01_PitchHueBackground.module_01_03_TwoBradyBunchSquares;
 
 import processing.core.*;
+import processing.sound.*;
 
 import core.Input;
 import core.ModuleTemplate;
@@ -54,7 +55,9 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 	private boolean		colorReached		= false;
 	private int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
 
-
+	AudioIn	in1;
+	AudioIn	in2;
+	
 	public void settings()
 	{
 		size(925, 520);
@@ -62,7 +65,12 @@ public class Module_01_03_TwoBradyBunchSquares extends PApplet
 
 	public void setup() 
 	{
+//		this.in1	= new AudioIn(this, 0);
+//		this.in2	= new AudioIn(this, 1);
+		
+		
 		leftInput  = new Input(true);
+//		leftInput	= new Input(2);
 		this.moduleTemplate	= new ModuleTemplate(this, this.leftInput, "Module_01_02_PitchHueBackground");
 		this.moduleTemplate.initModuleTemplate();
 		
