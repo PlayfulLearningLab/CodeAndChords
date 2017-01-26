@@ -1636,7 +1636,8 @@ public class ModuleTemplate {
 		// Hide menu button button:
 		if(controlEvent.getName().equals("menuButton"))
 		{
-			this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
+			this.sidebarCP5.getController("hamburger").setVisible(false);
+			//this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
 		} // if - hidePlayButton
 
 		// Hide scale:
