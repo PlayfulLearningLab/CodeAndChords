@@ -1,12 +1,13 @@
-package module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM;
+package module_01_PitchHueBackground.module_01_03_TwoBradyBunchSquares;
 
 import processing.core.*;
+import processing.sound.*;
 
 import core.Input;
 import core.ModuleTemplate;
 import	controlP5.*;
 
-public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
+public class Module_01_03_TwoBradyBunchSquares extends PApplet
 {
 
 	/**
@@ -24,7 +25,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public static void main(String[] args)
 	{
-		PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
+		PApplet.main("module_01_PitchHueBackground.module_01_03_TwoBradyBunchSquares.Module_01_03_TwoBradyBunchSquares");
 	} // main
 
 	// Choose input file here:
@@ -36,8 +37,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 
 
-	private Input  input;
-
+	private Input  leftInput;
+	private	Input	rightInput;
 
 	// TODO: initialize in a better place.
 	private float[]  goalHue	= new float[3];
@@ -47,14 +48,16 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	private int  goalHuePos;
 	private int  curHuePos;
 
-	//private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
+	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 	private ModuleTemplate	moduleTemplate;
 	private boolean		nowBelow			= false;
 	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
 	private boolean		colorReached		= false;
 	private int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
 
-
+	AudioIn	in1;
+	AudioIn	in2;
+	
 	public void settings()
 	{
 		size(925, 520);
@@ -62,8 +65,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void setup() 
 	{
-		input  = new Input();
-		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+//		this.in1	= new AudioIn(this, 0);
+//		this.in2	= new AudioIn(this, 1);
+		
+		
+		leftInput  = new Input(true);
+//		leftInput	= new Input(2);
+		this.moduleTemplate	= new ModuleTemplate(this, this.leftInput, "Module_01_02_PitchHueBackground");
 		this.moduleTemplate.initModuleTemplate();
 		
 		this.moduleTemplate.setCurKey("A", 2);
@@ -81,7 +89,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// Round, because the Midi notes come out with decimal places, and we want to get
 		// to the real closest note, not just the next note down.
 		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
-		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
+		curHuePos    = Math.min(round(leftInput.getAdjustedFundAsMidiNote(1) % 12), 11);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.colors.length) {
 			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
 			curHuePos	= 0;
@@ -98,35 +106,37 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void draw()
 	{
-		this.moduleTemplate.setMenuVal();
-		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
+		if (leftInput.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
-
+			System.out.println("leftInput.getAmplitude(1) = " + leftInput.getAmplitude(1) +
+					"; leftInput.getAmplitude(2) = " + leftInput.getAmplitude(2));
 			this.nowBelow	= false;
 			
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
-
+			int	scaleDegree	= (round(leftInput.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
+/*			System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
+					moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
+	*/		
 			// chromatic:
-///			if(this.moduleTemplate.getMajMinChrom() == 2) {
+			if(this.moduleTemplate.getMajMinChrom() == 2) {
 				newHuePos	= scaleDegree;
-//			} else {
+			} else {
 				// major or minor:
 
-//				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
+				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
 
-//				if(inScale > -1) {
-//					newHuePos	= inScale;
+				if(inScale > -1) {
+					newHuePos	= inScale;
 //					println(newHuePos + " is the position in this scale.");
-//				} // if - check if degree is in the scale
+				} // if - check if degree is in the scale
 
-//			} // if - current scale is Major or Minor		
+			} // if - current scale is Major or Minor		
 
 
 			if(newHuePos > this.moduleTemplate.colors.length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + this.moduleTemplate.colors.length + ") or less than 0.");
+				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
 			}
 
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
@@ -176,14 +186,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
-
-		System.out.println("newHuePos = " + newHuePos + "; colors[newHuePos][0] = " + moduleTemplate.colors[newHuePos][0] +
-				"; colors[newHuePos][1] = " + moduleTemplate.colors[newHuePos][1] +
-				"; colors[newHuePos][2] = " + moduleTemplate.colors[newHuePos][2] +
-						"; \n    curHue[0] = " + curHue[0] +
-						"; curHue[1] = " + curHue[1] +
-						"; curHue[2] = " + curHue[2]);
-		
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);		
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
