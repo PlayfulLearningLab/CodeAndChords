@@ -98,7 +98,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public void draw()
 	{
-		this.moduleTemplate.setMenuVal();
+		//this.moduleTemplate.setMenuVal();
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 

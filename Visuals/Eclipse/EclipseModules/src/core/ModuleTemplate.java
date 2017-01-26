@@ -268,9 +268,9 @@ public class ModuleTemplate {
 	 * the mouse pressed idea is cute, but it might need to be
 	 * implemented organically
 	 */
-	public void setMenuVal() {
+	/*public void setMenuVal() {
 		this.menuVis = this.menuVis;		
-	}//set menu val
+	}//set menu val*/
 	void mousePressed() {
 		this.menuVis = true;
 		this.sidebarCP5.getController("hamburger").setVisible(this.menuVis);		  
