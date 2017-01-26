@@ -47,7 +47,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	private int  goalHuePos;
 	private int  curHuePos;
 
-	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
+	//private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 	private ModuleTemplate	moduleTemplate;
 	private boolean		nowBelow			= false;
 	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
@@ -110,23 +110,23 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
 
 			// chromatic:
-			if(this.moduleTemplate.getMajMinChrom() == 2) {
+///			if(this.moduleTemplate.getMajMinChrom() == 2) {
 				newHuePos	= scaleDegree;
-			} else {
+//			} else {
 				// major or minor:
 
-				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
+//				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
 
-				if(inScale > -1) {
-					newHuePos	= inScale;
+//				if(inScale > -1) {
+//					newHuePos	= inScale;
 //					println(newHuePos + " is the position in this scale.");
-				} // if - check if degree is in the scale
+//				} // if - check if degree is in the scale
 
-			} // if - current scale is Major or Minor		
+//			} // if - current scale is Major or Minor		
 
 
 			if(newHuePos > this.moduleTemplate.colors.length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
+				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + this.moduleTemplate.colors.length + ") or less than 0.");
 			}
 
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
@@ -176,6 +176,14 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
+
+		System.out.println("newHuePos = " + newHuePos + "; colors[newHuePos][0] = " + moduleTemplate.colors[newHuePos][0] +
+				"; colors[newHuePos][1] = " + moduleTemplate.colors[newHuePos][1] +
+				"; colors[newHuePos][2] = " + moduleTemplate.colors[newHuePos][2] +
+						"; \n    curHue[0] = " + curHue[0] +
+						"; curHue[1] = " + curHue[1] +
+						"; curHue[2] = " + curHue[2]);
+		
 		//  background(curHue[0], curHue[1], curHue[2]);
 		fill(curHue[0], curHue[1], curHue[2]);		
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);

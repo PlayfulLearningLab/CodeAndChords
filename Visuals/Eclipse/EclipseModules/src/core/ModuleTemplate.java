@@ -91,6 +91,17 @@ public class ModuleTemplate {
 		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 		}
 	}; // scaleDegrees
+	
+	// Each int signifies the position in dichromColors/trichromColors/rainbowColors that is used to fill 
+	// this.colors at the corresponding position in scaleDegreeColors[this.majMinChrom]:
+	private	final	int[][]	scaleDegreeColors	= new int[][] {
+		// major:
+		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 4, 5, 6, 6 },
+		// minor:
+		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6 },
+		// chromatic:
+		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+	}; // scaleDegreeColors
 
 	public	float[][]	colors;
 	private int[] 		rootColor;
@@ -977,6 +988,8 @@ public class ModuleTemplate {
 
 		int	scaleDegree;
 		int	colorPos;
+		// This find the correct goal position for major and minor scales (and has no effect on chromatic):
+		goalHuePos	= this.scaleDegreeColors[this.majMinChrom][goalHuePos];
 		
 		// All notes but the last:
 		for (int i = 0; i < notes.length; i++)
@@ -1298,6 +1311,13 @@ public class ModuleTemplate {
 		int	dichromColorPos	= 0;
 		for(int i = 0; i < this.colors.length && dichromColorPos < dichromColors.length; i++)
 		{
+			dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+			
+			this.colors[i][0]	= dichromColors[dichromColorPos][0];
+			this.colors[i][1]	= dichromColors[dichromColorPos][1];
+			this.colors[i][2]	= dichromColors[dichromColorPos][2];
+			
+			/*
 			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
 			{
 				// if scale degree is diatonic:
@@ -1310,6 +1330,7 @@ public class ModuleTemplate {
 				// if the scale degree is not diatonic:
 				this.colors[i]	= new float[] { 0, 0, 0 };
 			}
+			*/
 		} // for - filling colors
 	} // dichromatic_TwoRGB
 
@@ -1460,8 +1481,13 @@ public class ModuleTemplate {
 		int	trichromColorPos	= 0;
 		for(int i = 0; i < this.colors.length && trichromColorPos < trichromColors.length; i++)
 		{
-			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
-			{
+			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+			
+			this.colors[i][0]	= trichromColors[trichromColorPos][0];
+			this.colors[i][1]	= trichromColors[trichromColorPos][1];
+			this.colors[i][2]	= trichromColors[trichromColorPos][2];
+			
+			/*
 				// note is diatonic
 				this.colors[i][0]	= trichromColors[trichromColorPos][0];
 				this.colors[i][1]	= trichromColors[trichromColorPos][1];
@@ -1472,6 +1498,7 @@ public class ModuleTemplate {
 				// not is non-diatonic
 				this.colors[i]	= new float[] { 0, 0, 0 };
 			}
+			*/
 			
 		} // for
 	} //trichromatic_ThreeRGB
@@ -1722,7 +1749,7 @@ public class ModuleTemplate {
 
 //			this.setCurKey(key, this.getMajMinChrom());
 			this.curKey			= key;
-			this.keyAddVal		= (keyPos - 4 + this.scaleLength) % this.scaleLength;
+			this.keyAddVal		= (keyPos - 3 + this.scaleLength) % this.scaleLength;
 			this.scaleLength	= this.getScale(key, this.majMinChrom).length;
 
 			
