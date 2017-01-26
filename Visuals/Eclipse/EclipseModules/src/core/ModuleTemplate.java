@@ -942,7 +942,7 @@ public class ModuleTemplate {
 		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
 
 		float  sideWidth1   = (this.parent.width - leftEdgeX) / notes.length;
-		float  sideHeight  = this.parent.width / notes.length;
+		float  sideHeight  = this.parent.width / 12;
 		
 		float	addToLastRect	= (this.parent.width - this.getLeftEdgeX()) - (sideWidth1 * notes.length);
 		float	sideWidth2	= sideWidth1;
