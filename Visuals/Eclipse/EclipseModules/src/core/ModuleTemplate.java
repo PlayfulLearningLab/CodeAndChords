@@ -1,8 +1,11 @@
 package core;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.List;
 import java.text.DecimalFormat;
 import java.util.Map;
+import java.util.Set;
 
 import controlP5.Button;
 import controlP5.ColorWheel;
@@ -593,8 +596,9 @@ public class ModuleTemplate {
 	private void addRootColorSelector(int rootColorY)
 	{
 		int	labelX			= 10;
+		int	buttonX			= this.leftAlign + 50;
 		int	buttonWidth		= 50;
-		int	textfieldX		= this.leftAlign + buttonWidth + 5;
+		int	textfieldX		= buttonX + buttonWidth + 5;
 		int	textfieldWidth	= 90;
 
 		this.sidebarCP5.addTextlabel("rootColor")
@@ -608,7 +612,7 @@ public class ModuleTemplate {
 		// Needs to be added to sidebarCP5 so it is still visible to turn off the ColorWheel:
 		// (name follows conventions for customPitchColor buttons)
 		this.sidebarCP5.addButton("rootColorButton")
-		.setPosition(this.leftAlign, rootColorY)
+		.setPosition(buttonX, rootColorY)
 		.setWidth(buttonWidth)
 		.setLabel("Root")
 		.setGroup("sidebarGroup")
@@ -981,17 +985,10 @@ public class ModuleTemplate {
 			{
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
-			
-			if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
-			{
-				// Rainbow colors are filled all the way and picked at the desired notes:
+				// colors is filled all the way and only picked at the desired notes:
 				scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
 				colorPos	= scaleDegree;
-			} else {
-				// Dichrom. and Trichrom. only fill the first scaleLength of colors
-				// and use them sequentially:
-				colorPos	= i;
-			}
+
 			this.parent.fill(this.colors[colorPos][0], this.colors[colorPos][1], this.colors[colorPos][2]);
 			//			this.parent.fill(255);
 
@@ -1278,7 +1275,7 @@ public class ModuleTemplate {
 		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
 		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
 		
-		// Create an array the lenght of the current scale
+		// Create an array the length of the current scale
 		// and fill it with the dichromatic spectrum:
 		float[][]	dichromColors	= new float[this.scaleLength][3];
 
@@ -1294,16 +1291,12 @@ public class ModuleTemplate {
 				dichromColors[i][1]	= dichromColors[i - 1][1] - greenDelta;
 				dichromColors[i][2]	= dichromColors[i - 1][2] - blueDelta;
 			} // for - j
-			
-			System.out.println("dichromColors[" + i + "][0] = " + dichromColors[i][0] + 
-					"; dichromColors[" + i + "][1] = " + dichromColors[i][1] +
-					"; dichromColors[" + i + "][2] = " + dichromColors[i][2]);
 		} // for - i
 		
 		// Fill colors with either the contents of the dichromatic color array
 		// or with black, depending on whether or not a scale degree is diatonic:
 		int	dichromColorPos	= 0;
-		for(int i = 0; i < this.colors.length; i++)
+		for(int i = 0; i < this.colors.length && dichromColorPos < dichromColors.length; i++)
 		{
 			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
 			{
@@ -1311,8 +1304,13 @@ public class ModuleTemplate {
 				this.colors[i][0]	= dichromColors[dichromColorPos][0];
 				this.colors[i][1]	= dichromColors[dichromColorPos][1];
 				this.colors[i][2]	= dichromColors[dichromColorPos][2];
-			} 
-		} // for
+				
+				dichromColorPos	= dichromColorPos + 1;
+			} else {
+				// if the scale degree is not diatonic:
+				this.colors[i]	= new float[] { 0, 0, 0 };
+			}
+		} // for - filling colors
 	} // dichromatic_TwoRGB
 
 	/**
@@ -1403,7 +1401,6 @@ public class ModuleTemplate {
 			color3pos	= 4;	// dominant
 		}
 
-		// TODO: this might need to be divided by 4 to make it to the actual color (or dichr. should be colors.length - 1?):
 		float	redDelta1	= (rgbVals1[0] - rgbVals2[0]) / (color2pos - color1pos);
 		float	greenDelta1	= (rgbVals1[1] - rgbVals2[1]) / (color2pos - color1pos);
 		float	blueDelta1	= (rgbVals1[2] - rgbVals2[2]) / (color2pos - color1pos);
@@ -1416,20 +1413,23 @@ public class ModuleTemplate {
 		float	greenDelta3	= (rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos);
 		float	blueDelta3	= (rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos);
 
+		// This array has the trichromatic spectrum:
+		float[][]	trichromColors	= new float[this.scaleLength][3];
+		
 		// fill first position with first color:
 		for(int i = 0; i < rgbVals1.length; i++)
 		{
-			this.colors[0][i]	= rgbVals1[i];
+			trichromColors[0][i]	= rgbVals1[i];
 		}
 
 		// fill from first color to second color:
 		for(int i = 1; i < color2pos + 1; i++)
 		{
-			for(int j = 0; j < this.colors[i].length; j++)
+			for(int j = 0; j < trichromColors[i].length; j++)
 			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta1;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta1;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta1;
+				trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta1;
+				trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta1;
+				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta1;
 			} // for - j
 		} // for - first color to second color
 
@@ -1437,24 +1437,43 @@ public class ModuleTemplate {
 		// fill from second color to third color:
 		for(int i = color2pos + 1; i < color3pos + 1; i++)
 		{
-			for(int j = 0; j < this.colors[i].length; j++)
+			for(int j = 0; j < trichromColors[i].length; j++)
 			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta2;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta2;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta2;
+				trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta2;
+				trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta2;
+				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta2;
 			} // for - j
 		} // for - first color to second color
 
 		// fill from third color back to first color:
 		for(int i = color3pos + 1; i < this.scaleLength; i++)
 		{
-			for(int j = 0; j < this.colors[i].length; j++)
+			for(int j = 0; j < trichromColors[i].length; j++)
 			{
-				this.colors[i][0]	= this.colors[i - 1][0] - redDelta3;
-				this.colors[i][1]	= this.colors[i - 1][1] - greenDelta3;
-				this.colors[i][2]	= this.colors[i - 1][2] - blueDelta3;
+				trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta3;
+				trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta3;
+				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
 			} // for - j
 		} // for - third color to first color
+		
+		// fill colors with either the trichrom spectrum (diatonic notes) or black (non-diatonic notes):
+		int	trichromColorPos	= 0;
+		for(int i = 0; i < this.colors.length && trichromColorPos < trichromColors.length; i++)
+		{
+			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
+			{
+				// note is diatonic
+				this.colors[i][0]	= trichromColors[trichromColorPos][0];
+				this.colors[i][1]	= trichromColors[trichromColorPos][1];
+				this.colors[i][2]	= trichromColors[trichromColorPos][2];
+
+				trichromColorPos	= trichromColorPos + 1;
+			} else {
+				// not is non-diatonic
+				this.colors[i]	= new float[] { 0, 0, 0 };
+			}
+			
+		} // for
 	} //trichromatic_ThreeRGB
 
 	/**
@@ -1462,42 +1481,6 @@ public class ModuleTemplate {
 	 */
 	public void rainbow()
 	{
-		/*
-		float[][][] rainbowColors	= new float[][][] { 
-			new float[][] {
-				{ 255, 0, 0 }, 
-				{ 255, (float) 127.5, 0 }, 
-				{ 255, 255, 0 }, 
-				{ (float) 127.5, 255, 0 },
-				{ 0, 255, 255 },  
-				{ 0, 0, 255 },
-				{ (float) 127.5, 0, 255 }
-			}, // major
-			new float[][] {
-				{ 255, 0, 0 }, 
-				{ 255, (float) 127.5, 0 }, 
-				{ 255, 255, 0 }, 
-				{ (float) 127.5, 255, 0 },
-				{ 0, 255, 255 },  
-				{ 0, 0, 255 },
-				{ (float) 127.5, 0, 255 }
-			}, // minor
-			new float[][] {
-				{ 255, 0, 0 }, 
-				{ 255, (float) 127.5, 0 }, 
-				{ 255, 255, 0 }, 
-				{ (float) 127.5, 255, 0 }, 
-				{ 0, 255, 0 }, 
-				{ 0, 255, (float) 127.5 }, 
-				{ 0, 255, 255 }, 
-				{ 0, (float) 127.5, 255 }, 
-				{ 0, 0, 255 }, 
-				{ (float) 127.5, 0, 255 }, 
-				{ 255, 0, 255 }, 
-				{ 255, 0, (float) 127.5 }
-			} // chromatic
-		}; // rainbowColors
-		*/
 		// Filling colors all the way, regardless of the scale,
 		// and then we'll just pick out the colors at scaleDegrees[majMinChrom] for major or minor:
 		float[][][] rainbowColors	= new float[][][] { 
@@ -1699,9 +1682,35 @@ public class ModuleTemplate {
 		// Key dropdown ScrollableList:
 		if(controlEvent.getName().equals("keyDropdown"))
 		{
-			System.out.println("controlEvent.getValue() = " + controlEvent.getValue());
-			controlEvent.getController().bringToFront();
 
+			 // Attempts to make the list show in front of rootColor button
+			 // (fruitless because it has been brought to the front; I moved it over instead,
+			// but they can help show the different types of the items).
+			/*
+			ScrollableList	sl	= ((ScrollableList)controlEvent.getController());
+			List<HashMap>	itemList	= sl.getItems();
+			
+			for(int i = 0; i < itemList.size(); i++)
+			{
+				System.out.println("itemList.get(i) = " + itemList.get(i).getClass());
+				
+				HashMap	curItem	= itemList.get(i);
+				System.out.println("curItem.get('view') = " + curItem.get("view").getClass());
+	/*			
+				ScrollableList.ScrollableListView	viewSL	= (ScrollableList.ScrollableListView)curItem.get("view");
+				System.out.println("viewSL = " + viewSL);
+		
+			} // for - i
+			
+			if(sl.isOpen())
+			{
+				this.sidebarCP5.setAutoDraw(false);
+				controlEvent.getController().bringToFront();
+				controlEvent.getController().draw(this.parent.g);
+			} else {
+				this.sidebarCP5.setAutoDraw(true);
+			}
+*/
 			// keyPos is the position of the particular key in the Scrollable List:
 			int	keyPos	= (int)controlEvent.getValue();
 
@@ -1721,6 +1730,7 @@ public class ModuleTemplate {
 			{
 				this.displaySidebar();
 			}
+
 		} // keyDropdown
 
 		// Major/Minor/Chromatic buttons
@@ -1781,10 +1791,6 @@ public class ModuleTemplate {
 				this.sidebarCP5.getController("rootColorButton").bringToFront();
 				this.sidebarCP5.getController("rootColorWheel").bringToFront();
 				this.sidebarCP5.getController("rootColorTF").bringToFront();
-				/*
-				this.parent.fill(0, 150);
-				this.parent.rect(0, 0, getLeftEdgeX(), this.parent.height);
-				 */
 
 				ColorWheel	rootCW	= (ColorWheel)this.sidebarCP5.getController("rootColorWheel");
 				int	rgbColor	= rootCW.getRGB();
