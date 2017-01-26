@@ -264,11 +264,6 @@ public class ModuleTemplate {
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
-	/**
-	 * the mouse pressed idea is cute, but it might need to be
-	 * implemented organically
-	 */
-	
 	
 	/*
 	 *  - alignLeft (x var to pass to the add functions)
@@ -1639,6 +1634,7 @@ public class ModuleTemplate {
 		// Hide menu button button:
 		if(controlEvent.getName().equals("menuButton"))
 		{
+			this.sidebarCP5.getController("hamburger").setVisible(false);
 			//this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
 		} // if - hidePlayButton
 
@@ -2148,18 +2144,20 @@ public class ModuleTemplate {
 		return scaleDegrees;
 	}
 	
+	
+	
+	
+	/**
+	 * communicates with keyPressed event in draw() of driver
+	 * shows menu button on key press
+	 * added 1/26/17 Elena Ryan
+	 */
 	public void setMenuVal() {
 		//this.menuVis = true;	
-		this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
-		//((Toggle)this.sidebarCP5.getController("menuButton")).setState(true);
-		
+		((Toggle)this.sidebarCP5.getController("menuButton")).setState(false);
+		this.sidebarCP5.getController("hamburger").setVisible(true);
 	}//set menu val
-	/*void mousePressed() {
-		this.menuVis = true;
-		this.sidebarCP5.getController("hamburger").setVisible(this.menuVis);		  
-	}//show menu event on mouseClicked*/
 	
-
 
 	/*
 	 * 01/11/2017 brainstorming:
