@@ -1036,11 +1036,11 @@ public class ModuleTemplate {
 
 		this.parent.textSize(24);
 
+//		String[]	notes	= this.getScale(this.curKeyOffset, this.majMinChrom);
 		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
 
 		float  sideWidth1   = (this.parent.width - leftEdgeX) / notes.length;
-		float  sideHeight  = this.parent.width / notes.length;
-
+		float  sideHeight  = this.parent.width / 12;
 		float	addToLastRect	= (this.parent.width - this.getLeftEdgeX()) - (sideWidth1 * notes.length);
 		float	sideWidth2	= sideWidth1;
 		//  float  side = height / colors.length;
@@ -1111,7 +1111,12 @@ public class ModuleTemplate {
 		if(keyPos == -1) {
 			throw new IllegalArgumentException("ModuleTemplate.getScale: key " + key + " is not a valid key.");
 		}
-		
+		/*
+		return this.getScale(keyPos, majMinChrom);
+	} // getScale(String, int)
+	
+	public String[] getScale(int keyPos, int majMinChrom)
+	{*/
 		String[][] majorScales	= new String[][] {
 			new String[] { "A", "B", "C#", "D", "E", "F#", "G#" },
 			new String[] { "A#", "B#", "C##", "D#", "E#", "F##", "G##" },
@@ -1131,6 +1136,31 @@ public class ModuleTemplate {
 			new String[] { "G#", "A#", "B#", "C#", "D#", "E#", "F##" },
 			new String[] { "Ab", "Bb", "C", "Db", "Eb", "F", "G" }
 		}; // majorScales
+		
+		String[][] minorScales	= new String[][] {
+			new String[] { "A", "B", "C", "D", "E", "F", "G" },
+			new String[] { "A#", "B#", "C#", "D#", "E#", "F#", "G#" },
+			new String[] { "Bb", "C", "Db", "Eb", "F", "Gb", "Ab" },
+			new String[] { "B", "C#", "D", "E", "F#", "G", "A" },
+			new String[] { "C", "D", "Eb", "F", "G", "Ab", "Bb" },
+			new String[] { "C#", "D#", "E", "F#", "G#", "A", "B" },
+			new String[] { "Db", "Eb", "Fb", "Gb", "Ab", "Bbb", "Cb" },
+			new String[] { "D", "E", "F", "G", "A", "Bb", "C" },
+			new String[] { "D#", "E#", "F#", "G#", "A#", "B", "C#" },
+			new String[] { "Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db" },
+			new String[] { "E", "F#", "G", "A", "B", "C", "D" },
+			new String[] { "F", "G", "Ab", "Bb", "C", "Db", "Eb" },
+			new String[] { "F#", "G#", "A", "B", "C#", "D", "E" },
+			new String[] { "Gb", "Ab", "Bbb", "Cb", "Db", "Ebb", "Fb" },
+			new String[] { "G", "A", "Bb", "C", "D", "Eb", "F" },
+			new String[] { "G#", "A#", "B", "C#", "D#", "E", "F#" },
+			new String[] { "Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb" }
+		}; // majorScales
+		
+
+		if(keyPos > majorScales.length) {
+			throw new IllegalArgumentException("ModuleTemplate.getScale(int, int): int param " + keyPos + " is greater than majorScales.length (" + majorScales.length + ").");
+		}
 
 		String[] result;
 
@@ -1145,14 +1175,9 @@ public class ModuleTemplate {
 		} else if (majMinChrom == 1) {
 			// minor:
 			result	= new String[7];
-			// Building minor scale by using the relative major:
-			keyPos	= keyPos + 4;
-			int	notePos	= 5;
-
 			for(int i = 0; i < result.length; i++)
 			{
-				result[i]	= (majorScales[keyPos][notePos]);
-				notePos	= (notePos + 1) % 7;
+				result[i]	= minorScales[keyPos][i]; 
 			} // for
 		} else {
 			// chromatic:
@@ -1160,7 +1185,7 @@ public class ModuleTemplate {
 
 			// find whether scale should use sharps or flats:
 			//			boolean	sharps	= true;
-			int	notePos	= this.arrayContains(this.notesAtoGSharps, key);
+			int	notePos	= this.arrayContains(this.notesAtoGSharps, majorScales[keyPos][0]);
 			if(notePos > -1) 
 			{
 				for(int i = 0; i < result.length; i++)
@@ -1169,7 +1194,7 @@ public class ModuleTemplate {
 					notePos	= (notePos + 1) % 11;
 				} // for
 			} else {
-				notePos	= this.arrayContains(this.notesAtoAbFlats, key);
+				notePos	= this.arrayContains(this.notesAtoAbFlats, majorScales[keyPos][0]);
 				for(int i = 0; i < result.length; i++)
 				{
 					result[i]	= this.notesAtoAbFlats[notePos];
@@ -1658,13 +1683,20 @@ public class ModuleTemplate {
 			for (int i = 0; i < input.getuGenArray().length; i++)
 			{
 				input.getuGenArray()[i].pause(true);
+//				input.getuGenArray()[i].kill();
+				System.out.println("input.getuGenArray()[" + i + "] = "  + input.getuGenArray()[i]);
+			
+			
 			} // for
+			
+//			input.ac.out.clearInputConnections();
+			
 
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
-				System.out.println("  this.inputFile = " + this.inputFile);
-				input.g.clearInputConnections();
+	//			input.g.clearInputConnections();
 				this.input.uGenArrayFromSample(this.inputFile);
+//				this.input	= new Input(new String[] { this.inputFile });
 			} else {
 				/*
 				for (int i = 0; i < input.getuGenArray().length; i++)
@@ -1672,9 +1704,11 @@ public class ModuleTemplate {
 					input.getuGenArray()[i].clearInputConnections();
 				} // for
 				*/
-				input.g.clearInputConnections();
+	//			input.g.clearInputConnections();
 				this.input.uGenArrayFromNumInputs(1);
 			}
+			
+			System.out.println("input.ac.out.getIns() = " + input.ac.out.getIns());
 		} // if - play
 
 		// Hamburger button:
@@ -1773,6 +1807,7 @@ public class ModuleTemplate {
 		{
 			// keyPos is the position of the particular key in the Scrollable List:
 			int	keyPos	= (int)controlEvent.getValue();
+			System.out.println("  keyDropdown: keyPos = " + keyPos);
 
 			// getItem returns a Map of the color, state, value, name, etc. of that particular item
 			//  in the ScrollableList:
@@ -1787,7 +1822,6 @@ public class ModuleTemplate {
 			int	enharmonicPos	= this.enharmonicPos[keyPos];
 			String	filename	= this.filenames[this.majMinChrom][enharmonicPos];
 			this.inputFile	= "Piano Scale Reference Inputs/" + filename;
-			System.out.println("  keyDropdown: this.inputFile = " + this.inputFile);
 
 			if(!(this.getLeftEdgeX() == 0)) {
 				this.displaySidebar();
@@ -1831,6 +1865,7 @@ public class ModuleTemplate {
 				controlEvent.getName().equals("chrom"))
 		{		
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
+			System.out.println("maj/min/chrom buttons: this.curKey = " + this.curKey + "; this.arrayContains(this.allNotes, 'G') = " + this.arrayContains(this.allNotes, "G"));
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
 
