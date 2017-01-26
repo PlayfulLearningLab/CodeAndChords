@@ -1181,7 +1181,7 @@ public class ModuleTemplate {
 			} // for
 		} else {
 			// chromatic:
-			result	= new String[11];
+			result	= new String[12];
 
 			// find whether scale should use sharps or flats:
 			//			boolean	sharps	= true;
@@ -1191,14 +1191,14 @@ public class ModuleTemplate {
 				for(int i = 0; i < result.length; i++)
 				{
 					result[i]	= this.notesAtoGSharps[notePos];
-					notePos	= (notePos + 1) % 11;
+					notePos	= (notePos + 1) % result.length;
 				} // for
 			} else {
 				notePos	= this.arrayContains(this.notesAtoAbFlats, majorScales[keyPos][0]);
 				for(int i = 0; i < result.length; i++)
 				{
 					result[i]	= this.notesAtoAbFlats[notePos];
-					notePos	= (notePos + 1) % 11;
+					notePos	= (notePos + 1) % result.length;
 				} // for
 			}
 		} // else - chromatic
@@ -1682,33 +1682,17 @@ public class ModuleTemplate {
 		{
 			for (int i = 0; i < input.getuGenArray().length; i++)
 			{
-				input.getuGenArray()[i].pause(true);
-//				input.getuGenArray()[i].kill();
-				System.out.println("input.getuGenArray()[" + i + "] = "  + input.getuGenArray()[i]);
-			
-			
+				input.getuGenArray()[i].pause(true);			
 			} // for
-			
-//			input.ac.out.clearInputConnections();
 			
 
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
-	//			input.g.clearInputConnections();
 				this.input.uGenArrayFromSample(this.inputFile);
-//				this.input	= new Input(new String[] { this.inputFile });
 			} else {
-				/*
-				for (int i = 0; i < input.getuGenArray().length; i++)
-				{
-					input.getuGenArray()[i].clearInputConnections();
-				} // for
-				*/
-	//			input.g.clearInputConnections();
 				this.input.uGenArrayFromNumInputs(1);
 			}
 			
-			System.out.println("input.ac.out.getIns() = " + input.ac.out.getIns());
 		} // if - play
 
 		// Hamburger button:
@@ -1815,8 +1799,8 @@ public class ModuleTemplate {
 			// All we want is the name:
 			String	key	= (String) keyMap.get("name");
 			this.curKey	= key;
-			this.curKeyOffset			= keyPos;
-			this.curKeyEnharmonicOffset	= this.enharmonicPos[curKeyOffset];
+			this.curKeyOffset = keyPos;
+			this.curKeyEnharmonicOffset	= this.enharmonicPos[getCurKeyOffset()];
 
 			// Setting the input file:
 			int	enharmonicPos	= this.enharmonicPos[keyPos];
@@ -2245,30 +2229,9 @@ public class ModuleTemplate {
 		return curKeyEnharmonicOffset;
 	}
 
+	public int getCurKeyOffset() {
+		return curKeyOffset;
+	}
 
-	/*
-	 * 01/11/2017 brainstorming:
-	 * I'll have options for 
-	 * 
-	 * Do I want generic sliders?  I won't have a great way of accessing their results,
-	 * but I'll also have more freedom in making ones.
-	 * Otherwise, I can say the only ones you can use are the ones that I made.
-	 * (Which makes sense, because then I don't need to set new range values each time,
-	 * and maybe it can even  interact with Input -- do something when it crosses the threshold, etc.)
-	 * 
-	 * I don't want displaySidebar() to be a whole bunch of if's, though;
-	 * Maybe: I can have an ArrayList of functions that are implemented for this particular instance,
-	 * and I go through that array list and call the corresponding functions.
-	 * Then I'll have another huge if() function that takes a number parameter and does the thing it's supposed to do.
-	 *  ^ Not too bad, b/c it only counts toward text.  Other things are implementable once.
-	 *  
-	 *  Slight problem = how controlP5 deals w/events. I need a separate function for each button I might have,
-	 *  but what if I make two of those buttons? (That doesn't make sense... Why would you have two hidePlay buttons?)
-	 *  
-	 *  Main problem: I really don't understand ControlP5 yet.
-	 *  Solution:	I'll implement Module_01_02 w/ControlP5, not generically at all.
-	 *  			Then, when I can see how it works, maybe I can make it generic.
-	 *  			(Kind of what I was going to do, anyway; we'll take this one step at a time.)
-	 */
 
 }
