@@ -1,6 +1,7 @@
 package core;
 
 import processing.core.PApplet;
+import processing.sound.*;
 
 //import org.jaudiolibs.beads.AudioServerIO;
 //import org.jaudiolibs.beads.*;
@@ -12,8 +13,10 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
+import net.beadsproject.beads.ugens.Throughput;
 import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
+import net.beadsproject.beads.analysis.featureextractors.FFT;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
@@ -146,7 +149,58 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 		initInput(getuGenArray());
 	} // constructor(int)
+	
+	/**
+	 * Constructor for creating an Input object with 2 lines, 
+	 * using the right and left channels of default in.
+	 * 
+	 * @param leftAndRight	Simply distinguishes this constructor from the others
+	 */
+	public Input(boolean leftAndRight)
+	{
+		this.numInputs	= 1;
+		AudioIn	in1	= new AudioIn(this, 0);
+		in1.play();
+		/*
+		this.numInputs	= 2;
+		this.ac = new AudioContext();
 
+		//TODO: might not need this:
+		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
+		int[]  inputNums  = new int[this.numInputs];
+		for (int i = 0; i < this.numInputs; i++)
+		{
+			inputNums[i]  = i + 1;
+			println("inputNums[" + i + "] = " + inputNums[i]);
+		} // for
+		
+		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
+		UGen	leftRightUGen	= this.ac.getAudioInput(inputNums);
+		UGen	leftUGen	= new Throughput(this.ac, 1);
+		UGen	rightUGen	= new Throughput(this.ac, 1);
+		
+		leftUGen.addInput(0, leftRightUGen, 0);
+		rightUGen.addInput(0, leftRightUGen, 1);
+		
+		this.uGenArray = new UGen[this.numInputs];
+		this.uGenArray[0]	= leftUGen;
+		this.uGenArray[1]	= rightUGen;
+//		this.uGenArray	= (UGen[])leftRightUGen.getConnectedInputs().toArray();
+
+		// get the audio lines from the AudioContext:
+		//  this.inputsUGen = ac.getAudioInput(inputNums);
+
+		/*
+		for (int i = 0; i < getuGenArray().length; i++)
+		{
+			// getAudioInput needs an int[] with the number of the particular line.
+			getuGenArray()[i]  = ac.getAudioInput(new int[] {(i + 1)});
+		}
+
+		initInput(this.uGenArray);
+		*/
+	} // constructor(boolean, boolean)
+	
 	/**
 	 * Constructor for creating a one (or two?)-channel Input object 
 	 * from the machine's default audio input device;
@@ -297,7 +351,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
 		for (int i = 0; i < this.numInputs; i++)
 		{
-			g.addInput(uGenArray[i]);
+			System.out.println("Input.initInput: uGenArray[" + i + "] = " +this.uGenArray[i]);
+			g.addInput(this.uGenArray[i]);
 		} // for
 		ac.out.addInput(g);
 
