@@ -99,6 +99,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	public void draw()
 	{
 		//this.moduleTemplate.setMenuVal();
+		if (keyPressed == true) {
+			this.moduleTemplate.setMenuVal();
+		}//show menu button onclick
+		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
 
