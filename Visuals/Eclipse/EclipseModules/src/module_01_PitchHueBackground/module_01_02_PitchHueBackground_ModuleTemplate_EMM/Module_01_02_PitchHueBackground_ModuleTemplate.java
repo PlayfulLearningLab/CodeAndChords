@@ -82,8 +82,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
 		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.colors.length) {
-			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
-			curHuePos	= 0;
+			//System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
+			//curHuePos	= 0;
 		}
 
 		curHue	= new float[] { 255, 255, 255 };
@@ -215,13 +215,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	{
 		try
 		{
-			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
-					"; this.moduleTemplate = " + this.moduleTemplate);
+			//println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
+					//"; this.moduleTemplate = " + this.moduleTemplate);
 
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
-			println("Module_01_02.controlEvent: caught Exception " + e);
+			//println("Module_01_02.controlEvent: caught Exception " + e);
 			e.printStackTrace();
 		}
 	} // controlEvent

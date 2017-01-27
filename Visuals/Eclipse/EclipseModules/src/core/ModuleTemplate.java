@@ -39,7 +39,7 @@ public class ModuleTemplate {
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
 	private	static	float	CS_TRICHROM	= 3;
-	private	static	float	CS_CUSTOM	= 4;
+	private  static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
 //	private boolean menuVis = false;
 
@@ -218,7 +218,7 @@ public class ModuleTemplate {
 		if(yValDif < 25) {
 			yValDif	= 25;
 		}
-		System.out.println("yValDif = " + yValDif);
+		//System.out.println("yValDif = " + yValDif);
 		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length - 1; i++)
@@ -395,7 +395,7 @@ public class ModuleTemplate {
 				.setWidth(labelWidth)
 				.setGroup("sidebarGroup")
 				.setValue("Threshold");
-		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
+		//System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
 
 		// Threshold slider:
 		this.sidebarCP5.addSlider("slider0")
@@ -909,6 +909,7 @@ public class ModuleTemplate {
 
 	private void updateColors(float colorStyle)
 	{
+		
 		if(colorStyle < 1 || colorStyle > 4) {
 			throw new IllegalArgumentException("Module_01_02.updateColors: char paramter " + colorStyle + " is not recognized; must be 1 - 4.");
 		}
@@ -919,18 +920,21 @@ public class ModuleTemplate {
 		if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 		{
 			this.rainbow();
+			System.out.print("     RAINBOW");
 		}
 
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
 			this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			System.out.print("     DICHROM");
 		}
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
 			this.trichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			System.out.print("     TRICHROM");
 		}
 
 		// Custom:
@@ -938,14 +942,15 @@ public class ModuleTemplate {
 		{			
 			// First, set the key to chromatic:
 			this.setCurKey("A", 2);
-
+			System.out.print("     CUSTOM");
 			// Then populate the textfields with the current colors in the colors array:
 			// (textfield id's start at 23 and go up by 3)
 			int	id	= 26;
 			Textfield	curTextfield;
-
+			
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
 			{
+				
 				curTextfield 	= (Textfield)this.sidebarCP5.getController("textfield" + id);
 				curTextfield.setText("rgb(" + this.colors[colorPos][0] + ", " + this.colors[colorPos][1] + ", " + this.colors[colorPos][2] + ")");
 				id	= id + 3;
@@ -953,9 +958,10 @@ public class ModuleTemplate {
 
 			
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
+			
+
 			this.applyColorModulate(this.colors, this.originalColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
-	
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
 			
 			// (Will they need to check to make sure that the key is actually chromatic?)
@@ -1589,7 +1595,7 @@ public class ModuleTemplate {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
+		//System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
 		
 		int	id	= controlEvent.getController().getId();
@@ -1695,8 +1701,8 @@ public class ModuleTemplate {
 			try	{
 				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
 			} catch(NumberFormatException nfe) {
-				System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
-						"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
+				//System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
+						//"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
 			} // catch
 		} // textField
 
@@ -1790,7 +1796,8 @@ public class ModuleTemplate {
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
 
-			this.updateColors(this.curColorStyle);
+			//this.updateColors(this.curColorStyle);
+		
 		} // majMinChrom buttons
 
 
@@ -1847,7 +1854,7 @@ public class ModuleTemplate {
 			for(int i = 0; i < tfValues.length; i++)
 			{
 				tfValues[i]	= tfValues[i].trim().toLowerCase();
-				System.out.println("tfValues[" + i + "] = " + tfValues[i]);
+				//System.out.println("tfValues[" + i + "] = " + tfValues[i]);
 			} // for
 
 			try
@@ -1961,7 +1968,7 @@ public class ModuleTemplate {
 				this.colors[notePos][2]	= color.getBlue();
 
 
-				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+				//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 			}
 		} // custom pitch color wheels
 
@@ -1973,7 +1980,7 @@ public class ModuleTemplate {
 				id	= controlEvent.getId();
 				int	notePos	= ((id + 2) / 3) - 9;
 
-				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+				//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 
 				// error checking
 				if(notePos < 0 || notePos > this.colors.length)	{
@@ -1982,14 +1989,14 @@ public class ModuleTemplate {
 							"it should be between 0 and " + this.colors.length);
 				} // error checking
 
-				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+				//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 
 				// Getting color value from the Textfield:
 				String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
 				for(int i = 0; i < tfValues.length; i++)
 				{
 					tfValues[i]	= tfValues[i].trim().toLowerCase();
-					System.out.println("tfValues[" + i + "] = " + tfValues[i]);
+					//System.out.println("tfValues[" + i + "] = " + tfValues[i]);
 				} // for
 
 				try
