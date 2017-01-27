@@ -621,7 +621,7 @@ public class ModuleTemplate {
 		//{
 		this.sidebarCP5.addColorWheel("rootColorWheel")
 		.setPosition(this.leftAlign, rootColorY + 20)
-		.setRGB(this.parent.color(255,255,255))
+		.setRGB(this.parent.color(255,0,0))
 		.setLabelVisible(false)
 		.setVisible(false)
 		.setGroup("sidebarGroup")
