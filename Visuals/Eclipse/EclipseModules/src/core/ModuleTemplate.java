@@ -794,7 +794,8 @@ public class ModuleTemplate {
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
 		int	namePos	= 0;
 		int	id		= 24;
-
+		int colorpos  = 0;
+		
 		// First row of pitches:
 		for(int i = 0; i < noteNames1.length; i++)
 		{
@@ -808,15 +809,17 @@ public class ModuleTemplate {
 			.getCaptionLabel().toUpperCase(false);
 
 			id = id + 1;
-
+			
 			this.sidebarCP5.addColorWheel("colorWheel" + id)
 			.setPosition(colorWheelX, noteYVals[i] - 200)		// 200 = height of ColorWheel
-			.setRGB(this.parent.color(colors[i][0], colors[i][1], colors[i][2]))
+			.setRGB(this.parent.color(colors[colorpos][0], colors[colorpos][1], colors[colorpos][2]))
 			.setLabelVisible(false)
 			.setVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
-
+			
+			colorpos = colorpos + 1;
+			
 			id = id + 1;
 
 			this.sidebarCP5.addTextfield("textfield" + id)
@@ -829,12 +832,12 @@ public class ModuleTemplate {
 
 			id = id + 1;
 			namePos	= namePos + 1;
-		} // first row of pitches
+		}// first row of pitches
 
 		namePos	= 0;
-		// Second row of pitches:
 		for(int i = 0; i < noteNames1.length; i++)
-		{
+		{// Second row of pitches:
+		
 			this.sidebarCP5.addButton("button" + id)
 			.setPosition(noteX2, noteYVals[i])
 			.setWidth(buttonWidth)
@@ -847,11 +850,13 @@ public class ModuleTemplate {
 
 			this.sidebarCP5.addColorWheel("colorWheel" + id)
 			.setPosition(noteX2, noteYVals[i] - 200)
-			.setRGB(this.parent.color(colors[i][0], colors[i][1], colors[i][2]))
+			.setRGB(this.parent.color(colors[colorpos][0], colors[colorpos][1], colors[colorpos][2]))
 			.setLabelVisible(false)
 			.setVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
+			
+			colorpos = colorpos + 1;
 
 			id = id + 1;
 
@@ -865,7 +870,8 @@ public class ModuleTemplate {
 
 			id = id + 1;
 			namePos	= namePos + 1;
-		} // for - second row of pitches
+		} 
+		// for - second row of pitches
 
 		Color	transparentBlack	= new Color(0, 0, 0, 200);
 		int		transBlackInt		= transparentBlack.getRGB();
@@ -877,6 +883,7 @@ public class ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setVisible(false);
 	} // addNoteColorSelectors
+	
 
 	/**
 	 * Method called during instatiation to hide text labels of text fields
