@@ -83,8 +83,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
 		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
 		if(curHuePos < 0 || curHuePos > this.moduleTemplate.colors.length) {
-			System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
-			curHuePos	= 0;
+			//System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
+			//curHuePos	= 0;
 		}
 
 		curHue	= new float[] { 255, 255, 255 };
@@ -109,13 +109,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			System.out.println("  this.moduleTemplate.getCurKeyEnharmonicOffset() = " + this.moduleTemplate.getCurKeyEnharmonicOffset() +
-					"; this.moduleTemplate.getCurKeyOffset() = " + this.moduleTemplate.getCurKeyOffset());
 			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			//System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
-					//moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
-			
-			System.out.println("scaleDegree = " + scaleDegree);
 			
 			// chromatic:
 //			if(this.moduleTemplate.getMajMinChrom() == 2) {
@@ -223,13 +217,13 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 	{
 		try
 		{
-			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
-					"; this.moduleTemplate = " + this.moduleTemplate);
+			//println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
+					//"; this.moduleTemplate = " + this.moduleTemplate);
 
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
-			println("Module_01_02.controlEvent: caught Exception " + e);
+			//println("Module_01_02.controlEvent: caught Exception " + e);
 			e.printStackTrace();
 		}
 	} // controlEvent
