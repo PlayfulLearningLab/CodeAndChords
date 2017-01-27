@@ -236,7 +236,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Moved this from the constructor:
 		this.numInputs  = sampleFilenames.length;
 		this.sampleManager  = new SampleManager();
-		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initiated in a try/catch in order to determine whether or not the operation was successful.
+		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
 		int  semaphore      = 1;
 
 		try {
@@ -291,6 +291,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
 			((SamplePlayer) uGenArray[i]).setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 		} // for
+		
+		SampleManager.destroyGroup("group");
 
 		initInput(uGenArray);
 	} // uGenArrayFromSample(String[])
@@ -351,7 +353,6 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
 		for (int i = 0; i < this.numInputs; i++)
 		{
-			System.out.println("Input.initInput: uGenArray[" + i + "] = " +this.uGenArray[i]);
 			g.addInput(this.uGenArray[i]);
 		} // for
 		ac.out.addInput(g);
