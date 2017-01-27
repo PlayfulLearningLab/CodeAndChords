@@ -35,7 +35,7 @@ public class ModuleTemplate {
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
 	private	static	float	CS_TRICHROM	= 3;
-	private	static	float	CS_CUSTOM	= 4;
+	private  static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
 //	private boolean menuVis = false;
 
@@ -270,7 +270,7 @@ public class ModuleTemplate {
 		if(yValDif < 25) {
 			yValDif	= 25;
 		}
-		System.out.println("yValDif = " + yValDif);
+		//System.out.println("yValDif = " + yValDif);
 		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length - 1; i++)
@@ -436,11 +436,13 @@ public class ModuleTemplate {
 		int	tfWidth			= 70;
 
 		this.sidebarCP5.addLabel("thresholdLabel")
-		.setPosition(labelX, thresholdY + 4)
-		.setWidth(labelWidth)
-		.setGroup("sidebarGroup")
-		.setValue("Threshold");
-		System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
+
+				.setPosition(labelX, thresholdY + 4)
+				.setWidth(labelWidth)
+				.setGroup("sidebarGroup")
+				.setValue("Threshold");
+		//System.out.println("sliderWidth = " + sliderWidth + "; sliderHeight = " + sliderHeight);
+
 
 		// Threshold slider:
 		this.sidebarCP5.addSlider("slider0")
@@ -458,11 +460,11 @@ public class ModuleTemplate {
 		this.sidebarCP5.addTextfield("textfield1")
 		.setPosition(this.leftAlign + sliderWidth + spacer, thresholdY)
 		.setSize(tfWidth, sliderHeight)
-		/*				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
-				.setLabelVisible(false)
-				.setText(this.sidebarCP5.getController("slider0").getValue() + "")
-				.setLabelVisible(false)
->>>>>>> wilder*/
+		.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+		.setLabelVisible(false)
+				//.setText(this.sidebarCP5.getController("slider0").getValue() + "")
+				//.setLabelVisible(false)
+
 		.setAutoClear(false)
 		.setGroup("sidebarGroup")
 		.setId(1);
@@ -482,7 +484,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, attackY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
-		.setRange(2, 20)
+		.setRange(2, 50)
 		.setValue(10)
 		.setLabelVisible(false)
 		.setGroup("sidebarGroup")
@@ -514,7 +516,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, releaseY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
-		.setRange(2, 20)
+		.setRange(2, 50)
 		.setValue(10)
 		.setLabelVisible(false)
 		.setGroup("sidebarGroup")
@@ -545,7 +547,7 @@ public class ModuleTemplate {
 		.setPosition(this.leftAlign, transitionY)
 		.setSize(sliderWidth, sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
-		.setRange(2, 20)
+		.setRange(2, 50)
 		.setValue(10)
 		.setLabelVisible(false)
 		.setGroup("sidebarGroup")
@@ -668,13 +670,16 @@ public class ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setId(21);
 
+		//for(int i = 0; i < ; i++)
+		//{
 		this.sidebarCP5.addColorWheel("rootColorWheel")
 		.setPosition(this.leftAlign, rootColorY + 20)
-		.setRGB(this.parent.color(102, 0, 102))
+		.setRGB(this.parent.color(255,0,0))
 		.setLabelVisible(false)
 		.setVisible(false)
 		.setGroup("sidebarGroup")
 		.setId(22);
+		//}
 
 		this.sidebarCP5.addTextfield("rootColorTF")
 		.setPosition(textfieldX, rootColorY)
@@ -782,7 +787,8 @@ public class ModuleTemplate {
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
 		int	namePos	= 0;
 		int	id		= 24;
-
+		int colorpos  = 0;
+		
 		// First row of pitches:
 		for(int i = 0; i < noteNames1.length; i++)
 		{
@@ -796,15 +802,17 @@ public class ModuleTemplate {
 			.getCaptionLabel().toUpperCase(false);
 
 			id = id + 1;
-
+			
 			this.sidebarCP5.addColorWheel("colorWheel" + id)
 			.setPosition(colorWheelX, noteYVals[i] - 200)		// 200 = height of ColorWheel
-			.setRGB(this.parent.color(102, 0, 102))
+			.setRGB(this.parent.color(colors[colorpos][0], colors[colorpos][1], colors[colorpos][2]))
 			.setLabelVisible(false)
 			.setVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
-
+			
+			colorpos = colorpos + 1;
+			
 			id = id + 1;
 
 			this.sidebarCP5.addTextfield("textfield" + id)
@@ -817,12 +825,12 @@ public class ModuleTemplate {
 
 			id = id + 1;
 			namePos	= namePos + 1;
-		} // first row of pitches
+		}// first row of pitches
 
 		namePos	= 0;
-		// Second row of pitches:
 		for(int i = 0; i < noteNames1.length; i++)
-		{
+		{// Second row of pitches:
+		
 			this.sidebarCP5.addButton("button" + id)
 			.setPosition(noteX2, noteYVals[i])
 			.setWidth(buttonWidth)
@@ -835,11 +843,13 @@ public class ModuleTemplate {
 
 			this.sidebarCP5.addColorWheel("colorWheel" + id)
 			.setPosition(noteX2, noteYVals[i] - 200)
-			.setRGB(this.parent.color(102, 0, 102))
+			.setRGB(this.parent.color(colors[colorpos][0], colors[colorpos][1], colors[colorpos][2]))
 			.setLabelVisible(false)
 			.setVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
+			
+			colorpos = colorpos + 1;
 
 			id = id + 1;
 
@@ -853,7 +863,8 @@ public class ModuleTemplate {
 
 			id = id + 1;
 			namePos	= namePos + 1;
-		} // for - second row of pitches
+		} 
+		// for - second row of pitches
 
 		Color	transparentBlack	= new Color(0, 0, 0, 200);
 		int		transBlackInt		= transparentBlack.getRGB();
@@ -865,6 +876,7 @@ public class ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setVisible(false);
 	} // addNoteColorSelectors
+	
 
 	/**
 	 * Method called during instatiation to hide text labels of text fields
@@ -955,6 +967,7 @@ public class ModuleTemplate {
 
 	private void updateColors(float colorStyle)
 	{
+		
 		if(colorStyle < 1 || colorStyle > 4) {
 			throw new IllegalArgumentException("Module_01_02.updateColors: char paramter " + colorStyle + " is not recognized; must be 1 - 4.");
 		}
@@ -965,18 +978,21 @@ public class ModuleTemplate {
 		if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 		{
 			this.rainbow();
+			System.out.print("     RAINBOW");
 		}
 
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
 			this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			System.out.print("     DICHROM");
 		}
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
 			this.trichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			System.out.print("     TRICHROM");
 		}
 
 		// Custom:
@@ -984,14 +1000,15 @@ public class ModuleTemplate {
 		{			
 			// First, set the key to chromatic:
 			this.setCurKey("A", 2);
-
+			System.out.print("     CUSTOM");
 			// Then populate the textfields with the current colors in the colors array:
 			// (textfield id's start at 23 and go up by 3)
 			int	id	= 26;
 			Textfield	curTextfield;
-
+			
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
 			{
+				
 				curTextfield 	= (Textfield)this.sidebarCP5.getController("textfield" + id);
 				curTextfield.setText("rgb(" + this.colors[colorPos][0] + ", " + this.colors[colorPos][1] + ", " + this.colors[colorPos][2] + ")");
 				id	= id + 3;
@@ -999,8 +1016,14 @@ public class ModuleTemplate {
 
 			
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
+			
+
 			this.applyColorModulate(this.colors, this.originalColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
+
+			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
+			
+
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
 		
@@ -1648,7 +1671,7 @@ public class ModuleTemplate {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
+		//System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
 
 		int	id	= controlEvent.getController().getId();
@@ -1757,8 +1780,8 @@ public class ModuleTemplate {
 			try	{
 				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
 			} catch(NumberFormatException nfe) {
-				System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
-						"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
+				//System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
+						//"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
 			} // catch
 		} // textField
 
@@ -1853,7 +1876,8 @@ public class ModuleTemplate {
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
 
-			this.updateColors(this.curColorStyle);
+			//this.updateColors(this.curColorStyle);
+		
 		} // majMinChrom buttons
 
 
@@ -1910,7 +1934,7 @@ public class ModuleTemplate {
 			for(int i = 0; i < tfValues.length; i++)
 			{
 				tfValues[i]	= tfValues[i].trim().toLowerCase();
-				System.out.println("tfValues[" + i + "] = " + tfValues[i]);
+				//System.out.println("tfValues[" + i + "] = " + tfValues[i]);
 			} // for
 
 			try
@@ -2024,7 +2048,7 @@ public class ModuleTemplate {
 				this.colors[notePos][2]	= color.getBlue();
 
 
-				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+				//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 			}
 		} // custom pitch color wheels
 
@@ -2036,7 +2060,7 @@ public class ModuleTemplate {
 				id	= controlEvent.getId();
 				int	notePos	= ((id + 2) / 3) - 9;
 
-				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+				//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 
 				// error checking
 				if(notePos < 0 || notePos > this.colors.length)	{
@@ -2045,14 +2069,14 @@ public class ModuleTemplate {
 							"it should be between 0 and " + this.colors.length);
 				} // error checking
 
-				System.out.println(controlEvent.getController() + ": notePos = " + notePos);
+				//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 
 				// Getting color value from the Textfield:
 				String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
 				for(int i = 0; i < tfValues.length; i++)
 				{
 					tfValues[i]	= tfValues[i].trim().toLowerCase();
-					System.out.println("tfValues[" + i + "] = " + tfValues[i]);
+					//System.out.println("tfValues[" + i + "] = " + tfValues[i]);
 				} // for
 
 				try
