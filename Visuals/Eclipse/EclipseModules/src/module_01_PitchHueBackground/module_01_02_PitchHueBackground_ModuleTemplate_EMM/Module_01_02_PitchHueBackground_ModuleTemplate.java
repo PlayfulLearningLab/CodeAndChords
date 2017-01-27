@@ -108,24 +108,22 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 			// subtracting keyAddVal gets the number into the correct key 
 			// (simply doing % 12 finds the scale degree in C major).
 			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getKeyAddVal() + 12) % 12;
-			//System.out.println("key = " + moduleTemplate.curKey + "; keyAddVal = " + 
-					//moduleTemplate.getKeyAddVal() + "; scaleDegree = " + scaleDegree);
+			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 			
 			// chromatic:
-			if(this.moduleTemplate.getMajMinChrom() == 2) {
+//			if(this.moduleTemplate.getMajMinChrom() == 2) {
 				newHuePos	= scaleDegree;
-			} else {
+//			} else {
 				// major or minor:
 
-				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
+//				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
 
-				if(inScale > -1) {
-					newHuePos	= inScale;
+//				if(inScale > -1) {
+//					newHuePos	= inScale;
 //					println(newHuePos + " is the position in this scale.");
-				} // if - check if degree is in the scale
+//				} // if - check if degree is in the scale
 
-			} // if - current scale is Major or Minor		
+//			} // if - current scale is Major or Minor		
 
 
 			if(newHuePos > this.moduleTemplate.colors.length || newHuePos < 0)	{
