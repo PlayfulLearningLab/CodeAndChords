@@ -1,11 +1,8 @@
 package core;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.List;
 import java.text.DecimalFormat;
 import java.util.Map;
-import java.util.Set;
 
 import controlP5.Button;
 import controlP5.ColorWheel;
@@ -28,14 +25,13 @@ import processing.core.PImage;
  * Emily Meuer
  * 01/11/2017
  * 
- * Putting all the pop-out sidebar/moduleTemplate stuff from Module_01_02 in this class.
+ * Custom sidebar, originally for Module_01_02.
  * 
- * @author Emily Meuer
+ * @author Emily Meuer et alia
  *
  */
 public class ModuleTemplate {
 
-	// Static var's: colorStyles
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
 	private	static	float	CS_TRICHROM	= 3;
@@ -43,17 +39,13 @@ public class ModuleTemplate {
 	private	float	curColorStyle;
 //	private boolean menuVis = false;
 
-	// For rounding numbers in sliders to two digits:
+	/**
+	 * DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.
+	 */
 	private	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
 
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-
+	String  inputFile;
+	
 	// Global vars - TODO: all private!
 	private	PApplet		parent;
 	//	public ControlP5 	nonSidebarCP5;
@@ -140,7 +132,6 @@ public class ModuleTemplate {
 		}
 	}; // filenames
 
-	// TODO: get rid of this? 
 	private	final	int[][] scaleDegrees = new int[][] {
 		// major:
 		new int[]  { 0, 2, 4, 5, 7, 9, 11
