@@ -648,7 +648,7 @@ public class ModuleTemplate {
 	private void addRootColorSelector(int rootColorY)
 	{
 		int	labelX			= 10;
-		int	buttonX			= this.leftAlign + 50;
+		int	buttonX			= this.leftAlign;
 		int	buttonWidth		= 50;
 		int	textfieldX		= buttonX + buttonWidth + 5;
 		int	textfieldWidth	= 90;
