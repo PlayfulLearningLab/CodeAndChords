@@ -1691,7 +1691,7 @@ public class ModuleTemplate {
 				this.input.uGenArrayFromNumInputs(1);
 			}
 			
-		} // if - play
+		} // if - play  check old input class in branch
 
 		// Hamburger button:
 		if(controlEvent.getController().getName().equals("hamburger"))
