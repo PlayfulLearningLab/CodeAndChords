@@ -1,3 +1,9 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import net.beadsproject.beads.analysis.featureextractors.PowerSpectrum;
 import processing.core.PApplet;
 
@@ -28,24 +34,25 @@ public class Driver extends PApplet {
 		inputFreqRain.setBackgroundColor(230, 179, 204);
 
 //		background(250, 150, 204);
+//		writeToFile("/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/log.txt", new int[] { 1, 2, 3 }, "Still testing");
+		
 	} // setup
 
 	public void draw()
 	{
+		background(0);
+//		testInput();
+		
 //		background(250, 150, 204);
 		stroke(230, 179, 204);
 		fill(230, 179, 204);
-		rect(0, 0, width - 200, height);
+//		rect(0, 0, width - 200, height);
 		
 //		drawPSSecondHighest(input);
-		drawHPSSecondHighest(input);
+//		drawHPSSecondHighest(input);
 		
-		inputFreqRain.rain(input.getAdjustedFund());
-<<<<<<< HEAD
-		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
-=======
+//		inputFreqRain.rain(input.getAdjustedFund());
 //		println("input.getAdjustedFundAsHz() = " + input.getAdjustedFundAsHz());
->>>>>>> d8331f249b1b22c61a716ccffd63e2f203641fb0
 		/*
  // This is now happening in drawHPSSecondHighest()
 		stroke(255);
@@ -60,7 +67,9 @@ public class Driver extends PApplet {
 		  stroke(50, 50, 255);
 		  rect(freqEMMarray[0].secondMaxBin * 10, height, 1, -freqEMMarray[0].hps[freqEMMarray[0].secondMaxBin]);
 		 */	
-		//		ellipse(width / 2, height - input.getAdjustedFund(), 50, 50);
+		ellipse(width / 2, height - input.getAdjustedFund(), 50, 50);
+		println("input.getAdjustedFund() = " + input.getAdjustedFund());
+		println("input.getAmplitude() = " + input.getAmplitude());
 
 	} // draw
 
@@ -154,4 +163,75 @@ public class Driver extends PApplet {
 			println("InputClassEclipse_HPSCorrection.drawHPSSecondHighest: " + npe.getMessage());
 		}
 	} // drawPSSecondHighest
+	
+	public int[][] testInput()
+	{
+		int[]	resultBuffer	= new int[100];
+		for(int i = 0; i < resultBuffer.length; i++)
+		{
+			resultBuffer[i]	= 0;
+		}
+		ArrayList<Integer>	tooHigh	= new ArrayList<Integer>();
+		ArrayList<Integer>	tooLow	= new ArrayList<Integer>();
+		
+		Input input	= new Input("Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav");
+		int	endTime	= millis() + 1500;
+		int	bin;
+
+		while(millis() < endTime)
+		{
+			// Getting the value in the 10's place:
+			bin	= (int) ((input.getAdjustedFundAsHz() / 10 ) % 10);
+			if(bin < 0) {
+				tooLow.add(bin);
+			} else if(bin < resultBuffer.length) {
+				resultBuffer[bin]++;
+			} else {
+				tooHigh.add(bin);
+			}
+		} // while
+		
+		int[] tooLowArray	= new int[tooLow.size()];
+		for(int i = 0; i < tooLowArray.length; i++)
+		{
+			tooLowArray[i]	= tooLow.get(i);
+		} // for
+		
+		int[] tooHighArray	= new int[tooHigh.size()];
+		for(int i = 0; i < tooHighArray.length; i++)
+		{
+			tooHighArray[i]	= tooHigh.get(i);
+		} // for
+		
+		String	logFile	= "/Users/codeandchords/Documents/CodeAndChords/InputTemplate_EMM/InputClassEclipse_HPSCorrection/filter_tests.txt";
+		this.writeToFile(logFile, tooLowArray, "tooLowArray - without filters:");
+		this.writeToFile(logFile, resultBuffer, "resultBuffer - without filters:");
+		this.writeToFile(logFile, tooHighArray, "tooHighArray - without filters:");
+		
+		return new int[][] { tooLowArray, resultBuffer, tooHighArray };
+	} // testInput
+	
+	public void writeToFile(String filename, int[] array, String header)
+	{
+		LocalDateTime	timeDate	=	LocalDateTime.now();
+		
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) 
+		{
+			bw.write(timeDate.toString() + "\n" + header + "\n");
+			
+			for(int i = 0; i < array.length; i++)
+			{
+				bw.write((i * 10) + ": " + array[i] + "\n");				
+			}
+			bw.write("\n");
+
+			// no need to close it.
+			//bw.close();
+
+			System.out.println("writeToFile: done writing");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} // catch
+	} // writeToFile
 } // Driver

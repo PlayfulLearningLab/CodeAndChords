@@ -562,7 +562,6 @@ public class OldInput extends PApplet
   {
     this.sensitivity = newSensitivity;
   }
-} // Input class
 
 /*
  * This file is part of Beads. See http://www.beadsproject.net for all information.
@@ -586,7 +585,7 @@ import beads.TimeStamp;
  *
  * @beads.category analysis
  */
-class FrequencyEMM extends FeatureExtractor<Float, float[]> {
+public class FrequencyEMM extends FeatureExtractor<Float, float[]> {
 
   /** The Constant FIRSTBAND. */
   static final int FIRSTBAND = 3;
@@ -717,4 +716,6 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
   public float getAmplitude() {  
     return this.amplitude;
   }
-}
+} // FrequencyEMM class
+
+} // Input class
