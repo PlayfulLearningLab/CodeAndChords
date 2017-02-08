@@ -24,8 +24,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 	 * Elena Ryan
 	 * ed. 1/27/2017
 	 * Editing original to create a fullscreen version
-	 *currently doesn't work bc of main class.  I think I just
-	 *have to change the file name bc it's giving an error
+	 * currently doesn't work bc of main class.  I think I just
+	 * have to change the file name bc it's giving an error
 	 *
 	 */
 	
@@ -35,6 +35,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 	public static void main(String[] args)
 	{
 		//figure out why it can't find or load main class?? what's the deal there
+		//Back to success!  Now just to locate the appropriate fullscreen command
+		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 		PApplet.main("module_01_PitchHueBackground.module_01_02_fullscreen.Module_01_02_PitchHueBackground_ModuleTemplateFullscreen");
 	} // main
 
