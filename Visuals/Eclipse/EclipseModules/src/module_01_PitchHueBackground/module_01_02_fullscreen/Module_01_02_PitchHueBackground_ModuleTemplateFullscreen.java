@@ -71,7 +71,8 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 	public void settings()
 	{
 		//sketchFullScreen();
-		size(1025, 820);
+		fullScreen();
+		//size(1025, 820);
 	} // settings
 
 	public void setup() 
