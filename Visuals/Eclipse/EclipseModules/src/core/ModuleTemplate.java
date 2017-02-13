@@ -35,6 +35,9 @@ import processing.core.PImage;
  * must pass some value to Module Template that scales things 
  * appropriately for fullscreen
  * tests below
+ * Rev: should add HSB sliders, etc., before calibrating fullscreen meas.
+ * https://processing.org/reference/hue_.html gives
+ * info on conversion of colors
  *
  */
 public class ModuleTemplate {

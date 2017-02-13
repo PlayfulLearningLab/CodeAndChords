@@ -23,8 +23,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplate extends PApplet
 
 	public static void main(String[] args)
 	{
-		//PSA to whoever goes here, I might have accidentally screwed this up, but I swear it's just the filename that's the issue.
-		PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
+		
+		//Says cannot find or load main class???  This should not be an issue
+		PApplet.main("src.module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
+		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
 	// Choose input file here:

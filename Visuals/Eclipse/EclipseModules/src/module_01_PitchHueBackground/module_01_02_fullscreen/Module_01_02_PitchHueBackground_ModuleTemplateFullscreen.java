@@ -40,7 +40,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 	{
 		//figure out why it can't find or load main class?? what's the deal there
 		//Back to success!  Now just to locate the appropriate fullscreen command
-		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
+		
 		PApplet.main("module_01_PitchHueBackground.module_01_02_fullscreen.Module_01_02_PitchHueBackground_ModuleTemplateFullscreen");
 	} // main
 
