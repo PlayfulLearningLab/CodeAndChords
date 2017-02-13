@@ -28,6 +28,13 @@ import processing.core.PImage;
  * Custom sidebar, originally for Module_01_02.
  * 
  * @author Emily Meuer et alia
+ * 
+ * Elena Ryan
+ * 2/13/17 Edits
+ * In order to make the Sidebar compatible with fullscreen 
+ * must pass some value to Module Template that scales things 
+ * appropriately for fullscreen
+ * tests below
  *
  */
 public class ModuleTemplate {

@@ -27,6 +27,10 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 	 * currently doesn't work bc of main class.  I think I just
 	 * have to change the file name bc it's giving an error
 	 *
+	 *
+	 *ed. 2/9/17
+	 *Now works largely due to fixing filename.  Must edit button positions
+	 *in template
 	 */
 	
 	
