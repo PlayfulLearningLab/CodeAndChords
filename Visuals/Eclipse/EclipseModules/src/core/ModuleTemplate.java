@@ -607,7 +607,8 @@ public class ModuleTemplate {
 		.setPosition(labelX, keyY + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Key");
-
+		
+		
 		// "Letter" drop-down menu (better name?)
 		this.sidebarCP5.addScrollableList("keyDropdown")
 		.setPosition(this.leftAlign, keyY)
@@ -1222,6 +1223,8 @@ public class ModuleTemplate {
 
 	public void setCurKey(String key, int majMinChrom)
 	{
+		
+		
 		// Check both sharps and flats, and take whichever one doesn't return -1:
 		int	keyPos	= this.arrayContains(this.allNotes, key);
 
@@ -1236,6 +1239,8 @@ public class ModuleTemplate {
 		this.scaleLength	= this.getScale(key, majMinChrom).length;
 
 		this.sidebarCP5.getController("keyDropdown").setValue(keyPos);
+		
+		
 
 		// The following happen in controlEvent - "keyDropdown"
 		/*
@@ -1804,6 +1809,7 @@ public class ModuleTemplate {
 			// getItem returns a Map of the color, state, value, name, etc. of that particular item
 			//  in the ScrollableList:
 			Map<String, Object> keyMap = this.sidebarCP5.get(ScrollableList.class, "keyDropdown").getItem(keyPos);
+			
 			// All we want is the name:
 			String	key	= (String) keyMap.get("name");
 			this.curKey	= key;
@@ -1814,11 +1820,11 @@ public class ModuleTemplate {
 			int	enharmonicPos	= this.enharmonicPos[keyPos];
 			String	filename	= this.filenames[this.majMinChrom][enharmonicPos];
 			this.inputFile	= "Piano Scale Reference Inputs/" + filename;
-
+			
 			if(!(this.getLeftEdgeX() == 0)) {
 				this.displaySidebar();
 			}
-
+			
 			// Attempts to make the list show in front of rootColor button
 			// (fruitless because rootColor has been brought to the front; I moved it over instead.
 			//  - but this can help show how to access the different types of the items).
