@@ -1,3 +1,4 @@
 
 run_Module_01_02_ModuleTemplate_08.jar filter=lfs diff=lfs merge=lfs -text
 ModuleApps/run_Module_01_02_ModuleTemplate_08.jar filter=lfs diff=lfs merge=lfs -text
+ModuleApps/run_Module_01_02_ModuleTemplate_Small_01.jar filter=lfs diff=lfs merge=lfs -text
