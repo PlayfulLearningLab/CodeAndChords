@@ -38,9 +38,6 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 
 	public static void main(String[] args)
 	{
-		//figure out why it can't find or load main class?? what's the deal there
-		//Back to success!  Now just to locate the appropriate fullscreen command
-		
 		PApplet.main("module_01_PitchHueBackground.module_01_02_fullscreen.Module_01_02_PitchHueBackground_ModuleTemplateFullscreen");
 	} // main
 
@@ -48,6 +45,7 @@ public class Module_01_02_PitchHueBackground_ModuleTemplateFullscreen extends PA
 	// Raw:
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
 	// Tuned:
+	
 	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
 	// Kanye:
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
