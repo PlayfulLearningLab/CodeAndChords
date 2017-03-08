@@ -180,6 +180,8 @@ public class ModuleTemplate {
 	private	float[]		attackReleaseTransition;
 
 	private	float[]	redGreenBlueMod;	// this will store the red/green/blue modulate values
+	
+	private float[] hueSatBrightnessMod; // This will store the hsb modulate values
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -230,6 +232,7 @@ public class ModuleTemplate {
 
 		this.attackReleaseTransition	= new float[3];
 		this.redGreenBlueMod		 	= new float[3];
+		this.hueSatBrightnessMod        = new float[3];
 
 		//TODO: make initModuleTemplate() private again, once it can be called from constructor.
 		//this.initModuleTemplate();
@@ -1768,6 +1771,16 @@ public class ModuleTemplate {
 			} // for - j
 		} // for - i
 	} // applyColorModulate
+	
+	private void applyHSBModulate(float[][] colors, float[][] originalColors)
+	{
+		if(colors == null || originalColors == null) {
+			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
+		} 
+		//For the length of the colors float
+		//for each entry add in hsb
+		//figure out conversions
+	}
 
 	/**
 	 * This method handles the functionality of all the buttons, sliders, and textFields;
@@ -1877,6 +1890,18 @@ public class ModuleTemplate {
 			} // red/green/blue mod
 		}
 
+		//The call for hsb changes
+		/*
+		 * if(id == INSERT || id == INSERT || id == INSERT)
+		 * int pos set position
+		 * this.hsbMod[pos] == sliderValFloat
+		 * So Basically, if the ID corresponds to the 
+		 * HSB sliders, apply it's modulate
+		 * Conversion to hsb then back to RGB
+		 * 
+		 */
+		
+		
 		// Textfields
 		if(id % 2 == 1 && id < sliderCutoff && id > 0)
 		{
