@@ -771,22 +771,34 @@ public class ModuleTemplate {
 		int	labelX			= 10;
 
 		int	buttonWidth		= 30;
-		int	textfieldWidth	= 90;
+		int	textfieldWidth	= 10;
 
 		int	noteX1			= this.leftAlign - 40;
 		int	textfieldX1		= noteX1 + buttonWidth + spacer1;
 
 		int	noteX2			= textfieldX1 + textfieldWidth + spacer2;
 		int	textfieldX2		= noteX2 + buttonWidth + spacer1;
+		
+		int	noteX3			= textfieldX2 + textfieldWidth + spacer2;
+		int	textfieldX3		= noteX3 + buttonWidth + spacer1;
+		
+		int	noteX4			= textfieldX3 + textfieldWidth + spacer2;
+		int	textfieldX4		= noteX4 + buttonWidth + spacer1;
 
 		int	colorWheelX		= textfieldX1;
 
 
 		String[]	noteNames1	= new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D"
+				"A", "C#/Db", "F#/Gb"
 		}; // noteNames
 		String[]	noteNames2	= new String[] {
-				"D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
+				"A#/Bb", "D", "G"
+		}; // noteNames2
+		String[]	noteNames3	= new String[] {
+				"B", "D#/Db", "G#/Ab"
+		}; // noteNames2
+		String[]	noteNames4	= new String[] {
+				"C", "F", "E"
 		}; // noteNames2
 
 		this.sidebarCP5.addTextlabel("customPitchColor")
@@ -830,9 +842,11 @@ public class ModuleTemplate {
 			.setPosition(textfieldX1, noteYVals[i])
 			.setWidth(textfieldWidth)
 			.setAutoClear(false)
+			.setVisible(false)
 			.setText("Code#")
 			.setGroup("sidebarGroup")
 			.setId(id);
+			
 
 			id = id + 1;
 			namePos	= namePos + 1;
@@ -868,6 +882,83 @@ public class ModuleTemplate {
 			.setPosition(textfieldX2, noteYVals[i])
 			.setWidth(textfieldWidth)
 			.setAutoClear(false)
+			.setVisible(false)
+			.setText("Code#")
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id = id + 1;
+			namePos	= namePos + 1;
+		} 
+		namePos	= 0;
+		for(int i = 0; i < noteNames1.length; i++)
+		{// Second row of pitches:
+		
+			this.sidebarCP5.addButton("button" + id)
+			.setPosition(noteX3, noteYVals[i])
+			.setWidth(buttonWidth)
+			.setLabel(noteNames3[namePos])
+			.setId(id)
+			.setGroup("sidebarGroup")
+			.getCaptionLabel().toUpperCase(false);
+
+			id = id + 1;
+
+			this.sidebarCP5.addColorWheel("colorWheel" + id)
+			.setPosition(noteX3, noteYVals[i] - 200)
+			.setRGB(this.parent.color(colors[colorpos][0], colors[colorpos][1], colors[colorpos][2]))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setGroup("sidebarGroup")
+			.setId(id);
+			
+			colorpos = colorpos + 1;
+
+			id = id + 1;
+
+			this.sidebarCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX3, noteYVals[i])
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setVisible(false)
+			.setText("Code#")
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id = id + 1;
+			namePos	= namePos + 1;
+		} 
+		namePos	= 0;
+		for(int i = 0; i < noteNames1.length; i++)
+		{// Second row of pitches:
+		
+			this.sidebarCP5.addButton("button" + id)
+			.setPosition(noteX4, noteYVals[i])
+			.setWidth(buttonWidth)
+			.setLabel(noteNames4[namePos])
+			.setId(id)
+			.setGroup("sidebarGroup")
+			.getCaptionLabel().toUpperCase(false);
+
+			id = id + 1;
+
+			this.sidebarCP5.addColorWheel("colorWheel" + id)
+			.setPosition(noteX4, noteYVals[i] - 200)
+			.setRGB(this.parent.color(colors[colorpos][0], colors[colorpos][1], colors[colorpos][2]))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setGroup("sidebarGroup")
+			.setId(id);
+			
+			colorpos = colorpos + 1;
+
+			id = id + 1;
+
+			this.sidebarCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX4, noteYVals[i])
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setVisible(false)
 			.setText("Code#")
 			.setGroup("sidebarGroup")
 			.setId(id);
@@ -901,7 +992,7 @@ public class ModuleTemplate {
 			}
 		}//hides slider labels
 
-		this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
+		//this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
 
 		for(int i = 24;i<60; i++){
 			if(i%3 == 2){
