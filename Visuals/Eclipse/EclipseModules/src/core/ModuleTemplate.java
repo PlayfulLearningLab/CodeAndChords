@@ -1892,6 +1892,7 @@ public class ModuleTemplate {
 
 		//The call for hsb changes
 		/*
+		 * the id numbers of the sliders should be 14 16 18, and the numSliders should change
 		 * if(id == INSERT || id == INSERT || id == INSERT)
 		 * int pos set position
 		 * this.hsbMod[pos] == sliderValFloat
