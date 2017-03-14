@@ -172,6 +172,7 @@ public class ModuleTemplate {
 	int[]				textYVals;
 	int[]				noteYVals;
 	int[]				modulateYVals;
+	int[]               modulateHSBVals;
 
 	private	boolean		showScale;
 
@@ -226,9 +227,10 @@ public class ModuleTemplate {
 		//		this.setCurKey(this.curKey, this.majMinChrom);
 		this.rainbow();
 
-		this.textYVals		= new int[9];
-		this.noteYVals		= new int[6];
-		this.modulateYVals	= new int[3];
+		this.textYVals		 = new int[12];
+		this.noteYVals		 = new int[6];
+		this.modulateYVals	 = new int[3];
+		this.modulateHSBVals = new int[3];
 
 		this.attackReleaseTransition	= new float[3];
 		this.redGreenBlueMod		 	= new float[3];
@@ -285,6 +287,7 @@ public class ModuleTemplate {
 		}
 		//System.out.println("yValDif = " + yValDif);
 		yValDif = 26;
+		
 
 		for(int i = 1; i < textYVals.length - 1; i++)
 		{
@@ -299,10 +302,13 @@ public class ModuleTemplate {
 		{
 			noteYVals[i]	= noteYVals[i - 1] + yValDif;
 		}
+		
+
+		
 
 		// set y vals for the color modulate scrollbars:
 		// (add double space between this and previous group of note text fields)
-		modulateYVals[0]	= noteYVals[noteYVals.length - 1] + (int)(yValDif * 1.5);
+		modulateYVals[0]	= noteYVals[noteYVals.length - 1]-50;//this is horribly arbitrary
 		for(int i = 1; i < modulateYVals.length; i++)
 		{
 			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
@@ -315,14 +321,23 @@ public class ModuleTemplate {
 		addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 
 		addKeySelector(textYVals[5]);
+		//we want hsb to go here
+		//HERE LIES THE HSBVALS
+				modulateHSBVals[0] = textYVals[6];
+				modulateHSBVals[1] = textYVals[7];
+				modulateHSBVals[2] = textYVals[8];
 
-		addRootColorSelector(textYVals[6]);
+		addRootColorSelector(textYVals[9]);
 
-		addColorStyleButtons(textYVals[7]);
+		addColorStyleButtons(textYVals[10]);
 
-		this.addCustomPitchColor(textYVals[8], noteYVals);
+		this.addCustomPitchColor(textYVals[11], noteYVals);
 
+		addHSBSliders(modulateHSBVals);
+		
 		addModulateSliders(modulateYVals);
+		
+		
 
 		hideTextLabels();
 
@@ -989,7 +1004,7 @@ public class ModuleTemplate {
 	 * Added 1/24/17
 	 */	
 	private void hideTextLabels() {
-		for(int i = 1; i<14; i++){
+		for(int i = 1; i<20; i++){
 			if(i%2 == 1){
 				this.sidebarCP5.getController("textfield"+i).getCaptionLabel().setVisible(false);
 			}
@@ -1005,6 +1020,57 @@ public class ModuleTemplate {
 
 	}//hideTextLabels
 
+	private void addHSBSliders(int[] hsb)
+	{
+		int	labelX			= 10;
+		int	labelWidth		= 70;
+
+		int	sliderWidth		= 145;
+		int	sliderHeight	= 20;
+
+		int	spacer			= 5;	// distance between slider and corresponding textfield
+		int	tfWidth			= 70;	// width of Textfields
+
+		String[]	names	= new String[] { "hueModLabel", "satModLabel", "brightModLabel" };
+		String[]	values	= new String[] { "Hue", "Saturation", "Brightness" };
+
+		int	id	= 14;		// this id picks up where the modulate sliders leave off
+
+		for(int i = 0; i < hsb.length; i++)
+		{
+			// - Textlabel:
+			this.sidebarCP5.addLabel(names[i])
+			.setPosition(labelX, hsb[i] + 4)
+			.setWidth(labelWidth)
+			.setGroup("sidebarGroup")
+			.setValue(values[i]);
+
+			//	- Slider:
+			this.sidebarCP5.addSlider("slider" + id)
+			.setPosition(this.leftAlign, hsb[i])
+			.setSize(sliderWidth, sliderHeight)
+			.setSliderMode(Slider.FLEXIBLE)
+			.setRange(-255, 255)
+			.setValue(0)
+			//.setLabelVisible(false)
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id	= id + 1;
+
+			//	- Textlabel:
+			this.sidebarCP5.addTextfield("textfield" + id)
+			.setPosition(this.leftAlign + sliderWidth + spacer, hsb[i])
+			.setSize(tfWidth, sliderHeight)
+			.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
+			.setAutoClear(false)
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id	= id + 1;
+		} // for   
+	}//the HSB Sliders Heavily Adapted from modSlider Method
+	
 	/**
 	 * Method called during instantiation, to initialize the color modulate sliders.
 	 * 
