@@ -1050,15 +1050,13 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign, hsb[i])
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
-			.setRange(-255, 255)
+			.setRange(-100, 100)
 			.setValue(0)
-			//.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
 
 			id	= id + 1;
-
-			//	- Textlabel:
+			
 			this.sidebarCP5.addTextfield("textfield" + id)
 			.setPosition(this.leftAlign + sliderWidth + spacer, hsb[i])
 			.setSize(tfWidth, sliderHeight)
@@ -1150,6 +1148,7 @@ public class ModuleTemplate {
 		{
 			this.rainbow();
 			System.out.print("     RAINBOW");
+			this.applyHSBModulate(colors, originalColors);
 		}
 
 		// Dichromatic:
@@ -1157,6 +1156,7 @@ public class ModuleTemplate {
 		{
 			this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
 			System.out.print("     DICHROM");
+			this.applyHSBModulate(colors, originalColors);
 		}
 
 		// Trichromatic:
@@ -1164,6 +1164,7 @@ public class ModuleTemplate {
 		{
 			this.trichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
 			System.out.print("     TRICHROM");
+			this.applyHSBModulate(colors, originalColors);
 		}
 
 		// Custom:
@@ -1190,6 +1191,7 @@ public class ModuleTemplate {
 			
 
 			this.applyColorModulate(this.colors, this.originalColors);
+			this.applyHSBModulate(this.colors, this.originalColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
@@ -1843,6 +1845,26 @@ public class ModuleTemplate {
 		if(colors == null || originalColors == null) {
 			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
 		} 
+		for (int i = 0; i < this.colors.length; i++)
+		{
+			//System.out.println("this is not working"+this.hueSatBrightnessMod[0]+" "+this.hueSatBrightnessMod[1]+"why");
+			float[] hsb = new float[3];
+			
+			Color.RGBtoHSB((int)originalColors[i][0], (int)originalColors[i][1], (int)originalColors[i][2], hsb);
+			System.out.println("the color pos is " + i+" and the hsb version is"+ hsb.toString());
+			hsb[0] = hsb[0] + this.hueSatBrightnessMod[0];
+			hsb[1] = hsb[1] + this.hueSatBrightnessMod[1];
+			hsb[2] = hsb[2] + this.hueSatBrightnessMod[2];
+			
+			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
+			Color a = new Color(oc);
+			
+			colors[i][0] = (float)a.getRed();
+			colors[i][1] = (float)a.getGreen();
+			colors[i][2] = (float)a.getBlue();
+			
+			
+		}//covoluted af
 		//For the length of the colors float
 		//for each entry add in hsb
 		//figure out conversions
@@ -1917,7 +1939,7 @@ public class ModuleTemplate {
 
 		//TODO: set this cutoff in a more relevant place - perhaps when sliders are created?
 		// (If I have a numSliders, it would be (numSliders * 2).
-		int	sliderCutoff	= 14;
+		int	sliderCutoff	= 20;
 
 		// Sliders (sliders have odd id num and corresponding textfields have the next odd number)
 		if(id % 2 == 0 && id < sliderCutoff)
@@ -1954,6 +1976,17 @@ public class ModuleTemplate {
 					this.applyColorModulate(this.colors, this.originalColors);
 				}
 			} // red/green/blue mod
+			
+			if(id == 14 || id == 16 || id == 18)
+			{
+				int pos = (id/2)-7;
+				this.hueSatBrightnessMod[pos] = sliderValFloat;
+				
+				this.applyHSBModulate(colors, originalColors);
+			}//hsb mod
+		
+		
+		
 		}
 
 		//The call for hsb changes
