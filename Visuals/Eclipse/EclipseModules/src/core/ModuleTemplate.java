@@ -168,7 +168,8 @@ public class ModuleTemplate {
 	public	float[][]	colors;
 	private int[] 		rootColor;
 	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
-
+	private float[][]   HSBColors; //the current colors at which hsb is altering
+	
 	int[]				textYVals;
 	int[]				noteYVals;
 	int[]				modulateYVals;
@@ -214,6 +215,7 @@ public class ModuleTemplate {
 		this.colors 		= new float[12][3];
 		this.rootColor		= new int[3];
 		this.originalColors	= new float[12][3];
+		this.HSBColors      = new float[12][3];
 
 		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
 		// The following will happen in rainbow():
@@ -1148,7 +1150,8 @@ public class ModuleTemplate {
 		{
 			this.rainbow();
 			System.out.print("     RAINBOW");
-			this.applyHSBModulate(colors, originalColors);
+			
+			this.applyHSBModulate(colors, HSBColors);
 		}
 
 		// Dichromatic:
@@ -1156,15 +1159,16 @@ public class ModuleTemplate {
 		{
 			this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
 			System.out.print("     DICHROM");
-			this.applyHSBModulate(colors, originalColors);
+			this.applyHSBModulate(colors, HSBColors);
 		}
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
 			this.trichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			//this.trichromatic_OneRGB(this.HSBColors[0]);
 			System.out.print("     TRICHROM");
-			this.applyHSBModulate(colors, originalColors);
+			this.applyHSBModulate(colors, HSBColors);
 		}
 
 		// Custom:
@@ -1191,7 +1195,7 @@ public class ModuleTemplate {
 			
 
 			this.applyColorModulate(this.colors, this.originalColors);
-			this.applyHSBModulate(this.colors, this.originalColors);
+			this.applyHSBModulate(this.colors, this.HSBColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
@@ -1569,6 +1573,10 @@ public class ModuleTemplate {
 			this.colors[i][0]	= dichromColors[dichromColorPos][0];
 			this.colors[i][1]	= dichromColors[dichromColorPos][1];
 			this.colors[i][2]	= dichromColors[dichromColorPos][2];
+			
+			this.HSBColors[i][0]	= dichromColors[dichromColorPos][0];
+			this.HSBColors[i][1]	= dichromColors[dichromColorPos][1];
+			this.HSBColors[i][2]	= dichromColors[dichromColorPos][2];
 
 			/*
 			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
@@ -1735,10 +1743,14 @@ public class ModuleTemplate {
 		for(int i = 0; i < this.colors.length && trichromColorPos < trichromColors.length; i++)
 		{
 			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
-
+			
 			this.colors[i][0]	= trichromColors[trichromColorPos][0];
 			this.colors[i][1]	= trichromColors[trichromColorPos][1];
 			this.colors[i][2]	= trichromColors[trichromColorPos][2];
+			
+			this.HSBColors[i][0]	= trichromColors[trichromColorPos][0];
+			this.HSBColors[i][1]	= trichromColors[trichromColorPos][1];
+			this.HSBColors[i][2]	= trichromColors[trichromColorPos][2];
 
 			/*
 				// note is diatonic
@@ -1814,6 +1826,7 @@ public class ModuleTemplate {
 			{
 				//				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 				this.colors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
+				this.HSBColors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
 
@@ -1834,24 +1847,41 @@ public class ModuleTemplate {
 			{
 				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
 				colors[i][j]	= originalColors[i][j] + this.redGreenBlueMod[j];
+				HSBColors[i][j] = originalColors[i][j] + this.redGreenBlueMod[j];
 
 				//TODO: Also pass in redGreenBlueMod?
 			} // for - j
 		} // for - i
 	} // applyColorModulate
 	
-	private void applyHSBModulate(float[][] colors, float[][] originalColors)
+	private void applyHSBModulate(float[][] colors, float[][] HSBColors)
 	{
-		if(colors == null || originalColors == null) {
+		if(colors == null || HSBColors == null) {
 			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
-		} 
+		}
+		//Hopefully fixing the problem of no original color array
+		//This actually makes every slider afect the colors the same way so that's not gonna work
+		
+		/*if(this.originalColors == null) {
+			this.originalColors = new float[this.colors.length][3];
+		}
+		for(int i = 0; i < this.originalColors.length; i++)
+		{
+			for(int j = 0; j < this.originalColors[i].length; j++)
+			{
+				this.originalColors[i][j]	= this.colors[i][j];
+			}
+		}
+		*/
+		
 		for (int i = 0; i < this.colors.length; i++)
 		{
-			//System.out.println("this is not working"+this.hueSatBrightnessMod[0]+" "+this.hueSatBrightnessMod[1]+"why");
-			float[] hsb = new float[3];
+			//Requires original colors to be populated which only happens once custom is switched on
 			
-			Color.RGBtoHSB((int)originalColors[i][0], (int)originalColors[i][1], (int)originalColors[i][2], hsb);
-			System.out.println("the color pos is " + i+" and the hsb version is"+ hsb.toString());
+			float[] hsb = new float[3];
+			System.out.println("The position in colors is " + i+ " and the original color floats are "+HSBColors[i][0]+originalColors[i][1]+ originalColors[i][2]);
+			Color.RGBtoHSB((int)HSBColors[i][0], (int)HSBColors[i][1], (int)HSBColors[i][2], hsb);
+			//System.out.println("the color pos is " + i+" and the hsb version is"+ hsb.toString());
 			hsb[0] = hsb[0] + this.hueSatBrightnessMod[0];
 			hsb[1] = hsb[1] + this.hueSatBrightnessMod[1];
 			hsb[2] = hsb[2] + this.hueSatBrightnessMod[2];
