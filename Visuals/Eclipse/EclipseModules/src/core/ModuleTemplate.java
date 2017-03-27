@@ -2160,12 +2160,13 @@ public class ModuleTemplate {
 		} // Root color selector button (i.e., show color wheel)
 
 		// Root color Textfield
-		if(controlEvent.getName().equals("rootColorTF"))
+		if(controlEvent.getName().equals("RootColorTF"))
 		{
 			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
 			for(int i = 0; i < tfValues.length; i++)
 			{
 				tfValues[i]	= tfValues[i].trim().toLowerCase();
+				
 				//System.out.println("tfValues[" + i + "] = " + tfValues[i]);
 			} // for
 
