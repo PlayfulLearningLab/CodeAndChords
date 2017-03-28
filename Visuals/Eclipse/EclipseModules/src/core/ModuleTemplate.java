@@ -1852,9 +1852,9 @@ public class ModuleTemplate {
 			
 			Color.RGBtoHSB((int)originalColors[i][0], (int)originalColors[i][1], (int)originalColors[i][2], hsb);
 			System.out.println("the color pos is " + i+" and the hsb version is"+ hsb.toString());
-			hsb[0] = hsb[0] + this.hueSatBrightnessMod[0];
-			hsb[1] = hsb[1] + this.hueSatBrightnessMod[1];
-			hsb[2] = hsb[2] + this.hueSatBrightnessMod[2];
+			//hsb[0] = hsb[0] + this.hueSatBrightnessMod[0];
+			//hsb[1] = hsb[1] + this.hueSatBrightnessMod[1];
+			//hsb[2] = hsb[2] + this.hueSatBrightnessMod[2];
 			
 			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
 			Color a = new Color(oc);
