@@ -688,6 +688,7 @@ public class ModuleTemplate_Small {
 		.setText("Code#")
 		.setGroup("sidebarGroup")
 		.setId(23);
+		hideTextLabels();
 	} // addRootColorSelector
 
 	/**
