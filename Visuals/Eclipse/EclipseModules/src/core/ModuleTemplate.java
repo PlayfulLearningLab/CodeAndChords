@@ -1878,6 +1878,7 @@ public class ModuleTemplate {
 		{
 			//Requires original colors to be populated which only happens once custom is switched on
 			
+
 			float[] hsb = new float[3];
 			System.out.println("The position in colors is " + i+ " and the original color floats are "+HSBColors[i][0]+originalColors[i][1]+ originalColors[i][2]);
 			Color.RGBtoHSB((int)HSBColors[i][0], (int)HSBColors[i][1], (int)HSBColors[i][2], hsb);
@@ -1885,6 +1886,7 @@ public class ModuleTemplate {
 			hsb[0] = hsb[0] + this.hueSatBrightnessMod[0];
 			hsb[1] = hsb[1] + this.hueSatBrightnessMod[1];
 			hsb[2] = hsb[2] + this.hueSatBrightnessMod[2];
+
 			
 			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
 			Color a = new Color(oc);
