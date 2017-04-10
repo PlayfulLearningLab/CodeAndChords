@@ -65,7 +65,7 @@ void setup()
     { 255, 0, 255 }, 
     { 255, 0, 127.5 }, 
     { 255, 0, 0 }
-  };
+  };//colors
   shapArr = new shapeArray[colors.length];
   for (int s = 0; s <colors.length; s++) {
         shapArr[s] =  new shapeArray(color(colors[s][0],colors[s][1],colors[s][2]),random(20,40), random(1, 10), s);

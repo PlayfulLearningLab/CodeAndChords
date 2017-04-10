@@ -1860,7 +1860,7 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
 		}
 		//Hopefully fixing the problem of no original color array
-		//This actually makes every slider afect the colors the same way so that's not gonna work
+		//This actually makes every slider affect the colors the same way so that's not going to work
 		
 		/*if(this.originalColors == null) {
 			this.originalColors = new float[this.colors.length][3];
@@ -1896,7 +1896,7 @@ public class ModuleTemplate {
 			colors[i][2] = (float)a.getBlue();
 			
 			
-		}//covoluted af
+		}//covoluted
 		//For the length of the colors float
 		//for each entry add in hsb
 		//figure out conversions
