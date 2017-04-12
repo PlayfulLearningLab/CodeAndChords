@@ -166,6 +166,7 @@ public class ModuleTemplate_Small {
 
 	int[]				textYVals;
 	int[]				noteYVals;
+	int []				pickerYVals;
 	int[]				modulateYVals;
 
 	private	boolean		showScale;
@@ -218,9 +219,10 @@ public class ModuleTemplate_Small {
 		// and it is called as part of setCurKey.
 		//		this.setCurKey(this.curKey, this.majMinChrom);
 		this.rainbow();
-
+		
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
+		this.pickerYVals	= new int[3];
 		this.modulateYVals	= new int[3];
 
 		this.attackReleaseTransition	= new float[3];
@@ -285,6 +287,12 @@ public class ModuleTemplate_Small {
 		// Add extra space before "Pitch Color Codes":
 		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1.5);
 
+		//Set y values for the color select names
+		for(int i = 1; i < pickerYVals.length; i++)
+		{
+			pickerYVals[i]	= pickerYVals[i - 1] + yValDif;
+		}
+		
 		// set y vals for the note names:
 		noteYVals[0]	= textYVals[textYVals.length - 1] + yValDif;
 		for(int i = 1; i < noteYVals.length; i++)
@@ -312,7 +320,10 @@ public class ModuleTemplate_Small {
 
 		addColorStyleButtons(textYVals[7]);
 
-		this.addCustomPitchColor(textYVals[8], noteYVals);
+		this.addColor1Selector(textYVals[8], pickerYVals)
+		
+		this.addCustomPitchColor(textYVals[9], noteYVals);
+		
 
 		addModulateSliders(modulateYVals);
 
