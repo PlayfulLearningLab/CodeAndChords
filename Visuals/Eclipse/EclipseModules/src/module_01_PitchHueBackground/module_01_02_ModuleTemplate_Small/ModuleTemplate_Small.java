@@ -951,7 +951,74 @@ public class ModuleTemplate_Small {
 	} // addModulateSliders
 
 
+/*	Color picker for Color 1 Hannah 4/12/17 
+ * Following the protocol for custom and root colors
+ * Just getting one button then will add more
+ * Any suggestions? Let me know! :)
+ * 
+ */ private void addColor1Selector(int labelYVal, int[] pickerYVals)
+	{
+	
+		int spacer1			= 6;	// between buttons and textfields
+		int	labelX			= 10;
 
+		int	buttonWidth		= 50;
+		int	textfieldWidth	= 90;
+
+		int	noteX1			= this.leftAlign - 40;
+		int	textfieldX1		= noteX1 + buttonWidth + spacer1;
+		int	colorWheelX		= textfieldX1;
+		
+		int	namePos	= 0;
+		int	id		= 24;
+
+		String[]	colorNames1	= new String[] {
+				"Color 1", "Color 2", "Color 3"
+		}; // noteNames
+
+		this.sidebarCP5.addTextlabel("selectColor")
+		.setPosition(labelX, labelYVal + 4)
+		.setGroup("sidebarGroup")
+		.setValue("Select Color");
+		
+		for(int i = 0; i < colorNames1.length; i++)
+		{
+			// Needs to be added to sidebarCP5 so it is still visible to turn off the ColorWheel:
+			this.sidebarCP5.addButton("button" + id)
+			.setPosition(noteX1, pickerYVals[i])
+			.setWidth(buttonWidth)
+			.setLabel(colorNames1[namePos])
+			.setId(id)
+			.setGroup("sidebarGroup")
+			.getCaptionLabel().toUpperCase(false);
+
+			id = id + 1;
+
+			this.sidebarCP5.addColorWheel("colorWheel" + id)
+			.setPosition(colorWheelX, pickerYVals[i] - 200)		// 200 = height of ColorWheel
+			.setRGB(this.parent.color(102, 0, 102))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id = id + 1;
+
+			this.sidebarCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX1, pickerYVals[i])
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setText("Code#")
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id = id + 1;
+			namePos	= namePos + 1;
+			} 
+
+	}
+	
+	
 	public void update()
 	{
 		this.sidebarCP5.getController("textfield1").setValue(this.sidebarCP5.getController("slider0").getValue());
