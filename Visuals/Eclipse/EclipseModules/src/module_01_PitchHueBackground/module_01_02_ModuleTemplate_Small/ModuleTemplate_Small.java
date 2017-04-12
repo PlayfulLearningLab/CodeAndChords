@@ -320,7 +320,7 @@ public class ModuleTemplate_Small {
 
 		addColorStyleButtons(textYVals[7]);
 
-		this.addColor1Selector(textYVals[8], pickerYVals)
+		this.addColor1Selector(textYVals[8], pickerYVals);
 		
 		this.addCustomPitchColor(textYVals[9], noteYVals);
 		
@@ -984,7 +984,7 @@ public class ModuleTemplate_Small {
 		int	id		= 24;
 
 		String[]	colorNames1	= new String[] {
-				"Color 1", "Color 2", "Color 3"
+				"Canvas", "Root", "Color 2", "Color 3"
 		}; // noteNames
 
 		this.sidebarCP5.addTextlabel("selectColor")
