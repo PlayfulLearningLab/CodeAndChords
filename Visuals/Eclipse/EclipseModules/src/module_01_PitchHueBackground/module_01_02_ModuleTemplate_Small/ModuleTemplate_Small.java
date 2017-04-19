@@ -166,6 +166,7 @@ public class ModuleTemplate_Small {
 
 	int[]				textYVals;
 	int[]				noteYVals;
+	int []				pickerYVals;
 	int[]				modulateYVals;
 
 	private	boolean		showScale;
@@ -218,9 +219,10 @@ public class ModuleTemplate_Small {
 		// and it is called as part of setCurKey.
 		//		this.setCurKey(this.curKey, this.majMinChrom);
 		this.rainbow();
-
+		
 		this.textYVals		= new int[9];
 		this.noteYVals		= new int[6];
+		this.pickerYVals	= new int[3];
 		this.modulateYVals	= new int[3];
 
 		this.attackReleaseTransition	= new float[3];
@@ -285,6 +287,12 @@ public class ModuleTemplate_Small {
 		// Add extra space before "Pitch Color Codes":
 		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1.5);
 
+		//Set y values for the color select names
+		for(int i = 1; i < pickerYVals.length; i++)
+		{
+			pickerYVals[i]	= pickerYVals[i - 1] + yValDif;
+		}
+		
 		// set y vals for the note names:
 		noteYVals[0]	= textYVals[textYVals.length - 1] + yValDif;
 		for(int i = 1; i < noteYVals.length; i++)
@@ -312,7 +320,10 @@ public class ModuleTemplate_Small {
 
 		addColorStyleButtons(textYVals[7]);
 
-		this.addCustomPitchColor(textYVals[8], noteYVals);
+		this.addColor1Selector(textYVals[8], pickerYVals);
+		
+		this.addCustomPitchColor(textYVals[9], noteYVals);
+		
 
 		addModulateSliders(modulateYVals);
 
@@ -951,7 +962,74 @@ public class ModuleTemplate_Small {
 	} // addModulateSliders
 
 
+/*	Color picker for Color 1 Hannah 4/12/17 
+ * Following the protocol for custom and root colors
+ * Just getting one button then will add more
+ * Any suggestions? Let me know! :)
+ * 
+ */ private void addColor1Selector(int labelYVal, int[] pickerYVals)
+	{
+	
+		int spacer1			= 6;	// between buttons and textfields
+		int	labelX			= 10;
 
+		int	buttonWidth		= 50;
+		int	textfieldWidth	= 90;
+
+		int	noteX1			= this.leftAlign - 40;
+		int	textfieldX1		= noteX1 + buttonWidth + spacer1;
+		int	colorWheelX		= textfieldX1;
+		
+		int	namePos	= 0;
+		int	id		= 24;
+
+		String[]	colorNames1	= new String[] {
+				"Canvas", "Root", "Color 2", "Color 3"
+		}; // noteNames
+
+		this.sidebarCP5.addTextlabel("selectColor")
+		.setPosition(labelX, labelYVal + 4)
+		.setGroup("sidebarGroup")
+		.setValue("Select Color");
+		
+		for(int i = 0; i < colorNames1.length; i++)
+		{
+			// Needs to be added to sidebarCP5 so it is still visible to turn off the ColorWheel:
+			this.sidebarCP5.addButton("button" + id)
+			.setPosition(noteX1, pickerYVals[i])
+			.setWidth(buttonWidth)
+			.setLabel(colorNames1[namePos])
+			.setId(id)
+			.setGroup("sidebarGroup")
+			.getCaptionLabel().toUpperCase(false);
+
+			id = id + 1;
+
+			this.sidebarCP5.addColorWheel("colorWheel" + id)
+			.setPosition(colorWheelX, pickerYVals[i] - 200)		// 200 = height of ColorWheel
+			.setRGB(this.parent.color(102, 0, 102))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id = id + 1;
+
+			this.sidebarCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX1, pickerYVals[i])
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setText("Code#")
+			.setGroup("sidebarGroup")
+			.setId(id);
+
+			id = id + 1;
+			namePos	= namePos + 1;
+			} 
+
+	}
+	
+	
 	public void update()
 	{
 		this.sidebarCP5.getController("textfield1").setValue(this.sidebarCP5.getController("slider0").getValue());
