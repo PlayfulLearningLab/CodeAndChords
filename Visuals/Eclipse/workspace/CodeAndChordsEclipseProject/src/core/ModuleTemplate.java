@@ -184,6 +184,9 @@ public class ModuleTemplate {
 	private	float[]	redGreenBlueMod;	// this will store the red/green/blue modulate values
 	
 	private float[] hueSatBrightnessMod; // This will store the hsb modulate values
+	
+	private	boolean	dichromFlag;
+	private	boolean	trichromFlag;
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -220,6 +223,8 @@ public class ModuleTemplate {
 		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
 		// The following will happen in rainbow():
 		//		this.rootColor	= new int[] { 255, 0, 0, };
+		this.dichromFlag	= false;
+		this.trichromFlag	= false;
 
 		this.curKey			= "A";
 		this.majMinChrom	= 2;
@@ -237,6 +242,7 @@ public class ModuleTemplate {
 		this.attackReleaseTransition	= new float[3];
 		this.redGreenBlueMod		 	= new float[3];
 		this.hueSatBrightnessMod        = new float[3];
+		
 
 		//TODO: make initModuleTemplate() private again, once it can be called from constructor.
 		//this.initModuleTemplate();
@@ -1143,6 +1149,7 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.updateColors: char paramter " + colorStyle + " is not recognized; must be 1 - 4.");
 		}
 
+
 		this.curColorStyle	= colorStyle;
 
 		// Rainbow:
@@ -1157,7 +1164,12 @@ public class ModuleTemplate {
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
-			this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			// if dichromFlag is false, the color style is changing from something else,
+			// and the two colors will be set automatically.
+			if(!this.dichromFlag)
+			{
+				this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			}
 			System.out.print("     DICHROM");
 			this.applyHSBModulate(colors, HSBColors);
 		}
@@ -2293,6 +2305,7 @@ public class ModuleTemplate {
 		// Custom pitch ColorWheels
 		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 1))
 		{
+			// TODO - dichrom/trichrom happening here!
 			if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
 			{
 				// get current color:

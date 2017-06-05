@@ -211,6 +211,32 @@ public class Module_01_PitchHue extends PApplet
 		
 	} // draw()
 	
+	
+	/**
+	 * Method called during instantiation to hide text labels of text fields
+	 * Elena Ryan
+	 * Added 1/24/17
+	 */	/*
+	private void hideTextLabels() {
+		for(int i = 1; i<14; i++){
+			if(i%2 == 1){
+				if(this.moduleTemplate.sidebarCP5.getController("textfield"+i) == null)
+				{
+					throw new IllegalArgumentException("this.sidebarCP5.getController('textfield'+i) (" + this.sidebarCP5.getController("textfield"+i) + ") is null");
+				}
+				this.sidebarCP5.getController("textfield"+i).getCaptionLabel().setVisible(false);
+			}
+		}//hides slider labels
+
+		this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
+
+		for(int i = 24;i<60; i++){
+			if(i%3 == 2){
+				this.sidebarCP5.getController("textfield"+i).getCaptionLabel().setVisible(false);
+			}
+		}//hides text labels for colors
+	*/
+	
 	/**
 	 * All modules with a ModuleTemplate must include this method.
 	 * 
