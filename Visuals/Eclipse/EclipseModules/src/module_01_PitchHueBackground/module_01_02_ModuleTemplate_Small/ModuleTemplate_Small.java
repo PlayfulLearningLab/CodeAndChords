@@ -35,7 +35,7 @@ import core.Input;
  * @author Emily Meuer
  *
  */
-public class ModuleTemplate_Small {
+public class ModuleTemplate_Small extends PApplet {
 
 	// Static var's: colorStyles
 	private	static	float	CS_RAINBOW	= 1;
@@ -891,6 +891,10 @@ public class ModuleTemplate_Small {
 	private void hideTextLabels() {
 		for(int i = 1; i<14; i++){
 			if(i%2 == 1){
+				if(this.sidebarCP5.getController("textfield"+i) == null)
+				{
+					throw new IllegalArgumentException("this.sidebarCP5.getController('textfield'+i) (" + this.sidebarCP5.getController("textfield"+i) + ") is null");
+				}
 				this.sidebarCP5.getController("textfield"+i).getCaptionLabel().setVisible(false);
 			}
 		}//hides slider labels
