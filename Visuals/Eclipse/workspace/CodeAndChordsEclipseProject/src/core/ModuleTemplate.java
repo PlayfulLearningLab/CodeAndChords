@@ -174,6 +174,7 @@ public class ModuleTemplate {
 	int[]				noteYVals;
 	int[]				modulateYVals;
 	int[]               modulateHSBVals;
+	int					colorSelectY;
 
 	private	boolean		showScale;
 
@@ -234,8 +235,10 @@ public class ModuleTemplate {
 		//		this.setCurKey(this.curKey, this.majMinChrom);
 		this.rainbow();
 
-		this.textYVals		 = new int[12];
-		this.noteYVals		 = new int[6];
+		// textYVals will be used for sliders and buttons, including hsb and 
+		// rgb modulate values - everything but the custom pitch color buttons.
+		this.textYVals		 = new int[16];
+		this.noteYVals		 = new int[3];
 		this.modulateYVals	 = new int[3];
 		this.modulateHSBVals = new int[3];
 
@@ -297,12 +300,13 @@ public class ModuleTemplate {
 		yValDif = 26;
 		
 
-		for(int i = 1; i < textYVals.length - 1; i++)
+		for(int i = 1; i < textYVals.length; i++)
 		{
 			textYVals[i]	= textYVals[i - 1] + yValDif;
 		} // for
+
 		// Add extra space before "Pitch Color Codes":
-		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1.5);
+//		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1.5);
 
 		// set y vals for the note names:
 		noteYVals[0]	= textYVals[textYVals.length - 1] + yValDif;
@@ -311,16 +315,6 @@ public class ModuleTemplate {
 			noteYVals[i]	= noteYVals[i - 1] + yValDif;
 		}
 		
-
-		
-
-		// set y vals for the color modulate scrollbars:
-		// (add double space between this and previous group of note text fields)
-		modulateYVals[0]	= noteYVals[noteYVals.length - 1]-50;//this is horribly arbitrary
-		for(int i = 1; i < modulateYVals.length; i++)
-		{
-			modulateYVals[i]	= modulateYVals[i - 1] + yValDif;
-		}
 
 		// call add methods:
 		addHideButtons(textYVals[0]);
@@ -334,17 +328,22 @@ public class ModuleTemplate {
 				modulateHSBVals[0] = textYVals[6];
 				modulateHSBVals[1] = textYVals[7];
 				modulateHSBVals[2] = textYVals[8];
+				
+		modulateYVals[0]	= textYVals[9];
+		modulateYVals[1]	= textYVals[10];
+		modulateYVals[2]	= textYVals[11];
+		
+		addRootColorSelector(textYVals[12]);
 
-		addRootColorSelector(textYVals[9]);
+		addColorStyleButtons(textYVals[13]);
+		
+		this.addColorSelectButtons(textYVals[14]);
 
-		addColorStyleButtons(textYVals[10]);
-
-		this.addCustomPitchColor(textYVals[11], noteYVals);
+		this.addCustomPitchColor(textYVals[15], noteYVals);
 
 		addHSBSliders(modulateHSBVals);
 		
 		addModulateSliders(modulateYVals);
-		
 		
 
 		hideTextLabels();
@@ -784,6 +783,41 @@ public class ModuleTemplate {
 
 		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
 	} // addColorStyleButtons
+	
+	private void addColorSelectButtons(int colorSelectY)
+	{
+		int	colorSelectWidth	= 50;
+		int	colorSelectSpace	= 6;
+
+		int	labelX			= 10;
+
+		int canvasX     	= this.leftAlign;
+		int rootX	= this.leftAlign + colorSelectWidth + colorSelectSpace;
+		int secondColorX	= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 2;
+		int thirdColorX			= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 3;
+
+		this.sidebarCP5.addTextlabel("colorSelect")
+		.setPosition(labelX, colorSelectY + 4)
+		.setGroup("sidebarGroup")
+		.setValue("Color Select");
+
+		this.sidebarCP5.addButton("canvas")
+		.setPosition(canvasX, colorSelectY)
+		.setWidth(colorSelectWidth)
+		.setCaptionLabel("Canvas")
+		.setGroup("sidebarGroup")
+		.setId(63);
+		this.sidebarCP5.getController("canvas").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		this.sidebarCP5.addColorWheel("canvasColorWheel")
+		.setPosition(this.leftAlign, colorSelectY + 20)
+		.setRGB(this.parent.color(255,0,0))
+		.setLabelVisible(false)
+		.setVisible(false)
+		.setGroup("sidebarGroup")
+		.setId(64);
+		
+	} // addColorSelectButtons
 
 	/**
 	 * Method called during instantiation to initialize note buttons and their corresponding ColorWheels.
@@ -797,34 +831,34 @@ public class ModuleTemplate {
 		int	labelX			= 10;
 
 		int	buttonWidth		= 30;
-		int	textfieldWidth	= 10;
+		int	textfieldWidth	= 100;
 
 		int	noteX1			= this.leftAlign - 40;
 		int	textfieldX1		= noteX1 + buttonWidth + spacer1;
 
-		int	noteX2			= textfieldX1 + textfieldWidth + spacer2;
+		int	noteX2			= textfieldX1 + /*textfieldWidth +*/ spacer2;
 		int	textfieldX2		= noteX2 + buttonWidth + spacer1;
 		
-		int	noteX3			= textfieldX2 + textfieldWidth + spacer2;
+		int	noteX3			= textfieldX2 + /*textfieldWidth +*/ spacer2;
 		int	textfieldX3		= noteX3 + buttonWidth + spacer1;
 		
-		int	noteX4			= textfieldX3 + textfieldWidth + spacer2;
+		int	noteX4			= textfieldX3 + /*textfieldWidth +*/ spacer2;
 		int	textfieldX4		= noteX4 + buttonWidth + spacer1;
 
 		int	colorWheelX		= textfieldX1;
 
 
 		String[]	noteNames1	= new String[] {
-				"A", "C#/Db", "F#/Gb"
+				"A", "A#/Bb", "B"
 		}; // noteNames
 		String[]	noteNames2	= new String[] {
-				"A#/Bb", "D", "G"
+				"C", "C#/Db", "D"
 		}; // noteNames2
 		String[]	noteNames3	= new String[] {
-				"B", "D#/Db", "G#/Ab"
+				"D#/Db", "E", "F"
 		}; // noteNames2
 		String[]	noteNames4	= new String[] {
-				"C", "F", "E"
+				"F#/Gb", "G", "G#/Ab"
 		}; // noteNames2
 
 		this.sidebarCP5.addTextlabel("customPitchColor")
@@ -988,6 +1022,8 @@ public class ModuleTemplate {
 			.setText("Code#")
 			.setGroup("sidebarGroup")
 			.setId(id);
+			this.parent.ellipse(textfieldX4, noteYVals[i], 100, 100);
+			System.out.println("noteYVals[" + i + "] = " + noteYVals[i] + "; textfieldX4 = " + textfieldX4);
 
 			id = id + 1;
 			namePos	= namePos + 1;
@@ -2297,8 +2333,9 @@ public class ModuleTemplate {
 			this.sidebarCP5.getController("button" + (controlEvent.getId())).bringToFront();
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).bringToFront();
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).bringToFront();
-
+			
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
+			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).setVisible(curButton.getBooleanValue());
 			//			this.updateColors(this.curColorStyle);
 		} // custom pitch color selectors (i.e., show color wheel)
 
@@ -2380,6 +2417,10 @@ public class ModuleTemplate {
 						this.colors[notePos][1]	= green;
 						this.colors[notePos][2]	= blue;
 					} // if - rgb
+				
+				// Setting the corresponding ColorWheel:
+//					ColorWheel	curColorWheel	= (ColorWheel)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 1));
+					
 
 				} catch(Exception e) {
 					System.out.println("Sorry, that is not recognized as a valid color. Please try again.");
