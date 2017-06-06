@@ -1746,11 +1746,12 @@ public class ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
 		} // error checking
 
-		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength - 1;
-		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength - 1;
-		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength - 1;
+		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
+		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
+		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
 		
 		System.out.println("redDelta = " + redDelta + ", greenDelta = " + greenDelta + ", blueDelta = " + blueDelta);
+		System.out.println("red difference = " + (rgbVals1[0] - rgbVals2[0]) + "; redDelta * scaleLength = " + (redDelta * this.scaleLength));
 
 		// Create an array the length of the current scale
 		// and fill it with the dichromatic spectrum:
@@ -1773,7 +1774,7 @@ public class ModuleTemplate {
 		// Fill colors with either the contents of the dichromatic color array
 		// or with black, depending on whether or not a scale degree is diatonic:
 		int	dichromColorPos	= 0;
-		for(int i = 0; i < this.colors.length && dichromColorPos < dichromColors.length; i++)
+		for(int i = 0; i < this.colors.length - 1 && dichromColorPos < dichromColors.length; i++)
 		{
 			dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
 
