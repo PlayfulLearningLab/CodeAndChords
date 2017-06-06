@@ -2484,7 +2484,7 @@ public class ModuleTemplate {
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).bringToFront();
 
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
-			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).setVisible(curButton.getBooleanValue());
+			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).setVisible(false);
 			
 			
 			this.updateColors(this.curColorStyle);

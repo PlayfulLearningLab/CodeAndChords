@@ -228,7 +228,7 @@ public class Module_01_PitchHue extends PApplet
 			}
 		}//hides slider labels
 
-		this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
+		this.sidebarCP5.getController("ColorTF").getCaptionLabel().setVisible(false);
 
 		for(int i = 24;i<60; i++){
 			if(i%3 == 2){
