@@ -716,9 +716,13 @@ public class ModuleTemplate {
 		.setPosition(textfieldX, rootColorY)
 		.setWidth(textfieldWidth)
 		.setAutoClear(false)
+	//	.setVisible(false)
 		.setText("Code#")
 		.setGroup("sidebarGroup")
 		.setId(23);
+		
+
+		this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
 	} // addRootColorSelector
 
 	/**

@@ -428,8 +428,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	} // initInput(UGen[])
 
 	/**
+	 * As of 6/5/2017, the following was not applicable:
 	 * Subtracts 4 from the numInputs variable because I added 4
-	 * to account for the fact that the two interfaces together skip lines 5-8.l
+	 * to account for the fact that the two interfaces together skip lines 5-8.
 	 *
 	 * @return  int  number of input channels.
 	 */
