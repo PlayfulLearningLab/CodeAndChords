@@ -1351,7 +1351,21 @@ public class ModuleTemplate {
 			}
 			System.out.print("     DICHROM");
 			this.applyHSBModulate(colors, HSBColors);
-		}
+	/*		
+			for(int i = 0; i < this.colors.length; i++)
+			{
+				System.out.println(i + ":");
+				
+				for(int j = 0; j < this.colors[i].length; j++)
+				{
+					System.out.print(colors[i][j] + ", ");
+				} // for - j
+				
+				System.out.println();
+				
+			} // for - i
+			*/
+		} // Dichromatic
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
@@ -1728,18 +1742,15 @@ public class ModuleTemplate {
 	 */
 	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
 	{
-		System.out.println("dichromatic_TwoRGB: rgbVals1 = { " + 
-				rgbVals1[0] + ", " + rgbVals1[1] + ", " + rgbVals1[2] + " }");
-		System.out.println("dichromatic_TwoRGB: rgbVals2 = { " + 
-				rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + " }");
-		
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
 		} // error checking
 
-		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
-		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
-		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
+		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength - 1;
+		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength - 1;
+		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength - 1;
+		
+		System.out.println("redDelta = " + redDelta + ", greenDelta = " + greenDelta + ", blueDelta = " + blueDelta);
 
 		// Create an array the length of the current scale
 		// and fill it with the dichromatic spectrum:
@@ -2565,7 +2576,8 @@ public class ModuleTemplate {
 					blue	= Math.min(255, Math.max(0, blue));
 
 					// Set corresponding ColorWheel:
-					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
+//					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
+					Color	rgbColor	= new Color(red, green, blue);
 					int		rgbInt		= rgbColor.getRGB();
 					((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 1))).setRGB(rgbInt);
 
