@@ -2350,6 +2350,9 @@ public class ModuleTemplate {
 			this.curKey	= key;
 			this.curKeyOffset = keyPos;
 			this.curKeyEnharmonicOffset	= this.enharmonicPos[getCurKeyOffset()];
+			
+			System.out.println("curKey = " + this.curKey + "; curKeyOffset = " + this.curKeyOffset + 
+					"; curKeyEnharmonicOffset = " + this.curKeyEnharmonicOffset);
 
 			// Setting the input file:
 			int	enharmonicPos	= this.enharmonicPos[keyPos];
@@ -2833,8 +2836,10 @@ public class ModuleTemplate {
 	{
 		int	notePos;
 
-		notePos	= ((id + 2) / 3) - 9;
+//		notePos	= ((id + 2) / 3) - 9;
 		//		notePos	= (notePos + keyAddVal - 3 + this.colors.length) % this.colors.length;
+		
+		notePos	= (id / 3) - 8 + 12 - this.curKeyEnharmonicOffset;
 
 		if(id > 63)
 		{
