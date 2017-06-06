@@ -169,6 +169,7 @@ public class ModuleTemplate {
 	private int[] 		rootColor;
 	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
 	private float[][]   HSBColors; //the current colors at which hsb is altering
+	private	float[]		canvasColor;	// the color of the background when there is no sound.
 
 	int[]				textYVals;
 	int[]				noteYVals;
@@ -220,6 +221,7 @@ public class ModuleTemplate {
 		this.rootColor		= new int[3];
 		this.originalColors	= new float[12][3];
 		this.HSBColors      = new float[12][3];
+		this.canvasColor	= new float[] { 0, 0, 0 }; // canvas is black to begin with.
 
 		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
 		// The following will happen in rainbow():
@@ -335,7 +337,7 @@ public class ModuleTemplate {
 		modulateYVals[1]	= textYVals[10];
 		modulateYVals[2]	= textYVals[11];
 
-//		addRootColorSelector(textYVals[12]);
+		//		addRootColorSelector(textYVals[12]);
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
@@ -1339,38 +1341,65 @@ public class ModuleTemplate {
 			// and the two colors will be set to contrast.
 			if(!this.dichromFlag)
 			{
-				this.dichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
-				
+				this.dichromatic_OneRGB(this.colors[0]);
+
 				this.dichromFlag	= true;
 			} // first time
 			// After the first time, use current color values
 			// (allows selection of 2nd color):
 			else
 			{
-				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1]);
+				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
 			}
+
 			System.out.print("     DICHROM");
 			this.applyHSBModulate(colors, HSBColors);
-	/*		
+			/*		
 			for(int i = 0; i < this.colors.length; i++)
 			{
 				System.out.println(i + ":");
-				
+
 				for(int j = 0; j < this.colors[i].length; j++)
 				{
 					System.out.print(colors[i][j] + ", ");
 				} // for - j
-				
+
 				System.out.println();
-				
+
 			} // for - i
-			*/
+			 */
 		} // Dichromatic
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
 		{
-			this.trichromatic_OneRGB(/*this.rootColor*/this.colors[0]);
+			// first time trichromatic has been called:
+			if(!this.trichromFlag)
+			{
+				this.trichromatic_OneRGB(this.colors[0]);
+
+				this.trichromFlag	= true;
+			}
+
+			// every other time:
+			else
+			{
+				int colorPos2;
+				int	colorPos3;
+
+				if(this.getMajMinChrom() == 2)
+				{
+					colorPos2	= 4;
+					colorPos3	= 8;
+				} else {
+					colorPos2	= 3;
+					colorPos3	= 4;
+				}
+
+				this.trichromatic_ThreeRGB(this.colors[0], this.colors[colorPos2], this.colors[colorPos3]);
+			} // else
+
+
 			//this.trichromatic_OneRGB(this.HSBColors[0]);
 			System.out.print("     TRICHROM");
 			this.applyHSBModulate(colors, HSBColors);
@@ -1731,7 +1760,7 @@ public class ModuleTemplate {
 		rgbVals2[1]	= rgbColor2.getGreen();
 		rgbVals2[2]	= rgbColor2.getBlue();	
 
-		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
+		this.dichromatic_TwoRGB(rgbVals1, rgbVals2, true);
 	} // dichromatic_OneHSB(int)
 
 	/**
@@ -1740,7 +1769,7 @@ public class ModuleTemplate {
 	 * @param rgbVals1	float[] of rgb values defining rootColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
-	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2)
+	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2, boolean fillFirstToLast)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
@@ -1749,9 +1778,27 @@ public class ModuleTemplate {
 		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
 		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
 		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
-		
-		System.out.println("redDelta = " + redDelta + ", greenDelta = " + greenDelta + ", blueDelta = " + blueDelta);
-		System.out.println("red difference = " + (rgbVals1[0] - rgbVals2[0]) + "; redDelta * scaleLength = " + (redDelta * this.scaleLength));
+
+		float	finalRedDelta	= (rgbVals1[0] - rgbVals2[0]) - (redDelta * (this.scaleLength - 1));
+		float	finalBlueDelta	= (rgbVals1[1] - rgbVals2[1]) - (greenDelta * (this.scaleLength - 1));
+		float	finalGreenDelta	= (rgbVals1[2] - rgbVals2[2]) - (blueDelta * (this.scaleLength - 1));
+
+		//		System.out.println("redDelta = " + redDelta + ", greenDelta = " + greenDelta + ", blueDelta = " + blueDelta);
+		if( (rgbVals1[0] - rgbVals2[0]) != (redDelta * this.scaleLength))
+		{
+			System.out.println("red difference (" + (rgbVals1[0] - rgbVals2[0]) + ") not redDelta * this.scaleLength (" + redDelta * this.scaleLength);
+
+		}
+
+		if( (rgbVals1[1] - rgbVals2[1]) != (greenDelta * this.scaleLength))
+		{
+			System.out.println("green difference (" + (rgbVals1[1] - rgbVals2[1]) + ") not greenDelta * this.scaleLength (" + greenDelta * this.scaleLength);
+		}
+
+		if( (rgbVals1[2] - rgbVals2[2]) != (blueDelta * this.scaleLength))
+		{
+			System.out.println("blue difference (" + (rgbVals1[2] - rgbVals2[2]) + ") not blueDelta * this.scaleLength (" + blueDelta * this.scaleLength);
+		}
 
 		// Create an array the length of the current scale
 		// and fill it with the dichromatic spectrum:
@@ -1761,7 +1808,7 @@ public class ModuleTemplate {
 		{
 			dichromColors[0][i]	= rgbVals1[i];
 		}
-		for(int i = 1; i < dichromColors.length; i++)
+		for(int i = 1; i < (dichromColors.length); i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
@@ -1771,22 +1818,33 @@ public class ModuleTemplate {
 			} // for - j
 		} // for - i
 
+		/*
+		dichromColors[dichromColors.length - 1][0]	= dichromColors[dichromColors.length - 2][0] - finalRedDelta;
+		dichromColors[dichromColors.length - 1][1]	= dichromColors[dichromColors.length - 2][1] - finalGreenDelta;
+		dichromColors[dichromColors.length - 1][2]	= dichromColors[dichromColors.length - 2][2] - finalBlueDelta;
+		 */
 		// Fill colors with either the contents of the dichromatic color array
-		// or with black, depending on whether or not a scale degree is diatonic:
-		int	dichromColorPos	= 0;
-		for(int i = 0; i < this.colors.length - 1 && dichromColorPos < dichromColors.length; i++)
+		// or with black, depending on whether or not a scale degree is diatonic: - as of 6/6/2017, no black used here.
+		int	dichromColorPos;
+		/*
+		if(fillFirstToLast)
 		{
-			dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+		 */			dichromColorPos	= 0;
+		 for(int i = 0; i < this.colors.length && dichromColorPos < dichromColors.length; i++)
+		 {
+			 dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
 
-			this.colors[i][0]	= dichromColors[dichromColorPos][0];
-			this.colors[i][1]	= dichromColors[dichromColorPos][1];
-			this.colors[i][2]	= dichromColors[dichromColorPos][2];
+			 this.colors[i][0]	= dichromColors[dichromColorPos][0];
+			 this.colors[i][1]	= dichromColors[dichromColorPos][1];
+			 this.colors[i][2]	= dichromColors[dichromColorPos][2];
 
-			this.HSBColors[i][0]	= dichromColors[dichromColorPos][0];
-			this.HSBColors[i][1]	= dichromColors[dichromColorPos][1];
-			this.HSBColors[i][2]	= dichromColors[dichromColorPos][2];
+			 this.HSBColors[i][0]	= dichromColors[dichromColorPos][0];
+			 this.HSBColors[i][1]	= dichromColors[dichromColorPos][1];
+			 this.HSBColors[i][2]	= dichromColors[dichromColorPos][2];
+		 } // for
 
-			/*
+
+		 /*
 			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
 			{
 				// if scale degree is diatonic:
@@ -1799,8 +1857,28 @@ public class ModuleTemplate {
 				// if the scale degree is not diatonic:
 				this.colors[i]	= new float[] { 0, 0, 0 };
 			}
-			 */
-		} // for - filling colors
+		  */
+		 /*			} // for - filling colors, first to last
+		} else
+		{
+			// filling backwards:
+			dichromColorPos	= dichromColors.length - 1;
+
+			for(int i = this.colors.length - 1; i > -1 && dichromColorPos > -1; i--)
+			{
+				dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+
+				this.colors[i][0]	= dichromColors[dichromColorPos][0];
+				this.colors[i][1]	= dichromColors[dichromColorPos][1];
+				this.colors[i][2]	= dichromColors[dichromColorPos][2];
+
+				this.HSBColors[i][0]	= dichromColors[dichromColorPos][0];
+				this.HSBColors[i][1]	= dichromColors[dichromColorPos][1];
+				this.HSBColors[i][2]	= dichromColors[dichromColorPos][2];
+
+			} // for - filling colors, last to first
+		}
+		  */
 	} // dichromatic_TwoRGB
 
 	/**
@@ -2467,7 +2545,7 @@ public class ModuleTemplate {
 			this.updateColors(this.curColorStyle);
 		} // root color wheel
 
-*/
+		 */
 		// Color Selection: 
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
@@ -2497,8 +2575,8 @@ public class ModuleTemplate {
 
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).setVisible(false);
-			
-			
+
+
 			this.updateColors(this.curColorStyle);
 		} // custom pitch color selectors (i.e., show color wheel)
 
@@ -2506,34 +2584,66 @@ public class ModuleTemplate {
 		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 1))
 		{
 			// get current color:
-			ColorWheel	rootCW	= (ColorWheel)controlEvent.getController();
-			int	rgbColor	= rootCW.getRGB();
+			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
+			int	rgbColor	= curCW.getRGB();
 			Color	color	= new Color(rgbColor);
 
 			// Set corresponding Textfield with color value:
-			Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 1));
-			rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+			Textfield	curColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 1));
+			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
 
 			int	notePos;	// the position in colors that is to be changed.
 			id	= controlEvent.getId();
 
-			notePos	= this.calculateNotePos(id);
-			System.out.println("notePos = " + notePos);
-			
-			// Current problem: dichrom changes last color.  What's with that???
-			
-			// error checking
-			if(notePos < 0 || notePos > this.colors.length)	{
-				throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
-						"notePos " + notePos + " from id " + id + " is not a valid note position; " +
-						"it should be between 0 and " + this.colors.length);
-			} // error checking
+			// canvas color (does not affect notes):
+			if(id == 64)
+			{
+				this.canvasColor[0]	= color.getRed();
+				this.canvasColor[1]	= color.getGreen();
+				this.canvasColor[2]	= color.getBlue();
+			}
 
-			this.colors[notePos][0]	= color.getRed();
-			this.colors[notePos][1]	= color.getGreen();
-			this.colors[notePos][2]	= color.getBlue();
+			else
+			{
+				notePos	= this.calculateNotePos(id);
+				System.out.println("notePos = " + notePos);
 
+				// error checking
+				if(notePos < 0 || notePos > this.colors.length)	{
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
+							"notePos " + notePos + " from id " + id + " is not a valid note position; " +
+							"it should be between 0 and " + this.colors.length);
+				} // error checking
+
+				this.colors[notePos][0]	= color.getRed();
+				this.colors[notePos][1]	= color.getGreen();
+				this.colors[notePos][2]	= color.getBlue();
+			}
+
+			/*
+			 * TODO: probably getting rid of this and calling only in updateColors:
+			// Dichromatic is calculated differently depending on whether root or 2nd color is being changed,
+			// so has to be set here rather than updateColors:
+			if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
+			{
+				// root color - fill forward:
+				if(id == 67)
+				{
+					this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
+				} else 
+					// 2nd Color - fill backward:
+					if(id == 70)
+					{
+						this.dichromatic_TwoRGB(this.colors[this.colors.length - 1], this.colors[0], false);
+					}
+
+
+			}
+			 */
 			this.updateColors(this.curColorStyle);
+
+
 			//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 		} // custom pitch colorWheels
 
@@ -2577,14 +2687,25 @@ public class ModuleTemplate {
 					blue	= Math.min(255, Math.max(0, blue));
 
 					// Set corresponding ColorWheel:
-//					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
+					//					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
 					Color	rgbColor	= new Color(red, green, blue);
 					int		rgbInt		= rgbColor.getRGB();
 					((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 1))).setRGB(rgbInt);
 
-					this.colors[notePos][0]	= red;
-					this.colors[notePos][1]	= green;
-					this.colors[notePos][2]	= blue;
+					// canvas color (does not affect notes):
+					if(id == 65)
+					{
+						this.canvasColor[0]	= red;
+						this.canvasColor[1]	= green;
+						this.canvasColor[2]	= blue;
+					}
+
+					else
+					{
+						this.colors[notePos][0]	= red;
+						this.colors[notePos][1]	= green;
+						this.colors[notePos][2]	= blue;
+					} // else
 				} // if - rgb
 
 				// Setting the corresponding ColorWheel:
@@ -2829,6 +2950,11 @@ public class ModuleTemplate {
 
 	public int getCurKeyOffset() {
 		return curKeyOffset;
+	}
+
+	public	float[]	getCanvasColor()
+	{
+		return this.canvasColor;
 	}
 
 

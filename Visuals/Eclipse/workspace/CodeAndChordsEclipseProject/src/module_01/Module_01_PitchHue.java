@@ -145,7 +145,11 @@ public class Module_01_PitchHue extends PApplet
 			// volume not above the threshold:
 			this.nowBelow	= true;
 			
-			goalHue	= new float[] { 0, 0, 0 };
+			goalHue	= new float[] { 
+					this.moduleTemplate.getCanvasColor()[0],
+					this.moduleTemplate.getCanvasColor()[1],
+					this.moduleTemplate.getCanvasColor()[2]
+			};
 			
 		} // else
 
