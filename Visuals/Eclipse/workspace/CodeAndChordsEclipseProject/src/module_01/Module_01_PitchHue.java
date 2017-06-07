@@ -65,7 +65,7 @@ public class Module_01_PitchHue extends PApplet
 
 	public void setup() 
 	{
-		input  = new Input();
+		this.input  = new Input();
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
 		this.moduleTemplate.initModuleTemplate();
 		
@@ -145,7 +145,11 @@ public class Module_01_PitchHue extends PApplet
 			// volume not above the threshold:
 			this.nowBelow	= true;
 			
-			goalHue	= new float[] { 0, 0, 0 };
+			goalHue	= new float[] { 
+					this.moduleTemplate.getCanvasColor()[0],
+					this.moduleTemplate.getCanvasColor()[1],
+					this.moduleTemplate.getCanvasColor()[2]
+			};
 			
 		} // else
 
@@ -228,7 +232,7 @@ public class Module_01_PitchHue extends PApplet
 			}
 		}//hides slider labels
 
-		this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
+		this.sidebarCP5.getController("ColorTF").getCaptionLabel().setVisible(false);
 
 		for(int i = 24;i<60; i++){
 			if(i%3 == 2){
