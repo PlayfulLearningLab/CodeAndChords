@@ -169,7 +169,7 @@ public class ModuleTemplate {
 	public	float[][]	colors;
 	private int[] 		rootColor;
 	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
-	private float[][]   HSBColors; //the current colors at which hsb is altering
+	private float[][]   hsbColors; //the current colors at which hsb is altering
 	private	float[]		canvasColor;	// the color of the background when there is no sound.
 
 	int[]				textYVals;
@@ -221,7 +221,7 @@ public class ModuleTemplate {
 		this.colors 		= new float[12][3];
 		this.rootColor		= new int[3];
 		this.originalColors	= new float[12][3];
-		this.HSBColors      = new float[12][3];
+		this.hsbColors      = new float[12][3];
 		this.canvasColor	= new float[] { 0, 0, 0 }; // canvas is black to begin with.
 
 		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
@@ -353,6 +353,7 @@ public class ModuleTemplate {
 		// If the call comes at the end, the ColorWheels start black and end grayscale.
 		this.rainbow();
 		this.fillOriginalColors();
+		this.fillHSBColors();
 		this.updateColors(this.curColorStyle);
 
 
@@ -1237,7 +1238,7 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign, hsb[i])
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
-			.setRange(-100, 100)
+			.setRange(-1, 1)
 			.setValue(0)
 			.setGroup("sidebarGroup")
 			.setId(id);
@@ -1337,7 +1338,7 @@ public class ModuleTemplate {
 //			this.rainbow();
 
 			// TODO: commenting out all applyHSBModulate() calls except those made by directly moving the sliders.
-//			this.applyHSBModulate(colors, HSBColors);
+//			this.applyHSBModulate(colors, hsbColors);
 		}
 
 		// Dichromatic:
@@ -1358,7 +1359,7 @@ public class ModuleTemplate {
 				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
 			}
 
-//			this.applyHSBModulate(colors, HSBColors);
+//			this.applyHSBModulate(colors, hsbColors);
 			/*		
 			for(int i = 0; i < this.colors.length; i++)
 			{
@@ -1405,8 +1406,8 @@ public class ModuleTemplate {
 			} // else
 
 
-			//this.trichromatic_OneRGB(this.HSBColors[0]);
-//			this.applyHSBModulate(colors, HSBColors);
+			//this.trichromatic_OneRGB(this.hsbColors[0]);
+//			this.applyHSBModulate(colors, hsbColors);
 		}
 
 		// Custom:
@@ -1429,7 +1430,7 @@ public class ModuleTemplate {
 
 
 //			this.applyColorModulate(this.colors, this.originalColors);
-//			this.applyHSBModulate(this.colors, this.HSBColors);
+//			this.applyHSBModulate(this.colors, this.hsbColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
@@ -1838,9 +1839,12 @@ public class ModuleTemplate {
 			 this.colors[i][1]	= dichromColors[dichromColorPos][1];
 			 this.colors[i][2]	= dichromColors[dichromColorPos][2];
 
-			 this.HSBColors[i][0]	= dichromColors[dichromColorPos][0];
-			 this.HSBColors[i][1]	= dichromColors[dichromColorPos][1];
-			 this.HSBColors[i][2]	= dichromColors[dichromColorPos][2];
+			 // TODO: don't think this is necessary.
+			 /*
+			 this.hsbColors[i][0]	= dichromColors[dichromColorPos][0];
+			 this.hsbColors[i][1]	= dichromColors[dichromColorPos][1];
+			 this.hsbColors[i][2]	= dichromColors[dichromColorPos][2];
+			 */
 		 } // for
 
 
@@ -1872,9 +1876,9 @@ public class ModuleTemplate {
 				this.colors[i][1]	= dichromColors[dichromColorPos][1];
 				this.colors[i][2]	= dichromColors[dichromColorPos][2];
 
-				this.HSBColors[i][0]	= dichromColors[dichromColorPos][0];
-				this.HSBColors[i][1]	= dichromColors[dichromColorPos][1];
-				this.HSBColors[i][2]	= dichromColors[dichromColorPos][2];
+				this.hsbColors[i][0]	= dichromColors[dichromColorPos][0];
+				this.hsbColors[i][1]	= dichromColors[dichromColorPos][1];
+				this.hsbColors[i][2]	= dichromColors[dichromColorPos][2];
 
 			} // for - filling colors, last to first
 		}
@@ -2034,10 +2038,12 @@ public class ModuleTemplate {
 			this.colors[i][1]	= trichromColors[trichromColorPos][1];
 			this.colors[i][2]	= trichromColors[trichromColorPos][2];
 
-			this.HSBColors[i][0]	= trichromColors[trichromColorPos][0];
-			this.HSBColors[i][1]	= trichromColors[trichromColorPos][1];
-			this.HSBColors[i][2]	= trichromColors[trichromColorPos][2];
-
+			//TODO: like in dichrom, don't think this is necessary.
+			/*
+			this.hsbColors[i][0]	= trichromColors[trichromColorPos][0];
+			this.hsbColors[i][1]	= trichromColors[trichromColorPos][1];
+			this.hsbColors[i][2]	= trichromColors[trichromColorPos][2];
+*/
 			/*
 				// note is diatonic
 				this.colors[i][0]	= trichromColors[trichromColorPos][0];
@@ -2112,14 +2118,15 @@ public class ModuleTemplate {
 			{
 				//				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 				this.colors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
-				this.HSBColors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
+				this.hsbColors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
 
 	} // rainbow
 
 	/**
-	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
+	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders and 
+	 * calls applyHSBModulate() to apply the values of the Hue/Saturation/Brightness Modulate sliders.
 	 */
 	private void applyColorModulate(float[][] colors, float[][] originalColors)
 	{
@@ -2133,61 +2140,55 @@ public class ModuleTemplate {
 			{
 				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
 				colors[i][j]	= originalColors[i][j] + this.redGreenBlueMod[j];
-				HSBColors[i][j] = originalColors[i][j] + this.redGreenBlueMod[j];
 
-				//TODO: Also pass in redGreenBlueMod?
 			} // for - j
 		} // for - i
+		
+		this.fillHSBColors();
+		
+		this.applyHSBModulate(this.colors, this.hsbColors);
 	} // applyColorModulate
 
-	private void applyHSBModulate(float[][] colors, float[][] HSBColors)
+	/**
+	 * Applies the values from this.hueSatBrightnessMod to the contents of this.colors.
+	 * @param colors	this.colors
+	 * @param hsbColors	this.hsbColors
+	 */
+	private void applyHSBModulate(float[][] colors, float[][] hsbColors)
 	{
-		if(colors == null || HSBColors == null) {
+		if(colors == null || hsbColors == null) {
 			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
 		}
-		//Hopefully fixing the problem of no original color array
-		//This actually makes every slider affect the colors the same way so that's not going to work
 
-		/*if(this.originalColors == null) {
-			this.originalColors = new float[this.colors.length][3];
-		}
-		for(int i = 0; i < this.originalColors.length; i++)
-		{
-			for(int j = 0; j < this.originalColors[i].length; j++)
-			{
-				this.originalColors[i][j]	= this.colors[i][j];
-			}
-		}
-		 */
+
+		float[] hsb = new float[3];
 
 		for (int i = 0; i < this.colors.length; i++)
 		{
-			//Requires original colors to be populated which only happens once custom is switched on
-			// Update 6/7/2016: original colors is populated every time a new color style is selected, 
-			// and I don't even think it's being used anymore. - Emily Meuer
+			// Converts this position of hsbColors from RGB to HSB:
+			Color.RGBtoHSB((int)hsbColors[i][0], (int)hsbColors[i][1], (int)hsbColors[i][2], hsb);
+			
+			System.out.println("hsb[" + i + "][0] = " + hsb[0] + 
+					"; hsb[" + i + "][1] = " + hsb[1] +
+					"; hsb[" + i + "][2] = " + hsb[2]);
+			
+			// Applies the status of the sliders to the newly-converted color:
+			hsb[0] = Math.max(Math.min(hsb[0] + this.hueSatBrightnessMod[0], 1), 0);
+			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
+			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2], 1), 0);
 
-			float[] hsb = new float[3];
-			//			System.out.println("The position in colors is " + i+ " and the original color floats are "+HSBColors[i][0]+originalColors[i][1]+ originalColors[i][2]);
-			Color.RGBtoHSB((int)HSBColors[i][0], (int)HSBColors[i][1], (int)HSBColors[i][2], hsb);
-			//System.out.println("the color pos is " + i+" and the hsb version is"+ hsb.toString());
-			hsb[0] = hsb[0] + this.hueSatBrightnessMod[0];
-			hsb[1] = hsb[1] + this.hueSatBrightnessMod[1];
-			hsb[2] = hsb[2] + this.hueSatBrightnessMod[2];
-
-
+			// Converts the color back to RGB:
 			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
 			Color a = new Color(oc);
 
+			// Fills colors with the new color:
 			colors[i][0] = (float)a.getRed();
 			colors[i][1] = (float)a.getGreen();
 			colors[i][2] = (float)a.getBlue();
 
 
-		}//convoluted
-		//For the length of the colors float
-		//for each entry add in hsb
-		//figure out conversions
-	}
+		} // for
+	} // applyHSBModulate
 
 	/**
 	 * This method handles the functionality of all the buttons, sliders, and textFields;
@@ -2431,122 +2432,7 @@ public class ModuleTemplate {
 
 		} // majMinChrom buttons
 
-		// TODO: get rid of this when sure that the it works in its row:
-		/*
-		// Root color selector button:
-		if(controlEvent.getName().equals("rootColorButton"))
-		{
-			Button	rootButton	= (Button)controlEvent.getController();
-			// draw slightly transparent rectangle:
-			if(rootButton.getBooleanValue())
-			{
-				// Want to turn off automatic drawing so that our transparent rectangle can go on top of the controllers.
-				//				this.sidebarCP5.setAutoDraw(false);
 
-				// Draw all the controllers:
-				//				this.sidebarCP5.draw();
-
-				// Then cover with a rectangle (black, w/alpha of 50):
-				this.sidebarCP5.getGroup("background").setVisible(true);
-				this.sidebarCP5.getGroup("background").bringToFront();
-
-				this.sidebarCP5.getController("rootColorButton").bringToFront();
-				this.sidebarCP5.getController("rootColorWheel").bringToFront();
-				this.sidebarCP5.getController("rootColorTF").bringToFront();
-
-				ColorWheel	rootCW	= (ColorWheel)this.sidebarCP5.getController("rootColorWheel");
-				int	rgbColor	= rootCW.getRGB();
-				Color	color	= new Color(rgbColor);
-
-				Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("rootColorTF");
-				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-
-				this.rootColor[0]	= color.getRed();
-				this.rootColor[1]	= color.getGreen();
-				this.rootColor[2]	= color.getBlue();
-
-				this.colors[0][0]	= color.getRed();
-				this.colors[0][1]	= color.getGreen();
-				this.colors[0][2]	= color.getBlue();
-
-				//				this.updateColors(this.curColorStyle);
-			} else {
-				this.sidebarCP5.getGroup("background").setVisible(false);
-				this.displaySidebar();
-			}
-
-			this.sidebarCP5.getController("rootColorWheel").setVisible(rootButton.getBooleanValue());
-			this.updateColors(this.curColorStyle);
-		} // Root color selector button (i.e., show color wheel)
-
-		// Root color Textfield
-		if(controlEvent.getName().equals("RootColorTF"))
-		{
-			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
-			for(int i = 0; i < tfValues.length; i++)
-			{
-				tfValues[i]	= tfValues[i].trim().toLowerCase();
-
-				//System.out.println("tfValues[" + i + "] = " + tfValues[i]);
-			} // for
-
-			try
-			{
-				if(tfValues[0].equals("rgb"))
-				{
-					// Get color values:
-					float	red		= Float.parseFloat(tfValues[1]);
-					float	green	= Float.parseFloat(tfValues[2]);
-					float	blue	= Float.parseFloat(tfValues[3]);
-
-					// Constrain to 0-255:
-					red		= Math.min(255, Math.max(0, red));
-					green	= Math.min(255, Math.max(0, green));
-					blue	= Math.min(255, Math.max(0, blue));
-
-					// Set root color and update all colors:
-					this.rootColor[0]	= (int) red;
-					this.rootColor[1]	= (int) green;
-					this.rootColor[2]	= (int) blue;
-
-					this.updateColors(this.curColorStyle);
-
-					// Set corresponding ColorWheel:
-					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
-					int		rgbInt		= rgbColor.getRGB();
-					((ColorWheel)this.sidebarCP5.getController("rootColorWheel")).setRGB(rgbInt);
-				}
-
-			} catch(Exception e) {
-				System.out.println("Sorry, that is not recognized as a valid color. Please try again.");
-			}
-		} // root color Textfield
-
-		// Root Color Wheel
-		if(controlEvent.getName().equals("rootColorWheel"))
-		{
-			ColorWheel	rootCW	= (ColorWheel)controlEvent.getController();
-			int	rgbColor	= rootCW.getRGB();
-			Color	color	= new Color(rgbColor);
-
-			Textfield	rootColorTF	= (Textfield)this.sidebarCP5.getController("rootColorTF");
-			if(rootColorTF != null)
-			{
-				rootColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-			}
-
-			this.rootColor[0]	= color.getRed();
-			this.rootColor[1]	= color.getGreen();
-			this.rootColor[2]	= color.getBlue();
-
-			this.colors[0][0]	= color.getRed();
-			this.colors[0][1]	= color.getGreen();
-			this.colors[0][2]	= color.getBlue();
-
-			this.updateColors(this.curColorStyle);
-		} // root color wheel
-
-		 */
 		// Color Selection: 
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
@@ -2578,6 +2464,7 @@ public class ModuleTemplate {
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).setVisible(false);
 
 			this.fillOriginalColors();
+			this.fillHSBColors();
 			this.resetModulateSlidersTextfields();
 			this.applyColorModulate(this.colors, this.originalColors);
 
@@ -2742,7 +2629,9 @@ public class ModuleTemplate {
 
 			
 			this.fillOriginalColors();
-			
+			this.fillHSBColors();
+			this.resetModulateSlidersTextfields();
+			/*
 			if(this.originalColors == null) {
 				this.originalColors = new float[this.colors.length][3];
 			}
@@ -2753,7 +2642,7 @@ public class ModuleTemplate {
 					this.originalColors[i][j]	= this.colors[i][j];
 				}
 			}
-
+*/
 			// Set root color/call correct function for the new colorStyle:
 			this.updateColors(curToggle.internalValue());
 
@@ -2859,12 +2748,39 @@ public class ModuleTemplate {
 		} // for
 	} // fillOriginalColors
 	
+	/**
+	 * Puts the contents of this.colors into this.hsbColors.
+	 */
+	private	void fillHSBColors()
+	{
+		if(this.colors == null)
+		{
+			throw new IllegalArgumentException("ModuleTemplate.fillHSBColors: this.colors is null.");
+		}
+		
+		if(this.hsbColors == null) {
+			this.hsbColors = new float[this.colors.length][3];
+		}
+		
+		for(int i = 0; i < this.hsbColors.length; i++)
+		{
+			for(int j = 0; j < this.hsbColors[i].length; j++)
+			{
+				this.hsbColors[i][j]	= this.colors[i][j];
+			}
+		} // for
+	} // fillhsbColors
+	
+	/**
+	 * Sets the Sliders and Textfields for RGB and HSB color modulate to 0.
+	 */
 	private void resetModulateSlidersTextfields()
 	{
 		int	id	= 8;
 		
-		for(int i = 0; i < 6; i++)
+		for(int i = 0; i < 6 && id < 20; i++)
 		{
+			System.out.println("id = " + id);
 			this.sidebarCP5.getController("slider" + id).setValue(0);
 			
 			id	= id + 1;
