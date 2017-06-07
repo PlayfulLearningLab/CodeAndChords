@@ -352,6 +352,7 @@ public class ModuleTemplate {
 		// before the ColorWheels are created and the ColorWheels can be set to the colors in this.colors.
 		// If the call comes at the end, the ColorWheels start black and end grayscale.
 		this.rainbow();
+		this.fillOriginalColors();
 		this.updateColors(this.curColorStyle);
 
 
@@ -2289,10 +2290,7 @@ public class ModuleTemplate {
 				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
 				this.redGreenBlueMod[pos]	= sliderValFloat;
 
-//				if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
-//				{
-					this.applyColorModulate(this.colors, this.originalColors);
-//				}
+				this.applyColorModulate(this.colors, this.originalColors);
 			} // red/green/blue mod
 
 			if(id == 14 || id == 16 || id == 18)
@@ -2579,6 +2577,9 @@ public class ModuleTemplate {
 			this.sidebarCP5.getController("colorWheel" + (controlEvent.getId() + 1)).setVisible(curButton.getBooleanValue());
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 2)).setVisible(false);
 
+			this.fillOriginalColors();
+			this.resetModulateSlidersTextfields();
+			this.applyColorModulate(this.colors, this.originalColors);
 
 			this.updateColors(this.curColorStyle);
 		} // custom pitch color selectors (i.e., show color wheel)
@@ -2739,7 +2740,9 @@ public class ModuleTemplate {
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
-			// TODO: might need to only call when curToggle is Custom
+			
+			this.fillOriginalColors();
+			
 			if(this.originalColors == null) {
 				this.originalColors = new float[this.colors.length][3];
 			}
@@ -2832,6 +2835,46 @@ public class ModuleTemplate {
 		// ModulateSliders
 
 	} // controlEvent
+	
+	/**
+	 * Puts the contents of colors into originalColors.
+	 */
+	private void fillOriginalColors()
+	{
+		if(this.colors == null)
+		{
+			throw new IllegalArgumentException("ModuleTemplate.fillOriginalColors: this.colors is null.");
+		}
+		
+		if(this.originalColors == null) {
+			this.originalColors = new float[this.colors.length][3];
+		}
+		
+		for(int i = 0; i < this.originalColors.length; i++)
+		{
+			for(int j = 0; j < this.originalColors[i].length; j++)
+			{
+				this.originalColors[i][j]	= this.colors[i][j];
+			}
+		} // for
+	} // fillOriginalColors
+	
+	private void resetModulateSlidersTextfields()
+	{
+		int	id	= 8;
+		
+		for(int i = 0; i < 6; i++)
+		{
+			this.sidebarCP5.getController("slider" + id).setValue(0);
+			
+			id	= id + 1;
+			
+			//TODO: might be the wrong kind of value - might need to be setStringValue():
+			this.sidebarCP5.getController("textfield" + id).setValue(0);
+
+			id	= id + 1;
+		}
+	}
 
 	/**
 	 * Method to calculate the position in colors that should change.
