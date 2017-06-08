@@ -1357,6 +1357,7 @@ public class ModuleTemplate {
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 		{
+			System.out.println("updateColors; curColorStyle = Dichromatic");
 			// First time to dichromatic, dichromFlag will be false, 
 			// and the two colors will be set to contrast.
 			if(!this.dichromFlag)
@@ -1369,7 +1370,12 @@ public class ModuleTemplate {
 			// (allows selection of 2nd color):
 			else
 			{
+				for(int i = 0; i < this.colors[0].length; i++)
+				{
+					System.out.println("    this.colors[3][" + i + "] = " + this.colors[3][i]);
+				}
 				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
+				
 			}
 
 			// Unlock 2nd Color Button, but keep 3rd Color locked:
@@ -2383,6 +2389,12 @@ public class ModuleTemplate {
 				this.sidebarCP5.getGroup("background").setVisible(true);
 				this.sidebarCP5.getGroup("background").bringToFront();
 
+				// only call updateColors() for colorSelect Buttons:
+				if(controlEvent.getId() > 62 && controlEvent.getId() < 73)
+				{
+					this.updateColors(this.curColorStyle);
+				}
+
 			} else {
 
 				this.sidebarCP5.setAutoDraw(true);
@@ -2402,12 +2414,18 @@ public class ModuleTemplate {
 			this.resetModulateSlidersTextfields();
 			this.applyColorModulate(this.colors, this.originalColors);
 
-			this.updateColors(this.curColorStyle);
+//			this.updateColors(this.curColorStyle);
 		} // custom pitch color selectors (i.e., show color wheel)
 
 		// Custom pitch ColorWheels
 		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 1))
 		{
+			// only call updateColors() for colorSelect ColorWheels:
+			if(controlEvent.getId() > 62 && controlEvent.getId() < 73)
+			{
+				this.updateColors(this.curColorStyle);
+			} // if
+			
 			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
@@ -2434,7 +2452,6 @@ public class ModuleTemplate {
 			else
 			{
 				notePos	= this.calculateNotePos(id);
-				System.out.println("notePos = " + notePos);
 
 				// error checking
 				if(notePos < 0 || notePos > this.colors.length)	{
@@ -2449,35 +2466,17 @@ public class ModuleTemplate {
 
 			}
 
-			/*
-			 * TODO: probably getting rid of this and calling only in updateColors:
-			// Dichromatic is calculated differently depending on whether tonic or 2nd color is being changed,
-			// so has to be set here rather than updateColors:
-			if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
-			{
-				// tonic color - fill forward:
-				if(id == 67)
-				{
-					this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
-				} else 
-					// 2nd Color - fill backward:
-					if(id == 70)
-					{
-						this.dichromatic_TwoRGB(this.colors[this.colors.length - 1], this.colors[0], false);
-					}
+//			this.updateColors(this.curColorStyle);
 
-
-			}
-			 */
-			this.updateColors(this.curColorStyle);
-
-
-			//System.out.println(controlEvent.getController() + ": notePos = " + notePos);
 		} // custom pitch colorWheels
 
 		// ColorWheel Textfields (id 23 or over; id % 3 == 2):
 		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 2))
 		{
+			// This call has to happen early on in the method so that, after making the dichrom/trichrom spectrum,
+			// individual colors can be changed independently of the rest.
+//			this.updateColors(this.curColorStyle);
+			
 			id	= controlEvent.getId();
 			// Getting color value from the Textfield:
 			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
@@ -2544,7 +2543,6 @@ public class ModuleTemplate {
 				System.out.println("Sorry, that is not recognized as a valid color. Please try again.");
 			} // catch
 
-			this.updateColors(this.curColorStyle);
 		} // ColorWheel Textfields
 
 
@@ -2604,7 +2602,7 @@ public class ModuleTemplate {
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
 
-			// if Rainbow, lock 2nd and 3rd color buttons:
+			// Call to rainbow() not in updateColors() so that it doesn't revert every time a button is pressed:
 			if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 			{
 				this.rainbow();
@@ -2672,7 +2670,6 @@ public class ModuleTemplate {
 
 		for(int i = 0; i < 6 && id < 20; i++)
 		{
-			System.out.println("id = " + id);
 			this.sidebarCP5.getController("slider" + id).setValue(0);
 
 			id	= id + 1;
