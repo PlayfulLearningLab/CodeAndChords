@@ -87,7 +87,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	Compressor             compressor;
 	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
 	private UGen[]                 uGenArray;
-	Gain                   g;
+	// TODO: make private after testing
+	public Gain                   g;
 	Gain                   mute;
 	FFT[]                  fftArray;             // holds the FFT for each input.
 	FrequencyEMM[]         frequencyArray;       // holds the FrequencyEMM objects connected to each input.
@@ -293,6 +294,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		} // for
 		
 		SampleManager.destroyGroup("group");
+		
+
+		g = new Gain(this.ac, 1);
 
 		initInput(uGenArray);
 	} // uGenArrayFromSample(String[])
@@ -319,6 +323,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
 		}
 
+		this.g	= new Gain(this.ac, 0, 0);
 		initInput(uGenArray);
 	} // uGenArrayFromNumInputs
 
@@ -347,7 +352,12 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 		// Create a Gain, add the Compressor to the Gain,
 		// add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
-		g = new Gain(this.ac, 1, (float) 0.5);
+//		g = new Gain(this.ac, 1, (float) 0.5);
+		if(this.g == null)
+		{
+			g = new Gain(this.ac, 0, 0);
+			System.out.println("Input.initInput: Had to set g in initInput(); should initialize it earlier.");
+		}
 		g.addInput(this.compressor);
 
 		// Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
@@ -406,12 +416,6 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			ac.out.addDependent(sfsArray[i]);
 		} // for - addDependent
 
-		/*
-  // trying to mute the output:
-   mute = new Gain(this.ac, 1, 0);
-   mute.addInput(this.ac.out);
-   ac.out.addInput(mute);
-		 */
 
 		// Starts the AudioContext (and everything connected to it):
 		this.ac.start();

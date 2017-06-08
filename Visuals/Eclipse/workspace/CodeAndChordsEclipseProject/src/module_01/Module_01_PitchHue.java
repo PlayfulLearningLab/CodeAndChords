@@ -102,7 +102,10 @@ public class Module_01_PitchHue extends PApplet
 	public void draw()
 	{
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true) {this.moduleTemplate.setMenuVal();}
+		if (keyPressed == true) 
+		{
+			this.moduleTemplate.setMenuVal();
+		}
 		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
