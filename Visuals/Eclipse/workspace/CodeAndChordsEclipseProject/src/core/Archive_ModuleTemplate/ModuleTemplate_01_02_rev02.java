@@ -1,4 +1,4 @@
-package core;
+package core.Archive_ModuleTemplate;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -14,6 +14,7 @@ import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
+import core.Input;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -48,7 +49,7 @@ import processing.core.PImage;
  * info on conversion of colors
  *
  */
-public class ModuleTemplate {
+public class ModuleTemplate_01_02_rev02 {
 
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
@@ -198,7 +199,7 @@ public class ModuleTemplate {
 	private	boolean	dichromFlag;
 	private	boolean	trichromFlag;
 
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate_01_02_rev02(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
 		this.input	= input;
@@ -231,7 +232,7 @@ public class ModuleTemplate {
 		this.hsbColors      = new float[12][3];
 		this.canvasColor	= new float[] { 0, 0, 0 }; // canvas is black to begin with.
 
-		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
+		this.curColorStyle	= ModuleTemplate_01_02_rev02.CS_RAINBOW;
 		// The following will happen in rainbow():
 		//		this.tonicColor	= new int[] { 255, 0, 0, };
 		this.dichromFlag	= false;
@@ -259,9 +260,9 @@ public class ModuleTemplate {
 		this.hueSatBrightnessMod        = new float[3];
 
 
-		//TODO: make initModuleTemplate() private again, once it can be called from constructor.
-		//this.initModuleTemplate();
-	} // ModuleTemplate
+		//TODO: make initModuleTemplate_01_02_rev02() private again, once it can be called from constructor.
+		//this.initModuleTemplate_01_02_rev02();
+	} // ModuleTemplate_01_02_rev02
 
 	// Methods:
 
@@ -269,7 +270,7 @@ public class ModuleTemplate {
 	 * Called from constructor to calculate Y vals and call the methods for instantiating the necessary buttons;
 	 * will eventually call different button methods depending on the module number.
 	 */
-	public void initModuleTemplate()
+	public void initModuleTemplate_01_02_rev02()
 	{
 		this.sidebarCP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
@@ -374,7 +375,7 @@ public class ModuleTemplate {
 		hideTextLabels();
 		// TODO - remove this commented section once it's working in constructor:
 		/*
-		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
+		this.curColorStyle	= ModuleTemplate_01_02_rev02.CS_RAINBOW;
 		// The following will happen in rainbow():
 		//		this.tonicColor	= new int[] { 255, 0, 0, };
 		this.dichromFlag	= false;
@@ -382,7 +383,7 @@ public class ModuleTemplate {
 		 */		
 
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
-	} // initModuleTemplate
+	} // initModuleTemplate_01_02_rev02
 
 
 	/*
@@ -787,7 +788,7 @@ public class ModuleTemplate {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate.CS_RAINBOW);
+		.setInternalValue(ModuleTemplate_01_02_rev02.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("dichrom")
@@ -795,7 +796,7 @@ public class ModuleTemplate {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate.CS_DICHROM);
+		.setInternalValue(ModuleTemplate_01_02_rev02.CS_DICHROM);
 		this.sidebarCP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("trichrom")
@@ -803,7 +804,7 @@ public class ModuleTemplate {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate.CS_TRICHROM);
+		.setInternalValue(ModuleTemplate_01_02_rev02.CS_TRICHROM);
 		this.sidebarCP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("custom")
@@ -811,7 +812,7 @@ public class ModuleTemplate {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate.CS_CUSTOM);
+		.setInternalValue(ModuleTemplate_01_02_rev02.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
@@ -1340,7 +1341,7 @@ public class ModuleTemplate {
 		this.curColorStyle	= colorStyle;
 
 		// Rainbow:
-		if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
+		if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_RAINBOW)
 		{
 			//			// if avoids errors during instantiation:
 			if(this.sidebarCP5.getController("button69") != null)
@@ -1355,7 +1356,7 @@ public class ModuleTemplate {
 		}
 
 		// Dichromatic:
-		if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
+		if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_DICHROM)
 		{
 			System.out.println("updateColors; curColorStyle = Dichromatic");
 			// First time to dichromatic, dichromFlag will be false, 
@@ -1391,7 +1392,7 @@ public class ModuleTemplate {
 		} // Dichromatic
 
 		// Trichromatic:
-		if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
+		if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_TRICHROM)
 		{
 			// first time trichromatic has been called:
 			if(!this.trichromFlag)
@@ -1433,7 +1434,7 @@ public class ModuleTemplate {
 		} // Trichromatic
 
 		// Custom:
-		if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
+		if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_CUSTOM)
 		{
 			// Populate the Textfields with the current colors in the colors array:
 			// (textfield id's start at 23 and go up by 3)
@@ -1541,7 +1542,7 @@ public class ModuleTemplate {
 		// find keyPos -- hey ! maybe I can just pass in keyPos.
 		int	keyPos = this.arrayContains(this.allNotes, key);
 		if(keyPos == -1) {
-			throw new IllegalArgumentException("ModuleTemplate.getScale: key " + key + " is not a valid key.");
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.getScale: key " + key + " is not a valid key.");
 		}
 		/*
 		return this.getScale(keyPos, majMinChrom);
@@ -1591,7 +1592,7 @@ public class ModuleTemplate {
 
 
 		if(keyPos > majorScales.length) {
-			throw new IllegalArgumentException("ModuleTemplate.getScale(int, int): int param " + keyPos + " is greater than majorScales.length (" + majorScales.length + ").");
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.getScale(int, int): int param " + keyPos + " is greater than majorScales.length (" + majorScales.length + ").");
 		}
 
 		String[] result;
@@ -2075,7 +2076,7 @@ public class ModuleTemplate {
 	private void applyColorModulate(float[][] colors, float[][] originalColors)
 	{
 		if(colors == null || originalColors == null) {
-			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
 		} // error checking
 
 		for(int i = 0; i < this.colors.length; i++)
@@ -2101,7 +2102,7 @@ public class ModuleTemplate {
 	private void applyHSBModulate(float[][] colors, float[][] hsbColors)
 	{
 		if(colors == null || hsbColors == null) {
-			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
 		}
 
 
@@ -2138,7 +2139,7 @@ public class ModuleTemplate {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-		//System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
+		//System.out.println("ModuleTemplate_01_02_rev02: theControlEvent.getController() = " + controlEvent.getController());
 
 
 		int	id	= controlEvent.getController().getId();
@@ -2268,7 +2269,7 @@ public class ModuleTemplate {
 			try	{
 				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
 			} catch(NumberFormatException nfe) {
-				//System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
+				//System.out.println("ModuleTemplate_01_02_rev02.controlEvent: string value " + curTextfield.getStringValue() + 
 				//"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
 			} // catch
 		} // textField
@@ -2455,7 +2456,7 @@ public class ModuleTemplate {
 
 				// error checking
 				if(notePos < 0 || notePos > this.colors.length)	{
-					throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
+					throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.controlEvent - custom color Textfields: " +
 							"notePos " + notePos + " from id " + id + " is not a valid note position; " +
 							"it should be between 0 and " + this.colors.length);
 				} // error checking
@@ -2522,7 +2523,7 @@ public class ModuleTemplate {
 
 						// error checking
 						if(notePos < 0 || notePos > this.colors.length)	{
-							throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
+							throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.controlEvent - custom color Textfields: " +
 									"notePos " + notePos + " from id " + id + " is not a valid note position; " +
 									"it should be between 0 and " + this.colors.length);
 						} // error checking
@@ -2603,7 +2604,7 @@ public class ModuleTemplate {
 			} // for - switch off all Toggles:
 
 			// Call to rainbow() not in updateColors() so that it doesn't revert every time a button is pressed:
-			if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
+			if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_RAINBOW)
 			{
 				this.rainbow();
 			}
@@ -2622,7 +2623,7 @@ public class ModuleTemplate {
 	{
 		if(this.colors == null)
 		{
-			throw new IllegalArgumentException("ModuleTemplate.fillOriginalColors: this.colors is null.");
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.fillOriginalColors: this.colors is null.");
 		}
 
 		if(this.originalColors == null) {
@@ -2645,7 +2646,7 @@ public class ModuleTemplate {
 	{
 		if(this.colors == null)
 		{
-			throw new IllegalArgumentException("ModuleTemplate.fillHSBColors: this.colors is null.");
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.fillHSBColors: this.colors is null.");
 		}
 
 		if(this.hsbColors == null) {
@@ -2711,7 +2712,7 @@ public class ModuleTemplate {
 		{
 			// Canvas:
 			if(id == 64)	{
-				throw new IllegalArgumentException("ModuleTemplate.calculateNotePos(int): id 64 should not be passed to this function, as it does not correspond to a note.");
+				throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.calculateNotePos(int): id 64 should not be passed to this function, as it does not correspond to a note.");
 			}
 
 
@@ -2721,11 +2722,11 @@ public class ModuleTemplate {
 			// 2nd Color:
 			if(id == 69)
 			{
-				if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
+				if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_DICHROM)
 				{
 					// for Dichromatic, this is the last color:
 					notePos	= this.colors.length - 1;
-				} else if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
+				} else if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_TRICHROM)
 				{
 					// for tri, it's in the middle:
 					if(this.getMajMinChrom() == 2)
@@ -2743,7 +2744,7 @@ public class ModuleTemplate {
 			if(id == 72)
 			{
 				// only applies to trichromatic:
-				if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
+				if(this.curColorStyle == ModuleTemplate_01_02_rev02.CS_TRICHROM)
 				{
 					if(this.getMajMinChrom() == 2)
 					{
@@ -2789,7 +2790,7 @@ public class ModuleTemplate {
 	{
 		if(arORt < 0 || arORt > this.attackReleaseTransition.length)
 		{
-			throw new IllegalArgumentException("ModuleTemplate.getAttackReleaseTransition: parameter " + arORt + " is not a valid position in the array this.attackReleaseTransition.");
+			throw new IllegalArgumentException("ModuleTemplate_01_02_rev02.getAttackReleaseTransition: parameter " + arORt + " is not a valid position in the array this.attackReleaseTransition.");
 		} // error checking
 
 		return	this.attackReleaseTransition[arORt];
