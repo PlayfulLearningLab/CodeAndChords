@@ -2555,9 +2555,6 @@ public class ModuleTemplate {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 
-			this.fillOriginalColors();
-			this.fillHSBColors();
-			this.resetModulateSlidersTextfields();
 			/*
 			if(this.originalColors == null) {
 				this.originalColors = new float[this.colors.length][3];
@@ -2572,6 +2569,7 @@ public class ModuleTemplate {
 			 */
 			// Set tonic color/call correct function for the new colorStyle:
 			this.updateColors(curToggle.internalValue());
+
 
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
@@ -2608,6 +2606,13 @@ public class ModuleTemplate {
 				this.rainbow();
 			}
 
+
+			// These calls have to come after all the colors have been set,
+			// so that originalColors and hsbColors can be filled with the latest:
+			this.fillOriginalColors();
+			this.fillHSBColors();
+			this.resetModulateSlidersTextfields();
+			this.applyColorModulate(this.colors, this.originalColors);
 
 		} // colorStyle buttons
 
