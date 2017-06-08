@@ -22,7 +22,7 @@ import processing.core.PImage;
  * Emily Meuer update:
  *  - working HSB and RGB modulate sliders
  *  - canvas color changes independently
- *  - Trichromatic works; Dichromatic 2nd Color works, but root still changes both root and 2nd Color (ruining the fade)
+ *  - Trichromatic works; Dichromatic 2nd Color works, but tonic still changes both tonic and 2nd Color (ruining the fade)
  *  - customColorSelect works in all keys
  * 
  * Future:
@@ -174,7 +174,7 @@ public class ModuleTemplate {
 	}; // scaleDegreeColors
 
 	public	float[][]	colors;
-	private int[] 		rootColor;
+	private int[] 		tonicColor;
 	private	float[][]	originalColors;	// filled in the Custom color style to allow RGB modifications to colors
 	private float[][]   hsbColors; //the current colors at which hsb is altering
 	private	float[]		canvasColor;	// the color of the background when there is no sound.
@@ -226,14 +226,14 @@ public class ModuleTemplate {
 		this.sidebarTitle	= sidebarTitle;
 
 		this.colors 		= new float[12][3];
-		this.rootColor		= new int[3];
+		this.tonicColor		= new int[3];
 		this.originalColors	= new float[12][3];
 		this.hsbColors      = new float[12][3];
 		this.canvasColor	= new float[] { 0, 0, 0 }; // canvas is black to begin with.
 
 		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
 		// The following will happen in rainbow():
-		//		this.rootColor	= new int[] { 255, 0, 0, };
+		//		this.tonicColor	= new int[] { 255, 0, 0, };
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
 
@@ -345,7 +345,7 @@ public class ModuleTemplate {
 		modulateYVals[1]	= textYVals[10];
 		modulateYVals[2]	= textYVals[11];
 
-		//		addRootColorSelector(textYVals[12]);
+		//		addTonicColorSelector(textYVals[12]);
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
@@ -376,7 +376,7 @@ public class ModuleTemplate {
 		/*
 		this.curColorStyle	= ModuleTemplate.CS_RAINBOW;
 		// The following will happen in rainbow():
-		//		this.rootColor	= new int[] { 255, 0, 0, };
+		//		this.tonicColor	= new int[] { 255, 0, 0, };
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
 		 */		
@@ -710,11 +710,11 @@ public class ModuleTemplate {
 	} // addKeySelector
 
 	/**
-	 * Method called during instantiation to initialize the root color selector.
+	 * Method called during instantiation to initialize the tonic color selector.
 	 * 
-	 * @param rootColorY	y value of the root color selector.
+	 * @param tonicColorY	y value of the tonic color selector.
 	 */
-	private void addRootColorSelector(int rootColorY)
+	private void addTonicColorSelector(int tonicColorY)
 	{
 		int	labelX			= 10;
 		int	buttonX			= this.leftAlign;
@@ -722,27 +722,27 @@ public class ModuleTemplate {
 		int	textfieldX		= buttonX + buttonWidth + 5;
 		int	textfieldWidth	= 90;
 
-		this.sidebarCP5.addTextlabel("rootColor")
-		.setPosition(labelX, rootColorY + 4)
+		this.sidebarCP5.addTextlabel("tonicColor")
+		.setPosition(labelX, tonicColorY + 4)
 		.setGroup("sidebarGroup")
-		.setValue("Root Color");
+		.setValue("Tonic Color");
 
 		// Buttons, ColorWheels and corresponding Textfields will have id's of 21 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
 
 		// Needs to be added to sidebarCP5 so it is still visible to turn off the ColorWheel:
 		// (name follows conventions for customPitchColor buttons)
-		this.sidebarCP5.addButton("rootColorButton")
-		.setPosition(buttonX, rootColorY)
+		this.sidebarCP5.addButton("tonicColorButton")
+		.setPosition(buttonX, tonicColorY)
 		.setWidth(buttonWidth)
-		.setLabel("Root")
+		.setLabel("Tonic")
 		.setGroup("sidebarGroup")
 		.setId(21);
 
 		//for(int i = 0; i < ; i++)
 		//{
-		this.sidebarCP5.addColorWheel("rootColorWheel")
-		.setPosition(this.leftAlign, rootColorY + 20)
+		this.sidebarCP5.addColorWheel("tonicColorWheel")
+		.setPosition(this.leftAlign, tonicColorY + 20)
 		.setRGB(this.parent.color(255,0,0))
 		.setLabelVisible(false)
 		.setVisible(false)
@@ -750,14 +750,14 @@ public class ModuleTemplate {
 		.setId(22);
 		//}
 
-		this.sidebarCP5.addTextfield("rootColorTF")
-		.setPosition(textfieldX, rootColorY)
+		this.sidebarCP5.addTextfield("tonicColorTF")
+		.setPosition(textfieldX, tonicColorY)
 		.setWidth(textfieldWidth)
 		.setAutoClear(false)
 		.setText("Code#")
 		.setGroup("sidebarGroup")
 		.setId(23);
-	} // addRootColorSelector
+	} // addTonicColorSelector
 
 	/**
 	 * Method called during instantiation to initialize the color style Toggles
@@ -826,20 +826,20 @@ public class ModuleTemplate {
 		int	labelX			= 10;
 
 		int canvasX     	= this.leftAlign;
-		int rootX			= this.leftAlign + colorSelectWidth + colorSelectSpace;
+		int tonicX			= this.leftAlign + colorSelectWidth + colorSelectSpace;
 		int secondColorX	= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 2;
 		int thirdColorX		= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 3;
 
 		String[]	labels	= new String[] { 
 				"Canvas",
-				"Root",
+				"Tonic",
 				"2nd Color",
 				"3rd Color"
 		};
 
 		int[]	xVals	= new int[] {
 				canvasX,
-				rootX,
+				tonicX,
 				secondColorX,
 				thirdColorX
 		};
@@ -893,15 +893,15 @@ public class ModuleTemplate {
 		}
 		/*
 		this.sidebarCP5.addButton("button66")
-		.setPosition(rootX, colorSelectY)
+		.setPosition(tonicX, colorSelectY)
 		.setWidth(colorSelectWidth)
-		.setCaptionLabel("Root")
+		.setCaptionLabel("Tonic")
 		.setGroup("sidebarGroup")
 		.setId(66);
 		this.sidebarCP5.getController("button66").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addColorWheel("colorWheel67")
-		.setPosition(rootX, colorSelectY - 200)
+		.setPosition(tonicX, colorSelectY - 200)
 		.setRGB(this.parent.color(255,0,0))
 		.setLabelVisible(false)
 		.setVisible(false)
@@ -909,7 +909,7 @@ public class ModuleTemplate {
 		.setId(67);
 
 		this.sidebarCP5.addTextfield("textfield68")
-		.setPosition(rootX + colorSelectWidth + colorSelectSpace, colorSelectY)
+		.setPosition(tonicX + colorSelectWidth + colorSelectSpace, colorSelectY)
 		.setWidth(textfieldWidth)
 		.setAutoClear(false)
 		.setVisible(false)
@@ -1205,7 +1205,7 @@ public class ModuleTemplate {
 			}
 		}//hides slider labels
 
-		//this.sidebarCP5.getController("rootColorTF").getCaptionLabel().setVisible(false);
+		//this.sidebarCP5.getController("tonicColorTF").getCaptionLabel().setVisible(false);
 
 		for(int i = 24;i<60; i++){
 			if(i%3 == 2){
@@ -1719,7 +1719,7 @@ public class ModuleTemplate {
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
 	 * 
-	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
+	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
 	 */
 	public void dichromatic_OneRGB(float[] rgbVals)
 	{
@@ -1737,7 +1737,7 @@ public class ModuleTemplate {
 	 * Uses the given HSB color to find the color across it on the HSB wheel,
 	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
 	 * 
-	 * @param hue	float[] of HSB values defining the color at the root of the current scale.
+	 * @param hue	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
 	private void dichromatic_OneHSB(float[] hsbVals)
 	{
@@ -1774,7 +1774,7 @@ public class ModuleTemplate {
 	/**
 	 * This method fills colors with the spectrum of colors between the given rgb colors.
 	 * 
-	 * @param rgbVals1	float[] of rgb values defining rootColor.
+	 * @param rgbVals1	float[] of rgb values defining tonicColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
 	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2, boolean fillFirstToLast)
@@ -1782,7 +1782,43 @@ public class ModuleTemplate {
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
 		} // error checking
+		
+		float	percent		= 100 / this.scaleLength;
+//		percent	= percent / 100;
+		System.out.println("percent = " + percent);
+		
+		for(int i = 0; i < rgbVals1.length; i++)
+		{
+			System.out.print(rgbVals1[i] + ", ");
+		}
+		for(int i = 0; i < rgbVals2.length; i++)
+		{
+			System.out.print(rgbVals2[i] + ", ");
+		}
+		
+		// There will be a difference for red, green, and blue.
+		float	difference;
+		
+		// Loop through red, then green, then blue:
+		for(int i = 0; i < this.colors.length; i++)
+		{			
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				difference	= rgbVals1[j] - rgbVals2[j];
+				System.out.println("j = " + j + "; difference = " + difference);
 
+				System.out.print("(difference * j * percent) = "+ (difference * j * percent) + "; this.colors[" + j + "][0] = " +  + this.colors[j][0]);
+
+				System.out.print("[" + i + "][" + j + "]:" + this.colors[i][j] + ", ");
+				
+				this.colors[i][j]	= this.colors[0][j] - (difference * i * percent / 100);
+				
+//				this.colors[j][i]	= (difference * ( j + 1 ) * this.scaleLength / 100);
+				System.out.print("[" + j + "][" + i + "]:" + this.colors[i][j] + ", ");
+			} // for - j
+		} // for - i
+
+		/*
 		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
 		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
 		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
@@ -1833,12 +1869,14 @@ public class ModuleTemplate {
 		 */
 		// Fill colors with either the contents of the dichromatic color array
 		// or with black, depending on whether or not a scale degree is diatonic: - as of 6/6/2017, no black used here.
-		int	dichromColorPos;
+	//	int	dichromColorPos;
 		/*
 		if(fillFirstToLast)
 		{
-		 */			dichromColorPos	= 0;
-		 for(int i = 0; i < this.colors.length && dichromColorPos < dichromColors.length; i++)
+		 */			
+/*		
+			dichromColorPos	= 0;
+		 for(int i = 0; i < (this.colors.length - 1) && dichromColorPos < dichromColors.length; i++)
 		 {
 			 dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
 
@@ -1846,14 +1884,8 @@ public class ModuleTemplate {
 			 this.colors[i][1]	= dichromColors[dichromColorPos][1];
 			 this.colors[i][2]	= dichromColors[dichromColorPos][2];
 
-			 // TODO: don't think this is necessary.
-			 /*
-			 this.hsbColors[i][0]	= dichromColors[dichromColorPos][0];
-			 this.hsbColors[i][1]	= dichromColors[dichromColorPos][1];
-			 this.hsbColors[i][2]	= dichromColors[dichromColorPos][2];
-			 */
 		 } // for
-
+*/
 
 		 /*
 			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
@@ -1896,7 +1928,7 @@ public class ModuleTemplate {
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
 	 * 
-	 * @param rgbVals	float[] of RGB values defining the color for the root of the scale.
+	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
 	 */
 	public void trichromatic_OneRGB(float[] rgbVals)
 	{
@@ -1911,12 +1943,12 @@ public class ModuleTemplate {
 	} // trichromatic_OneRGB
 
 	/**
-	 * ** This method should not be called w/out setting rootColor before hand.
+	 * ** This method should not be called w/out setting tonicColor before hand.
 	 * 
 	 * Uses the given HSB color to find the color across it on the HSB wheel,
 	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
 	 *
-	 * @param hsbVals	float[] of HSB values defining the color at the root of the current scale.
+	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
 	private void trichromatic_OneHSB(float[] hsbVals)
 	{
@@ -2175,10 +2207,6 @@ public class ModuleTemplate {
 			// Converts this position of hsbColors from RGB to HSB:
 			Color.RGBtoHSB((int)hsbColors[i][0], (int)hsbColors[i][1], (int)hsbColors[i][2], hsb);
 			
-			System.out.println("hsb[" + i + "][0] = " + hsb[0] + 
-					"; hsb[" + i + "][1] = " + hsb[1] +
-					"; hsb[" + i + "][2] = " + hsb[2]);
-			
 			// Applies the status of the sliders to the newly-converted color:
 			hsb[0] = Math.max(Math.min(hsb[0] + this.hueSatBrightnessMod[0], 1), 0);
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
@@ -2369,8 +2397,8 @@ public class ModuleTemplate {
 				this.displaySidebar();
 			}
 
-			// Attempts to make the list show in front of rootColor button
-			// (fruitless because rootColor has been brought to the front; I moved it over instead.
+			// Attempts to make the list show in front of tonicColor button
+			// (fruitless because tonicColor has been brought to the front; I moved it over instead.
 			//  - but this can help show how to access the different types of the items).
 			/*
 			ScrollableList	sl	= ((ScrollableList)controlEvent.getController());
@@ -2529,11 +2557,11 @@ public class ModuleTemplate {
 
 			/*
 			 * TODO: probably getting rid of this and calling only in updateColors:
-			// Dichromatic is calculated differently depending on whether root or 2nd color is being changed,
+			// Dichromatic is calculated differently depending on whether tonic or 2nd color is being changed,
 			// so has to be set here rather than updateColors:
 			if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
 			{
-				// root color - fill forward:
+				// tonic color - fill forward:
 				if(id == 67)
 				{
 					this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
@@ -2580,7 +2608,7 @@ public class ModuleTemplate {
 					blue	= Math.min(255, Math.max(0, blue));
 
 					// Set corresponding ColorWheel:
-					//					Color	rgbColor	= new Color(this.rootColor[0], this.rootColor[1], this.rootColor[2]);
+					//					Color	rgbColor	= new Color(this.tonicColor[0], this.tonicColor[1], this.tonicColor[2]);
 					Color	rgbColor	= new Color(red, green, blue);
 					int		rgbInt		= rgbColor.getRGB();
 					((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 1))).setRGB(rgbInt);
@@ -2650,7 +2678,7 @@ public class ModuleTemplate {
 				}
 			}
 */
-			// Set root color/call correct function for the new colorStyle:
+			// Set tonic color/call correct function for the new colorStyle:
 			this.updateColors(curToggle.internalValue());
 
 			// Turn off the other Toggles:
@@ -2803,7 +2831,7 @@ public class ModuleTemplate {
 	 * Method to calculate the position in colors that should change.
 	 * For example, the custom pitch color buttons each correspond to a note,
 	 * whose position needs to be determined by curKey and majMinChrom,
-	 * and Root, 2nd Color and 3rd Color buttons differ based on ColorStyle and scale quality.
+	 * and Tonic, 2nd Color and 3rd Color buttons differ based on ColorStyle and scale quality.
 	 * 
 	 * @param id	int denoting the id of the current Event
 	 * @return	the position in colors that is to be changed
@@ -2833,7 +2861,7 @@ public class ModuleTemplate {
 			}
 
 
-			// Root:
+			// Tonic:
 			if(id == 66)	{	notePos	= 0;	}
 
 			// 2nd Color:
