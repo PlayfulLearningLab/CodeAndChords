@@ -1342,10 +1342,16 @@ public class ModuleTemplate {
 		// Rainbow:
 		if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 		{
-//			this.rainbow();
+			//			// if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button69") != null)
+			{
+				this.sidebarCP5.getController("button69").setLock(true);
+			}
+			if(this.sidebarCP5.getController("button72") != null)
+			{
+				this.sidebarCP5.getController("button72").setLock(true);
+			}
 
-			// TODO: commenting out all applyHSBModulate() calls except those made by directly moving the sliders.
-//			this.applyHSBModulate(colors, hsbColors);
 		}
 
 		// Dichromatic:
@@ -1366,21 +1372,16 @@ public class ModuleTemplate {
 				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
 			}
 
-//			this.applyHSBModulate(colors, hsbColors);
-			/*		
-			for(int i = 0; i < this.colors.length; i++)
+			// Unlock 2nd Color Button, but keep 3rd Color locked:
+			// if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button69") != null)
 			{
-				System.out.println(i + ":");
-
-				for(int j = 0; j < this.colors[i].length; j++)
-				{
-					System.out.print(colors[i][j] + ", ");
-				} // for - j
-
-				System.out.println();
-
-			} // for - i
-			 */
+				this.sidebarCP5.getController("button69").setLock(false);
+			}
+			if(this.sidebarCP5.getController("button72") != null)
+			{
+				this.sidebarCP5.getController("button72").setLock(true);
+			}
 		} // Dichromatic
 
 		// Trichromatic:
@@ -1413,9 +1414,17 @@ public class ModuleTemplate {
 			} // else
 
 
-			//this.trichromatic_OneRGB(this.hsbColors[0]);
-//			this.applyHSBModulate(colors, hsbColors);
-		}
+			// Unlock all for Trichromatic:
+			// if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button69") != null)
+			{
+				this.sidebarCP5.getController("button69").setLock(false);
+			}
+			if(this.sidebarCP5.getController("button72") != null)
+			{
+				this.sidebarCP5.getController("button72").setLock(false);
+			}
+		} // Trichromatic
 
 		// Custom:
 		if(this.curColorStyle == ModuleTemplate.CS_CUSTOM)
@@ -1436,8 +1445,8 @@ public class ModuleTemplate {
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
 
 
-//			this.applyColorModulate(this.colors, this.originalColors);
-//			this.applyHSBModulate(this.colors, this.hsbColors);
+			//			this.applyColorModulate(this.colors, this.originalColors);
+			//			this.applyHSBModulate(this.colors, this.hsbColors);
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
@@ -1782,146 +1791,36 @@ public class ModuleTemplate {
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
 		} // error checking
-		
+
+		// Percent should be the percent of the difference between the first and second colors,
+		// but the math doesn't work if we divide by 100 here, so that will happen later.
 		float	percent		= 100 / this.scaleLength;
-//		percent	= percent / 100;
-		System.out.println("percent = " + percent);
-		
-		for(int i = 0; i < rgbVals1.length; i++)
-		{
-			System.out.print(rgbVals1[i] + ", ");
-		}
-		for(int i = 0; i < rgbVals2.length; i++)
-		{
-			System.out.print(rgbVals2[i] + ", ");
-		}
-		
+
 		// There will be a difference for red, green, and blue.
 		float	difference;
-		
-		// Loop through red, then green, then blue:
-		for(int i = 0; i < this.colors.length; i++)
-		{			
-			for(int j = 0; j < this.colors[i].length; j++)
+
+		// Loop through red, then green, then blue
+		// (could do it like normal, but then would have to calculate difference each time;
+		// those who save processor cycles store up treasure in Heaven):
+		for(int i = 0; i < 3; i++)
+		{
+			difference	= rgbVals1[i] - rgbVals2[i];
+
+			for(int j = 0; j < this.colors.length - 1; j++)
 			{
-				difference	= rgbVals1[j] - rgbVals2[j];
-				System.out.println("j = " + j + "; difference = " + difference);
-
-				System.out.print("(difference * j * percent) = "+ (difference * j * percent) + "; this.colors[" + j + "][0] = " +  + this.colors[j][0]);
-
-				System.out.print("[" + i + "][" + j + "]:" + this.colors[i][j] + ", ");
-				
-				this.colors[i][j]	= this.colors[0][j] - (difference * i * percent / 100);
-				
-//				this.colors[j][i]	= (difference * ( j + 1 ) * this.scaleLength / 100);
-				System.out.print("[" + j + "][" + i + "]:" + this.colors[i][j] + ", ");
+				// Take the percent of the difference multiplied by the position in the array,
+				// subtracting it from the first color to deal with negatives correctly
+				// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
+				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
 			} // for - j
 		} // for - i
 
-		/*
-		float	redDelta	= (rgbVals1[0] - rgbVals2[0]) / this.scaleLength;
-		float	greenDelta	= (rgbVals1[1] - rgbVals2[1]) / this.scaleLength;
-		float	blueDelta	= (rgbVals1[2] - rgbVals2[2]) / this.scaleLength;
-
-		float	finalRedDelta	= (rgbVals1[0] - rgbVals2[0]) - (redDelta * (this.scaleLength - 1));
-		float	finalBlueDelta	= (rgbVals1[1] - rgbVals2[1]) - (greenDelta * (this.scaleLength - 1));
-		float	finalGreenDelta	= (rgbVals1[2] - rgbVals2[2]) - (blueDelta * (this.scaleLength - 1));
-
-		//		System.out.println("redDelta = " + redDelta + ", greenDelta = " + greenDelta + ", blueDelta = " + blueDelta);
-		if( (rgbVals1[0] - rgbVals2[0]) != (redDelta * this.scaleLength))
+		// Fill the last color manually, because if we don't,
+		// it can't seem to calculate correctly when the tonic color is changed:
+		for(int i = 0; i < rgbVals2.length; i++)
 		{
-			System.out.println("red difference (" + (rgbVals1[0] - rgbVals2[0]) + ") not redDelta * this.scaleLength (" + redDelta * this.scaleLength);
-
+			this.colors[this.colors.length - 1][i]	= rgbVals2[i];
 		}
-
-		if( (rgbVals1[1] - rgbVals2[1]) != (greenDelta * this.scaleLength))
-		{
-			System.out.println("green difference (" + (rgbVals1[1] - rgbVals2[1]) + ") not greenDelta * this.scaleLength (" + greenDelta * this.scaleLength);
-		}
-
-		if( (rgbVals1[2] - rgbVals2[2]) != (blueDelta * this.scaleLength))
-		{
-			System.out.println("blue difference (" + (rgbVals1[2] - rgbVals2[2]) + ") not blueDelta * this.scaleLength (" + blueDelta * this.scaleLength);
-		}
-
-		// Create an array the length of the current scale
-		// and fill it with the dichromatic spectrum:
-		float[][]	dichromColors	= new float[this.scaleLength][3];
-
-		for(int i = 0; i < rgbVals1.length; i++)
-		{
-			dichromColors[0][i]	= rgbVals1[i];
-		}
-		for(int i = 1; i < (dichromColors.length); i++)
-		{
-			for(int j = 0; j < this.colors[i].length; j++)
-			{
-				dichromColors[i][0]	= dichromColors[i - 1][0] - redDelta;
-				dichromColors[i][1]	= dichromColors[i - 1][1] - greenDelta;
-				dichromColors[i][2]	= dichromColors[i - 1][2] - blueDelta;
-			} // for - j
-		} // for - i
-
-		/*
-		dichromColors[dichromColors.length - 1][0]	= dichromColors[dichromColors.length - 2][0] - finalRedDelta;
-		dichromColors[dichromColors.length - 1][1]	= dichromColors[dichromColors.length - 2][1] - finalGreenDelta;
-		dichromColors[dichromColors.length - 1][2]	= dichromColors[dichromColors.length - 2][2] - finalBlueDelta;
-		 */
-		// Fill colors with either the contents of the dichromatic color array
-		// or with black, depending on whether or not a scale degree is diatonic: - as of 6/6/2017, no black used here.
-	//	int	dichromColorPos;
-		/*
-		if(fillFirstToLast)
-		{
-		 */			
-/*		
-			dichromColorPos	= 0;
-		 for(int i = 0; i < (this.colors.length - 1) && dichromColorPos < dichromColors.length; i++)
-		 {
-			 dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
-
-			 this.colors[i][0]	= dichromColors[dichromColorPos][0];
-			 this.colors[i][1]	= dichromColors[dichromColorPos][1];
-			 this.colors[i][2]	= dichromColors[dichromColorPos][2];
-
-		 } // for
-*/
-
-		 /*
-			if(this.arrayContains(this.scaleDegrees[this.majMinChrom], i) != -1)
-			{
-				// if scale degree is diatonic:
-				this.colors[i][0]	= dichromColors[dichromColorPos][0];
-				this.colors[i][1]	= dichromColors[dichromColorPos][1];
-				this.colors[i][2]	= dichromColors[dichromColorPos][2];
-
-				dichromColorPos	= dichromColorPos + 1;
-			} else {
-				// if the scale degree is not diatonic:
-				this.colors[i]	= new float[] { 0, 0, 0 };
-			}
-		  */
-		 /*			} // for - filling colors, first to last
-		} else
-		{
-			// filling backwards:
-			dichromColorPos	= dichromColors.length - 1;
-
-			for(int i = this.colors.length - 1; i > -1 && dichromColorPos > -1; i--)
-			{
-				dichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
-
-				this.colors[i][0]	= dichromColors[dichromColorPos][0];
-				this.colors[i][1]	= dichromColors[dichromColorPos][1];
-				this.colors[i][2]	= dichromColors[dichromColorPos][2];
-
-				this.hsbColors[i][0]	= dichromColors[dichromColorPos][0];
-				this.hsbColors[i][1]	= dichromColors[dichromColorPos][1];
-				this.hsbColors[i][2]	= dichromColors[dichromColorPos][2];
-
-			} // for - filling colors, last to first
-		}
-		  */
 	} // dichromatic_TwoRGB
 
 	/**
@@ -2082,7 +1981,7 @@ public class ModuleTemplate {
 			this.hsbColors[i][0]	= trichromColors[trichromColorPos][0];
 			this.hsbColors[i][1]	= trichromColors[trichromColorPos][1];
 			this.hsbColors[i][2]	= trichromColors[trichromColorPos][2];
-*/
+			 */
 			/*
 				// note is diatonic
 				this.colors[i][0]	= trichromColors[trichromColorPos][0];
@@ -2182,9 +2081,9 @@ public class ModuleTemplate {
 
 			} // for - j
 		} // for - i
-		
+
 		this.fillHSBColors();
-		
+
 		this.applyHSBModulate(this.colors, this.hsbColors);
 	} // applyColorModulate
 
@@ -2206,7 +2105,7 @@ public class ModuleTemplate {
 		{
 			// Converts this position of hsbColors from RGB to HSB:
 			Color.RGBtoHSB((int)hsbColors[i][0], (int)hsbColors[i][1], (int)hsbColors[i][2], hsb);
-			
+
 			// Applies the status of the sliders to the newly-converted color:
 			hsb[0] = Math.max(Math.min(hsb[0] + this.hueSatBrightnessMod[0], 1), 0);
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
@@ -2384,7 +2283,7 @@ public class ModuleTemplate {
 			this.curKey	= key;
 			this.curKeyOffset = keyPos;
 			this.curKeyEnharmonicOffset	= this.enharmonicPos[getCurKeyOffset()];
-			
+
 			System.out.println("curKey = " + this.curKey + "; curKeyOffset = " + this.curKeyOffset + 
 					"; curKeyEnharmonicOffset = " + this.curKeyEnharmonicOffset);
 
@@ -2509,13 +2408,10 @@ public class ModuleTemplate {
 		// Custom pitch ColorWheels
 		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 1))
 		{
-			System.out.println("Here for all buttons, yes?");
 			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
-			
-			System.out.println("curCW.getValue() = " + curCW.getValue());
-			
-			
+
+
 			int	rgbColor	= curCW.getRGB();
 			Color	color	= new Color(rgbColor);
 
@@ -2526,8 +2422,6 @@ public class ModuleTemplate {
 
 			int	notePos;	// the position in colors that is to be changed.
 			id	= controlEvent.getId();
-			
-			System.out.println("id = " + id + "; color = " + "rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
 
 			// canvas color (does not affect notes):
 			if(id == 64)
@@ -2662,7 +2556,7 @@ public class ModuleTemplate {
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
-			
+
 			this.fillOriginalColors();
 			this.fillHSBColors();
 			this.resetModulateSlidersTextfields();
@@ -2677,7 +2571,7 @@ public class ModuleTemplate {
 					this.originalColors[i][j]	= this.colors[i][j];
 				}
 			}
-*/
+			 */
 			// Set tonic color/call correct function for the new colorStyle:
 			this.updateColors(curToggle.internalValue());
 
@@ -2714,52 +2608,15 @@ public class ModuleTemplate {
 			if(this.curColorStyle == ModuleTemplate.CS_RAINBOW)
 			{
 				this.rainbow();
-				
-				// if avoids errors during instantiation:
-				if(this.sidebarCP5.getController("button69") != null)
-				{
-					this.sidebarCP5.getController("button69").setLock(true);
-				}
-				if(this.sidebarCP5.getController("button72") != null)
-				{
-					this.sidebarCP5.getController("button72").setLock(true);
-				}
 			}
 
-			// Unlock 2nd Color for Dichromatic, but keep 3rd Color locked:
-			if(this.curColorStyle == ModuleTemplate.CS_DICHROM)
-			{
-				// if avoids errors during instantiation:
-				if(this.sidebarCP5.getController("button69") != null)
-				{
-					this.sidebarCP5.getController("button69").setLock(false);
-				}
-				if(this.sidebarCP5.getController("button72") != null)
-				{
-					this.sidebarCP5.getController("button72").setLock(true);
-				}
-			}
-
-			// Unlock all for Trichromatic:
-			if(this.curColorStyle == ModuleTemplate.CS_TRICHROM)
-			{
-				// if avoids errors during instantiation:
-				if(this.sidebarCP5.getController("button69") != null)
-				{
-					this.sidebarCP5.getController("button69").setLock(false);
-				}
-				if(this.sidebarCP5.getController("button72") != null)
-				{
-					this.sidebarCP5.getController("button72").setLock(false);
-				}
-			}
 
 		} // colorStyle buttons
 
 		// ModulateSliders
 
 	} // controlEvent
-	
+
 	/**
 	 * Puts the contents of colors into originalColors.
 	 */
@@ -2769,11 +2626,11 @@ public class ModuleTemplate {
 		{
 			throw new IllegalArgumentException("ModuleTemplate.fillOriginalColors: this.colors is null.");
 		}
-		
+
 		if(this.originalColors == null) {
 			this.originalColors = new float[this.colors.length][3];
 		}
-		
+
 		for(int i = 0; i < this.originalColors.length; i++)
 		{
 			for(int j = 0; j < this.originalColors[i].length; j++)
@@ -2782,7 +2639,7 @@ public class ModuleTemplate {
 			}
 		} // for
 	} // fillOriginalColors
-	
+
 	/**
 	 * Puts the contents of this.colors into this.hsbColors.
 	 */
@@ -2792,11 +2649,11 @@ public class ModuleTemplate {
 		{
 			throw new IllegalArgumentException("ModuleTemplate.fillHSBColors: this.colors is null.");
 		}
-		
+
 		if(this.hsbColors == null) {
 			this.hsbColors = new float[this.colors.length][3];
 		}
-		
+
 		for(int i = 0; i < this.hsbColors.length; i++)
 		{
 			for(int j = 0; j < this.hsbColors[i].length; j++)
@@ -2805,21 +2662,21 @@ public class ModuleTemplate {
 			}
 		} // for
 	} // fillhsbColors
-	
+
 	/**
 	 * Sets the Sliders and Textfields for RGB and HSB color modulate to 0.
 	 */
 	private void resetModulateSlidersTextfields()
 	{
 		int	id	= 8;
-		
+
 		for(int i = 0; i < 6 && id < 20; i++)
 		{
 			System.out.println("id = " + id);
 			this.sidebarCP5.getController("slider" + id).setValue(0);
-			
+
 			id	= id + 1;
-			
+
 			//TODO: might be the wrong kind of value - might need to be setStringValue():
 			this.sidebarCP5.getController("textfield" + id).setValue(0);
 
@@ -2840,13 +2697,13 @@ public class ModuleTemplate {
 	{
 		int	notePos;
 
-//		notePos	= ((id + 2) / 3) - 9;
+		//		notePos	= ((id + 2) / 3) - 9;
 		//		notePos	= (notePos + keyAddVal - 3 + this.colors.length) % this.colors.length;
-		
+
 		// Bring the id down to the nearest multiple of 3: 
 		// (this way, the same equation can be used whether the call comes from a Button, ColorWheel, or Textfield.
 		id	= id - (id % 3);
-		
+
 		// Dividing by 3 makes all the id's consecutive numbers (rather than multiples of 3);
 		// subtracting 8 brings A to 0, A# to 1, B to 2, etc;
 		// subtracting curKeyEnharmonicOffset adjusts for the particular key;
