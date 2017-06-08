@@ -18,6 +18,11 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
+ * 06/08/2017 - ModuleTemplate_01_03
+ * Emily Meuer update:
+ *  - Trichromatic and Dichromatic work completely, with independent color select, too.
+ *  - VOLUME THROUGHPUT ISSUE is SOLVED!!! :D PTL!
+ * 
  * 06/07/2017
  * Emily Meuer update:
  *  - working HSB and RGB modulate sliders
