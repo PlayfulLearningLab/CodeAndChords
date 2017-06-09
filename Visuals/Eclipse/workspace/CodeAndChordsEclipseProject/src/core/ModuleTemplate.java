@@ -650,7 +650,6 @@ public class ModuleTemplate {
 		.setInternalValue(1);
 		this.sidebarCP5.getController("minor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-
 		this.sidebarCP5.addToggle("chrom")
 		.setPosition(chromX, keyY)
 		.setWidth(toggleWidth)
@@ -662,22 +661,49 @@ public class ModuleTemplate {
 		((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 		
 		// Guide Tone pop-out Button:
-		this.sidebarCP5.addButton("guideToneButton")
+		this.sidebarCP5.addToggle("guideToneButton")
 		.setPosition(guideToneX, keyY)
 		.setWidth(buttonWidth)
 		.setCaptionLabel("Guide Tones")
+		.setValue(false)
 		.setGroup("sidebarGroup");
 		this.sidebarCP5.getController("guideToneButton").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
-		Color	transparentBlack	= new Color(0, 0, 0, 200);
+		// "Pop-out with range drop-down and envelope preset Buttons" and BPM.
+		
+		Color	transparentBlack	= new Color(0, 0, 0, 220);
 		int		transBlackInt		= transparentBlack.getRGB();
+		
+		int		boxWidth	= 200;
+		int		boxHeight	= 150;
+		
+		int		rangeWidth		= 80;
+		int		popOutSpacer	= 20;
+		
+		int		rangeY			= keyY + 40;
 
 		this.sidebarCP5.addBackground("guideToneBackground")
-		.setPosition(this.parent.width/3, keyY)
-		.setSize(100, 100)
+		.setPosition(guideToneX, keyY + 20)
+		.setSize(boxWidth, boxHeight)
 		.setBackgroundColor(transBlackInt)
 		.setGroup("sidebarGroup")
 		.setVisible(false);
+		
+		// ArrayList of range options for the dropdown.
+		
+		this.sidebarCP5.addScrollableList("rangeDropdown")
+		.setPosition(guideToneX + popOutSpacer, rangeY)
+		.setWidth(rangeWidth)
+		.setHeight(boxHeight - (popOutSpacer * 2))
+		.setBarHeight(18)
+//		.setItems(this.allNotes)
+		.setOpen(false)
+		.setLabel("Select the range:")		// Or maybe this should be set to the default value?
+		.setGroup("sidebarGroup")
+		.bringToFront()
+		.setVisible(false)
+		.getCaptionLabel().toUpperCase(false);
+
 		
 	} // addKeySelector
 
@@ -2530,7 +2556,11 @@ public class ModuleTemplate {
 		// Guide Tone Generator:
 		if(controlEvent.getName().equals("guideToneButton"))
 		{
-			this.sidebarCP5.getController("guideToneBackground").setVisible(((Button) controlEvent.getController()).getBooleanValue());
+			System.out.println("((Toggle) controlEvent.getController()).getBooleanValue() = " + ((Toggle) controlEvent.getController()).getBooleanValue());
+			this.sidebarCP5.getGroup("guideTones").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
+//			this.sidebarCP5.getGroup("guideToneBackground").setVisible(true);
+			this.sidebarCP5.getGroup("guideTones").bringToFront();
+			
 		}
 
 	} // controlEvent

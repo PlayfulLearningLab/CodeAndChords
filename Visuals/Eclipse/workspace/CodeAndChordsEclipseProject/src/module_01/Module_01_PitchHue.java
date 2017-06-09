@@ -271,8 +271,8 @@ public class Module_01_PitchHue extends PApplet
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
-			//println("Module_01_02.controlEvent: caught Exception " + e);
-			e.printStackTrace();
+			println("Module_01_02.controlEvent: caught Exception " + e);
+//			e.printStackTrace();
 		}
 	} // controlEvent
 
