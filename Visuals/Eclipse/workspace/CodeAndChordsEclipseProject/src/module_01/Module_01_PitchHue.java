@@ -55,9 +55,21 @@ public class Module_01_PitchHue extends PApplet
 	private boolean		nowBelow			= false;
 	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
 	private boolean		colorReached		= false;
-	private int			attackReleaseTransition	= 0;	// 0 = attack, 1 = release, 2 = transition
+	private int			attRelTran	= 0;	// 0 = attack, 1 = release, 2 = transition
+	
+	private	float[]		colorRange	= new float[3];
+	private	float[]		colorAdd	= new float[3];
 
-
+	// TODO: remove after testing to get timing working
+	private	int		counter		= 0;
+	private	int[][]	testColors	= new int[][] {
+			new int[] { 255, 255, 255 },
+			new int[] { 150, 50, 150 }
+	};
+	private	int[]	curColors	= new int[3];
+	// (remove the above ^)
+	
+	
 	public void settings()
 	{
 		size(925, 520);
@@ -90,13 +102,12 @@ public class Module_01_PitchHue extends PApplet
 			//curHuePos	= 0;
 		}
 
-		curHue	= new float[] { 255, 255, 255 };
+		this.curHue	= new float[] { 255, 255, 255 };
 		// The following line caused problems!
 		// (That is, it made that position in colors follow curHue as the latter changed.)
 		// Never use it.
 //		curHue	= this.moduleTemplate.colors[curHuePos];
 
-	
 	} // setup()
 
 	public void draw()
@@ -106,6 +117,7 @@ public class Module_01_PitchHue extends PApplet
 		{
 			this.moduleTemplate.setMenuVal();
 		}
+		
 		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
@@ -130,7 +142,7 @@ public class Module_01_PitchHue extends PApplet
 //					println(newHuePos + " is the position in this scale.");
 //				} // if - check if degree is in the scale
 
-//			} // if - current scale is Major or Minor		
+//			} // if - current scale is Major or Minor
 
 
 			if(newHuePos > this.moduleTemplate.colors.length || newHuePos < 0)	{
@@ -143,18 +155,45 @@ public class Module_01_PitchHue extends PApplet
 			if (newHuePos != goalHuePos) {
 				goalHuePos  = newHuePos;
 			} // if
-			goalHue  = this.moduleTemplate.colors[goalHuePos];
+			this.goalHue  = this.moduleTemplate.colors[goalHuePos];
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
 			
-			goalHue	= new float[] { 
+			this.goalHue	= new float[] { 
 					this.moduleTemplate.getCanvasColor()[0],
 					this.moduleTemplate.getCanvasColor()[1],
 					this.moduleTemplate.getCanvasColor()[2]
 			};
 			
-		} // else
+		} // else - above/below threshold
+		
+		/*
+		// Calculate color ranges:
+		// TODO: calculating this here may not work
+		for(int i = 0; i < this.curHue.length; i++)
+		{
+			this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
+			
+			// divide the attack/release/transition value by 100
+			// and divide colorRange by that value to find the amount to add each 100 millis.
+			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
+		}
+*/
+		
+		if(this.moduleTemplate.getCheckpoint() < this.millis())
+		{
+			for(int i = 0; i < 3; i++)
+			{
+				if(this.curHue[i] < this.goalHue[i])
+				{
+					this.curHue[i]	=	this.curHue[i] + this.colorAdd[i];
+				} else if(this.curHue[i] > this.goalHue[i])
+				{
+					this.curHue[i]	=	this.curHue[i] - this.colorAdd[i];
+				}
+			} // for - i
+		} // if - adding every 100 millis
 
 		
 		float	lowBound;
@@ -162,22 +201,24 @@ public class Module_01_PitchHue extends PApplet
 
 		for (int i = 0; i < 3; i++)
 		{
-			lowBound	= goalHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
-			highBound	= goalHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+//			lowBound	= this.goalHue[i] - this.moduleTemplate.getART(attRelTran);
+//			highBound	= this.goalHue[i] + this.moduleTemplate.getART(attRelTran);
 			
+			lowBound	= this.goalHue[i] - 5;
+			highBound	= this.goalHue[i] + 5;
 			
 			// First, check colors and add/subtract as necessary:
-			if (curHue[i] >= highBound)
+			if (this.curHue[i] >= highBound)
 			{
-				curHue[i] = curHue[i] - this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
-			} else if (curHue[i] <= lowBound)
+				this.curHue[i] = this.curHue[i] - this.moduleTemplate.getART(attRelTran);
+			} else if (this.curHue[i] <= lowBound)
 			{
-				curHue[i]  = curHue[i] + this.moduleTemplate.getAttackReleaseTransition(attackReleaseTransition);
+				this.curHue[i]  = this.curHue[i] + this.moduleTemplate.getART(attRelTran);
 			} // if - adjust colors
 			
 			
 			// Now check colors for whether they have moved into the boundaries:
-			if(curHue[i] < highBound && curHue[i] > lowBound) {
+			if(this.curHue[i] < highBound && this.curHue[i] > lowBound) {
 				// if here, color has been reached.
 				this.colorReachedArray[i]	= true;
 			} else {
@@ -188,8 +229,8 @@ public class Module_01_PitchHue extends PApplet
 		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
-		//  background(curHue[0], curHue[1], curHue[2]);
-		fill(curHue[0], curHue[1], curHue[2]);		
+		//  background(this.curHue[0], this.curHue[1], this.curHue[2]);
+		fill(this.curHue[0], this.curHue[1], this.curHue[2]);		
 		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
 //		stroke(255);
 
@@ -206,14 +247,27 @@ public class Module_01_PitchHue extends PApplet
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
 		if(!this.nowBelow && !colorReached) {
-			this.attackReleaseTransition	= 0;
+			this.attRelTran	= 0;
 			
 		} else if(!this.nowBelow && colorReached) {
 			// Or, if coming from one super-threshold note to another, use the transition value:
-			this.attackReleaseTransition	= 2;
+			this.attRelTran	= 2;
 		} else if(this.nowBelow) {
 			// Or, if volume fell below the threshold, switch to release value:
-			this.attackReleaseTransition	= 1;
+			this.attRelTran	= 1;
+		}
+		
+		if(colorReached)
+		{
+			// Calculate color ranges:
+			for(int i = 0; i < this.curHue.length; i++)
+			{
+				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
+				
+				// divide the attack/release/transition value by 100
+				// and divide colorRange by that value to find the amount to add each 100 millis.
+				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
+			}
 		}
 		
 	} // draw()

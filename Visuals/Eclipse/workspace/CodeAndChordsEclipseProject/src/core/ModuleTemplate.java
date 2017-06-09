@@ -203,6 +203,8 @@ public class ModuleTemplate {
 	private	boolean	dichromFlag;
 	private	boolean	trichromFlag;
 
+	private	int		checkpoint;
+
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
@@ -262,6 +264,8 @@ public class ModuleTemplate {
 		this.attackReleaseTransition	= new float[3];
 		this.redGreenBlueMod		 	= new float[3];
 		this.hueSatBrightnessMod        = new float[3];
+
+		this.checkpoint	= this.parent.millis() + 100;
 
 
 		//TODO: make initModuleTemplate() private again, once it can be called from constructor.
@@ -1380,7 +1384,7 @@ public class ModuleTemplate {
 					System.out.println("    this.colors[3][" + i + "] = " + this.colors[3][i]);
 				}
 				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
-				
+
 			}
 
 			// Unlock 2nd Color Button, but keep 3rd Color locked:
@@ -2419,7 +2423,7 @@ public class ModuleTemplate {
 			this.resetModulateSlidersTextfields();
 			this.applyColorModulate(this.colors, this.originalColors);
 
-//			this.updateColors(this.curColorStyle);
+			//			this.updateColors(this.curColorStyle);
 		} // custom pitch color selectors (i.e., show color wheel)
 
 		// Custom pitch ColorWheels
@@ -2430,7 +2434,7 @@ public class ModuleTemplate {
 			{
 				this.updateColors(this.curColorStyle);
 			} // if
-			
+
 			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
@@ -2471,7 +2475,7 @@ public class ModuleTemplate {
 
 			}
 
-//			this.updateColors(this.curColorStyle);
+			//			this.updateColors(this.curColorStyle);
 
 		} // custom pitch colorWheels
 
@@ -2480,8 +2484,8 @@ public class ModuleTemplate {
 		{
 			// This call has to happen early on in the method so that, after making the dichrom/trichrom spectrum,
 			// individual colors can be changed independently of the rest.
-//			this.updateColors(this.curColorStyle);
-			
+			//			this.updateColors(this.curColorStyle);
+
 			id	= controlEvent.getId();
 			// Getting color value from the Textfield:
 			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
@@ -2680,6 +2684,7 @@ public class ModuleTemplate {
 
 		for(int i = 0; i < 6 && id < 20; i++)
 		{
+			System.out.println("resetModulateSlidersTextfields: id = " + id);
 			this.sidebarCP5.getController("slider" + id).setValue(0);
 
 			id	= id + 1;
@@ -2795,15 +2800,15 @@ public class ModuleTemplate {
 	}
 
 
-	public float getAttackReleaseTransition(int arORt)
+	public float getART(int arORt)
 	{
 		if(arORt < 0 || arORt > this.attackReleaseTransition.length)
 		{
-			throw new IllegalArgumentException("ModuleTemplate.getAttackReleaseTransition: parameter " + arORt + " is not a valid position in the array this.attackReleaseTransition.");
+			throw new IllegalArgumentException("ModuleTemplate.getART: parameter " + arORt + " is not a valid position in the array this.attackReleaseTransition.");
 		} // error checking
 
 		return	this.attackReleaseTransition[arORt];
-	} // getAttackReleaseTransition
+	} // getART
 
 	public float getRedModulate() {
 		return this.redGreenBlueMod[0];
@@ -2837,6 +2842,10 @@ public class ModuleTemplate {
 	{
 		return this.canvasColor;
 	}
+
+	public int getCheckpoint()				{	return this.checkpoint;	}
+	
+	public void setCheckpoint(int newVal)	{	this.checkpoint	= newVal;	}
 
 
 
