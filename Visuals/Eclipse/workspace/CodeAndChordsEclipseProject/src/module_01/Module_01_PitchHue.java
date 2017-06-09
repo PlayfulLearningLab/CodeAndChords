@@ -106,6 +106,15 @@ public class Module_01_PitchHue extends PApplet
 		// (That is, it made that position in colors follow curHue as the latter changed.)
 		// Never use it.
 		//		curHue	= this.moduleTemplate.colors[curHuePos];
+		
+		for(int i = 0; i < this.curHue.length; i++)
+		{
+			this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
+			
+			// divide the attack/release/transition value by 100
+			// and divide colorRange by that value to find the amount to add each 100 millis.
+			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
+		}
 
 
 	} // setup()
@@ -192,19 +201,14 @@ public class Module_01_PitchHue extends PApplet
 					this.curHue[i]	=	this.curHue[i] - this.colorAdd[i];
 				}
 			} // for - i
+			
+			this.moduleTemplate.setCheckpoint(this.millis() + 100);
 		} // if - adding every 100 millis
 
 
 		float	lowBound;
 		float	highBound;
 
-		float	colorRange;
-		float	sections;
-		float	addThis;
-		float	waitTime;
-		float	checkpoint;
-
-		float	art;
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -218,10 +222,10 @@ public class Module_01_PitchHue extends PApplet
 			// First, check colors and add/subtract as necessary:
 			if (this.curHue[i] >= highBound)
 			{
-				this.curHue[i] = this.curHue[i] - this.moduleTemplate.getART(attRelTran);
+//				this.curHue[i] = this.curHue[i] - this.moduleTemplate.getART(attRelTran);
 			} else if (this.curHue[i] <= lowBound)
 			{
-				this.curHue[i]  = this.curHue[i] + this.moduleTemplate.getART(attRelTran);
+//				this.curHue[i]  = this.curHue[i] + this.moduleTemplate.getART(attRelTran);
 			} // if - adjust colors
 
 
@@ -249,12 +253,14 @@ public class Module_01_PitchHue extends PApplet
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		}
+		
+		int	oldART	= this.attRelTran;
 
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
 		if(!this.nowBelow && !colorReached) 
 		{	
-			this.attRelTran	= 0;	
+			this.attRelTran	= 0;
 		} else if(!this.nowBelow && colorReached) {
 			// Or, if coming from one super-threshold note to another, use the transition value:
 			this.attRelTran	= 2;
@@ -263,8 +269,10 @@ public class Module_01_PitchHue extends PApplet
 			this.attRelTran	= 1;
 		}
 		
-		if(colorReached)
+		if(this.attRelTran != oldART)
 		{
+			System.out.println("new attRelTran value: " + this.attRelTran);
+			
 			// Calculate color ranges:
 			for(int i = 0; i < this.curHue.length; i++)
 			{
@@ -274,7 +282,7 @@ public class Module_01_PitchHue extends PApplet
 				// and divide colorRange by that value to find the amount to add each 100 millis.
 				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
 			}
-		}
+		} // if
 
 	} // draw()
 

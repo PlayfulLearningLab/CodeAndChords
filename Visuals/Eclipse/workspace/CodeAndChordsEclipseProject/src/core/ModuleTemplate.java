@@ -533,6 +533,7 @@ public class ModuleTemplate {
 		int	id	= 0;
 		int	lowRange;
 		int	highRange;
+		int	startingValue;
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -545,11 +546,15 @@ public class ModuleTemplate {
 			// Threshold has its own range:
 			if(i == 0)
 			{
-				lowRange	= 2;
-				highRange	= 100;
+				lowRange		= 2;
+				highRange		= 100;
+				startingValue	= 10;
 			} else {
-				lowRange	= 255;
-				highRange	= 3000;
+				lowRange		= 255;
+				highRange		= 3000;
+				startingValue	= 500;
+				
+				this.attackReleaseTransition[i - 1]	= startingValue;
 			}
 			
 			this.sidebarCP5.addSlider("slider" + id)
@@ -557,7 +562,7 @@ public class ModuleTemplate {
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(lowRange, highRange)
-			.setValue(500)
+			.setValue(startingValue)
 			.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
@@ -2749,6 +2754,7 @@ public class ModuleTemplate {
 
 		return	this.attackReleaseTransition[arORt];
 	} // getART
+
 
 	public float getRedModulate() {
 		return this.redGreenBlueMod[0];
