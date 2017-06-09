@@ -99,9 +99,23 @@ public class Driver extends PApplet {
 		// AudioSystem.getTargetLineInfo(AudioSystem.getMixerInfo()[10]);
 
 		try {
-			tdl = AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[3]);
-			tdl1 = AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[3]);
-			tdl2 = AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[3]);
+			/*
+			Line.Info[] infos = AudioSystem.getSourceLineInfo(null);
+			// or:
+			// Line.Info[] infos = AudioSystem.getTargetLineInfo();
+			for (int i = 0; i < infos.length; i++)
+			{
+			  if (infos[i] instanceof DataLine.Info)
+			  {
+			    DataLine.Info dataLineInfo = (DataLine.Info) infos[i];
+			    AudioFormat[] supportedFormats = dataLineInfo.getFormats();
+			  }
+			}
+			*/
+			
+			tdl = AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[0]);
+			tdl1 = AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[0]);
+			tdl2 = AudioSystem.getTargetDataLine(defaultAF, AudioSystem.getMixerInfo()[0]);
 			// sdl = AudioSystem.getSourceDataLine(defaultAF,
 			// AudioSystem.getMixerInfo()[10]);
 		} catch (LineUnavailableException e) {
@@ -252,28 +266,34 @@ private void printMixers() {
 		Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
 		int i = 0;
 		for (Mixer.Info info : mixerInfos) {
+			System.out.print(i + ": ");
 			Mixer m = AudioSystem.getMixer(info);
 			String mixerName = m.getMixerInfo().getName();
 			System.out.println("mixer--" + mixerName);
-			if (i++ == 0) {
-				// mixer = m;
-				System.out.println("commented out a weird line here");
+/*			if (i++ == 0) {
+				 //mixer = m;
+				//System.out.println("commented out a weird line here");
 			}
+			*/
+			
 			Line.Info[] lineInfos = m.getSourceLineInfo();
 			for (Line.Info lineInfo : lineInfos) {
 				System.out.println("source---" + lineInfo);
 				Line line = m.getLine(lineInfo);
 
 				System.out.println("\tsource-----" + line);
+				System.out.println("\tisLineSupported(): " + m.isLineSupported(lineInfo));
 			}
 			Line.Info[] lineInfos2 = m.getTargetLineInfo();
+			
 			for (Line.Info lineInfo : lineInfos2) {
 				System.out.println("target---" + lineInfo);
 				Line line = m.getLine(lineInfo);
 				System.out.println("\ttarget-----" + line);
+				System.out.println("\tisLineSupported(): " + m.isLineSupported(lineInfo));
 			}
-
-		}
+			i++;
+		} // for - mixer
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -289,5 +309,4 @@ private void printMixerInfo()
 	    println(i + " = " + mixerInfo[i].getName());
 	  }
 } // printMixerInfo
-}
 } // Driver

@@ -77,7 +77,8 @@ public class Module_01_PitchHue extends PApplet
 
 	public void setup() 
 	{
-		this.input  = new Input();
+//		this.input  = new Input();
+		this.input  = new Input(2);
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
 
 		//		this.moduleTemplate.setCurKey("A", 2);
@@ -91,6 +92,7 @@ public class Module_01_PitchHue extends PApplet
 
 		noStroke();
 		background(150);
+		
 
 		// Round, because the Midi notes come out with decimal places, and we want to get
 		// to the real closest note, not just the next note down.
@@ -121,6 +123,9 @@ public class Module_01_PitchHue extends PApplet
 
 	public void draw()
 	{
+
+		System.out.println("input.getAdjustedFundAsMidiNote(1) = " + input.getAdjustedFundAsMidiNote(1));
+		
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{

@@ -7,6 +7,7 @@ import processing.sound.*;
 //import org.jaudiolibs.beads.*;
 
 import net.beadsproject.beads.core.*;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
@@ -45,6 +46,10 @@ import beads.Compressor;
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.Port;
 
 public class Input extends PApplet {
 	/*
@@ -82,13 +87,13 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 	 */
 
-	AudioContext           ac;
+	AudioContext[]         acArray;
 	float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
 	Compressor             compressor;
 	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
 	private UGen[]                 uGenArray;
 	// TODO: make private after testing
-	public Gain                   g;
+	public Gain[]		   gainArray;
 	Gain                   mute;
 	FFT[]                  fftArray;             // holds the FFT for each input.
 	FrequencyEMM[]         frequencyArray;       // holds the FrequencyEMM objects connected to each input.
@@ -125,10 +130,47 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		if(audioContext == null) {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
 		} // if(numInputs < 1)
+		
+/*		JavaSoundAudioIO[]	jsaiArray	= new JavaSoundAudioIO[this.numInputs];
+		for(int i = 0; i < jsaiArray.length; i++)
+		{
+			System.out.println("made it here?");
+			jsaiArray[i].chooseMixerCommandLine();
+		}
+*/
+		JavaSoundAudioIO	jsai1	= new JavaSoundAudioIO();
+		JavaSoundAudioIO	jsai2	= new JavaSoundAudioIO();
+		
+		jsai1.chooseMixerCommandLine();
+		
+		jsai2.chooseMixerCommandLine();
+		
+//		UGen	ins	= jsai.getAudioInput(new int[3]);
 
 		this.numInputs  = numInputs;
-		this.ac = audioContext;
-
+//		this.ac = audioContext;
+//		this.ac	= new AudioContext(jsai);
+		this.acArray	= new AudioContext[this.numInputs];
+/*		for(int i = 0; i < this.acArray.length && i < jsaiArray.length; i++)
+		{
+			this.acArray[i]	= new AudioContext(jsaiArray[i]);
+		} // for
+*/
+		this.acArray[0]	= new AudioContext(jsai1);
+		this.acArray[1]	= new AudioContext(jsai2);
+		
+		Mixer.Info[]	mixerInfo	= AudioSystem.getMixerInfo();
+		Mixer			mixer3		= AudioSystem.getMixer(mixerInfo[4]);
+		System.out.println("mixer3.getLineInfo() = " + mixer3.getLineInfo() +
+				"; mixer3.getMixerInfo() = " + mixer3.getMixerInfo());
+		try {
+			mixer3.open();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
 		int[]  inputNums  = new int[this.numInputs];
 		for (int i = 0; i < this.numInputs; i++)
@@ -141,11 +183,14 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		//  this.inputsUGen = ac.getAudioInput(inputNums);
 
 		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
-		setuGenArray(new UGen[this.numInputs]);
-		for (int i = 0; i < getuGenArray().length; i++)
+		this.uGenArray	= new UGen[this.numInputs];
+		// TODO: when we actually get sound, see if the following makes a difference - if we're just stuck to 1 or if it can only access the first one.
+		for (int i = (getuGenArray().length - 1); i >= 0; i--)
+//		for (int i = 0; i < getuGenArray().length; i++)
 		{
 			// getAudioInput needs an int[] with the number of the particular line.
-			getuGenArray()[i]  = ac.getAudioInput(new int[] {(i + 1)});
+			this.uGenArray[i]  = acArray[i].getAudioInput(new int[] {(i + 1)});
+			System.out.println("getuGenArray()[" + i + "] = " + getuGenArray()[i]);
 		}
 
 		initInput(getuGenArray());
@@ -220,7 +265,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 */
 	Input(String[] filenames)
 	{
-		this.ac = new AudioContext();
+		this.acArray = new AudioContext[] { new AudioContext() };
 
 		this.uGenArrayFromSample(filenames);
 
@@ -286,17 +331,18 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		} // for
 
 		uGenArray  = new UGen[SampleManager.getGroup("group").size()];
+		this.gainArray	= new Gain[this.numInputs];
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
-			uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
+			uGenArray[i]  = new SamplePlayer(acArray[i], SampleManager.getGroup("group").get(i));
 			((SamplePlayer) uGenArray[i]).setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+			
+			this.gainArray[i]	= new Gain(this.acArray[i], 1);
 		} // for
 		
 		SampleManager.destroyGroup("group");
-		
 
-		g = new Gain(this.ac, 1);
 
 		initInput(uGenArray);
 	} // uGenArrayFromSample(String[])
@@ -316,14 +362,16 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		//    this.inputsUGen = ac.getAudioInput(inputNums);
 
 		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
-		uGenArray  = new UGen[this.numInputs];
+		this.uGenArray  = new UGen[this.numInputs];
+		this.gainArray	= new Gain[this.numInputs];
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// getAudioInput needs an int[] with the number of the particular line.
-			uGenArray[i]  = ac.getAudioInput(new int[] {(i + 1)});
+			uGenArray[i]  = acArray[i].getAudioInput(new int[] {(i + 1)});
+			
+			this.gainArray[i]	= new Gain(this.acArray[i], 0, 0);
 		}
 
-		this.g	= new Gain(this.ac, 0, 0);
 		initInput(uGenArray);
 	} // uGenArrayFromNumInputs
 
@@ -347,32 +395,34 @@ Using the Harmonic Product Spectrum to better locate the pitch.
    side-chain - the input audio
 		 */
 		// Create a compressor w/standard values:
-		this.compressor  = new Compressor(this.ac, 1);
+		this.compressor  = new Compressor(this.acArray[0], 1);
 		this.compressor.setRatio(8);
 
 		// Create a Gain, add the Compressor to the Gain,
 		// add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
 //		g = new Gain(this.ac, 1, (float) 0.5);
-		if(this.g == null)
-		{
-			g = new Gain(this.ac, 0, 0);
-			System.out.println("Input.initInput: Had to set g in initInput(); should initialize it earlier.");
-		}
-		g.addInput(this.compressor);
 
-		// Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
-		for (int i = 0; i < this.numInputs; i++)
+		this.gainArray	= new Gain[this.numInputs];
+		for(int i = 0; i < this.gainArray.length; i++)
 		{
-			g.addInput(this.uGenArray[i]);
-		} // for
-		ac.out.addInput(g);
+			if(this.gainArray[i] == null)
+			{
+				this.gainArray[i]	= new Gain(this.acArray[i], 0, 0);
+				System.out.println("Input.initInput: Had to set g in initInput(); should initialize it earlier.");
+			}
+			
+			this.gainArray[i].addInput(this.compressor);
+			this.gainArray[i].addInput(this.uGenArray[i]);
+			this.acArray[i].out.addInput(this.gainArray[i]);
+		}
+
 
 		// The ShortFrameSegmenter splits the sound into smaller, manageable portions;
 		// this creates an array of SFS's and adds the UGens to them:
 		this.sfsArray  = new ShortFrameSegmenter[this.numInputs];
 		for (int i = 0; i < this.sfsArray.length; i++)
 		{
-			this.sfsArray[i] = new ShortFrameSegmenter(ac);
+			this.sfsArray[i] = new ShortFrameSegmenter(this.acArray[i]);
 			while (this.sfsArray[i] == null) {
 			}
 			this.sfsArray[i].addInput(uGenArray[i]);
@@ -413,12 +463,15 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Adds the SFSs (and everything connected to them) to the AudioContext:
 		for (int i = 0; i < this.numInputs; i++)
 		{
-			ac.out.addDependent(sfsArray[i]);
+			this.acArray[i].out.addDependent(sfsArray[i]);
 		} // for - addDependent
 
 
 		// Starts the AudioContext (and everything connected to it):
-		this.ac.start();
+		for(int i = 0; i < this.acArray.length; i++)
+		{
+			this.acArray[i].start();
+		}
 
 		// Pitches with amplitudes below this number will be ignored by adjustedFreq:
 		this.sensitivity  = 10;
