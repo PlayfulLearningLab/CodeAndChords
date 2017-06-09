@@ -17,6 +17,10 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
+ * 06/09/2017 - ModuleTemplate_01_04
+ * Emily Meuer:
+ * 	- Attack, Release, and Transition sliders are time-based (define the number of millis() each action will take).
+ * 
  * 06/08/2017 - ModuleTemplate_01_03
  * Emily Meuer update:
  *  - Trichromatic and Dichromatic work completely, with independent color select, too.

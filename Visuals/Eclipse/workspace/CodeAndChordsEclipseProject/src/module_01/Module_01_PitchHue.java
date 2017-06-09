@@ -111,9 +111,9 @@ public class Module_01_PitchHue extends PApplet
 		{
 			this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
 			
-			// divide the attack/release/transition value by 100
-			// and divide colorRange by that value to find the amount to add each 100 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
+			// divide the attack/release/transition value by 50
+			// and divide colorRange by that value to find the amount to add each 50 millis.
+			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 50);
 		}
 
 
@@ -175,19 +175,7 @@ public class Module_01_PitchHue extends PApplet
 			};
 			
 		} // else - above/below threshold
-		
-		/*
-		// Calculate color ranges:
-		// TODO: calculating this here may not work
-		for(int i = 0; i < this.curHue.length; i++)
-		{
-			this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
-			
-			// divide the attack/release/transition value by 100
-			// and divide colorRange by that value to find the amount to add each 100 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
-		}
-*/
+
 		
 		if(this.moduleTemplate.getCheckpoint() < this.millis())
 		{
@@ -202,8 +190,8 @@ public class Module_01_PitchHue extends PApplet
 				}
 			} // for - i
 			
-			this.moduleTemplate.setCheckpoint(this.millis() + 100);
-		} // if - adding every 100 millis
+			this.moduleTemplate.setCheckpoint(this.millis() + 50);
+		} // if - adding every 50 millis
 
 
 		float	lowBound;
@@ -270,17 +258,15 @@ public class Module_01_PitchHue extends PApplet
 		}
 		
 		if(this.attRelTran != oldART)
-		{
-			System.out.println("new attRelTran value: " + this.attRelTran);
-			
+		{			
 			// Calculate color ranges:
 			for(int i = 0; i < this.curHue.length; i++)
 			{
 				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
 				
-				// divide the attack/release/transition value by 100
-				// and divide colorRange by that value to find the amount to add each 100 millis.
-				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 100);
+				// divide the attack/release/transition value by 50
+				// and divide colorRange by that value to find the amount to add each 50 millis.
+				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 50);
 			}
 		} // if
 
