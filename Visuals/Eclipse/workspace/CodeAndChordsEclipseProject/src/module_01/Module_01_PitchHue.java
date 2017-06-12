@@ -79,7 +79,7 @@ public class Module_01_PitchHue extends PApplet
 
 	public void setup() 
 	{
-		this.input  = new Input(1);
+		this.input  = new Input();
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
 
 		//		this.moduleTemplate.setCurKey("A", 2);

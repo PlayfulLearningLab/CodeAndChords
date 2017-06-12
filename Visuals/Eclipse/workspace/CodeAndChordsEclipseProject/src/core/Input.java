@@ -3,7 +3,7 @@ package core;
 import processing.core.PApplet;
 import processing.sound.*;
 
-//import org.jaudiolibs.beads.AudioServerIO;
+import org.jaudiolibs.beads.AudioServerIO;
 //import org.jaudiolibs.beads.*;
 
 import net.beadsproject.beads.core.*;
@@ -18,7 +18,7 @@ import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
 import net.beadsproject.beads.analysis.featureextractors.FFT;
 
-import org.jaudiolibs.beads.AudioServerIO;
+//import org.jaudiolibs.beads.AudioServerIO;
 
 /*
 //Might need these eventually:
