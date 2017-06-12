@@ -7,7 +7,7 @@ import processing.sound.*;
 //import org.jaudiolibs.beads.*;
 
 import net.beadsproject.beads.core.*;
-import net.beadsproject.beads.core.io.JavaSoundAudioIO;
+//import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
@@ -367,7 +367,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// getAudioInput needs an int[] with the number of the particular line.
-			uGenArray[i]  = acArray[i].getAudioInput(new int[] {(i + 1)});
+//			uGenArray[i]  = acArray[i].getAudioInput(new int[] {(i + 1)});
+			uGenArray[i]  = acArray[0].getAudioInput(new int[] {(i + 1)});
+			
 			
 			this.gainArray[i]	= new Gain(this.acArray[i], 0, 0);
 		}
