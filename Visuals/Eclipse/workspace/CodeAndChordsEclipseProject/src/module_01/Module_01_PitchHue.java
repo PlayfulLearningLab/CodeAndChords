@@ -86,8 +86,6 @@ public class Module_01_PitchHue extends PApplet
 		//		this.moduleTemplate.rainbow();
 
 
-		//		this.moduleTemplate.setCurKey("G", 2);
-
 
 		//  input        = new Input(inputFile);
 
