@@ -1,4 +1,4 @@
-package functionSketch_01;
+package functionSketch_02;
 
 import net.beadsproject.beads.analysis.featureextractors.PowerSpectrum;
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
@@ -7,7 +7,7 @@ import net.beadsproject.beads.data.SampleManager;
 import processing.core.PApplet;
 import processing.sound.*;
 
-public class FunctionSketch_01_v1_MultiInput extends PApplet 
+public class FunctionSketch_02_MultiInput extends PApplet 
 {
 	
 	private AudioContext            ac;
@@ -41,7 +41,7 @@ public class FunctionSketch_01_v1_MultiInput extends PApplet
 		
 	}
 	
-	public FunctionSketch_01_v1_MultiInput(AudioContext audioContext, int numberInputs)
+	public FunctionSketch_02_MultiInput(AudioContext audioContext, int numberInputs)
 	{
 		this.ac = audioContext;
 		this.numInputs = numberInputs;
