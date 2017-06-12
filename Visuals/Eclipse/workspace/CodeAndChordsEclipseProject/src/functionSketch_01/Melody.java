@@ -1,18 +1,18 @@
-package noteGenerator;
+package functionSketch_01;
 
 import java.util.*;
 
 public class Melody {
 	
 	private static HashMap<String, LinkedList<Note>>    melodyLib  = Melody.initializeLib();
-	private LinkedList<Note>                            mel;
+//	private LinkedList<Note>                            mel;
 	private int                                         highRange;
 	private int                                         lowRange;
 
 	
-	public Melody(String type)
+	public Melody()
 	{
-		this.mel = Melody.melodyLib.get(type);
+//		this.mel = Melody.melodyLib.get(type);
 		
 		for(int i = 0; i < this.mel.size(); i++)
 		{
@@ -22,14 +22,14 @@ public class Melody {
 		System.out.println(this.highRange + "    " + this.lowRange  );
 	}
 	
-	public void playMelody(int rootNoteNum, int bpm)
+	public void playMelody(String key, int bpm, String scale)
 	{
 		float startTime = 0;
 		int x;
 		float nextNoteStart;
 		float quarterNoteTime = (float) (Math.pow(bpm, -1) * 60);
 		
-		SineInstrument.pauseNotes();
+//		SineInstrument.pauseNotes();
 		
 		for(int i = 0; i < this.mel.size(); i++)
 		{
@@ -45,7 +45,7 @@ public class Melody {
 			mel.get(i).playNote(rootNoteNum, startTime, quarterNoteTime, nextNoteStart);
 		}
 		
-		SineInstrument.resumeNotes();
+//		SineInstrument.resumeNotes();
 	}
 		
 	public int getHighRange()
