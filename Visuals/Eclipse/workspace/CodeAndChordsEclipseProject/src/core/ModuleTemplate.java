@@ -2049,13 +2049,6 @@ public class ModuleTemplate {
 			// Converts this position of hsbColors from RGB to HSB:
 			Color.RGBtoHSB((int)hsbColors[i][0], (int)hsbColors[i][1], (int)hsbColors[i][2], hsb);
 
-			for(int i1 = 0; i1 < this.hueSatBrightnessMod.length; i1++)
-			{
-				System.out.println("hsb[" + i1 + "] = " + hsb[i1] 
-						+ "; this.hueSatBrightnessMod[" + i1 + "] = " + this.hueSatBrightnessMod[i1]
-								+ "; (hsb[0] + this.hueSatBrightnessMod[0] + 1) % 1 = " + ((hsb[0] + this.hueSatBrightnessMod[0] + 1) % 1) +
-								" : " + ((((hsb[i1] + this.hueSatBrightnessMod[i1]) * 100) % 100) / 100));
-			}
 			//			((((hsb[i1] + this.hueSatBrightnessMod[i1]) * 100) % 100) / 100)
 			// Applies the status of the sliders to the newly-converted color:
 
@@ -2063,11 +2056,6 @@ public class ModuleTemplate {
 
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
 			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2], 1), 0);
-
-			for(int j = 0; j < hsb.length; j++)
-			{
-				System.out.print("  hsb[" + j + "] = " + hsb[j] + "  :  ");
-			}
 
 			// Converts the color back to RGB:
 			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
