@@ -1,4 +1,4 @@
-package functionSketch_01;
+package core;
 
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
