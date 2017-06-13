@@ -9,9 +9,9 @@ public class Note {
 	 * Class to create Notes that will be used to make a Melody.
 	 */
 	
-	private	int		midiNum;
-	private	float	duration;
-	private	float	amplitude;
+	private	int		midiNum;	// the midi number of the note
+	private	float	duration;	// the length of the note in milliseconds
+	private	float	amplitude;	// the amplitude of the note in undefined measure; not yet implemented
 	
 	/**
 	 * Creates a new Note with the given midiNum, duration, and amplitude.
