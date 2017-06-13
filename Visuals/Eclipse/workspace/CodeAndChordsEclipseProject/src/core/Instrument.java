@@ -22,9 +22,26 @@ public class Instrument {
 	Envelope		gainEnvelope;
 	Gain			gain;
 	Glide			frequencyGlide;
+	Input			input;
 	PApplet			parent;
 	WavePlayer		wavePlayer;
 	
+	/**
+	 * Constructor that will send the frequencies this Instrument plays
+	 * to the given Input object.
+	 * @param parent
+	 * @param input
+	 */
+	public Instrument(PApplet parent, Input input)
+	{
+		this(parent);
+		this.input	= input;
+	}
+	
+	/**
+	 * Constructor for using Instrument independent of an Input.
+	 * @param parent
+	 */
 	public Instrument(PApplet parent)
 	{
 		this.parent			= parent;
@@ -61,8 +78,6 @@ public class Instrument {
 	{
 		// TODO: deal with release going longer than the note's duration?
 		
-		System.out.println("Playing note " + note.getMidiNum() + "; frequency = " + Pitch.mtof(note.getMidiNum()));
-
 		/*
 		 * AD envelopes rise from 0.0 to
 		 * 1.0 over a length of time called the Attack. Then they fall back to 0.0 over a
@@ -85,9 +100,7 @@ public class Instrument {
 		// Release:
 		this.gainEnvelope.addSegment(0, this.release);
 		
-		
-		System.out.println("note.getAmplitude() = " + note.getAmplitude() + "; note.getDuration() = " + note.getDuration());
-		
+				
 //		this.wavePlayer.setFrequency(Pitch.mtof(note.getMidiNum()));
 		
 		// Treat -1 like a rest:
@@ -99,6 +112,13 @@ public class Instrument {
 			this.wavePlayer.pause(false);
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 		} // if
+		
+		if(this.input != null)
+		{
+			System.out.println("Instrument.playNote: about to set fundamentalArray...");
+			this.input.setFundamentalArray(new float[] { Pitch.mtof(note.getMidiNum()) });
+			this.input.setAdjustedFundArray(new float[] { Pitch.mtof(note.getMidiNum()) });
+		}
 	} // playNote
 
 } // Instrument

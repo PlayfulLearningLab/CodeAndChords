@@ -93,13 +93,15 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	FFT[]                  fftArray;             // holds the FFT for each input.
 	FrequencyEMM[]         frequencyArray;       // holds the FrequencyEMM objects connected to each input.
 	float[]                fundamentalArray;     // holds the current pitch, in hertz, of each input.
+	float[]					amplitudeArray;		// holds the current amplitude of each input; format undefined
 	int                    numInputs;            // number of lines / mics
 	//float                  pitch;                // 
 	PowerSpectrum[]        psArray;              // holds the PowerSpectrum objects connected to each input.
 	float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
 	ShortFrameSegmenter[]  sfsArray;             // holds the ShortFrameSegmenter objects connected to each input.
 	//int                    waitUntil;            // number of milliseconds to wait before checking for another key 
-	private SampleManager sampleManager;
+	private SampleManager	sampleManager;
+	boolean					pause;
 
 	/**
 	 *  Creates an Input object connected to Jack, with the given number of inputs.
@@ -426,6 +428,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Initializes the arrays that will hold the pitches:
 		this.fundamentalArray = new float[this.numInputs];
 		this.adjustedFundArray = new float[this.numInputs];
+		this.amplitudeArray	= new float[this.numInputs];
 
 		// Gets the ball rolling on analysis:
 		this.setFund();
@@ -449,23 +452,28 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// catching a NullPointer because I'm not sure why it happens and fear a crash during a concert.
 		try
 		{
-			for (int i = 0; i < this.numInputs; i++)
+			// TODO: maybe this won't be necessary once the threads are implemented.
+			if(!this.pause)
 			{
-				//     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
+				for (int i = 0; i < this.numInputs; i++)
+				{
+					//     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
 
-				// want to assign the value of .getFeatures() to a variable and check for null,
-				// but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
-				if (this.frequencyArray[i].getFeatures() != null) {
-					//       println("i = " + i);
-					//       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
-					this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
+					// want to assign the value of .getFeatures() to a variable and check for null,
+					// but can't, b/c it returns a float. :/  (So that must not be exactly the problem.)
+					if (this.frequencyArray[i].getFeatures() != null) {
+						//       println("i = " + i);
+						//       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
+						this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
+						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude();
 
-					// ignores pitches with amplitude lower than "sensitivity":
-					if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
-						this.adjustedFundArray[i]  = this.fundamentalArray[i];
-					} // if: amp > sensitivity
-				} // if: features() != null
-			} // if: > numInputs
+						// ignores pitches with amplitude lower than "sensitivity":
+						if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
+							this.adjustedFundArray[i]  = this.fundamentalArray[i];
+						} // if: amp > sensitivity
+					} // if: features() != null
+				} // if: > numInputs
+			}
 		} catch(NullPointerException npe)  {}
 	} // setFund
 
@@ -701,21 +709,22 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	public float getAmplitude(int inputNum) {
 		inputNumErrorCheck(inputNum, "getAmplitude(int)");
 
-		return this.frequencyArray[inputNum - 1].getAmplitude();
+//		return this.frequencyArray[inputNum - 1].getAmplitude();
+		return this.amplitudeArray[inputNum - 1];
 	} // getAmplitude
 
 	/**
+	 *  As of 6/13, the following is not true (a Compressor has been added to the chain instead):
 	 *  Applies a 1:8 compressor for amp's over 400 and returns the resulting amplitude.
 	 *
 	 *  @return  float     amplitude of the first input line.
 	 */
 	public float getAmplitude()  
 	{
-		float  amp  = this.frequencyArray[0].getAmplitude();
-
-		//   if(amp > 400)  {  amp = amp + ((amp - 400) / 8);  }
-
-		return amp;
+//		float  amp  = this.frequencyArray[0].getAmplitude();
+//		return amp;
+		
+		return this.amplitudeArray[0];
 	}
 
 	/**
@@ -894,4 +903,52 @@ import beads.TimeStamp;
 			return this.amplitude;
 		}
 	} // FrequencyEMM
+
+	public void setFundamentalArray(float[] newVal) {
+		if(newVal == null)
+		{
+			throw new IllegalArgumentException("Input.setFundamentalArray: float[] parameter is null.");
+		}
+		
+		if(newVal.length <= this.fundamentalArray.length)
+		{
+			for(int i = 0; i < newVal.length; i++)
+			{
+				this.fundamentalArray[i]	= newVal[i];
+			} // for
+		} // if
+	} // setFundamentalArray
+
+	public void setAdjustedFundArray(float[] newVal) {
+		if(newVal == null)
+		{
+			throw new IllegalArgumentException("Input.setAdjustedFundArray: float[] parameter is null.");
+		}
+		
+		if(newVal.length <= this.adjustedFundArray.length)
+		{
+			for(int i = 0; i < newVal.length; i++)
+			{
+				this.adjustedFundArray[i]	= newVal[i];
+				
+				System.out.println("this.adjustedFundArray[" + i + "] = " + this.adjustedFundArray[i]);
+			} // for
+		} // if
+	} // setAdjustedFundArray
+	
+	/**
+	 * Pauses the Gain connected to ac.out.
+	 * 
+	 * @param pause boolean indicating whether to pause or un-pause the Gain
+	 */
+	public void pause(boolean pause)
+	{		
+		this.pause	= pause;
+		
+		for(int i = 0; i < this.uGenArray.length; i++)
+		{
+			uGenArray[i].pause(pause);
+		}
+	}
+	
 } // Input class
