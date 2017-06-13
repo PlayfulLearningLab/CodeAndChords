@@ -16,6 +16,8 @@ public class Controls extends PApplet
 	
 	private ControlP5 cp5;
 	
+	Instrument	instrument;
+	
 	
 	public static void main(String[] args)
 	{
@@ -37,7 +39,8 @@ public class Controls extends PApplet
 		this.setUpControls();
 		
 		Melody melody	= new Melody(this); 
-		melody.playMelody("E", 120, "major", 2, new Instrument());
+		instrument	= new Instrument(this);
+		melody.playMelody("E", 60, "major", 2, instrument);
 
 	}
 	
@@ -45,6 +48,12 @@ public class Controls extends PApplet
 	{
 		//Keep refreshing the black background
 		background(0);
+		/*
+		instrument.gainGlide.setValue(this.mouseX / (float)this.width);
+		 // update the frequency based on the position of the mouse
+		 // cursor within the Processing window
+		instrument.frequencyGlide.setValue(this.mouseY);
+		*/
 	}
 	
 	private void setUpControls()
