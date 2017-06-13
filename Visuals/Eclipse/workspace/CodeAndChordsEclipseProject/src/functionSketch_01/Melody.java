@@ -88,7 +88,7 @@ public class Melody {
 			} else {
 				// but if not, use -1 as a placeholder:
 				midiNote	= -1;
-				duration	= 1 * quarterNoteTime;
+				duration	= (float) (0.5 * quarterNoteTime);
 				amplitude	= 0;
 			}
 
@@ -149,6 +149,7 @@ public class Melody {
 			new float[] { 11,1 },  // 2:4
 			new float[] { 12,2 },  // 3:1
 			new float[] {  },	// 3:2
+			new float[] {  },
 			new float[] { 12, (float) 0.5 },	// 3:3
 			new float[] { 11, (float) 0.5 },  
 			new float[] { 10, (float) 0.5 },	// 3:4
@@ -172,15 +173,19 @@ public class Melody {
 			new float[] { 4,1 },  // 0:3
 			new float[] { 5,1 },  // 0:4
 			new float[] {  },  // 1:1
+			new float[] {  },
 			new float[] { 7,1 },  // 1:2
 			new float[] {  },  // 1:3
+			new float[] {  },
 			new float[] { 9,1 },  // 1:4
 			new float[] { 11,1 },  // 2:1
 			new float[] { 12,1 },  // 2:2
 			new float[] {  },  // 2:3
+			new float[] {  },
 			new float[] { 12,1 },  // 2:4
 			new float[] { 11,1 },  // 3:1
 			new float[] {  },  // 3:2
+			new float[] {  },
 			new float[] { 9, (float) 0.5 },  // 3:3
 			new float[] { 7, (float) 0.5 },  
 			new float[] { 5, (float) 0.5 },  // 3:4
@@ -189,6 +194,8 @@ public class Melody {
 			new float[] { 0,1 },	// 4:2
 			new float[] {  },		// 4:3
 			new float[] {  },		// 4:4
+			new float[] {  },
+			new float[] {  },
 			new float[] { 0,1 },	// 5:1
 			new float[] { -7, 1 },	// 5:2
 			new float[] { 0,1 },	// 5:3 
@@ -219,15 +226,19 @@ public class Melody {
 			new float[] { 3,1 },  // 0:3
 			new float[] { 5,1 },  // 0:4
 			new float[] {  },  // 1:1
+			new float[] {  },
 			new float[] { 7,1 },  // 1:2
 			new float[] {  },  // 1:3
+			new float[] {  },
 			new float[] { 8,1 },  // 1:4
 			new float[] { 10,1 },  // 2:1
 			new float[] { 12,1 },  // 2:2
 			new float[] {  },  // 2:3
+			new float[] {  },
 			new float[] { 12,1 },  // 2:4
 			new float[] { 10,1 },  // 3:1
 			new float[] {  },  // 3:2
+			new float[] {  },
 			new float[] { 8, (float) 0.5 },  // 3:3
 			new float[] { 7, (float) 0.5 },  
 			new float[] { 5, (float) 0.5 },  // 3:4
@@ -235,6 +246,7 @@ public class Melody {
 			new float[] { 2, 1 },	// 4:1
 			new float[] { 0,1 },	// 4:2
 			new float[] {  },		// 4:3
+			new float[] {  },
 			new float[] { 0,1 },	// 
 			new float[] { -7, 1 },	// 5:1
 			new float[] { 0,1 },	// 5:2
@@ -272,7 +284,8 @@ public class Melody {
 			new float[] { 3,(float) 0.5 },  // 9:3
 			new float[] { 2,(float) 0.5 },  
 			new float[] { 0,(float) 0.5 },  // 9:4
-			new float[] {  },  
+			new float[] {  },
+			new float[] {  },
 			new float[] { 0, (float) 0.5 },  // 10:1
 			new float[] { 2, (float) 0.5 },  
 			new float[] { 3,(float) 0.5 },  // 10:2
