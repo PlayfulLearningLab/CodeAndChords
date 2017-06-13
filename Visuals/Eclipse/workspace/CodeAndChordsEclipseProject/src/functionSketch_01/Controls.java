@@ -40,7 +40,7 @@ public class Controls extends PApplet
 		
 		Melody melody	= new Melody(this); 
 		instrument	= new Instrument(this);
-		melody.playMelody("E", 120, "chromatic", 2, instrument);
+		melody.playMelody("E", 20, "minor", 4, instrument);
 
 	}
 	

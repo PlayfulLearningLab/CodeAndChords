@@ -50,7 +50,7 @@ public class Melody {
 		//		int[]		midiNotes	= new int[scaleLength];
 		//		float[]		durations	= new float[scaleLength];
 		Note[]		notes		= new Note[curMelody.length];
-		float		defaultAmp	= 40;
+		float		defaultAmp	= 60;
 
 		// Find position of notes in this key:
 		int		keyPos		= -1;
