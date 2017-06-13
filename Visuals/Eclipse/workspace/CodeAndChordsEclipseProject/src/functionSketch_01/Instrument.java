@@ -28,9 +28,6 @@ public class Instrument {
 		
 		this.gain			= new Gain(this.audioContext, 1, this.gainGlide);
 		this.wavePlayer		= new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
-		
-//		this.glide.addInput(this.wavePlayer);
-//		this.audioContext.out.addInput(this.glide);
 
 		this.gain.addInput(this.wavePlayer);
 		this.audioContext.out.addInput(this.gain);

@@ -72,6 +72,7 @@ public class Melody {
 		int		scalePos;
 		int		midiNote;
 		float	duration;
+		float		amplitude;
 		
 		// Calculate midi notes, given the key and range:
 		for(int i = 0; i < curMelody.length; i++)
@@ -83,14 +84,16 @@ public class Melody {
 				midiNote	= (12 * rangeOctave) + scalePos;
 				
 				duration	= curMelody[i][1] * quarterNoteTime;
+				amplitude	= defaultAmp;
 			} else {
 				// but if not, use -1 as a placeholder:
 				midiNote	= -1;
 				duration	= 1000;
+				amplitude	= 0;
 			}
 
 			// create an array of Notes:
-			notes[i]	= new Note(midiNote, duration, defaultAmp);
+			notes[i]	= new Note(midiNote, duration, amplitude);
 			
 		} // for - calculate midi notes
 
@@ -105,7 +108,8 @@ public class Melody {
 			nextNoteStartTime	= parent.millis() + notes[i].getDuration();
 		} // for - play Notes
 		
-	}
+	} // playMelody
+	
 	/*	
 	 * TODO: get rid of these?
 	public float getHighRange()
