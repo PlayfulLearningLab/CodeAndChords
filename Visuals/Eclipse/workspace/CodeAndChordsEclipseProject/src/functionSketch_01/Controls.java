@@ -36,7 +36,9 @@ public class Controls extends PApplet
 		//Sets up all of the ControlP5 controls
 		this.setUpControls();
 		
-		
+		Melody melody	= new Melody(this); 
+		melody.playMelody("E", 120, "major", 2, new Instrument());
+
 	}
 	
 	public void draw()
