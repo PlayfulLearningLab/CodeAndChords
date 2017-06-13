@@ -17,8 +17,7 @@ public class Melody {
 
 	private static HashMap<String, float[][]>	melodyLib  = Melody.initializeLib();
 	private	static String[]						keys	= new String[] { 
-			" A "," A# / Bb "," B ", " C ", " C# / Db ", " D ",
-			" D# / Eb ", " E ", " F ", " F# / Gb "," G "," G# / Ab ", 
+			" C ", " C# / Db ", " D "," D# / Eb ", " E ", " F ", " F# / Gb "," G "," G# / Ab ", " A "," A# / Bb "," B " 
 	};
 	private LinkedList<Note>                    mel;
 	private float                               highRange;
@@ -53,15 +52,20 @@ public class Melody {
 		float		defaultAmp	= 60;
 
 		// Find position of notes in this key:
-		int		keyPos		= -1;
+		int		keyPos		= -10;
 		for(int i = 0; i < Melody.keys.length; i++)
 		{
 			if(Melody.keys[i].equals(" " + key.trim().toUpperCase() + " "))
 			{
-				keyPos	= 1;
+				keyPos	= i;
+				//because midi numbers start at C, the last three notes in the octave (A, A#, B)
+				//need to be dropped down an octave so that they make intuitive sense in the 
+				//drop down box, which starts at A.  Without this, the notes at the top of the 
+				//drop down list (A, A#, B) would be higher than the proceeding notes ( C - G# )
+				if(keyPos >= 9) { keyPos = keyPos - 12; }
 			}
 		} // for - find key position
-		if(keyPos < 0)
+		if(keyPos == -10)
 		{
 			throw new IllegalArgumentException("Melody.playMelody: key " + key + " is not a valid key.");
 		} // error checking

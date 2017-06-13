@@ -1,5 +1,7 @@
 package functionSketch_01;
 
+import java.util.Map;
+
 import controlP5.*;
 import processing.core.PApplet;
 
@@ -15,8 +17,8 @@ public class Controls extends PApplet
 	 */
 	
 	private ControlP5 cp5;
-	
-	Instrument	instrument;
+	Melody            melody;
+	Instrument	      instrument;
 	
 	
 	public static void main(String[] args)
@@ -38,9 +40,9 @@ public class Controls extends PApplet
 		//Sets up all of the ControlP5 controls
 		this.setUpControls();
 		
-		Melody melody	= new Melody(this); 
+		this.melody	= new Melody(this); 
 		instrument	= new Instrument(this);
-		melody.playMelody("E", 20, "minor", 4, instrument);
+		//melody.playMelody("E", 20, "minor", 4, instrument);
 
 	}
 	
@@ -79,6 +81,22 @@ public class Controls extends PApplet
 			.getCaptionLabel()
 			.setVisible(false);
 		
+		//set up play, pause and stop buttons
+		cp5.addButton("playButton")
+			.setLabel("Play")
+			.setPosition(50, 350)
+			.setSize(50, 50);
+		
+		cp5.addButton("pauseButton")
+			.setLabel("Pause")
+			.setPosition(125, 350)
+			.setSize(50, 50);
+		
+		cp5.addButton("stopButton")
+			.setLabel("Stop")
+			.setPosition(200, 350)
+			.setSize(50, 50);
+		
 		//Initializes a drop box and label for each element in names String[]
 		//lists and dropboxes are named after what they store, followed by "List" or "Label".  Example: keyList or rangeLabel.
 		for(int i = 0; i < names.length; i++)
@@ -111,9 +129,6 @@ public class Controls extends PApplet
 			cp5.get("gtGroup")
 				.add(cp5.get(names[i] + "List"));
 				*/
-			
-			
-			
 			
 		}//for()
 		
@@ -150,12 +165,13 @@ public class Controls extends PApplet
 				break;
 				
 			case "keyList":
-				sr.addItems( new String[] { "C", "C# / Db","D", "D# / Eb","E","F","F# / Gb","G","G# / Ab","A","A# / Bb","B" } )
+				sr.addItems( new String[] { "A","A# / Bb", "B", "C", "C# / Db","D", "D# / Eb","E","F","F# / Gb","G","G# / Ab", } )
 				.setValue(0f);
 				break;
 				
 			case "rangeList":
 				//implement with Melody class
+				
 				break;
 				
 			case "adsrList":
@@ -198,6 +214,32 @@ public class Controls extends PApplet
 			break;
 			
 		case "bpmText":
+			
+			break;
+			
+		case "playButton":
+			
+			int val = (int) cp5.get("keyList").getValue();
+			Map<String, Object> map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
+			String	key	= (String) map.get("name");
+			
+			val = (int) cp5.get("scaleList").getValue();
+			map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
+			String scale = (String) map.get("name");
+			
+			
+			//String scale = cp5.get("scaleList").getStringValue();
+			//int bpm = Integer.parseInt(cp5.get("bpmText").getStringValue());
+						
+			melody.playMelody(key, 120, scale, 4, this.instrument);
+			
+			break;
+			
+		case "pauseButton":
+			
+			break;
+			
+		case "stopButton":
 			
 			break;
 			
