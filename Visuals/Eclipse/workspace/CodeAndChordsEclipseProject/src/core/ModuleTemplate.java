@@ -206,7 +206,8 @@ public class ModuleTemplate {
 
 	private	int		checkpoint;		// For a timer that allows attack/release/transition sliders to be time-based.
 
-	private	Melody		melody;
+	// TODO: make private:
+	public Melody		melody;
 	private	int			bpm;
 	private	int			rangeOctave;
 	
@@ -270,7 +271,7 @@ public class ModuleTemplate {
 		this.hueSatBrightnessMod        = new float[3];
 
 		this.checkpoint		= this.parent.millis() + 100;
-		this.bpm			= 40;
+		this.bpm			= 120;
 		this.rangeOctave	= 4;
 
 		this.initModuleTemplate();

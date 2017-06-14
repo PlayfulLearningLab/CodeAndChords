@@ -23,7 +23,8 @@ public class Melody {
 	
 	// Input is not required; if initialized in the constructor, it will be used, but if not, ignored.
 	private	Input								input	= null;
-	private	Instrument							instrument;
+	// TODO: make private:
+	public Instrument							instrument;
 	private LinkedList<Note>                    mel;
 	private float                               highRange;
 	private float                               lowRange;

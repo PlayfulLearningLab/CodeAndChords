@@ -105,22 +105,9 @@ public class Instrument {
 		if(note.getMidiNum() != -1)
 		{
 			this.gainEnvelope.clear();
-			System.out.println("gainEnvelope cleared");
 		}
-		
-		this.envelopeSegments.clear();
-		
-		//public Segment(float endValue, float duration, float curvature, Bead trigger)
-/*		
-		this.envelopeSegments.add(gainEnvelope.new Segment(note.getAmplitude(), this.attack, 1, new StartTrigger(this.gainEnvelope)));
-		this.envelopeSegments.add(gainEnvelope.new Segment(sustainAmp, this.decay, 1, null));
-		this.envelopeSegments.add(gainEnvelope.new Segment(sustainAmp, sustainTime, 1, null));
-		this.envelopeSegments.add(gainEnvelope.new Segment(0, this.release, 1, null));
-		
-		this.gainEnvelope.addSegments(this.envelopeSegments);
-		*/
 
-		System.out.println("this.attack = " + this.attack);
+
 		// Attack:
 		this.gainEnvelope.addSegment(note.getAmplitude(), this.attack);
 		// Decay:
@@ -129,7 +116,6 @@ public class Instrument {
 		// Sustain (amplitude doesn't change):
 		this.gainEnvelope.addSegment(sustainAmp, sustainTime);
 
-		System.out.println("this.release = " + this.release);
 		// Release:
 		this.gainEnvelope.addSegment(0, this.release);
 
@@ -178,11 +164,13 @@ public class Instrument {
 		this.decay		= Instrument.adsrPresets[presetNum][1];
 		this.sustain	= Instrument.adsrPresets[presetNum][2];
 		this.release	= Instrument.adsrPresets[presetNum][3];
-		
-		System.out.println("attack = " + attack + 
-				"; decay = " + decay +
-				"; sustain = " + sustain +
-				"; release = " + release);
+
 	} // adsrPresets
+	
+	public void stopNote()
+	{
+		this.wavePlayer.pause(true);
+		System.out.println("pausing the WavePlayer!");
+	}
 
 } // Instrument

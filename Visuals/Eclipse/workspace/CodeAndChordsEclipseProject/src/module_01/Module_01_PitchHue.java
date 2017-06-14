@@ -119,6 +119,8 @@ public class Module_01_PitchHue extends PApplet
 		if (keyPressed == true) 
 		{
 			this.moduleTemplate.setMenuVal();
+			
+			this.moduleTemplate.melody.instrument.stopNote();
 		}
 		
 //		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
