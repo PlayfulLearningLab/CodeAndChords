@@ -270,7 +270,7 @@ public class ModuleTemplate {
 		this.hueSatBrightnessMod        = new float[3];
 
 		this.checkpoint		= this.parent.millis() + 100;
-		this.bpm			= 120;
+		this.bpm			= 40;
 		this.rangeOctave	= 4;
 
 		this.initModuleTemplate();

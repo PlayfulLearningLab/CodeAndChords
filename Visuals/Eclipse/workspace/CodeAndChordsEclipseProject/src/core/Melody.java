@@ -21,7 +21,8 @@ public class Melody {
 			" C ", " C# / Db ", " D "," D# / Eb ", " E ", " F ", " F# / Gb "," G "," G# / Ab ", " A "," A# / Bb "," B " 
 	};
 	
-	private	Input								input;
+	// Input is not required; if initialized in the constructor, it will be used, but if not, ignored.
+	private	Input								input	= null;
 	private	Instrument							instrument;
 	private LinkedList<Note>                    mel;
 	private float                               highRange;
@@ -58,6 +59,21 @@ public class Melody {
 	 */
 	public Melody(PApplet parent, Input input, Instrument instrument)
 	{
+		if(parent == null)
+		{
+			throw new IllegalArgumentException("Melody constructor(PApplet, Input, Instrument): PApplet parameter is null.");
+		}
+		
+		if(instrument == null)
+		{
+			throw new IllegalArgumentException("Melody constructor(PApplet, Input, Instrument): Instrument parameter is null.");
+		}
+		
+		if(input == null)
+		{
+			System.out.println("Melody constructor(PApplet, Input, Instrument): Input parameter is null, so there will be no Input associated with this Melody.");
+		}
+		
 		this.parent		= parent;
 		this.input		= input;
 		this.instrument	= instrument;
@@ -98,7 +114,7 @@ public class Melody {
 		int		keyPos		= -10;
 		for(int i = 0; i < Melody.keys.length; i++)
 		{
-			if(Melody.keys[i].equals(" " + key.trim().toUpperCase() + " "))
+			if(Melody.keys[i].toUpperCase().contains(" " + key.trim().toUpperCase() + " "))
 			{
 				keyPos	= i;
 				//because midi numbers start at C, the last three notes in the octave (A, A#, B)
@@ -148,7 +164,10 @@ public class Melody {
 		// use the Note's duration to call instrument.play() at the appropriate time
 		for(int i = 0; i < notes.length; i++)
 		{
-			while(parent.millis() < nextNoteStartTime)	{ }
+			while(parent.millis() < nextNoteStartTime)	{ 
+
+//				System.out.println("this.gainEnvelope.getCurrentValue() = " + this.instrument.gainEnvelope.getCurrentValue());
+			}
 
 			instrument.playNote(notes[i]);
 			
