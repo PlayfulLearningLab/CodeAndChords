@@ -34,10 +34,10 @@ public class Instrument {
 	{
 		this.parent			= parent;
 		
-		this.attack		= 500;
-		this.decay		= 500;
+		this.attack		= 200;
+		this.decay		= 200;
 		// TODO: let sustainAmp be set by user (or at least a preset?):
-		this.sustainAmp		= 40;
+		this.sustainAmp		= 10;
 		this.sustainTime	= 100;
 		this.release		= 500;
 		
@@ -83,7 +83,10 @@ public class Instrument {
 		this.gainEnvelope.addSegment(this.sustainAmp, this.decay);
 		
 		// Sustain (remains stable):
-		this.gainEnvelope.addSegment(this.sustainAmp, this.sustainTime);
+		this.sustainTime = note.getDuration() - (this.attack + this.decay);
+		if (this.sustainTime < 0) { this.sustainTime = 0; }
+		
+		this.gainEnvelope.addSegment(this.sustainAmp, this.sustainTime );
 		
 		// Release:
 		this.gainEnvelope.addSegment(0, this.release);
@@ -101,6 +104,25 @@ public class Instrument {
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 		} // if
 		
+		
 	} // playNote
+	
+	public void stopNote()
+	{
+		this.audioContext.stop();
+		
+		this.audioContext = new AudioContext();
+		
+		this.gainEnvelope	= new Envelope(this.audioContext);
+		this.frequencyGlide = new Glide(this.audioContext, 440, 50);
+		
+		this.gain			= new Gain(this.audioContext, 1, this.gainEnvelope);
+		this.wavePlayer		= new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
 
+		this.gain.addInput(this.wavePlayer);
+		this.audioContext.out.addInput(this.gain);
+		
+		this.audioContext.start();
+	}
+	
 } // Instrument

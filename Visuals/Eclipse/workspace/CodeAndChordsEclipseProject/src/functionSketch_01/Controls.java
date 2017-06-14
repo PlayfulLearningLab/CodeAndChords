@@ -43,7 +43,7 @@ public class Controls extends PApplet
 		this.setUpControls();
 		
 		this.melody	= new Melody(this); 
-		instrument	= new Instrument(this);
+		this.instrument	= new Instrument(this);
 		//melody.playMelody("E", 20, "minor", 4, instrument);
 
 	}
@@ -216,6 +216,17 @@ public class Controls extends PApplet
 			break;
 			
 		case "bpmText":
+			String bpm = cp5.get("bpmText").getStringValue();
+			int    bpmInt = 120;
+			try
+			{
+				bpmInt = Integer.parseInt(bpm);
+			}
+			catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setText("120"); }
+			catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setText("120"); }
+			
+			if (bpmInt < 40) { ((Textfield) cp5.get("bpmText")).setText("40"); }
+			if (bpmInt > 200) { ((Textfield) cp5.get("bpmText")).setText("200"); }
 			
 			break;
 			
@@ -229,19 +240,29 @@ public class Controls extends PApplet
 			map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
 			String scale = (String) map.get("name");
 			
+			int bpmInput = 120;
+			
+			try
+			{
+				bpmInput = Integer.parseInt(cp5.get("bpmText").getStringValue().trim());
+				System.out.println(bpmInput);
+			}
+			catch (NumberFormatException e) { System.out.println("parse int error"); }
+			
 			
 			//String scale = cp5.get("scaleList").getStringValue();
 			//int bpm = Integer.parseInt(cp5.get("bpmText").getStringValue());
 						
-			melody.playMelody(key, 120, scale, 4, this.instrument);
+			this.melody.playMelody(key, bpmInput, scale, 4, this.instrument);
 			
 			break;
 			
 		case "pauseButton":
-			
+				
 			break;
 			
 		case "stopButton":
+			this.melody.stop();
 			
 			break;
 			
