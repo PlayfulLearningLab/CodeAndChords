@@ -1,4 +1,4 @@
-package functionSketch_01;
+package core;
 
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.data.Buffer;
@@ -25,6 +25,11 @@ public class Instrument {
 	PApplet			parent;
 	WavePlayer		wavePlayer;
 	
+	
+	/**
+	 * Constructor
+	 * @param parent
+	 */
 	public Instrument(PApplet parent)
 	{
 		this.parent			= parent;
@@ -61,8 +66,6 @@ public class Instrument {
 	{
 		// TODO: deal with release going longer than the note's duration?
 		
-		System.out.println("Playing note " + note.getMidiNum() + "; frequency = " + Pitch.mtof(note.getMidiNum()));
-
 		/*
 		 * AD envelopes rise from 0.0 to
 		 * 1.0 over a length of time called the Attack. Then they fall back to 0.0 over a
@@ -85,9 +88,7 @@ public class Instrument {
 		// Release:
 		this.gainEnvelope.addSegment(0, this.release);
 		
-		
-		System.out.println("note.getAmplitude() = " + note.getAmplitude() + "; note.getDuration() = " + note.getDuration());
-		
+				
 //		this.wavePlayer.setFrequency(Pitch.mtof(note.getMidiNum()));
 		
 		// Treat -1 like a rest:
@@ -99,6 +100,7 @@ public class Instrument {
 			this.wavePlayer.pause(false);
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 		} // if
+		
 	} // playNote
 
 } // Instrument

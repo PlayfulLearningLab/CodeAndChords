@@ -1,4 +1,4 @@
-package functionSketch_01;
+package core;
 
 public class Note {
 	

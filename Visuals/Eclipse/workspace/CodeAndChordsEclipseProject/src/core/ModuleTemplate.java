@@ -206,6 +206,10 @@ public class ModuleTemplate {
 
 	private	int		checkpoint;		// For a timer that allows attack/release/transition sliders to be time-based.
 
+	private	Melody		melody;
+	private	int			bpm;
+	private	int			rangeOctave;
+	
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
@@ -265,8 +269,9 @@ public class ModuleTemplate {
 		this.redGreenBlueMod		 	= new float[3];
 		this.hueSatBrightnessMod        = new float[3];
 
-		this.checkpoint	= this.parent.millis() + 100;
-
+		this.checkpoint		= this.parent.millis() + 100;
+		this.bpm			= 120;
+		this.rangeOctave	= 4;
 
 		this.initModuleTemplate();
 	} // ModuleTemplate
@@ -1622,6 +1627,28 @@ public class ModuleTemplate {
 		 */
 
 	} // setCurKey
+	
+	/**
+	 * Instantiates the instance Melody object if null
+	 * and calls playMelody(key, rangeOctave, scale, bpm, Instrument) on it.
+	 * @param scale
+	 */
+	public void playMelody()
+	{
+		if(this.melody == null)
+		{
+			this.melody	= new Melody(this.parent, this.input);
+		}
+		
+		String[]	scales	= new String[] { "major", "minor", "chromatic" };
+		
+		this.input.pause(true);
+		
+//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
+		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
+			
+		this.input.pause(false);
+	} // playMelody
 
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
@@ -2085,17 +2112,20 @@ public class ModuleTemplate {
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
 		{
+			/*
 			for (int i = 0; i < input.getuGenArray().length; i++)
 			{
 				input.getuGenArray()[i].pause(true);			
 			} // for
-
+*/
 
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
-				this.input.uGenArrayFromSample(this.inputFile);
+//				this.input.uGenArrayFromSample(this.inputFile);
+				this.playMelody();
 			} else {
-				this.input.uGenArrayFromNumInputs(1);
+//				this.input.uGenArrayFromNumInputs(1);
+				// TODO: pause/stop here
 			}
 
 		} // if - play  check old input class in branch

@@ -4,6 +4,8 @@ import java.util.Map;
 
 import controlP5.*;
 import processing.core.PApplet;
+import core.Melody;
+import core.Instrument;
 
 public class Controls extends PApplet 
 {
