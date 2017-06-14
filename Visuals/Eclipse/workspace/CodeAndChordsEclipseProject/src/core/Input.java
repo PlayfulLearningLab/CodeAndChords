@@ -708,6 +708,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 */
 	public float getAmplitude(int inputNum) {
 		inputNumErrorCheck(inputNum, "getAmplitude(int)");
+		
+		this.setFund();
 
 //		return this.frequencyArray[inputNum - 1].getAmplitude();
 		return this.amplitudeArray[inputNum - 1];
@@ -723,7 +725,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	{
 //		float  amp  = this.frequencyArray[0].getAmplitude();
 //		return amp;
-		
+		this.setFund();
 		return this.amplitudeArray[0];
 	}
 
@@ -930,11 +932,24 @@ import beads.TimeStamp;
 			for(int i = 0; i < newVal.length; i++)
 			{
 				this.adjustedFundArray[i]	= newVal[i];
-				
-				System.out.println("this.adjustedFundArray[" + i + "] = " + this.adjustedFundArray[i]);
 			} // for
 		} // if
 	} // setAdjustedFundArray
+	
+	public void setAmplitudeArray(float[] newVal) {
+		if(newVal == null)
+		{
+			throw new IllegalArgumentException("Input.setAmplitudeArray: float[] parameter is null.");
+		}
+		
+		if(newVal.length <= this.amplitudeArray.length)
+		{
+			for(int i = 0; i < newVal.length; i++)
+			{
+				this.amplitudeArray[i]	= newVal[i];
+			} // for
+		} // if
+	} // setAmplitudeArray
 	
 	/**
 	 * Pauses the Gain connected to ac.out.

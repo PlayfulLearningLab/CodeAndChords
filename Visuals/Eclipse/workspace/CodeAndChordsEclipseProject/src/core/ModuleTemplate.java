@@ -207,7 +207,6 @@ public class ModuleTemplate {
 	private	int		checkpoint;		// For a timer that allows attack/release/transition sliders to be time-based.
 
 	private	Melody		melody;
-	private	Instrument	instrument;
 	private	int			bpm;
 	private	int			rangeOctave;
 	
@@ -1638,23 +1637,16 @@ public class ModuleTemplate {
 	{
 		if(this.melody == null)
 		{
-			this.melody	= new Melody(this.parent);
-		}
-
-		
-		System.out.println("this.instrument = " + this.instrument);
-		
-		if(this.instrument == null)
-		{
-			this.instrument	= new Instrument(this.parent, this.input);
+			this.melody	= new Melody(this.parent, this.input);
 		}
 		
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
 		
 		this.input.pause(true);
 		
-		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
-		
+//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
+		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
+			
 		this.input.pause(false);
 	} // playMelody
 

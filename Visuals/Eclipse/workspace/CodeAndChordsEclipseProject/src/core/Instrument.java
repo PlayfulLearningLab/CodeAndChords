@@ -22,24 +22,12 @@ public class Instrument {
 	Envelope		gainEnvelope;
 	Gain			gain;
 	Glide			frequencyGlide;
-	Input			input;
 	PApplet			parent;
 	WavePlayer		wavePlayer;
 	
-	/**
-	 * Constructor that will send the frequencies this Instrument plays
-	 * to the given Input object.
-	 * @param parent
-	 * @param input
-	 */
-	public Instrument(PApplet parent, Input input)
-	{
-		this(parent);
-		this.input	= input;
-	}
 	
 	/**
-	 * Constructor for using Instrument independent of an Input.
+	 * Constructor
 	 * @param parent
 	 */
 	public Instrument(PApplet parent)
@@ -113,12 +101,6 @@ public class Instrument {
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 		} // if
 		
-		if(this.input != null)
-		{
-			System.out.println("Instrument.playNote: about to set fundamentalArray...");
-			this.input.setFundamentalArray(new float[] { Pitch.mtof(note.getMidiNum()) });
-			this.input.setAdjustedFundArray(new float[] { Pitch.mtof(note.getMidiNum()) });
-		}
 	} // playNote
 
 } // Instrument
