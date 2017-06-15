@@ -796,8 +796,8 @@ public class ModuleTemplate {
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(adsrItems)
+		.setValue(0f)		// sets it to the first item
 		.setOpen(false)
-		.setLabel(adsrItems[0])		// Or maybe this should be set to the default value?
 		.setGroup("guideToneBackground")
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
@@ -825,8 +825,8 @@ public class ModuleTemplate {
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(rangeItems)
+		.setValue(0f)
 		.setOpen(false)
-		.setLabel(rangeItems[0])		// Or maybe this should be set to the default value?
 		.setGroup("guideToneBackground")
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
