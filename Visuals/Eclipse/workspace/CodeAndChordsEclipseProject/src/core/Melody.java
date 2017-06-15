@@ -2,7 +2,12 @@ package core;
 
 import java.util.*;
 
+import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.Bead;
+import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Pitch;
+import net.beadsproject.beads.ugens.Gain;
+import net.beadsproject.beads.ugens.Glide;
 import processing.core.PApplet;
 
 /**
@@ -37,6 +42,12 @@ public class Melody implements Runnable {
 	
 	private boolean                             melodyThreadRunning;
 	private boolean                             paused;
+	
+	private AudioContext                        ac;
+	private Glide                               volumeControl;
+	private Gain                                volume;
+	private Bead                                bead;
+	
 
 	/**
 	 * Constructor for using Melody independently of an Input
@@ -46,7 +57,7 @@ public class Melody implements Runnable {
 	public Melody(PApplet parent)
 	{
 		// Simply sends null to initialize the Input:
-		this(parent, null, new Instrument(parent));
+		this(parent, null, null);
 	} // constructor(PApplet)
 	
 	/**
@@ -57,7 +68,7 @@ public class Melody implements Runnable {
 	 */
 	public Melody(PApplet parent, Input input)
 	{
-		this(parent, input, new Instrument(parent));
+		this(parent, input, null);
 	} // constructor(PApplet, Input)
 	
 	/**
@@ -86,6 +97,13 @@ public class Melody implements Runnable {
 		this.parent		= parent;
 		this.input		= input;
 		this.instrument	= instrument;
+		
+		this.ac = new AudioContext();
+		this.ac.start();
+		
+		this.volumeControl = new Glide(ac, .5f, 100);
+		this.volume = new Gain(ac, 1, this.volumeControl);
+		this.ac.out.addInput(volume);
 	} // constructor(PApplet, Input)
 	
 	/**
@@ -422,4 +440,6 @@ public class Melody implements Runnable {
 		// TODO Auto-generated method stub
 		
 	}
+
+
 } // Melody

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
@@ -47,19 +48,21 @@ public class Instrument {
 	private Glide			frequencyGlide;
 	private PApplet			parent;
 	private WavePlayer		wavePlayer;
+	
+	private Gain            output;
 
 
 	/**
 	 * Constructor
 	 * @param parent
 	 */
-	public Instrument(PApplet parent)
+	public Instrument(PApplet parent, AudioContext audioContext, Gain output)
 	{
 		this.parent			= parent;
+		this.audioContext   = audioContext;
+		this.output         = output;
 		
 		this.setADSR(0);
-
-		this.audioContext	= new AudioContext();
 
 		this.envelopeSegments	= new LinkedList<Envelope.Segment>();
 		this.gainEnvelope	= new Envelope(this.audioContext);
@@ -69,7 +72,7 @@ public class Instrument {
 		this.wavePlayer		= new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
 
 		this.gain.addInput(this.wavePlayer);
-		this.audioContext.out.addInput(this.gain);
+		this.output.addInput(this.gain);
 
 		this.audioContext.start();
 	}
@@ -106,7 +109,6 @@ public class Instrument {
 		{
 			this.gainEnvelope.clear();
 		}
-
 
 		// Attack:
 		this.gainEnvelope.addSegment(note.getAmplitude(), this.attack);
