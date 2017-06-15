@@ -725,7 +725,7 @@ public class ModuleTemplate {
 		int		boxHeight		= 112;
 
 		int		labelWidth		= 30;
-		int		listWidth		= 120;
+		int		listWidth		= 155;
 		int		sliderWidth		= 120;
 		int		textfieldWidth	= 30;
 		int		popoutSpacer	= 12;
@@ -792,7 +792,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addScrollableList("adsrPresetsDropdown")
 		.setPosition(listSliderX, adsrY)
 		.setWidth(listWidth)
-		.setHeight(boxHeight - (popoutSpacer * 2))
+//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(adsrItems)
@@ -821,7 +821,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addScrollableList("rangeDropdown")
 		.setPosition(listSliderX, rangeY)
 		.setWidth(listWidth)
-		.setHeight(boxHeight - (popoutSpacer * 2))
+//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(rangeItems)

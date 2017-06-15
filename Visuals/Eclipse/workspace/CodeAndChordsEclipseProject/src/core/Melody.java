@@ -20,20 +20,25 @@ public class Melody implements Runnable {
 	private	static String[]						keys	= new String[] { 
 			" C ", " C# / Db ", " D "," D# / Eb ", " E ", " F ", " F# / Gb "," G "," G# / Ab ", " A "," A# / Bb "," B " 
 	};
+	private	static String[]						allNotes	= new String[] {
+			"A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab"
+	}; // allNotes
 	
 	// Input is not required; if initialized in the constructor, it will be used, but if not, ignored.
 	private	Input								input	= null;
 	// TODO: make private:
 	public Instrument							instrument;
 	private LinkedList<Note>                    mel;
-	private float                               highRange;
-	private float                               lowRange;
+	private float                               highRange;	// highest note in the scale; used for range select
+	private float                               lowRange;	// lowest note in the scale; used for range select
 	private	PApplet								parent;
 	
 	private String                              key;
 	private int                                 bpm;
 	private String                              scale;
 	private int                                 rangeOctave;
+	
+	private	String[]							rangeList;
 	
 	private boolean                             melodyThreadRunning;
 	private boolean                             paused;
@@ -86,6 +91,13 @@ public class Melody implements Runnable {
 		this.parent		= parent;
 		this.input		= input;
 		this.instrument	= instrument;
+		
+		// Defaults; will be given values in playMelody:
+		this.key			= " A ";
+		this.bpm			= 120;
+		this.scale			= "major";
+		this.rangeOctave	= 4;
+		this.rangeList		= new String[5];
 	} // constructor(PApplet, Input)
 	
 	/**
@@ -107,7 +119,7 @@ public class Melody implements Runnable {
 	 * @param key	String denoting the current key; do not include major or minor designation here
 	 * @param bpm	tempo in beats per minute
 	 * @param scale	either the String "major", "minor", or "chromatic"
-	 * @param rangeOctave	int giving the range octave; must be between _____ and ____ (TODO)
+	 * @param rangeOctave	int giving the range octave; must be between 3 and 7 (TODO)
 	 * @param instrument	Instrument that will play the Melody
 	 */
 	public void playMelody(String key, float bpm, String scale, int rangeOctave, Instrument instrument)
@@ -149,6 +161,8 @@ public class Melody implements Runnable {
 		{
 			throw new IllegalArgumentException("Melody.playMelody: key " + key + " is not a valid key.");
 		} // error checking
+		
+		this.setHighRange(keyPos);
 
 		// Calculate milli's per Note, given the tempo:
 		float quarterNoteTime = (float) (Math.pow(bpm, -1) * 60 * 1000);
@@ -201,9 +215,6 @@ public class Melody implements Runnable {
 			
 		} // for - play Notes
 
-		
-		
-		
 	}//playMelodyThread
 	
 	public void stop()
@@ -218,8 +229,69 @@ public class Melody implements Runnable {
 		this.paused = input ;
 	}
 
-	/*	
-	 * TODO: get rid of these?
+	private void setHighRange(int keyPos)
+	{
+		// error checking
+		System.out.println("setHighRange: keyPos = " + keyPos);
+		
+		int		lowRangeInt;
+		String	lowRangeString;
+		
+		if(this.scale.equals("chromatic"))
+		{
+			lowRangeInt	= (keyPos + 12) % 12;
+			lowRangeString	= this.key;
+		} else {
+			lowRangeInt	= (keyPos + 7) % 12;
+			
+			// find the position of the key in all notes:
+			int	allNotesPos	= -1;
+			for(int i = 0; i < Melody.allNotes.length; i++)
+			{
+				if(this.key.equals(Melody.allNotes[i]))
+				{
+					allNotesPos	= i;
+				} // if
+			} // for
+			if(allNotesPos == -1)
+			{
+				throw new IllegalArgumentException("Melody.setHighRange: this.key " + this.key + " could not be found in Melody.allKeys.");
+			}
+			
+			System.out.println("allNotesPos = " + allNotesPos + "; allNotes[allNotesPos] = " + Melody.allNotes[allNotesPos]);
+			
+			// find the note that is + 10 from that position:
+			lowRangeString	= Melody.allNotes[((allNotesPos + 10) % Melody.allNotes.length)];
+		}
+		
+		System.out.println("lowRangeInt = " + lowRangeInt + "; lowRangeString = " + lowRangeString);
+		
+		
+		int	highRangeInt	= (keyPos + 11) % 12;
+		// Get the leading tone, but take only the first of two-note Strings (e.g., ' G# / Ab ')
+		// (and remove the extra space from one-note Strings):
+		String	highRangeString	= Melody.keys[highRangeInt].substring(0, 3).trim(); // + this.rangeOctave;
+		
+		System.out.println("highRangeString = " + highRangeString);
+		
+		int			lowRangeMidi;
+		int			highRangeMidi;
+		String[]	lowRanges	= new String[5];
+		String[]	highRanges	= new String[5];
+		int			octave		= 3;
+		for(int i = 0; i < highRanges.length; i++)
+		{
+			lowRangeMidi	= (12 * octave - 1) + lowRangeInt;
+			highRangeMidi	= (12 * octave) + highRangeInt;
+			
+			lowRanges[i]	= lowRangeString + octave + " (" + Pitch.mtof(lowRangeMidi) + ")";
+			highRanges[i]	= highRangeString + octave + " (" + Pitch.mtof(highRangeMidi) + ")";
+			System.out.println("lowRanges[" + i + "] = " + lowRanges[i] + "; highRanges[" + i + "] = " + highRanges[i]);
+			
+			octave	= octave + 1;
+		} // for
+	} // setHighRange
+	
 	public float getHighRange()
 	{
 		return this.highRange;
@@ -229,7 +301,6 @@ public class Melody implements Runnable {
 	{
 		return this.lowRange;
 	}
-	 */
 
 	/**
 	 * Fills a HashMap with float[]'s of the scale degrees, durations, and rests
