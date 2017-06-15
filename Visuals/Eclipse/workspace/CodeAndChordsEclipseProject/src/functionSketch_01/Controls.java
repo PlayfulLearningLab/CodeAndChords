@@ -92,7 +92,8 @@ public class Controls extends PApplet
 		cp5.addButton("pauseButton")
 			.setLabel("Pause")
 			.setPosition(125, 350)
-			.setSize(50, 50);
+			.setSize(50, 50)
+			.setSwitch(false);
 		
 		cp5.addButton("stopButton")
 			.setLabel("Stop")
@@ -244,8 +245,8 @@ public class Controls extends PApplet
 			
 			try
 			{
-				bpmInput = Integer.parseInt(cp5.get("bpmText").getStringValue().trim());
-				System.out.println(bpmInput);
+				String s = cp5.get("bpmText").getStringValue();
+				System.out.println(s);
 			}
 			catch (NumberFormatException e) { System.out.println("parse int error"); }
 			
@@ -258,7 +259,8 @@ public class Controls extends PApplet
 			break;
 			
 		case "pauseButton":
-				
+			if(!((Button) cp5.get("pauseButton")).isSwitch()) { this.melody.pause(true); ((Button) cp5.get("pauseButton")).setSwitch(true); System.out.println("pause"); }
+			else { this.melody.pause(false); ((Button) cp5.get("pauseButton")).setSwitch(false); System.out.println("resume"); }
 			break;
 			
 		case "stopButton":

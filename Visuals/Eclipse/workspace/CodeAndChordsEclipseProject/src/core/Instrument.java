@@ -109,20 +109,10 @@ public class Instrument {
 	
 	public void stopNote()
 	{
-		this.audioContext.stop();
+		this.gainEnvelope.clear();
 		
-		this.audioContext = new AudioContext();
+		this.wavePlayer.pause(true);
 		
-		this.gainEnvelope	= new Envelope(this.audioContext);
-		this.frequencyGlide = new Glide(this.audioContext, 440, 50);
-		
-		this.gain			= new Gain(this.audioContext, 1, this.gainEnvelope);
-		this.wavePlayer		= new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
-
-		this.gain.addInput(this.wavePlayer);
-		this.audioContext.out.addInput(this.gain);
-		
-		this.audioContext.start();
 	}
 	
 } // Instrument

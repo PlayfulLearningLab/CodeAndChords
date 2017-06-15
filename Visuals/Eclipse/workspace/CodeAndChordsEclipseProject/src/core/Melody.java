@@ -33,6 +33,7 @@ public class Melody implements Runnable {
 	private int                                 rangeOctave;
 	
 	private boolean                             melodyThreadRunning;
+	private boolean                             paused;
 
 	/**
 	 * Constructor for using Melody independently of an Input
@@ -166,9 +167,8 @@ public class Melody implements Runnable {
 		// use the Note's duration to call instrument.play() at the appropriate time
 		for( int i = 0 ; i < notes.length && this.melodyThreadRunning; i++)
 		{
-			while(parent.millis() < nextNoteStartTime)	{ }
-
-			if(this.melodyThreadRunning) { instrument.playNote(notes[i]); }
+			while(this.paused) { }
+			instrument.playNote(notes[i]);
 			
 			if(this.input != null)
 			{
@@ -178,20 +178,25 @@ public class Melody implements Runnable {
 			}
 
 			nextNoteStartTime	= parent.millis() + notes[i].getDuration();
+			while(parent.millis() < nextNoteStartTime)	{ }
+			
 		} // for - play Notes
+
 		
-		if(!this.melodyThreadRunning)
-		{
-			//melody was stopped early
-			this.instrument.stopNote();
-		}
 		
 		
 	}//playMelodyThread
 	
 	public void stop()
 	{
+		this.instrument.stopNote();
 		this.melodyThreadRunning = false;
+		
+	}
+	
+	public void pause(boolean input)
+	{
+		this.paused = input ;
 	}
 
 	/*	
