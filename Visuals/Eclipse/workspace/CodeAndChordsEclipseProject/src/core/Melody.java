@@ -14,7 +14,7 @@ import processing.core.PApplet;
  * @author Dan Mahota, Emily Meuer
  *
  */
-public class Melody {
+public class Melody implements Runnable {
 
 	private static HashMap<String, float[][]>	melodyLib  = Melody.initializeLib();
 	private	static String[]						keys	= new String[] { 
@@ -29,6 +29,13 @@ public class Melody {
 	private float                               highRange;
 	private float                               lowRange;
 	private	PApplet								parent;
+	
+	private String                              key;
+	private int                                 bpm;
+	private String                              scale;
+	private int                                 rangeOctave;
+	
+	private boolean                             melodyThreadRunning;
 
 	/**
 	 * Constructor for using Melody independently of an Input
@@ -104,6 +111,18 @@ public class Melody {
 	 */
 	public void playMelody(String key, float bpm, String scale, int rangeOctave, Instrument instrument)
 	{
+		this.key = key;
+		this.bpm = (int) bpm;
+		this.scale = scale;
+		this.rangeOctave = (int) rangeOctave;
+		this.instrument = instrument;
+		
+		new Thread(this).start();
+		
+	} // playMelody
+	
+	private void playMelodyThread( String key, float bpm, String scale, int rangeOctave, Instrument instrument )
+	{
 		float[][]	curMelody	= melodyLib.get(scale.trim().toLowerCase());
 		//		int			scaleLength	= curMelody.length;
 		//		int[]		midiNotes	= new int[scaleLength];
@@ -136,7 +155,7 @@ public class Melody {
 		int		scalePos;
 		int		midiNote;
 		float	duration;
-		float		amplitude;
+		float	amplitude;
 
 		// Calculate midi notes, given the key and range:
 		for(int i = 0; i < curMelody.length; i++)
@@ -163,14 +182,14 @@ public class Melody {
 
 		float	nextNoteStartTime	= parent.millis();
 		// use the Note's duration to call instrument.play() at the appropriate time
-		for(int i = 0; i < notes.length; i++)
+		for( int i = 0 ; i < notes.length && this.melodyThreadRunning; i++)
 		{
 			while(parent.millis() < nextNoteStartTime)	{ 
 
 //				System.out.println("this.gainEnvelope.getCurrentValue() = " + this.instrument.gainEnvelope.getCurrentValue());
 			}
 
-			instrument.playNote(notes[i]);
+			if(this.melodyThreadRunning) { instrument.playNote(notes[i]); }
 			
 			if(this.input != null)
 			{
@@ -181,8 +200,20 @@ public class Melody {
 
 			nextNoteStartTime	= parent.millis() + notes[i].getDuration();
 		} // for - play Notes
-
-	} // playMelody
+		
+		if(!this.melodyThreadRunning)
+		{
+			//melody was stopped early
+			this.instrument.stopNote();
+		}
+		
+		
+	}//playMelodyThread
+	
+	public void stop()
+	{
+		this.melodyThreadRunning = false;
+	}
 
 	/*	
 	 * TODO: get rid of these?
@@ -380,4 +411,12 @@ public class Melody {
 
 		return hm;
 	} // initializeLib
+
+	@Override
+	public void run() {
+		this.melodyThreadRunning = true;
+		this.playMelodyThread(this.key, this.bpm, this.scale, this.rangeOctave, this.instrument);
+		// TODO Auto-generated method stub
+		
+	}
 } // Melody

@@ -147,6 +147,18 @@ public class Instrument {
 		*/
 
 	} // playNote
+	
+	public void stopNote()
+	{
+		this.audioContext.stop();
+		
+		this.audioContext = new AudioContext();
+		
+		this.gainEnvelope	= new Envelope(this.audioContext);
+		this.frequencyGlide = new Glide(this.audioContext, 440, 50);
+		
+		this.gain			= new Gain(this.audioContext, 1, this.gainEnvelope);
+		this.wavePlayer		= new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
 
 	/**
 	 * Sets the adsr with pre-determined values designated by the given preset number.
@@ -172,5 +184,4 @@ public class Instrument {
 		this.wavePlayer.pause(true);
 		System.out.println("pausing the WavePlayer!");
 	}
-
 } // Instrument
