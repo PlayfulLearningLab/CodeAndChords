@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Map;
 
 import controlP5.Button;
@@ -208,9 +209,26 @@ public class ModuleTemplate {
 
 	// TODO: make private:
 	public Melody		melody;
+	private	Instrument	instrument;
 	private	int			bpm;
 	private	int			rangeOctave;
 	
+	// Sliders/Textfields and Buttons/ColorWheels/Textfields all connected by id's:
+	// 		Sliders: id's start at 0; id % 2 == 0
+	//		Textfields: id's start at 1; id % 2 == 1
+	//
+	// Color select:
+	// 		Button's: id % 3 == 0
+	// 		ColorWheel's: id % 3 == 1
+	// 		TextField's: id % 3 == 2
+	private	int			lastTextfieldId		= 21;
+	private	int			bpmSliderId			= 20;
+	private	int			bpmTextfieldId		= lastTextfieldId;
+	private	int			firstCustomColorId	= 24;
+	private	int			canvasColorSelectId	= 63;
+	private	int			firstColorSelectId	= canvasColorSelectId;
+	private	int			lastColorSelectId	= 74;
+
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
@@ -271,8 +289,11 @@ public class ModuleTemplate {
 		this.hueSatBrightnessMod        = new float[3];
 
 		this.checkpoint		= this.parent.millis() + 100;
+		
 		this.bpm			= 120;
 		this.rangeOctave	= 4;
+		this.instrument	= new Instrument(this.parent);
+		this.melody		= new Melody(this.parent, this.input, this.instrument);
 
 		this.initModuleTemplate();
 	} // ModuleTemplate
@@ -349,6 +370,8 @@ public class ModuleTemplate {
 
 		addKeySelector(textYVals[5]);
 		this.setCurKey(this.curKey, this.majMinChrom);
+
+		this.addGuideTonePopout(textYVals[5]);
 
 		//we want hsb to go here
 		//HERE LIES THE HSBVALS
@@ -495,7 +518,7 @@ public class ModuleTemplate {
 	 * Method called during initialization to instatiate the Threshold, Attack, Release,
 	 * and Transition sliders.
 	 * 
-	 * Sliders have an odd and Textfields an even ID number, all less than 10 (no duplicates allowed).
+	 * Sliders have an odd and Textfields an even ID number, all less than this.lastTextfieldId (no duplicates allowed).
 	 * This will be used to connect them in controlEvent.
 	 * Names are based on ids; format: "slider" OR "textfield + [id]
 	 *  - thresholdSlider	= "slider0", thresholdTF	= "textfield1"
@@ -563,10 +586,10 @@ public class ModuleTemplate {
 				lowRange		= 255;
 				highRange		= 3000;
 				startingValue	= 500;
-				
+
 				this.attackReleaseTransition[i - 1]	= startingValue;
 			}
-			
+
 			this.sidebarCP5.addSlider("slider" + id)
 			.setPosition(this.leftAlign, yVals[i])
 			.setSize(sliderWidth, sliderHeight)
@@ -619,7 +642,7 @@ public class ModuleTemplate {
 		int	minorX			= this.leftAlign + listWidth + spacer + (toggleWidth + spacer);
 		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
 		int	guideToneX		= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 3);
-		
+
 		/*
 		String[] keyOptions	= new String[] {
 				"A", "A#", "Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
@@ -672,7 +695,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.getController("chrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
-		
+
 		// Guide Tone pop-out Button:
 		this.sidebarCP5.addToggle("guideToneButton")
 		.setPosition(guideToneX, keyY)
@@ -681,44 +704,129 @@ public class ModuleTemplate {
 		.setValue(false)
 		.setGroup("sidebarGroup");
 		this.sidebarCP5.getController("guideToneButton").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		// "Pop-out with range drop-down and envelope preset Buttons" and BPM.
-		
-		Color	transparentBlack	= new Color(0, 0, 0, 220);
-		int		transBlackInt		= transparentBlack.getRGB();
-		
-		int		boxWidth	= 200;
-		int		boxHeight	= 150;
-		
-		int		rangeWidth		= 80;
-		int		popOutSpacer	= 20;
-		
-		int		rangeY			= keyY + 40;
 
-		this.sidebarCP5.addBackground("guideToneBackground")
-		.setPosition(guideToneX, keyY + 20)
+
+	} // addKeySelector
+
+	/**
+	 * TODO these comments - perhaps explain placement of guideToneY (should it be the same number as
+	 * is sent to addKeySelector?)
+	 * 
+	 * @param guideToneY
+	 */
+	private void addGuideTonePopout(int guideToneY)
+	{
+		// "Pop-out with range drop-down and envelope preset Buttons" and BPM.
+
+		Color	transparentBlack	= new Color(0, 0, 0, 240);
+		int		transBlackInt		= transparentBlack.getRGB();
+
+		int		boxWidth		= 220;
+		int		boxHeight		= 112;
+
+		int		labelWidth		= 30;
+		int		listWidth		= 120;
+		int		sliderWidth		= 120;
+		int		textfieldWidth	= 30;
+		int		popoutSpacer	= 12;
+		
+		int		height			= 18;
+		
+		int		listSliderX		= (popoutSpacer * 2) + labelWidth;
+		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
+
+		int		rangeY			= popoutSpacer;
+		int		adsrY			= (popoutSpacer * 2) + height;
+		int		bpmY			= (popoutSpacer * 3) + (height * 2);
+
+		this.sidebarCP5.addGroup("guideToneBackground")
+		.setPosition(this.leftAlign, guideToneY + 20)
 		.setSize(boxWidth, boxHeight)
+//		.setBackgroundColor(this.parent.color(150, 50, 150))	// <-- testing purposes
 		.setBackgroundColor(transBlackInt)
-		.setGroup("sidebarGroup")
-		.setVisible(false);
-		
-		// ArrayList of range options for the dropdown.
-		
-		this.sidebarCP5.addScrollableList("rangeDropdown")
-		.setPosition(guideToneX + popOutSpacer, rangeY)
-		.setWidth(rangeWidth)
-		.setHeight(boxHeight - (popOutSpacer * 2))
-		.setBarHeight(18)
-//		.setItems(this.allNotes)
-		.setOpen(false)
-		.setLabel("Select the range:")		// Or maybe this should be set to the default value?
-		.setGroup("sidebarGroup")
-		.bringToFront()
 		.setVisible(false)
+		.hideBar();
+
+
+		// BPM Textlabel:
+		this.sidebarCP5.addLabel("bpmLabel")
+		.setPosition(popoutSpacer, bpmY + 4)
+//		.setWidth(labelWidth)
+		.setGroup("guideToneBackground")
+		.setValue("BPM");
+
+		this.sidebarCP5.addSlider("slider20")
+		.setPosition(listSliderX, bpmY)
+		.setSize(sliderWidth, height)
+		.setSliderMode(Slider.FLEXIBLE)
+		.setRange(40, 240)
+		.setValue(120)
+		.setLabelVisible(false)
+		.setGroup("guideToneBackground")
+		.setId(20);
+
+		this.sidebarCP5.addTextfield("textfield21")
+		.setPosition(textfieldX, bpmY)
+		.setSize(textfieldWidth, height)
+		.setText(this.sidebarCP5.getController("slider20").getValue() + "")
+		.setLabelVisible(false)
+		.setAutoClear(false)
+		.setGroup("guideToneBackground")
+		.setId(this.lastTextfieldId)
+		.getCaptionLabel().setVisible(false);
+
+		// "ADSR Presets" Textlabel
+		this.sidebarCP5.addTextlabel("adsrPresets")
+		.setPosition(popoutSpacer, adsrY)
+		.setGroup("guideToneBackground")
+		.setValue("ADSR \nPresets");
+
+		// ArrayList of ADSR options:
+		String[]	adsrItems	= new String[] {
+				"Even",
+				"Long Attack",
+				"Long Decay/Low Sustain",
+				"Long Release"
+		};
+
+		this.sidebarCP5.addScrollableList("adsrPresetsDropdown")
+		.setPosition(listSliderX, adsrY)
+		.setWidth(listWidth)
+		.setHeight(boxHeight - (popoutSpacer * 2))
+		.setBarHeight(18)
+		.setItemHeight(18)
+		.setItems(adsrItems)
+		.setOpen(false)
+		.setLabel(adsrItems[0])		// Or maybe this should be set to the default value?
+		.setGroup("guideToneBackground")
+		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
 
-		
-	} // addKeySelector
+
+		// "Range" Textlabel
+		this.sidebarCP5.addTextlabel("range")
+		.setPosition(popoutSpacer, rangeY + 4)
+		.setGroup("guideToneBackground")
+		.setValue("Range");
+
+		// ArrayList of range options for the dropdown.
+
+		this.sidebarCP5.addScrollableList("rangeDropdown")
+		.setPosition(listSliderX, rangeY)
+		.setWidth(listWidth)
+		.setHeight(boxHeight - (popoutSpacer * 2))
+		.setBarHeight(18)
+		.setItemHeight(18)
+		//				.setItems(this.allNotes)
+		//		.setDefaultValue(arg0)		// Maybe?
+		.setOpen(false)
+		//		.setLabel("Select the range:")		// Or maybe this should be set to the default value?
+		.setGroup("guideToneBackground")
+		.bringToFront()
+		.getCaptionLabel().toUpperCase(false);
+
+
+	} // addGuideTonePopout
 
 
 	/**
@@ -817,7 +925,7 @@ public class ModuleTemplate {
 		// ColorWheel's: id % 3 == 1
 		// TextField's: id % 3 == 2
 
-		int	id	= 63;
+		int	id	= this.firstColorSelectId;		// 63 (as of 6/14)
 
 		for(int i = 0; i < labels.length; i++)
 		{
@@ -853,82 +961,7 @@ public class ModuleTemplate {
 
 			id	= id + 1;
 		}
-		/*
-		this.sidebarCP5.addButton("button66")
-		.setPosition(tonicX, colorSelectY)
-		.setWidth(colorSelectWidth)
-		.setCaptionLabel("Tonic")
-		.setGroup("sidebarGroup")
-		.setId(66);
-		this.sidebarCP5.getController("button66").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-
-		this.sidebarCP5.addColorWheel("colorWheel67")
-		.setPosition(tonicX, colorSelectY - 200)
-		.setRGB(this.parent.color(255,0,0))
-		.setLabelVisible(false)
-		.setVisible(false)
-		.setGroup("sidebarGroup")
-		.setId(67);
-
-		this.sidebarCP5.addTextfield("textfield68")
-		.setPosition(tonicX + colorSelectWidth + colorSelectSpace, colorSelectY)
-		.setWidth(textfieldWidth)
-		.setAutoClear(false)
-		.setVisible(false)
-		.setText("Code#")
-		.setGroup("sidebarGroup")
-		.setId(68);
-
-		this.sidebarCP5.addButton("secondColor")
-		.setPosition(secondColorX, colorSelectY)
-		.setWidth(colorSelectWidth)
-		.setCaptionLabel("2nd Color")
-		.setGroup("sidebarGroup")
-		.setId(69);
-		this.sidebarCP5.getController("secondColor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-
-		this.sidebarCP5.addColorWheel("secondColorColorWheel")
-		.setPosition(secondColorX, colorSelectY + 20)
-		.setRGB(this.parent.color(255,0,0))
-		.setLabelVisible(false)
-		.setVisible(false)
-		.setGroup("sidebarGroup")
-		.setId(70);
-
-		this.sidebarCP5.addTextfield("secondColorTF")
-		.setPosition(secondColorX, colorSelectY)
-		.setWidth(textfieldWidth)
-		.setAutoClear(false)
-		.setVisible(false)
-		.setText("Code#")
-		.setGroup("sidebarGroup")
-		.setId(71);
-
-		this.sidebarCP5.addButton("thirdColor")
-		.setPosition(thirdColorX, colorSelectY)
-		.setWidth(colorSelectWidth)
-		.setCaptionLabel("3rd Color")
-		.setGroup("sidebarGroup")
-		.setId(72);
-		this.sidebarCP5.getController("thirdColor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-
-		this.sidebarCP5.addColorWheel("thirdColorColorWheel")
-		.setPosition(thirdColorX, colorSelectY + 20)
-		.setRGB(this.parent.color(255,0,0))
-		.setLabelVisible(false)
-		.setVisible(false)
-		.setGroup("sidebarGroup")
-		.setId(73);
-
-		this.sidebarCP5.addTextfield("thirdColorTF")
-		.setPosition(thirdColorX, colorSelectY)
-		.setWidth(textfieldWidth)
-		.setAutoClear(false)
-		.setVisible(false)
-		.setText("Code#")
-		.setGroup("sidebarGroup")
-		.setId(74);
-		 */
+		
 	} // addColorSelectButtons
 
 	/**
@@ -982,7 +1015,7 @@ public class ModuleTemplate {
 		// Note Buttons, ColorWheels and corresponding Textfields will have id's of 24 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
 		int	namePos	= 0;
-		int	id		= 24;
+		int	id		= this.firstCustomColorId;		// 24 (as of 6/14)
 		int colorpos  = 0;
 
 		// First row of pitches:
@@ -1157,6 +1190,8 @@ public class ModuleTemplate {
 
 	/**
 	 * Method called during instantiation to hide text labels of text fields
+	 * TODO: do this during creation of Textfields/Sliders
+	 * 
 	 * Elena Ryan
 	 * Added 1/24/17
 	 */	
@@ -1265,8 +1300,8 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign, modulateYVals[i])
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
-			.setRange(-255, 255)
 			.setValue(0)
+			.setRange(-255, 255)
 			//.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
@@ -1628,7 +1663,7 @@ public class ModuleTemplate {
 		 */
 
 	} // setCurKey
-	
+
 	/**
 	 * Instantiates the instance Melody object if null
 	 * and calls playMelody(key, rangeOctave, scale, bpm, Instrument) on it.
@@ -1636,18 +1671,20 @@ public class ModuleTemplate {
 	 */
 	public void playMelody()
 	{
+		/*
 		if(this.melody == null)
 		{
 			this.melody	= new Melody(this.parent, this.input);
 		}
-		
+		*/
+
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
-		
+
 		this.input.pause(true);
-		
-//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
+
+		//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
-			
+
 		this.input.pause(false);
 	} // playMelody
 
@@ -2118,14 +2155,14 @@ public class ModuleTemplate {
 			{
 				input.getuGenArray()[i].pause(true);			
 			} // for
-*/
+			 */
 
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
-//				this.input.uGenArrayFromSample(this.inputFile);
+				//				this.input.uGenArrayFromSample(this.inputFile);
 				this.playMelody();
 			} else {
-//				this.input.uGenArrayFromNumInputs(1);
+				//				this.input.uGenArrayFromNumInputs(1);
 				// TODO: pause/stop here
 			}
 
@@ -2168,11 +2205,10 @@ public class ModuleTemplate {
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
 
-		// (If I have a numSliders, sliderIDCutoff would be (numSliders * 2).
-		int	sliderIDCutoff	= 20;
+//		int	sliderIDCutoff	= this.lastTextfieldId;
 
 		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
-		if(id % 2 == 0 && id < sliderIDCutoff)
+		if(id % 2 == 0 && id < this.lastTextfieldId)
 		{
 			Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
 			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 1));
@@ -2212,9 +2248,12 @@ public class ModuleTemplate {
 				this.applyHSBModulate(colors, originalColors);
 			}//hsb mod
 
+			if(id == 20)
+			{
+				this.bpm	= Math.max(Math.min((int)sliderValFloat, 240), 0);
+			}
 
-
-		}
+		} // sliders
 
 		//The call for hsb changes
 		/*
@@ -2230,7 +2269,7 @@ public class ModuleTemplate {
 
 
 		// Textfields
-		if(id % 2 == 1 && id < sliderIDCutoff && id > 0)
+		if(id % 2 == 1 && id <= this.lastTextfieldId && id > 0)
 		{
 			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + id);
 			Slider		curSlider		= (Slider)this.sidebarCP5.getController("slider" + (id - 1));
@@ -2344,7 +2383,7 @@ public class ModuleTemplate {
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
 
 		// Custom pitch color selector buttons:
-		if( ( controlEvent.getId() > 23 ) && (controlEvent.getId() % 3 == 0) )
+		if( ( controlEvent.getId() >= this.firstCustomColorId ) && (controlEvent.getId() % 3 == 0) )
 		{
 			Button	curButton	= (Button)controlEvent.getController();
 
@@ -2356,7 +2395,7 @@ public class ModuleTemplate {
 				this.sidebarCP5.getGroup("background").bringToFront();
 
 				// only call updateColors() for colorSelect Buttons:
-				if(controlEvent.getId() > 62 && controlEvent.getId() < 73)
+				if(controlEvent.getId() >= this.firstColorSelectId && controlEvent.getId() <= this.lastColorSelectId)
 				{
 					this.updateColors(this.curColorStyle);
 				}
@@ -2385,10 +2424,10 @@ public class ModuleTemplate {
 		} // custom pitch color selectors (i.e., show color wheel)
 
 		// Custom pitch ColorWheels
-		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 1))
+		if(controlEvent.getId() > this.firstCustomColorId && (controlEvent.getId() % 3 == 1))
 		{
 			// only call updateColors() for colorSelect ColorWheels:
-			if(controlEvent.getId() > 62 && controlEvent.getId() < 74)
+			if(controlEvent.getId() >= this.firstColorSelectId && controlEvent.getId() <= this.lastColorSelectId)
 			{
 				this.updateColors(this.curColorStyle);
 			} // if
@@ -2438,7 +2477,7 @@ public class ModuleTemplate {
 		} // custom pitch colorWheels
 
 		// ColorWheel Textfields (id 23 or over; id % 3 == 2):
-		if(controlEvent.getId() > 23 && (controlEvent.getId() % 3 == 2))
+		if(controlEvent.getId() > this.firstCustomColorId && (controlEvent.getId() % 3 == 2))
 		{
 			// This call has to happen early on in the method so that, after making the dichrom/trichrom spectrum,
 			// individual colors can be changed independently of the rest.
@@ -2474,7 +2513,7 @@ public class ModuleTemplate {
 
 
 					// canvas color (does not affect notes):
-					if(id == 65)
+					if(id == this.canvasColorSelectId)
 					{
 						this.canvasColor[0]	= red;
 						this.canvasColor[1]	= green;
@@ -2584,12 +2623,42 @@ public class ModuleTemplate {
 		// Guide Tone Generator:
 		if(controlEvent.getName().equals("guideToneButton"))
 		{
-			System.out.println("((Toggle) controlEvent.getController()).getBooleanValue() = " + ((Toggle) controlEvent.getController()).getBooleanValue());
-			this.sidebarCP5.getGroup("guideTones").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
-//			this.sidebarCP5.getGroup("guideToneBackground").setVisible(true);
-			this.sidebarCP5.getGroup("guideTones").bringToFront();
+			if(((Toggle)controlEvent.getController()).getBooleanValue())
+			{
+
+//				this.sidebarCP5.setAutoDraw(false);
+				this.sidebarCP5.getGroup("background").setVisible(true);
+				this.sidebarCP5.getGroup("background").bringToFront();
+				this.sidebarCP5.getController("guideToneButton").bringToFront();
+
+			} else {
+
+//				this.sidebarCP5.setAutoDraw(true);
+				this.sidebarCP5.getGroup("background").setVisible(false);
+				this.displaySidebar();
+			}
+
+			this.sidebarCP5.getGroup("guideToneBackground").bringToFront();
+			this.sidebarCP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
+
+		} // Guide Tone Generator
+		
+		// ADSR Presets Scrollable List:
+		if(controlEvent.getName().equals("adsrPresets"))
+		{
+			controlEvent.getController().bringToFront();
 			
-		}
+			int	adsrPos	= (int)controlEvent.getValue();
+			
+			System.out.println("adsrPos = " + adsrPos);
+			
+			if(adsrPos >= 0 && adsrPos < 4)
+			{
+				this.instrument.setADSR(adsrPos);
+			} else {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent: adsrPos" + adsrPos + " is out of range.");
+			}
+		} // ADSR Presets
 
 	} // controlEvent
 
@@ -2813,9 +2882,9 @@ public class ModuleTemplate {
 	}
 
 	public int getCheckpoint()				{	return this.checkpoint;	}
-	
+
 	public void setCheckpoint(int newVal)	{	this.checkpoint	= newVal;	}
-	
+
 	public float[][] getColors()
 	{
 		return this.colors;

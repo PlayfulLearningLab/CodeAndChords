@@ -119,8 +119,6 @@ public class Module_01_PitchHue extends PApplet
 		if (keyPressed == true) 
 		{
 			this.moduleTemplate.setMenuVal();
-			
-			this.moduleTemplate.melody.instrument.stopNote();
 		}
 		
 //		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
@@ -281,7 +279,7 @@ public class Module_01_PitchHue extends PApplet
 	{
 		try
 		{
-			//println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
+//			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent);
 			//"; this.moduleTemplate = " + this.moduleTemplate);
 
 			this.moduleTemplate.controlEvent(theControlEvent);	

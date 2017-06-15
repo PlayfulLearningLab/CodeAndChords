@@ -33,11 +33,11 @@ public class Instrument {
 		// 0: even
 		new float[] { 100, 50, 90, 100 },
 		// 1: long attack
-		new float[] { 750, 50, 80, 50 },
+		new float[] { 1500, 50, 80, 50 },
 		// 2: long decay + low sustain
 		new float[] { 100, 750, 60, 100 },
 		// 3: long release
-		new float[] { 100, 75, 80, 1000 },
+		new float[] { 100, 75, 80, 3000 },
 	};
 
 	private AudioContext				audioContext;
@@ -57,7 +57,7 @@ public class Instrument {
 	{
 		this.parent			= parent;
 		
-		this.setADSR(2);
+		this.setADSR(0);
 
 		this.audioContext	= new AudioContext();
 
