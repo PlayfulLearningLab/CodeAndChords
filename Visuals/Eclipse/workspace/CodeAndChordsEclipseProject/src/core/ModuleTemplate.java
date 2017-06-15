@@ -291,7 +291,7 @@ public class ModuleTemplate {
 		this.checkpoint		= this.parent.millis() + 100;
 		
 		this.bpm			= 120;
-		this.rangeOctave	= 4;
+		this.rangeOctave	= 3;
 		this.instrument	= new Instrument(this.parent);
 		this.melody		= new Melody(this.parent, this.input, this.instrument);
 
@@ -796,8 +796,8 @@ public class ModuleTemplate {
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(adsrItems)
+		.setValue(0f)		// sets it to the first item
 		.setOpen(false)
-		.setLabel(adsrItems[0])		// Or maybe this should be set to the default value?
 		.setGroup("guideToneBackground")
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
@@ -810,6 +810,13 @@ public class ModuleTemplate {
 		.setValue("Range");
 
 		// ArrayList of range options for the dropdown.
+		String[]	rangeItems	= new String[] {
+				"A3 (110 Hz) - G#3 (207.65 Hz)",
+				"A4 (220 Hz) - G#4 (415.3 Hz)",
+				"A5 (440 Hz) - G#4 (830.6 Hz)",
+				"A6 (880 Hz) - G#4 (1661.2 Hz)",
+				"A7 (1760 Hz) - G#4 (3322.4 Hz)",
+		};
 
 		this.sidebarCP5.addScrollableList("rangeDropdown")
 		.setPosition(listSliderX, rangeY)
@@ -817,10 +824,9 @@ public class ModuleTemplate {
 		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
-		//				.setItems(this.allNotes)
-		//		.setDefaultValue(arg0)		// Maybe?
+		.setItems(rangeItems)
+		.setValue(0f)
 		.setOpen(false)
-		//		.setLabel("Select the range:")		// Or maybe this should be set to the default value?
 		.setGroup("guideToneBackground")
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
@@ -2657,6 +2663,24 @@ public class ModuleTemplate {
 				this.instrument.setADSR(adsrPos);
 			} else {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent: adsrPos" + adsrPos + " is out of range.");
+			}
+		} // ADSR Presets
+		
+		// Range Octave Scrollable List:
+		if(controlEvent.getName().equals("rangeDropdown"))
+		{
+			System.out.println("rangeList clicked!");
+//			controlEvent.getController().bringToFront();
+			
+			int	rangeOctave	= (int)controlEvent.getValue() + 3;
+			
+			System.out.println("adsrPos = " + rangeOctave);
+			
+			if(rangeOctave >= 3 && rangeOctave <= 7)
+			{
+				this.rangeOctave	= rangeOctave;
+			} else {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent: rangeOctave " + rangeOctave + " is out of range.");
 			}
 		} // ADSR Presets
 
