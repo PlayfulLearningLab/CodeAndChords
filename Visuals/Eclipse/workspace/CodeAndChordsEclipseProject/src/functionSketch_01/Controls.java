@@ -216,11 +216,23 @@ public class Controls extends PApplet
 		switch(name)
 		{
 		case "scaleList":
-//			this.fillList("rangeList");
+			// get scale:
+			int val = (int) cp5.get("scaleList").getValue();
+			Map<String, Object>map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
+			String scale = (String) map.get("name");
+			this.melody.setScale(scale);
+			this.fillRangeList();
+
 			break;
 
 		case "keyList":
-//			this.fillList("rangeList");
+			// get key:
+			val = (int) cp5.get("keyList").getValue();
+			map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
+			String	key	= (String) map.get("name");
+			this.melody.setKey(key);
+			this.fillRangeList();
+
 			break;
 
 		case "rangeList":
@@ -250,18 +262,18 @@ public class Controls extends PApplet
 		case "playButton":
 
 			// get key:
-			int val = (int) cp5.get("keyList").getValue();
-			Map<String, Object> map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
-			String	key	= (String) map.get("name");
+			val = (int) cp5.get("keyList").getValue();
+			map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
+			key	= (String) map.get("name");
 
 			// get scale:
 			val = (int) cp5.get("scaleList").getValue();
 			map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
-			String scale = (String) map.get("name");
-			
+			scale = (String) map.get("name");
+
 			// get range octave:
 			int	rangeOctave = (int) ( cp5.get("rangeList").getValue() + 3);
-			
+
 			// get adsr presets:
 			val = (int) cp5.get("adsrList").getValue();
 			this.instrument.setADSR(val);
@@ -289,8 +301,22 @@ public class Controls extends PApplet
 		}
 	}//controlEvent()
 
-
-
+	/**
+	 * Convenience method called in controlEvent when either the key or scale is updated.
+	 */
+	private void fillRangeList()
+	{
+		this.melody.setRangeList();
+		System.out.println("this.melody.scale = " + this.melody.scale);
+		try
+		{
+			((ScrollableList)this.cp5.getController("rangeList"))
+			.setItems(this.melody.getRangeList())
+			.setValue(0f);
+		} catch(ClassCastException cce) {
+			throw new IllegalArgumentException("Controls.fillRangeList(): error casting rangeList Controller to ScrollableList.");
+		} // catch
+	} // fillRangeList
 
 
 

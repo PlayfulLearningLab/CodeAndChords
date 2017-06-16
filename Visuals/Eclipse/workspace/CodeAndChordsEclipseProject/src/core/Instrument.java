@@ -125,9 +125,9 @@ public class Instrument {
 		if(note.getMidiNum() != -1)
 		{
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
-			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
+//			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
 		} else {
-			System.out.println("1/8th rest");
+//			System.out.println("1/8th rest");
 		}
 		
 		/*

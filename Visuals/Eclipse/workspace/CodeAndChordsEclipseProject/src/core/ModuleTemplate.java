@@ -212,7 +212,7 @@ public class ModuleTemplate {
 	private	Instrument	instrument;
 	private	int			bpm;
 	private	int			rangeOctave;
-	
+
 	// Sliders/Textfields and Buttons/ColorWheels/Textfields all connected by id's:
 	// 		Sliders: id's start at 0; id % 2 == 0
 	//		Textfields: id's start at 1; id % 2 == 1
@@ -289,7 +289,7 @@ public class ModuleTemplate {
 		this.hueSatBrightnessMod        = new float[3];
 
 		this.checkpoint		= this.parent.millis() + 100;
-		
+
 		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.instrument	= new Instrument(this.parent);
@@ -729,9 +729,9 @@ public class ModuleTemplate {
 		int		sliderWidth		= 120;
 		int		textfieldWidth	= 30;
 		int		popoutSpacer	= 12;
-		
+
 		int		height			= 18;
-		
+
 		int		listSliderX		= (popoutSpacer * 2) + labelWidth;
 		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
 
@@ -742,7 +742,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addGroup("guideToneBackground")
 		.setPosition(this.leftAlign, guideToneY + 20)
 		.setSize(boxWidth, boxHeight)
-//		.setBackgroundColor(this.parent.color(150, 50, 150))	// <-- testing purposes
+		//		.setBackgroundColor(this.parent.color(150, 50, 150))	// <-- testing purposes
 		.setBackgroundColor(transBlackInt)
 		.setVisible(false)
 		.hideBar();
@@ -751,7 +751,7 @@ public class ModuleTemplate {
 		// BPM Textlabel:
 		this.sidebarCP5.addLabel("bpmLabel")
 		.setPosition(popoutSpacer, bpmY + 4)
-//		.setWidth(labelWidth)
+		//		.setWidth(labelWidth)
 		.setGroup("guideToneBackground")
 		.setValue("BPM");
 
@@ -792,7 +792,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addScrollableList("adsrPresetsDropdown")
 		.setPosition(listSliderX, adsrY)
 		.setWidth(listWidth)
-//		.setHeight(boxHeight - (popoutSpacer * 2))
+		//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(adsrItems)
@@ -809,22 +809,19 @@ public class ModuleTemplate {
 		.setGroup("guideToneBackground")
 		.setValue("Range");
 
-		// ArrayList of range options for the dropdown.
-		String[]	rangeItems	= new String[] {
-				"A3 (110 Hz) - G#3 (207.65 Hz)",
-				"A4 (220 Hz) - G#4 (415.3 Hz)",
-				"A5 (440 Hz) - G#4 (830.6 Hz)",
-				"A6 (880 Hz) - G#4 (1661.2 Hz)",
-				"A7 (1760 Hz) - G#4 (3322.4 Hz)",
-		};
+		// Update Melody's scale:
+		String[] scales	= new String[] { "major", "minor", "chromatic" };
+		this.melody.setScale(scales[this.majMinChrom]);
+		this.melody.setRangeList();
+
 
 		this.sidebarCP5.addScrollableList("rangeDropdown")
 		.setPosition(listSliderX, rangeY)
 		.setWidth(listWidth)
-//		.setHeight(boxHeight - (popoutSpacer * 2))
+		//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
-		.setItems(rangeItems)
+		.setItems(this.melody.getRangeList())
 		.setValue(0f)
 		.setOpen(false)
 		.setGroup("guideToneBackground")
@@ -967,7 +964,7 @@ public class ModuleTemplate {
 
 			id	= id + 1;
 		}
-		
+
 	} // addColorSelectButtons
 
 	/**
@@ -1682,7 +1679,7 @@ public class ModuleTemplate {
 		{
 			this.melody	= new Melody(this.parent, this.input);
 		}
-		*/
+		 */
 
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
 
@@ -2211,7 +2208,7 @@ public class ModuleTemplate {
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
 
-//		int	sliderIDCutoff	= this.lastTextfieldId;
+		//		int	sliderIDCutoff	= this.lastTextfieldId;
 
 		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
 		if(id % 2 == 0 && id < this.lastTextfieldId)
@@ -2293,7 +2290,6 @@ public class ModuleTemplate {
 		{
 			// keyPos is the position of the particular key in the Scrollable List:
 			int	keyPos	= (int)controlEvent.getValue();
-			System.out.println("  keyDropdown: keyPos = " + keyPos);
 
 			// getItem returns a Map of the color, state, value, name, etc. of that particular item
 			//  in the ScrollableList:
@@ -2304,6 +2300,18 @@ public class ModuleTemplate {
 			this.curKey	= key;
 			this.curKeyOffset = keyPos;
 			this.curKeyEnharmonicOffset	= this.enharmonicPos[getCurKeyOffset()];
+
+			// Update Melody's key and rangeList selection:
+			this.melody.setKey(this.curKey);
+			this.melody.setRangeList();
+			try
+			{
+				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
+				.setItems(this.melody.getRangeList())
+				.setValue(0f);
+			} catch(ClassCastException cce) {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+			} // catch
 
 			// Setting the input file:
 			int	enharmonicPos	= this.enharmonicPos[keyPos];
@@ -2379,7 +2387,18 @@ public class ModuleTemplate {
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
 
-			//this.updateColors(this.curColorStyle);
+			// Update Melody's scale:
+			String[] scales	= new String[] { "major", "minor", "chromatic" };
+			this.melody.setScale(scales[this.majMinChrom]);
+			this.melody.setRangeList();
+			try
+			{
+				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
+				.setItems(this.melody.getRangeList())
+				.setValue(0f);
+			} catch(ClassCastException cce) {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+			} // catch
 
 		} // majMinChrom buttons
 
@@ -2632,14 +2651,14 @@ public class ModuleTemplate {
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
 
-//				this.sidebarCP5.setAutoDraw(false);
+				//				this.sidebarCP5.setAutoDraw(false);
 				this.sidebarCP5.getGroup("background").setVisible(true);
 				this.sidebarCP5.getGroup("background").bringToFront();
 				this.sidebarCP5.getController("guideToneButton").bringToFront();
 
 			} else {
 
-//				this.sidebarCP5.setAutoDraw(true);
+				//				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
@@ -2648,16 +2667,16 @@ public class ModuleTemplate {
 			this.sidebarCP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
 
 		} // Guide Tone Generator
-		
+
 		// ADSR Presets Scrollable List:
 		if(controlEvent.getName().equals("adsrPresets"))
 		{
 			controlEvent.getController().bringToFront();
-			
+
 			int	adsrPos	= (int)controlEvent.getValue();
-			
+
 			System.out.println("adsrPos = " + adsrPos);
-			
+
 			if(adsrPos >= 0 && adsrPos < 4)
 			{
 				this.instrument.setADSR(adsrPos);
@@ -2665,17 +2684,14 @@ public class ModuleTemplate {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent: adsrPos" + adsrPos + " is out of range.");
 			}
 		} // ADSR Presets
-		
+
 		// Range Octave Scrollable List:
 		if(controlEvent.getName().equals("rangeDropdown"))
 		{
-			System.out.println("rangeList clicked!");
-//			controlEvent.getController().bringToFront();
-			
+			//			controlEvent.getController().bringToFront();
+
 			int	rangeOctave	= (int)controlEvent.getValue() + 3;
-			
-			System.out.println("adsrPos = " + rangeOctave);
-			
+
 			if(rangeOctave >= 3 && rangeOctave <= 7)
 			{
 				this.rangeOctave	= rangeOctave;
