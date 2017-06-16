@@ -1,0 +1,36 @@
+package core;
+
+public class Note {
+	
+	/**
+	 * 06/12/2017
+	 * Emily Meuer
+	 * 
+	 * Class to create Notes that will be used to make a Melody.
+	 */
+	
+	private	int		midiNum;	// the midi number of the note
+	private	float	duration;	// the length of the note in milliseconds
+	private	float	amplitude;	// the amplitude of the note in undefined measure; not yet implemented
+	
+	/**
+	 * Creates a new Note with the given midiNum, duration, and amplitude.
+	 * 
+	 * @param midiNum	int denoting the midi number of the Note
+	 * @param duration	float denoting the length of the Note in milliseconds
+	 * @param amplitude float denoting the amplitude of the Note (in unknown measurement - TODO?)
+	 */
+	public Note(int midiNum, float duration, float amplitude)
+	{
+		this.midiNum	= midiNum;
+		this.duration	= duration;
+		this.amplitude	= amplitude;
+	}
+	
+	public int getMidiNum()		{	return this.midiNum;	}
+	
+	public float getDuration()	{	return this.duration;	}
+	
+	public float getAmplitude()	{	return this.amplitude;	}
+
+}

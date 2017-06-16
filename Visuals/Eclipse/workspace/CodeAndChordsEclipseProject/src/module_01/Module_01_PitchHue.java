@@ -62,14 +62,8 @@ public class Module_01_PitchHue extends PApplet
 	private	float[]		colorRange	= new float[3];
 	private	float[]		colorAdd	= new float[3];
 
-	// TODO: remove after testing to get timing working
-	private	int		counter		= 0;
-	private	int[][]	testColors	= new int[][] {
-			new int[] { 255, 255, 255 },
-			new int[] { 150, 50, 150 }
-	};
-	private	int[]	curColors	= new int[3];
-	// (remove the above ^)
+	// TODO: remove after testing to get pause working
+	private	boolean		pause	= true;
 	
 	
 	public void settings()
@@ -127,8 +121,10 @@ public class Module_01_PitchHue extends PApplet
 			this.moduleTemplate.setMenuVal();
 		}
 		
+		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
+
 
 			this.nowBelow	= false;
 
@@ -282,14 +278,14 @@ public class Module_01_PitchHue extends PApplet
 	{
 		try
 		{
-			//println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent +
+//			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent);
 			//"; this.moduleTemplate = " + this.moduleTemplate);
 
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
-			println("Module_01_02.controlEvent: caught Exception " + e);
-//			e.printStackTrace();
+			println("Module_01_PitchHue.controlEvent: caught Exception " + e);
+			e.printStackTrace();
 		}
 	} // controlEvent
 
