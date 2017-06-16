@@ -52,7 +52,7 @@ public class Module_01_PitchHue extends PApplet
 	private int  goalHuePos;
 	private int  curHuePos;
 
-	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
+//	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 	private ModuleTemplate	moduleTemplate;
 	private boolean		nowBelow			= false;
 	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
@@ -62,9 +62,6 @@ public class Module_01_PitchHue extends PApplet
 	private	float[]		colorRange	= new float[3];
 	private	float[]		colorAdd	= new float[3];
 
-	// TODO: remove after testing to get pause working
-	private	boolean		pause	= true;
-	
 	
 	public void settings()
 	{
@@ -74,8 +71,9 @@ public class Module_01_PitchHue extends PApplet
 	public void setup() 
 	{
 		this.input  = new Input();
+		
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
-
+		
 		//		this.moduleTemplate.setCurKey("A", 2);
 		//		this.moduleTemplate.rainbow();
 
@@ -150,7 +148,7 @@ public class Module_01_PitchHue extends PApplet
 
 
 			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + colors.length + ") or less than 0.");
+				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + this.moduleTemplate.getColors().length + ") or less than 0.");
 			}
 
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
@@ -159,19 +157,18 @@ public class Module_01_PitchHue extends PApplet
 			if (newHuePos != goalHuePos) {
 				goalHuePos  = newHuePos;
 			} // if
-			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
 			
-			for(int i = 0; i < goalHue.length; i++)
+			for(int i = 0; i < this.goalHue.length; i++)
 			{
-				System.out.print(goalHue[i] + ", ");
+				this.goalHue[i]	= this.moduleTemplate.getColors()[goalHuePos][i];
 			}
-			System.out.println();
+
 			
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
 
-			goalHue	= new float[] { 
+			this.goalHue	= new float[] { 
 					this.moduleTemplate.getCanvasColor()[0],
 					this.moduleTemplate.getCanvasColor()[1],
 					this.moduleTemplate.getCanvasColor()[2]
@@ -196,12 +193,15 @@ public class Module_01_PitchHue extends PApplet
 			this.moduleTemplate.setCheckpoint(this.millis() + 50);
 		} // if - adding every 50 millis
 		
-		for(int i = 0; i < curHue.length; i++)
-		{
-			System.out.print(curHue[i] + ", ");
-		}
-		System.out.println();
-
+		/*
+		System.out.println("curHue: " + this.curHue[0] + ", " + 
+				+ this.curHue[1] + ", "
+				+ this.curHue[2]);
+		System.out.println("goalHue: " + this.goalHue[0] + ", " + 
+						+ this.goalHue[1] + ", "
+						+ this.goalHue[2]);
+		System.out.println("input.getAmplitude() = " + input.getAmplitude());
+*/
 
 		float	lowBound;
 		float	highBound;
@@ -291,14 +291,12 @@ public class Module_01_PitchHue extends PApplet
 	{
 		try
 		{
-//			println("Module_01_02.controlEvent: theControlEvent = " + theControlEvent);
 			//"; this.moduleTemplate = " + this.moduleTemplate);
-
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{
-			println("Module_01_PitchHue.controlEvent: caught Exception " + e);
-			e.printStackTrace();
+			println("Module_01_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
+//			e.printStackTrace();
 		}
 	} // controlEvent
 
