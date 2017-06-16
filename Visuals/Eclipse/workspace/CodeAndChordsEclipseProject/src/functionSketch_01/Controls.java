@@ -65,7 +65,10 @@ public class Controls extends PApplet
 		//Name all of the drop box lists to be created
 		String[] names = new String[] { "adsr", "range", "key", "scale" } ;
 
-
+		//Volume Slider:
+		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 100, 415, 100, 15);
+		
+		
 		//Position of first box
 		int  x = 30;
 		int  y = 300;
@@ -230,6 +233,10 @@ public class Controls extends PApplet
 		case "adsrList":
 
 			break;
+			
+		case "volumeSlider":
+			this.instrument.setVolume( PApplet.map(cp5.getValue("volumeSlider"), 0, 1, 0, .2f) );
+			break;
 
 		case "bpmText":
 			// 
@@ -267,15 +274,29 @@ public class Controls extends PApplet
 			this.instrument.setADSR(val);
 
 			// get bpm:
-			bpmInt = Integer.parseInt(cp5.get("bpmText").getStringValue());
+			//bpmInt = Integer.parseInt(cp5.get("bpmText").getStringValue());
 
-			this.melody.playMelody(key, bpmInt, scale, rangeOctave, this.instrument);
+			this.melody.playMelody(key, 120, scale, rangeOctave, this.instrument);
 
 			break;
 
 		case "pauseButton":
-			if(!((Button) cp5.get("pauseButton")).isSwitch()) { this.melody.pause(true); ((Button) cp5.get("pauseButton")).setSwitch(true); System.out.println("pause"); }
-			else { this.melody.pause(false); ((Button) cp5.get("pauseButton")).setSwitch(false); System.out.println("resume"); }
+			
+			if(!((Button) cp5.get("pauseButton")).isSwitch()) 
+			{ 
+				this.melody.pause(true); 
+				((Button) cp5.get("pauseButton")).setSwitch(true);
+				((Button) cp5.get("pauseButton")).setLabel("Pause");
+				System.out.println("pause"); 
+			}
+			else 
+			{ 
+				this.melody.pause(false); 
+				((Button) cp5.get("pauseButton")).setSwitch(false); 
+				((Button) cp5.get("pauseButton")).setLabel("Resume");
+				System.out.println("resume"); 
+			}
+			
 			break;
 
 		case "stopButton":

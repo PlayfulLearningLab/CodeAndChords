@@ -40,41 +40,51 @@ public class Instrument {
 		// 3: long release
 		new float[] { 100, 75, 80, 3000 },
 	};
-
-	private AudioContext				audioContext;
-	private	LinkedList<Envelope.Segment>	envelopeSegments;
-	private	Envelope		gainEnvelope;
-	private Gain			gain;
-	private Glide			frequencyGlide;
-	private PApplet			parent;
-	private WavePlayer		wavePlayer;
 	
-	private Gain            output;
+	private PApplet		                 	parent;
+	
+	private AudioContext				    audioContext;
+	
+	private Glide		                 	frequencyGlide;
+	private WavePlayer	                	wavePlayer;
+	
+	private	Envelope		                gainEnvelope;
+	private	LinkedList<Envelope.Segment>	envelopeSegments;
+	private Gain		                 	envolope;
+	
+	private Glide                           volumeGlide;
+	private Gain                            volume;
+	
 
 
 	/**
 	 * Constructor
 	 * @param parent
 	 */
-	public Instrument(PApplet parent, AudioContext audioContext, Gain output)
+	public Instrument(PApplet parent)
 	{
-		this.parent			= parent;
-		this.audioContext   = audioContext;
-		this.output         = output;
+		this.parent		     	= parent;
+		this.audioContext       = new AudioContext();
 		
 		this.setADSR(0);
-
+		
+		this.frequencyGlide     = new Glide(this.audioContext, 440, 20);
+		this.wavePlayer		    = new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
+		
+		this.gainEnvelope	    = new Envelope(this.audioContext);
 		this.envelopeSegments	= new LinkedList<Envelope.Segment>();
-		this.gainEnvelope	= new Envelope(this.audioContext);
-		this.frequencyGlide = new Glide(this.audioContext, 440, 50);
-
-		this.gain			= new Gain(this.audioContext, 1, this.gainEnvelope);
-		this.wavePlayer		= new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
-
-		this.gain.addInput(this.wavePlayer);
-		this.output.addInput(this.gain);
+		this.envolope        	= new Gain(this.audioContext, 1, this.gainEnvelope);
+		
+		this.volumeGlide        = new Glide(this.audioContext, 1, 50);
+		this.volume             = new Gain(this.audioContext, 1, this.volumeGlide);
+		
+		this.envolope.addInput(this.wavePlayer);
+		this.volume.addInput(this.envolope);
+		this.audioContext.out.addInput(this.volume);
 
 		this.audioContext.start();
+		
+		this.wavePlayer.pause(true);
 	}
 
 	/**
@@ -108,6 +118,7 @@ public class Instrument {
 		if(note.getMidiNum() != -1)
 		{
 			this.gainEnvelope.clear();
+			this.gainEnvelope.setValue(0);
 		}
 
 		// Attack:
@@ -126,6 +137,7 @@ public class Instrument {
 		// Treat -1 like a rest:
 		if(note.getMidiNum() != -1)
 		{
+			this.wavePlayer.pause(false);
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
 		} else {
@@ -154,9 +166,22 @@ public class Instrument {
 	public void stopNote()
 	{
 		this.gainEnvelope.clear();
-		
 		this.wavePlayer.pause(true);
 	}
+	
+	public void pauseNote(boolean pause)
+	{
+		this.wavePlayer.pause(pause);
+		this.frequencyGlide.pause(pause);
+		this.gainEnvelope.pause(pause);
+	}
+	
+	public void setVolume(float vol)
+	{
+		this.volumeGlide.setValue(vol);
+		System.out.println("Volume set to " + vol);
+	}
+
 
 	/**
 	 * Sets the adsr with pre-determined values designated by the given preset number.

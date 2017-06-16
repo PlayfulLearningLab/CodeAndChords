@@ -293,7 +293,7 @@ public class ModuleTemplate {
 		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.instrument	= new Instrument(this.parent);
-		this.melody		= new Melody(this.parent, this.input, this.instrument);
+		this.melody		= new Melody(this.parent, this.input);
 
 		this.initModuleTemplate();
 	} // ModuleTemplate
