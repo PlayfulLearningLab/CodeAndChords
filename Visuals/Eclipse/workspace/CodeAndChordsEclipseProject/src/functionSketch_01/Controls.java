@@ -39,11 +39,13 @@ public class Controls extends PApplet
 		this.cp5 = new ControlP5(this);
 		//Create a group to put all of the controls in
 		new Group(cp5, "gtGroup");
+		
+		// Initialize melody before calling setUpControls, b/c the latter uses melody.getRangeList():
+		this.melody	= new Melody(this); 
+		this.instrument	= new Instrument(this);
 		//Sets up all of the ControlP5 controls
 		this.setUpControls();
 
-		this.melody	= new Melody(this); 
-		this.instrument	= new Instrument(this);
 		//melody.playMelody("E", 20, "minor", 4, instrument);
 
 	}
@@ -65,7 +67,10 @@ public class Controls extends PApplet
 		//Name all of the drop box lists to be created
 		String[] names = new String[] { "adsr", "range", "key", "scale" } ;
 
-
+		//Volume Slider:
+		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 100, 415, 100, 15);
+		
+		
 		//Position of first box
 		int  x = 30;
 		int  y = 300;
@@ -174,14 +179,8 @@ public class Controls extends PApplet
 			break;
 
 		case "rangeList":
-			//implement with Melody class - TODO: is this comment still relevant?
-			sr.addItems( new String[] {
-					"A3 (110 Hz) - G#3 (207.65 Hz)",
-					"A4 (220 Hz) - G#4 (415.3 Hz)",
-					"A5 (440 Hz) - G#4 (830.6 Hz)",
-					"A6 (880 Hz) - G#4 (1661.2 Hz)",
-					"A7 (1760 Hz) - G#4 (3322.4 Hz)",
-			} )
+			this.melody.setRangeList();
+			sr.addItems( this.melody.getRangeList() )
 			.setValue(0f);
 			break;
 
@@ -242,6 +241,10 @@ public class Controls extends PApplet
 		case "adsrList":
 
 			break;
+			
+		case "volumeSlider":
+			this.instrument.setVolume( PApplet.map(cp5.getValue("volumeSlider"), 0, 1, 0, .2f) );
+			break;
 
 		case "bpmText":
 			// 
@@ -286,8 +289,22 @@ public class Controls extends PApplet
 			break;
 
 		case "pauseButton":
-			if(!((Button) cp5.get("pauseButton")).isSwitch()) { this.melody.pause(true); ((Button) cp5.get("pauseButton")).setSwitch(true); System.out.println("pause"); }
-			else { this.melody.pause(false); ((Button) cp5.get("pauseButton")).setSwitch(false); System.out.println("resume"); }
+			
+			if(!((Button) cp5.get("pauseButton")).isSwitch()) 
+			{ 
+				this.melody.pause(true); 
+				((Button) cp5.get("pauseButton")).setSwitch(true);
+				((Button) cp5.get("pauseButton")).setLabel("Pause");
+				System.out.println("pause"); 
+			}
+			else 
+			{ 
+				this.melody.pause(false); 
+				((Button) cp5.get("pauseButton")).setSwitch(false); 
+				((Button) cp5.get("pauseButton")).setLabel("Resume");
+				System.out.println("resume"); 
+			}
+			
 			break;
 
 		case "stopButton":

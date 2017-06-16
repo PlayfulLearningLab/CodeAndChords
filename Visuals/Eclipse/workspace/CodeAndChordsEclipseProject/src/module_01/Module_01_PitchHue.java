@@ -121,11 +121,10 @@ public class Module_01_PitchHue extends PApplet
 			this.moduleTemplate.setMenuVal();
 		}
 		
-//		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
-		
 		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
+
 
 			this.nowBelow	= false;
 

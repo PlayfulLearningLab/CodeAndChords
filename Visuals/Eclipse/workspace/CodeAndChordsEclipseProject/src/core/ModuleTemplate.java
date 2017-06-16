@@ -18,8 +18,13 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
- * 06/09/2017 - ModuleTemplate_01_04
- * Emily Meuer:
+ * 06/16/2017 - ModuleTemplate_01_04
+ * Emily Meuer, Dan Mahota, Kristen Andrews update:
+ *  - Guide tones generated, not played through .mp3's
+ *  - Guide tone generator options in pop-out
+ *  - Pause functionality
+ *  - Textfield labels invisible
+ *  - Hue slider wraps around (instead of just turning red for all extreme values)
  * 	- Attack, Release, and Transition sliders are time-based (define the number of millis() each action will take).
  * 
  * 06/08/2017 - ModuleTemplate_01_03
@@ -293,7 +298,7 @@ public class ModuleTemplate {
 		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.instrument	= new Instrument(this.parent);
-		this.melody		= new Melody(this.parent, this.input, this.instrument);
+		this.melody		= new Melody(this.parent, this.input);
 
 		this.initModuleTemplate();
 	} // ModuleTemplate
@@ -432,14 +437,26 @@ public class ModuleTemplate {
 		int	playHeight	= 30;
 
 		// add play button:
-		PImage[]	images	= { this.parent.loadImage("playButton.png"), this.parent.loadImage("stopButton.png") };
+		PImage[]	images	= { 
+				this.parent.loadImage("playButton.png"), 
+				this.parent.loadImage("stopButton.png")
+				};
+		PImage	pauseImage	= this.parent.loadImage("pauseButton.png");
 
 		images[0].resize(playWidth - 5, playHeight);
 		images[1].resize(playWidth, playHeight);
+		pauseImage.resize(playWidth, playHeight);
+		
 		this.sidebarCP5.addToggle("play")
 		.setPosition(playX, playY)
 		.setImages(images)
 		.updateSize();
+		
+		this.sidebarCP5.addToggle("pause")
+		.setPosition((playX - playWidth - 10), playY)
+		.setImages(pauseImage, images[0])
+		.updateSize()
+		.setVisible(false);
 
 		int	hamburgerX		= 10;
 		int	hamburgerY		= 13;
@@ -1668,27 +1685,17 @@ public class ModuleTemplate {
 	} // setCurKey
 
 	/**
-	 * Instantiates the instance Melody object if null
-	 * and calls playMelody(key, rangeOctave, scale, bpm, Instrument) on it.
+	 * Calls playMelody(key, bpm, scale, rangeOctave) with the curKey, bpm, rangeOctave instance vars
+	 * and the string corresponding to the majMinChrom instance var ("major", "minor", or "chromatic").
 	 * @param scale
 	 */
-	public void playMelody()
+	private void playMelody()
 	{
-		/*
-		if(this.melody == null)
-		{
-			this.melody	= new Melody(this.parent, this.input);
-		}
-		 */
 
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
 
-		this.input.pause(true);
-
 		//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
-
-		this.input.pause(false);
 	} // playMelody
 
 	/**
@@ -2153,26 +2160,24 @@ public class ModuleTemplate {
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
 		{
-			/*
-			for (int i = 0; i < input.getuGenArray().length; i++)
-			{
-				input.getuGenArray()[i].pause(true);			
-			} // for
-			 */
-
 			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
+			this.input.pause(val);
+			this.sidebarCP5.getController("pause").setVisible(val);
+			
 			if(val)
 			{
-				//				this.input.uGenArrayFromSample(this.inputFile);
 				this.playMelody();
 			} else {
-				//				this.input.uGenArrayFromNumInputs(1);
-				// TODO: pause/stop here
+				this.melody.stop();
 			}
-			
-			this.input.pause(val);
 
-		} // if - play  check old input class in branch
+		} // if - play
+		
+		// Pause button:
+		if(controlEvent.getController().getName().equals("pause"))
+		{
+			this.melody.pause(((Toggle)controlEvent.getController()).getBooleanValue());
+		}
 
 		// Hamburger button:
 		if(controlEvent.getController().getName().equals("hamburger"))
