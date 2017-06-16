@@ -39,11 +39,13 @@ public class Controls extends PApplet
 		this.cp5 = new ControlP5(this);
 		//Create a group to put all of the controls in
 		new Group(cp5, "gtGroup");
+		
+		// Initialize melody before calling setUpControls, b/c the latter uses melody.getRangeList():
+		this.melody	= new Melody(this); 
+		this.instrument	= new Instrument(this);
 		//Sets up all of the ControlP5 controls
 		this.setUpControls();
 
-		this.melody	= new Melody(this); 
-		this.instrument	= new Instrument(this);
 		//melody.playMelody("E", 20, "minor", 4, instrument);
 
 	}
@@ -215,14 +217,8 @@ public class Controls extends PApplet
 			break;
 
 		case "rangeList":
-			//implement with Melody class - TODO: is this comment still relevant?
-			sr.addItems( new String[] {
-					"A3 (110 Hz) - G#3 (207.65 Hz)",
-					"A4 (220 Hz) - G#4 (415.3 Hz)",
-					"A5 (440 Hz) - G#4 (830.6 Hz)",
-					"A6 (880 Hz) - G#4 (1661.2 Hz)",
-					"A7 (1760 Hz) - G#4 (3322.4 Hz)",
-			} )
+			this.melody.setRangeList();
+			sr.addItems( this.melody.getRangeList() )
 			.setValue(0f);
 			break;
 
@@ -257,11 +253,23 @@ public class Controls extends PApplet
 		switch(name)
 		{
 		case "scaleList":
-//			this.fillList("rangeList");
+			// get scale:
+			int val = (int) cp5.get("scaleList").getValue();
+			Map<String, Object>map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
+			String scale = (String) map.get("name");
+			this.melody.setScale(scale);
+			this.fillRangeList();
+
 			break;
 
 		case "keyList":
-//			this.fillList("rangeList");
+			// get key:
+			val = (int) cp5.get("keyList").getValue();
+			map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
+			String	key	= (String) map.get("name");
+			this.melody.setKey(key);
+			this.fillRangeList();
+
 			break;
 
 		case "rangeList":
@@ -310,18 +318,18 @@ public class Controls extends PApplet
 			}
 			
 			// get key:
-			int val = (int) cp5.get("keyList").getValue();
-			Map<String, Object> map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
-			String	key	= (String) map.get("name");
+			val = (int) cp5.get("keyList").getValue();
+			map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
+			key	= (String) map.get("name");
 
 			// get scale:
 			val = (int) cp5.get("scaleList").getValue();
 			map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
-			String scale = (String) map.get("name");
-			
+			scale = (String) map.get("name");
+
 			// get range octave:
 			int	rangeOctave = (int) ( cp5.get("rangeList").getValue() + 3);
-			
+
 			// get adsr presets:
 			val = (int) cp5.get("adsrList").getValue();
 			if(val == 0)
@@ -335,9 +343,9 @@ public class Controls extends PApplet
 				
 
 			// get bpm:
-			//bpmInt = Integer.parseInt(cp5.get("bpmText").getStringValue());
+			bpmInt = Integer.parseInt(cp5.get("bpmText").getStringValue());
 
-			this.melody.playMelody(key, 120, scale, rangeOctave, this.instrument);
+			this.melody.playMelody(key, bpmInt, scale, rangeOctave, this.instrument);
 
 			break;
 
@@ -381,8 +389,22 @@ public class Controls extends PApplet
 		}
 	}//controlEvent()
 
-
-
+	/**
+	 * Convenience method called in controlEvent when either the key or scale is updated.
+	 */
+	private void fillRangeList()
+	{
+		this.melody.setRangeList();
+		System.out.println("this.melody.scale = " + this.melody.scale);
+		try
+		{
+			((ScrollableList)this.cp5.getController("rangeList"))
+			.setItems(this.melody.getRangeList())
+			.setValue(0f);
+		} catch(ClassCastException cce) {
+			throw new IllegalArgumentException("Controls.fillRangeList(): error casting rangeList Controller to ScrollableList.");
+		} // catch
+	} // fillRangeList
 
 
 

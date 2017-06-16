@@ -18,8 +18,13 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
- * 06/09/2017 - ModuleTemplate_01_04
- * Emily Meuer:
+ * 06/16/2017 - ModuleTemplate_01_04
+ * Emily Meuer, Dan Mahota, Kristen Andrews update:
+ *  - Guide tones generated, not played through .mp3's
+ *  - Guide tone generator options in pop-out
+ *  - Pause functionality
+ *  - Textfield labels invisible
+ *  - Hue slider wraps around (instead of just turning red for all extreme values)
  * 	- Attack, Release, and Transition sliders are time-based (define the number of millis() each action will take).
  * 
  * 06/08/2017 - ModuleTemplate_01_03
@@ -212,7 +217,7 @@ public class ModuleTemplate {
 	private	Instrument	instrument;
 	private	int			bpm;
 	private	int			rangeOctave;
-	
+
 	// Sliders/Textfields and Buttons/ColorWheels/Textfields all connected by id's:
 	// 		Sliders: id's start at 0; id % 2 == 0
 	//		Textfields: id's start at 1; id % 2 == 1
@@ -289,7 +294,7 @@ public class ModuleTemplate {
 		this.hueSatBrightnessMod        = new float[3];
 
 		this.checkpoint		= this.parent.millis() + 100;
-		
+
 		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.instrument	= new Instrument(this.parent);
@@ -432,14 +437,26 @@ public class ModuleTemplate {
 		int	playHeight	= 30;
 
 		// add play button:
-		PImage[]	images	= { this.parent.loadImage("playButton.png"), this.parent.loadImage("stopButton.png") };
+		PImage[]	images	= { 
+				this.parent.loadImage("playButton.png"), 
+				this.parent.loadImage("stopButton.png")
+				};
+		PImage	pauseImage	= this.parent.loadImage("pauseButton.png");
 
 		images[0].resize(playWidth - 5, playHeight);
 		images[1].resize(playWidth, playHeight);
+		pauseImage.resize(playWidth, playHeight);
+		
 		this.sidebarCP5.addToggle("play")
 		.setPosition(playX, playY)
 		.setImages(images)
 		.updateSize();
+		
+		this.sidebarCP5.addToggle("pause")
+		.setPosition((playX - playWidth - 10), playY)
+		.setImages(pauseImage, images[0])
+		.updateSize()
+		.setVisible(false);
 
 		int	hamburgerX		= 10;
 		int	hamburgerY		= 13;
@@ -725,13 +742,13 @@ public class ModuleTemplate {
 		int		boxHeight		= 112;
 
 		int		labelWidth		= 30;
-		int		listWidth		= 120;
+		int		listWidth		= 155;
 		int		sliderWidth		= 120;
 		int		textfieldWidth	= 30;
 		int		popoutSpacer	= 12;
-		
+
 		int		height			= 18;
-		
+
 		int		listSliderX		= (popoutSpacer * 2) + labelWidth;
 		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
 
@@ -742,7 +759,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addGroup("guideToneBackground")
 		.setPosition(this.leftAlign, guideToneY + 20)
 		.setSize(boxWidth, boxHeight)
-//		.setBackgroundColor(this.parent.color(150, 50, 150))	// <-- testing purposes
+		//		.setBackgroundColor(this.parent.color(150, 50, 150))	// <-- testing purposes
 		.setBackgroundColor(transBlackInt)
 		.setVisible(false)
 		.hideBar();
@@ -751,7 +768,7 @@ public class ModuleTemplate {
 		// BPM Textlabel:
 		this.sidebarCP5.addLabel("bpmLabel")
 		.setPosition(popoutSpacer, bpmY + 4)
-//		.setWidth(labelWidth)
+		//		.setWidth(labelWidth)
 		.setGroup("guideToneBackground")
 		.setValue("BPM");
 
@@ -792,7 +809,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addScrollableList("adsrPresetsDropdown")
 		.setPosition(listSliderX, adsrY)
 		.setWidth(listWidth)
-		.setHeight(boxHeight - (popoutSpacer * 2))
+		//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(adsrItems)
@@ -809,22 +826,19 @@ public class ModuleTemplate {
 		.setGroup("guideToneBackground")
 		.setValue("Range");
 
-		// ArrayList of range options for the dropdown.
-		String[]	rangeItems	= new String[] {
-				"A3 (110 Hz) - G#3 (207.65 Hz)",
-				"A4 (220 Hz) - G#4 (415.3 Hz)",
-				"A5 (440 Hz) - G#4 (830.6 Hz)",
-				"A6 (880 Hz) - G#4 (1661.2 Hz)",
-				"A7 (1760 Hz) - G#4 (3322.4 Hz)",
-		};
+		// Update Melody's scale:
+		String[] scales	= new String[] { "major", "minor", "chromatic" };
+		this.melody.setScale(scales[this.majMinChrom]);
+		this.melody.setRangeList();
+
 
 		this.sidebarCP5.addScrollableList("rangeDropdown")
 		.setPosition(listSliderX, rangeY)
 		.setWidth(listWidth)
-		.setHeight(boxHeight - (popoutSpacer * 2))
+		//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
-		.setItems(rangeItems)
+		.setItems(this.melody.getRangeList())
 		.setValue(0f)
 		.setOpen(false)
 		.setGroup("guideToneBackground")
@@ -967,7 +981,7 @@ public class ModuleTemplate {
 
 			id	= id + 1;
 		}
-		
+
 	} // addColorSelectButtons
 
 	/**
@@ -1671,27 +1685,17 @@ public class ModuleTemplate {
 	} // setCurKey
 
 	/**
-	 * Instantiates the instance Melody object if null
-	 * and calls playMelody(key, rangeOctave, scale, bpm, Instrument) on it.
+	 * Calls playMelody(key, bpm, scale, rangeOctave) with the curKey, bpm, rangeOctave instance vars
+	 * and the string corresponding to the majMinChrom instance var ("major", "minor", or "chromatic").
 	 * @param scale
 	 */
-	public void playMelody()
+	private void playMelody()
 	{
-		/*
-		if(this.melody == null)
-		{
-			this.melody	= new Melody(this.parent, this.input);
-		}
-		*/
 
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
 
-		this.input.pause(true);
-
 		//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
-
-		this.input.pause(false);
 	} // playMelody
 
 	/**
@@ -2156,23 +2160,24 @@ public class ModuleTemplate {
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
 		{
-			/*
-			for (int i = 0; i < input.getuGenArray().length; i++)
+			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
+			this.input.pause(val);
+			this.sidebarCP5.getController("pause").setVisible(val);
+			
+			if(val)
 			{
-				input.getuGenArray()[i].pause(true);			
-			} // for
-			 */
-
-			if(((Toggle)controlEvent.getController()).getBooleanValue())
-			{
-				//				this.input.uGenArrayFromSample(this.inputFile);
 				this.playMelody();
 			} else {
-				//				this.input.uGenArrayFromNumInputs(1);
-				// TODO: pause/stop here
+				this.melody.stop();
 			}
 
-		} // if - play  check old input class in branch
+		} // if - play
+		
+		// Pause button:
+		if(controlEvent.getController().getName().equals("pause"))
+		{
+			this.melody.pause(((Toggle)controlEvent.getController()).getBooleanValue());
+		}
 
 		// Hamburger button:
 		if(controlEvent.getController().getName().equals("hamburger"))
@@ -2211,7 +2216,7 @@ public class ModuleTemplate {
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
 
-//		int	sliderIDCutoff	= this.lastTextfieldId;
+		//		int	sliderIDCutoff	= this.lastTextfieldId;
 
 		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
 		if(id % 2 == 0 && id < this.lastTextfieldId)
@@ -2293,7 +2298,6 @@ public class ModuleTemplate {
 		{
 			// keyPos is the position of the particular key in the Scrollable List:
 			int	keyPos	= (int)controlEvent.getValue();
-			System.out.println("  keyDropdown: keyPos = " + keyPos);
 
 			// getItem returns a Map of the color, state, value, name, etc. of that particular item
 			//  in the ScrollableList:
@@ -2304,6 +2308,18 @@ public class ModuleTemplate {
 			this.curKey	= key;
 			this.curKeyOffset = keyPos;
 			this.curKeyEnharmonicOffset	= this.enharmonicPos[getCurKeyOffset()];
+
+			// Update Melody's key and rangeList selection:
+			this.melody.setKey(this.curKey);
+			this.melody.setRangeList();
+			try
+			{
+				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
+				.setItems(this.melody.getRangeList())
+				.setValue(0f);
+			} catch(ClassCastException cce) {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+			} // catch
 
 			// Setting the input file:
 			int	enharmonicPos	= this.enharmonicPos[keyPos];
@@ -2379,7 +2395,18 @@ public class ModuleTemplate {
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
 
-			//this.updateColors(this.curColorStyle);
+			// Update Melody's scale:
+			String[] scales	= new String[] { "major", "minor", "chromatic" };
+			this.melody.setScale(scales[this.majMinChrom]);
+			this.melody.setRangeList();
+			try
+			{
+				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
+				.setItems(this.melody.getRangeList())
+				.setValue(0f);
+			} catch(ClassCastException cce) {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+			} // catch
 
 		} // majMinChrom buttons
 
@@ -2632,14 +2659,14 @@ public class ModuleTemplate {
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
 
-//				this.sidebarCP5.setAutoDraw(false);
+				//				this.sidebarCP5.setAutoDraw(false);
 				this.sidebarCP5.getGroup("background").setVisible(true);
 				this.sidebarCP5.getGroup("background").bringToFront();
 				this.sidebarCP5.getController("guideToneButton").bringToFront();
 
 			} else {
 
-//				this.sidebarCP5.setAutoDraw(true);
+				//				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
@@ -2648,16 +2675,16 @@ public class ModuleTemplate {
 			this.sidebarCP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
 
 		} // Guide Tone Generator
-		
+
 		// ADSR Presets Scrollable List:
 		if(controlEvent.getName().equals("adsrPresets"))
 		{
 			controlEvent.getController().bringToFront();
-			
+
 			int	adsrPos	= (int)controlEvent.getValue();
-			
+
 			System.out.println("adsrPos = " + adsrPos);
-			
+
 			if(adsrPos >= 0 && adsrPos < 4)
 			{
 				this.instrument.setADSR(adsrPos);
@@ -2665,17 +2692,14 @@ public class ModuleTemplate {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent: adsrPos" + adsrPos + " is out of range.");
 			}
 		} // ADSR Presets
-		
+
 		// Range Octave Scrollable List:
 		if(controlEvent.getName().equals("rangeDropdown"))
 		{
-			System.out.println("rangeList clicked!");
-//			controlEvent.getController().bringToFront();
-			
+			//			controlEvent.getController().bringToFront();
+
 			int	rangeOctave	= (int)controlEvent.getValue() + 3;
-			
-			System.out.println("adsrPos = " + rangeOctave);
-			
+
 			if(rangeOctave >= 3 && rangeOctave <= 7)
 			{
 				this.rangeOctave	= rangeOctave;

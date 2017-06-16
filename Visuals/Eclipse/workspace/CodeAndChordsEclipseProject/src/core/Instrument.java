@@ -40,7 +40,6 @@ public class Instrument {
 		// 3: long release
 		new float[] { 100, 75, 80, 3000 },
 	};
-	
 	private PApplet		                 	parent;
 	
 	private AudioContext				    audioContext;
@@ -54,7 +53,6 @@ public class Instrument {
 	
 	private Glide                           volumeGlide;
 	private Gain                            volume;
-	
 
 
 	/**
@@ -67,6 +65,7 @@ public class Instrument {
 		this.audioContext       = new AudioContext();
 		
 		this.setADSR(0);
+
 		
 		this.frequencyGlide     = new Glide(this.audioContext, 440, 20);
 		this.wavePlayer		    = new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
@@ -139,9 +138,9 @@ public class Instrument {
 		{
 			this.wavePlayer.pause(false);
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
-			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
+//			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
 		} else {
-			System.out.println("1/8th rest");
+//			System.out.println("1/8th rest");
 		}
 		
 		/*
