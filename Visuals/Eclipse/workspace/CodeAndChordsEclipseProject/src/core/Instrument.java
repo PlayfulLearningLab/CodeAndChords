@@ -9,6 +9,8 @@ import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Buffer;
 import net.beadsproject.beads.data.Pitch;
+import net.beadsproject.beads.events.KillTrigger;
+import net.beadsproject.beads.events.PauseTrigger;
 import net.beadsproject.beads.events.StartTrigger;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
@@ -165,14 +167,33 @@ public class Instrument {
 	public void stopNote()
 	{
 		this.gainEnvelope.clear();
-		this.wavePlayer.pause(true);
+//		this.wavePlayer.pause(true);
+		new KillTrigger(this.wavePlayer);
+		new KillTrigger(this.frequencyGlide);
+		new KillTrigger(this.gainEnvelope);
 	}
 	
 	public void pauseNote(boolean pause)
 	{
+		if(pause)
+		{
+			new PauseTrigger(this.wavePlayer);
+			new PauseTrigger(this.frequencyGlide);
+			new PauseTrigger(this.gainEnvelope);
+		} else {
+			new StartTrigger(this.wavePlayer);
+			new StartTrigger(this.frequencyGlide);
+			new StartTrigger(this.gainEnvelope);
+		}
+		
+		/*
 		this.wavePlayer.pause(pause);
 		this.frequencyGlide.pause(pause);
 		this.gainEnvelope.pause(pause);
+		*/
+		
+		
+		System.out.println("pause = " + pause);
 	}
 	
 	public void setVolume(float vol)
