@@ -600,9 +600,9 @@ public class ModuleTemplate {
 				highRange		= 100;
 				startingValue	= 10;
 			} else {
-				lowRange		= 255;
+				lowRange		= 100;
 				highRange		= 3000;
-				startingValue	= 500;
+				startingValue	= 200;
 
 				this.attackReleaseTransition[i - 1]	= startingValue;
 			}

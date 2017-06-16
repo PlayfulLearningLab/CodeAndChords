@@ -160,6 +160,13 @@ public class Module_01_PitchHue extends PApplet
 				goalHuePos  = newHuePos;
 			} // if
 			goalHue  = this.moduleTemplate.getColors()[goalHuePos];
+			
+			for(int i = 0; i < goalHue.length; i++)
+			{
+				System.out.print(goalHue[i] + ", ");
+			}
+			System.out.println();
+			
 		} else {
 			// volume not above the threshold:
 			this.nowBelow	= true;
@@ -188,6 +195,12 @@ public class Module_01_PitchHue extends PApplet
 			
 			this.moduleTemplate.setCheckpoint(this.millis() + 50);
 		} // if - adding every 50 millis
+		
+		for(int i = 0; i < curHue.length; i++)
+		{
+			System.out.print(curHue[i] + ", ");
+		}
+		System.out.println();
 
 
 		float	lowBound;
