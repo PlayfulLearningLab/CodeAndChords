@@ -30,7 +30,7 @@ public class Controls extends PApplet
 
 	public void settings()
 	{
-		size(300, 450);
+		size(700, 450);
 	}
 
 	public void setup()
@@ -66,12 +66,18 @@ public class Controls extends PApplet
 		String[] names = new String[] { "adsr", "range", "key", "scale" } ;
 
 		//Volume Slider:
-		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 100, 415, 100, 15);
+		cp5.addLabel("volumeLabel")
+		.setText("volume")
+		.setPosition(30, 310);
+		
+		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 110, 310, 170, 22)
+		.getCaptionLabel()
+		.setVisible(false);
 		
 		
 		//Position of first box
 		int  x = 30;
-		int  y = 300;
+		int  y = 260;
 		int  spacing = 50;
 
 		//set up bpm box
@@ -90,19 +96,19 @@ public class Controls extends PApplet
 		//set up play, pause and stop buttons
 		cp5.addButton("playButton")
 		.setLabel("Play")
-		.setPosition(50, 350)
-		.setSize(50, 50);
+		.setPosition(30, 360)
+		.setSize(75, 50);
 
 		cp5.addButton("pauseButton")
 		.setLabel("Pause")
-		.setPosition(125, 350)
-		.setSize(50, 50)
+		.setPosition(117.5f, 360)
+		.setSize(75, 50)
 		.setSwitch(false);
 
 		cp5.addButton("stopButton")
 		.setLabel("Stop")
-		.setPosition(200, 350)
-		.setSize(50, 50);
+		.setPosition(205, 360)
+		.setSize(75, 50);
 
 		//Initializes a drop box and label for each element in names String[]
 		//lists and dropboxes are named after what they store, followed by "List" or "Label".  Example: keyList or rangeLabel.
@@ -138,6 +144,38 @@ public class Controls extends PApplet
 			 */
 
 		}//for()
+		
+		cp5.addLabel("attackLabel")
+		.setText("attack")
+		.setPosition(350, 100);
+		
+		cp5.addSlider("attackSlider", 0.01f, 100f, 10f, 430, 100, 170, 22)
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		cp5.addLabel("decayLabel")
+		.setText("decay")
+		.setPosition(350, 150);
+		
+		cp5.addSlider("decaySlider", 0.01f, 100f, 50f, 430, 150, 170, 22)
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		cp5.addLabel("sustainLabel")
+		.setText("sustain")
+		.setPosition(350, 200);
+		
+		cp5.addSlider("sustainSlider", 0f, 100f, 50f, 430, 200, 170, 22)
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		cp5.addLabel("releaseLabel")
+		.setText("release")
+		.setPosition(350, 250);
+		
+		cp5.addSlider("releaseSlider", 0f, 100f, 10f, 430, 250, 170, 22)
+		.getCaptionLabel()
+		.setVisible(false);
 
 
 
@@ -189,14 +227,14 @@ public class Controls extends PApplet
 			break;
 
 		case "adsrList":
-			//implement with Beads Instrument
 			sr.addItems(new String[] {
+					"Custom",
 					"Even",
 					"Long Attack",
 					"Long Decay/Low Sustain",
 					"Long Release"
 			})
-			.setValue(0f);
+			.setValue(1f);
 			break;
 
 		default:
@@ -212,7 +250,7 @@ public class Controls extends PApplet
 	}// fillList()
 
 
-	public void controlEvent(ControlEvent theEvent) 
+	public void controlEvent(ControlEvent theEvent) throws InterruptedException 
 	{	
 		String name = theEvent.getName();
 
@@ -231,7 +269,7 @@ public class Controls extends PApplet
 			break;
 
 		case "adsrList":
-
+			
 			break;
 			
 		case "volumeSlider":
@@ -255,7 +293,22 @@ public class Controls extends PApplet
 			break;
 
 		case "playButton":
-
+			
+			if(this.melody.isRunning()) 
+			{ 
+				this.melody.stop(); 
+				Thread.sleep(10); 
+				System.out.println("stopped");
+			}
+			
+			if(((Button) cp5.get("pauseButton")).isSwitch()) 
+			{
+				this.melody.pause(false); 
+				((Button) cp5.get("pauseButton")).setSwitch(false); 
+				((Button) cp5.get("pauseButton")).setLabel("Pause");
+				System.out.println("resume"); 
+			}
+			
 			// get key:
 			int val = (int) cp5.get("keyList").getValue();
 			Map<String, Object> map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
@@ -271,7 +324,15 @@ public class Controls extends PApplet
 			
 			// get adsr presets:
 			val = (int) cp5.get("adsrList").getValue();
-			this.instrument.setADSR(val);
+			if(val == 0)
+			{
+				this.instrument.setADSR(cp5.getValue("attackSlider"), cp5.getValue("decaySlider"), cp5.getValue("sustainSlider"), cp5.getValue("releaseSlider"));
+			}
+			else
+			{
+				this.instrument.setADSR(val - 1);
+			}
+				
 
 			// get bpm:
 			//bpmInt = Integer.parseInt(cp5.get("bpmText").getStringValue());
@@ -286,21 +347,31 @@ public class Controls extends PApplet
 			{ 
 				this.melody.pause(true); 
 				((Button) cp5.get("pauseButton")).setSwitch(true);
-				((Button) cp5.get("pauseButton")).setLabel("Pause");
-				System.out.println("pause"); 
+				((Button) cp5.get("pauseButton")).setLabel("Resume");
+				System.out.println("paused"); 
 			}
 			else 
 			{ 
 				this.melody.pause(false); 
 				((Button) cp5.get("pauseButton")).setSwitch(false); 
-				((Button) cp5.get("pauseButton")).setLabel("Resume");
-				System.out.println("resume"); 
+				((Button) cp5.get("pauseButton")).setLabel("Pause");
+				System.out.println("resumed"); 
 			}
 			
 			break;
 
 		case "stopButton":
+			float vol = PApplet.map(cp5.getValue("volumeSlider"), 0, 1, 0, .2f);
+			this.instrument.setVolume(0);
+			
+			this.melody.pause(false);
+			Thread.sleep(100);
 			this.melody.stop();
+			((Button) cp5.get("pauseButton")).setLabel("Pause");
+			
+			this.instrument.setVolume(vol);
+			
+			
 
 			break;
 

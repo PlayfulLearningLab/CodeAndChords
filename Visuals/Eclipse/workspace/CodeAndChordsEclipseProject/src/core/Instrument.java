@@ -194,12 +194,24 @@ public class Instrument {
 		{
 			throw new IllegalArgumentException("Instrument.adsrPresets: int param. " + presetNum + " is out of bounds; must be between 0 and " + Instrument.adsrPresets.length + ".");
 		}
-
+		
 		this.attack		= Instrument.adsrPresets[presetNum][0];
 		this.decay		= Instrument.adsrPresets[presetNum][1];
 		this.sustain	= Instrument.adsrPresets[presetNum][2];
 		this.release	= Instrument.adsrPresets[presetNum][3];
+		
+		
 
 	} // adsrPresets
+	
+	public void setADSR(float a, float d, float s, float r)
+	{
+		this.attack = a * 10;
+		this.decay = d * 10;
+		this.sustain = s;
+		this.release = r * 10;
+		
+		System.out.println(a + " / " + d + " / " + s + " / " + r);
+	}
 
 } // Instrument
