@@ -41,7 +41,6 @@ public class Instrument {
 	};
 
 	private AudioContext				audioContext;
-	private	LinkedList<Envelope.Segment>	envelopeSegments;
 	private	Envelope		gainEnvelope;
 	private Gain			gain;
 	private Glide			frequencyGlide;
@@ -61,7 +60,6 @@ public class Instrument {
 
 		this.audioContext	= new AudioContext();
 
-		this.envelopeSegments	= new LinkedList<Envelope.Segment>();
 		this.gainEnvelope	= new Envelope(this.audioContext);
 		this.frequencyGlide = new Glide(this.audioContext, 440, 50);
 
@@ -105,6 +103,7 @@ public class Instrument {
 		if(note.getMidiNum() != -1)
 		{
 			this.gainEnvelope.clear();
+			this.gainEnvelope.setValue(0);
 		}
 
 

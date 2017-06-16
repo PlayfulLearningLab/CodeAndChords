@@ -139,7 +139,7 @@ public class Melody implements Runnable {
 		//		int[]		midiNotes	= new int[scaleLength];
 		//		float[]		durations	= new float[scaleLength];
 		Note[]		notes		= new Note[curMelody.length];
-		float		defaultAmp	= 30;
+		float		defaultAmp	= 10;
 
 		// Find position of notes in this key:
 		int		keyPos		= -1;

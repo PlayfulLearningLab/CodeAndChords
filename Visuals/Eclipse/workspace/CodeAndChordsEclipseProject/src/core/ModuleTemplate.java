@@ -2160,7 +2160,8 @@ public class ModuleTemplate {
 			} // for
 			 */
 
-			if(((Toggle)controlEvent.getController()).getBooleanValue())
+			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
+			if(val)
 			{
 				//				this.input.uGenArrayFromSample(this.inputFile);
 				this.playMelody();
@@ -2168,6 +2169,8 @@ public class ModuleTemplate {
 				//				this.input.uGenArrayFromNumInputs(1);
 				// TODO: pause/stop here
 			}
+			
+			this.input.pause(val);
 
 		} // if - play  check old input class in branch
 
