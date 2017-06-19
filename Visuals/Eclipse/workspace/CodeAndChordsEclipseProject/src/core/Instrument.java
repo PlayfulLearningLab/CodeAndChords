@@ -229,12 +229,17 @@ public class Instrument {
 	
 	public void setADSR(float a, float d, float s, float r)
 	{
-		this.attack = a * 10;
-		this.decay = d * 10;
+		this.attack = a;
+		this.decay = d;
 		this.sustain = s;
-		this.release = r * 10;
+		this.release = r;
 		
 		System.out.println(a + " / " + d + " / " + s + " / " + r);
+	}
+	
+	public float[] getADSR()
+	{
+		return new float[] {this.attack, this.decay, this.sustain, this.release };
 	}
 
 } // Instrument

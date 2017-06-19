@@ -1,5 +1,6 @@
 package functionSketch_01;
 
+import java.awt.Color;
 import java.util.Map;
 
 import controlP5.*;
@@ -18,9 +19,13 @@ public class Controls extends PApplet
 
 	 */
 
-	private ControlP5 cp5;
-	Melody            melody;
-	Instrument	      instrument;
+	private ControlP5         cp5;
+	private Melody            melody;
+	private Instrument	      instrument;
+	
+	private int               defaultForeground;
+	private int               defaultBackground;
+	private int               defaultActive;
 
 
 	public static void main(String[] args)
@@ -65,21 +70,21 @@ public class Controls extends PApplet
 	private void setUpControls()
 	{
 		//Name all of the drop box lists to be created
-		String[] names = new String[] { "adsr", "range", "key", "scale" } ;
+		String[] names = new String[] { "range", "key", "scale" } ;
 
 		//Volume Slider:
 		cp5.addLabel("volumeLabel")
 		.setText("volume")
-		.setPosition(30, 310);
+		.setPosition(30, 250);
 		
-		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 110, 310, 170, 22)
+		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 110, 250, 170, 22)
 		.getCaptionLabel()
 		.setVisible(false);
 		
 		
 		//Position of first box
 		int  x = 30;
-		int  y = 260;
+		int  y = 200;
 		int  spacing = 50;
 
 		//set up bpm box
@@ -147,38 +152,63 @@ public class Controls extends PApplet
 
 		}//for()
 		
+		cp5.addGroup("adsr");
+		
 		cp5.addLabel("attackLabel")
+		.setGroup("adsr")
 		.setText("attack")
 		.setPosition(350, 100);
 		
-		cp5.addSlider("attackSlider", 0.01f, 100f, 10f, 430, 100, 170, 22)
+		cp5.addSlider("attackSlider", 0.01f, 1000f, 100f, 430, 100, 170, 22)
+		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
 		
 		cp5.addLabel("decayLabel")
+		.setGroup("adsr")
 		.setText("decay")
 		.setPosition(350, 150);
 		
-		cp5.addSlider("decaySlider", 0.01f, 100f, 50f, 430, 150, 170, 22)
+		cp5.addSlider("decaySlider", 0.01f, 1000f, 500f, 430, 150, 170, 22)
+		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
 		
 		cp5.addLabel("sustainLabel")
+		.setGroup("adsr")
 		.setText("sustain")
 		.setPosition(350, 200);
 		
 		cp5.addSlider("sustainSlider", 0f, 100f, 50f, 430, 200, 170, 22)
+		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
 		
 		cp5.addLabel("releaseLabel")
+		.setGroup("adsr")
 		.setText("release")
 		.setPosition(350, 250);
 		
-		cp5.addSlider("releaseSlider", 0f, 100f, 10f, 430, 250, 170, 22)
+		cp5.addSlider("releaseSlider", 0f, 1000f, 100f, 430, 250, 170, 22)
+		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
+		
+		this.defaultForeground = cp5.get("releaseSlider").getColor().getForeground();
+		this.defaultBackground = cp5.get("releaseSlider").getColor().getBackground();
+		this.defaultActive = cp5.get("releaseSlider").getColor().getActive();
+		
+		cp5.addLabel("adsrLabel")
+		.setText("adsr")
+		.setPosition(350,50);
+		
+		cp5.addScrollableList("adsrList")
+		.setPosition(430,50)
+		.bringToFront()
+		.setOpen(false);
 
+		this.customizeList( (ScrollableList) cp5.get("adsrList"));
+		this.fillList( "adsrList" );
 
 
 	}//setUpControls()
@@ -189,8 +219,8 @@ public class Controls extends PApplet
 		sr.setWidth(170);
 		sr.setItemHeight(22);
 		sr.setBarHeight(22);
-		sr.setColorBackground(color(60));
-		sr.setColorActive(255);
+		//sr.setColorBackground(color(60));
+		//sr.setColorActive(255);
 	}
 
 	private void fillList(String listName)
@@ -230,7 +260,7 @@ public class Controls extends PApplet
 					"Long Decay/Low Sustain",
 					"Long Release"
 			})
-			.setValue(1f);
+			.setValue(0f);
 			break;
 
 		default:
@@ -277,6 +307,18 @@ public class Controls extends PApplet
 			break;
 
 		case "adsrList":
+			
+			if(0 == (int) cp5.get("adsrList").getValue())
+			{
+				cp5.getGroup("adsr").setColorForeground(this.defaultForeground);
+				cp5.getGroup("adsr").setColorBackground(this.defaultBackground);
+				cp5.getGroup("adsr").setColorActive(this.defaultActive);
+			}else 
+			{
+				cp5.getGroup("adsr").setColorBackground(Color.DARK_GRAY.getRGB());
+				cp5.getGroup("adsr").setColorForeground(Color.GRAY.getRGB());
+				cp5.getGroup("adsr").setColorActive(Color.LIGHT_GRAY.getRGB());
+			}
 			
 			break;
 			
