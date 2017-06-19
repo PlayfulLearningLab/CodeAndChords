@@ -1546,7 +1546,7 @@ public class ModuleTemplate {
 		 */
 	} // legend
 
-	void displaySidebar()
+	private void displaySidebar()
 	{	
 		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
 		this.setLeftEdgeX(this.parent.width / 3);
@@ -2196,7 +2196,7 @@ public class ModuleTemplate {
 			this.setLeftEdgeX(0);
 			//			this.sidebarCP5.setVisible(false);
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
-			//this.sidebarCP5.getController("hamburger").setVisible(true);
+			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
 		} // if - menuX
 
 		// Hide play button button:
@@ -2209,7 +2209,8 @@ public class ModuleTemplate {
 		// Hide menu button button:
 		if(controlEvent.getName().equals("menuButton"))
 		{
-			this.sidebarCP5.getController("hamburger").setVisible(false);
+			System.out.println("menuButton event: " + controlEvent.getController() + this.parent.millis());
+			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
 			//this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
 		} // if - hidePlayButton
 
