@@ -5,6 +5,7 @@ import java.util.Map;
 
 import controlP5.*;
 import processing.core.PApplet;
+import processing.core.PFont;
 import core.Melody;
 import core.Instrument;
 
@@ -59,6 +60,17 @@ public class Controls extends PApplet
 	{
 		//Keep refreshing the black background
 		background(0);
+		
+		if(!  cp5.get("bpmText").getStringValue().equals(((Textfield) cp5.get("bpmText")).getText())  )
+		{
+			cp5.get("bpmText").setColorForeground(Color.RED.getRGB());
+			cp5.get("bpmText").setColorActive(Color.RED.getRGB());
+		}else
+		{
+			cp5.get("bpmText").setColorForeground(this.defaultForeground);
+			cp5.get("bpmText").setColorActive(this.defaultActive);
+		}
+		
 		/*
 		instrument.gainGlide.setValue(this.mouseX / (float)this.width);
 		 // update the frequency based on the position of the mouse
@@ -71,9 +83,14 @@ public class Controls extends PApplet
 	{
 		//Name all of the drop box lists to be created
 		String[] names = new String[] { "range", "key", "scale" } ;
+		
+		PFont pfont = createFont("Arial",20,true); // use true/false for smooth/no-smooth
+		ControlFont largerStandard = new ControlFont(pfont,13);
+		//ControlFont    largerStandard    = new ControlFont(ControlP5.BitFontStandard58, 13);
 
 		//Volume Slider:
 		cp5.addLabel("volumeLabel")
+		.setFont(largerStandard)
 		.setText("volume")
 		.setPosition(30, 250);
 		
@@ -89,13 +106,16 @@ public class Controls extends PApplet
 
 		//set up bpm box
 		cp5.addTextlabel("bpmLabel")
+		.setFont(largerStandard)
 		.setPosition(x, y)
 		.setText("bpm");
 
 		cp5.addTextfield("bpmText")
+		//.setColorActive(Color.RED.getRGB())
 		.setPosition(x+80, y)
 		.setSize(170, 22)
-		.setValue("120")
+		.setStringValue("120")
+		.setText("120")
 		.setAutoClear(false)
 		.getCaptionLabel()
 		.setVisible(false);
@@ -103,19 +123,19 @@ public class Controls extends PApplet
 		//set up play, pause and stop buttons
 		cp5.addButton("playButton")
 		.setLabel("Play")
-		.setPosition(30, 360)
-		.setSize(75, 50);
+		.setPosition(150, 320)
+		.setSize(100, 100);
 
 		cp5.addButton("pauseButton")
 		.setLabel("Pause")
-		.setPosition(117.5f, 360)
-		.setSize(75, 50)
+		.setPosition(300, 320)
+		.setSize(100, 100)
 		.setSwitch(false);
 
 		cp5.addButton("stopButton")
 		.setLabel("Stop")
-		.setPosition(205, 360)
-		.setSize(75, 50);
+		.setPosition(450, 320)
+		.setSize(100, 100);
 
 		//Initializes a drop box and label for each element in names String[]
 		//lists and dropboxes are named after what they store, followed by "List" or "Label".  Example: keyList or rangeLabel.
@@ -126,6 +146,7 @@ public class Controls extends PApplet
 
 			//Make Label
 			cp5.addTextlabel(names[i] + "Label")
+			.setFont(largerStandard)
 			.setPosition(x,y)
 			.setText(names[i]);
 
@@ -155,7 +176,7 @@ public class Controls extends PApplet
 		cp5.addGroup("adsr");
 		
 		cp5.addLabel("attackLabel")
-		.setGroup("adsr")
+		.setFont(largerStandard)
 		.setText("attack")
 		.setPosition(350, 100);
 		
@@ -165,7 +186,7 @@ public class Controls extends PApplet
 		.setVisible(false);
 		
 		cp5.addLabel("decayLabel")
-		.setGroup("adsr")
+		.setFont(largerStandard)
 		.setText("decay")
 		.setPosition(350, 150);
 		
@@ -175,7 +196,7 @@ public class Controls extends PApplet
 		.setVisible(false);
 		
 		cp5.addLabel("sustainLabel")
-		.setGroup("adsr")
+		.setFont(largerStandard)
 		.setText("sustain")
 		.setPosition(350, 200);
 		
@@ -185,7 +206,7 @@ public class Controls extends PApplet
 		.setVisible(false);
 		
 		cp5.addLabel("releaseLabel")
-		.setGroup("adsr")
+		.setFont(largerStandard)
 		.setText("release")
 		.setPosition(350, 250);
 		
@@ -199,6 +220,7 @@ public class Controls extends PApplet
 		this.defaultActive = cp5.get("releaseSlider").getColor().getActive();
 		
 		cp5.addLabel("adsrLabel")
+		.setFont(largerStandard)
 		.setText("adsr")
 		.setPosition(350,50);
 		
@@ -313,11 +335,26 @@ public class Controls extends PApplet
 				cp5.getGroup("adsr").setColorForeground(this.defaultForeground);
 				cp5.getGroup("adsr").setColorBackground(this.defaultBackground);
 				cp5.getGroup("adsr").setColorActive(this.defaultActive);
+				
+				((Slider) cp5.get("attackSlider")).unlock();
+				((Slider) cp5.get("decaySlider")).unlock();
+				((Slider) cp5.get("sustainSlider")).unlock();
+				((Slider) cp5.get("releaseSlider")).unlock();
+
 			}else 
 			{
 				cp5.getGroup("adsr").setColorBackground(Color.DARK_GRAY.getRGB());
 				cp5.getGroup("adsr").setColorForeground(Color.GRAY.getRGB());
-				cp5.getGroup("adsr").setColorActive(Color.LIGHT_GRAY.getRGB());
+				cp5.getGroup("adsr").setColorActive(Color.GRAY.getRGB());
+				
+				this.instrument.setADSR( (int) cp5.get("adsrList").getValue() - 1);
+				float[] adsr = this.instrument.getADSR();
+				
+				((Slider) cp5.get("attackSlider")).setValue(adsr[0]).lock();
+				((Slider) cp5.get("decaySlider")).setValue(adsr[1]).lock();
+				((Slider) cp5.get("sustainSlider")).setValue(adsr[2]).lock();
+				((Slider) cp5.get("releaseSlider")).setValue(adsr[3]).lock();
+				
 			}
 			
 			break;
@@ -335,11 +372,11 @@ public class Controls extends PApplet
 			{
 				bpmInt = Integer.parseInt(bpm);
 			}
-			catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setValue("120"); }
-			catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setValue("120"); }
+			catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setStringValue("120"); ((Textfield) cp5.get("bpmText")).setValue("120"); }
+			catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setStringValue("120"); ((Textfield) cp5.get("bpmText")).setValue("120"); }
 
-			if (bpmInt < 40) { ((Textfield) cp5.get("bpmText")).setValue("40"); }
-			if (bpmInt > 200) { ((Textfield) cp5.get("bpmText")).setValue("200"); }
+			if (bpmInt < 40) { ((Textfield) cp5.get("bpmText")).setStringValue("40"); ((Textfield) cp5.get("bpmText")).setValue("40"); }
+			if (bpmInt > 200) { ((Textfield) cp5.get("bpmText")).setStringValue("200"); ((Textfield) cp5.get("bpmText")).setValue("200"); }
 
 			break;
 
@@ -431,6 +468,7 @@ public class Controls extends PApplet
 			break;
 
 		default:
+			this.instrument.setADSR(cp5.getValue("attackSlider"), cp5.getValue("decaySlider"), cp5.getValue("sustainSlider"), cp5.getValue("releaseSlider"));
 			System.out.println("error with switch: controlEvent() ");
 			break;
 		}
