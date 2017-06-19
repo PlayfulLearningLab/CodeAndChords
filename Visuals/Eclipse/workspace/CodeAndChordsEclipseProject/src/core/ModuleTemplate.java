@@ -406,6 +406,7 @@ public class ModuleTemplate {
 		this.fillHSBColors();
 		this.updateColors(this.curColorStyle);
 
+		System.out.println("just about to add the sliders; sidebarCP5 = " + this.sidebarCP5);
 
 		this.addCustomPitchColor(textYVals[15], noteYVals);
 
@@ -600,9 +601,9 @@ public class ModuleTemplate {
 				highRange		= 100;
 				startingValue	= 10;
 			} else {
-				lowRange		= 255;
+				lowRange		= 100;
 				highRange		= 3000;
-				startingValue	= 500;
+				startingValue	= 200;
 
 				this.attackReleaseTransition[i - 1]	= startingValue;
 			}
@@ -1320,12 +1321,12 @@ public class ModuleTemplate {
 			.setPosition(this.leftAlign, modulateYVals[i])
 			.setSize(sliderWidth, sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
-			.setValue(0)
-			.setRange(-255, 255)
+//			.setRange(-255, 255)
+//			.setValue(0)
 			//.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(id);
-
+			
 			id	= id + 1;
 
 			//	- Textlabel:
@@ -2153,8 +2154,7 @@ public class ModuleTemplate {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-		//System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
-
+//		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
 		int	id	= controlEvent.getController().getId();
 		// Play button:
@@ -2168,6 +2168,7 @@ public class ModuleTemplate {
 			{
 				this.playMelody();
 			} else {
+				((Toggle)this.sidebarCP5.getController("pause")).setState(false);
 				this.melody.stop();
 			}
 
@@ -2221,14 +2222,16 @@ public class ModuleTemplate {
 		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
 		if(id % 2 == 0 && id < this.lastTextfieldId)
 		{
-			Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
-			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 1));
-			String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
+			try
+			{
+				Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
+				Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 1));
+				String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
 
-			curTextfield.setText(sliderValString);
+				curTextfield.setText(sliderValString);
 
-			float	sliderValFloat	= Float.parseFloat(sliderValString);
-
+				float	sliderValFloat	= Float.parseFloat(sliderValString);
+			
 			// Threshold:
 			if(id == 0)
 			{
@@ -2262,6 +2265,10 @@ public class ModuleTemplate {
 			if(id == 20)
 			{
 				this.bpm	= Math.max(Math.min((int)sliderValFloat, 240), 0);
+			}
+
+			} catch (NullPointerException npe) {
+				System.out.println("ModuleTemplate.controlEvent - sliders: caught NullPoint - curTextfield = " + (Textfield)this.sidebarCP5.getController("textfield" + (id + 1)));
 			}
 
 		} // sliders
