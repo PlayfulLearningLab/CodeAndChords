@@ -440,7 +440,7 @@ public class ModuleTemplate {
 
 		// add play button:
 		PImage[]	images	= { 
-				this.parent.loadImage("playButton.png"), 
+				this.parent.loadImage("playButton.png"),
 				this.parent.loadImage("stopButton.png")
 				};
 		PImage	pauseImage	= this.parent.loadImage("pauseButton.png");
