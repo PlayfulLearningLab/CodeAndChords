@@ -143,27 +143,13 @@ public class Instrument {
 //			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
 		} else {
 //			System.out.println("1/8th rest");
-		}
-		
-		/*
-		if(note.getMidiNum() == -1)
-		{
-			float	checkpoint	= parent.millis() + this.release;
-			
-			if(parent.millis() > checkpoint)
-			{
-				this.wavePlayer.pause(true);
-				System.out.println("Instrument.playNote: paused the WavePlayer");
-			}
-		} else
-		{
-			this.wavePlayer.pause(false);
-			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 		} // if
-		*/
 
 	} // playNote
 	
+	/**
+	 * Stops the playing Note by clearing the dependents of this.volume (head of the chain after the AudioContext).
+	 */
 	public void stopNote()
 	{
 		this.volume.clearDependents();
@@ -176,8 +162,16 @@ public class Instrument {
 		*/
 	}
 	
+	/**
+	 * Pauses or un-pauses the Instrument by passing this.wavePlayer, this.frequencyGlide and 
+	 * this.gainEnvelope to either a PauseTrigger or StartTrigger.
+	 * 
+	 * @param pause boolean indicating whether to pause or un-pause the Instrument
+	 */
 	public void pauseNote(boolean pause)
 	{
+		// Using PauseTrigger becausing calling .pause() led to one note being held indefinitely
+		// when the UGens were supposedly paused.
 		if(pause)
 		{
 			new PauseTrigger(this.wavePlayer);
@@ -199,6 +193,11 @@ public class Instrument {
 		System.out.println("pause = " + pause);
 	}
 	
+	/**
+	 * Setter for the volumeGlide instance variable
+	 * 
+	 * @param vol float to which this.volumeGlide will be set (TODO - what is the range?)
+	 */
 	public void setVolume(float vol)
 	{
 		this.volumeGlide.setValue(vol);
