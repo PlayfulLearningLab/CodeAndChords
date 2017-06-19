@@ -119,10 +119,8 @@ public class Module_01_PitchHue extends PApplet
 			this.moduleTemplate.setMenuVal();
 		}
 		
-		
 		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
 		{
-
 
 			this.nowBelow	= false;
 

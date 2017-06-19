@@ -80,7 +80,8 @@ public class ModuleTemplate {
 
 	private	PApplet		parent;
 	//	public ControlP5 	nonSidebarCP5;
-	private ControlP5 	sidebarCP5;
+	// TODO set private post-testing:
+	public ControlP5 	sidebarCP5;
 	private	Input		input;
 
 
@@ -469,6 +470,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addButton("hamburger")
 		.setPosition(hamburgerX, hamburgerY)
 		.setImage(hamburger)
+		.setClickable(true)
 		.updateSize();
 
 		int	menuXX			= 5;
@@ -2196,6 +2198,7 @@ public class ModuleTemplate {
 			this.setLeftEdgeX(0);
 			//			this.sidebarCP5.setVisible(false);
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+			this.sidebarCP5.getController("hamburger").setVisible(true);
 			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
 		} // if - menuX
 
@@ -2209,9 +2212,10 @@ public class ModuleTemplate {
 		// Hide menu button button:
 		if(controlEvent.getName().equals("menuButton"))
 		{
-			System.out.println("menuButton event: " + controlEvent.getController() + this.parent.millis());
+			// Hamburger is still able to be clicked because of a boolean isClickable added to 
+			//Controller; automatically false, but able to be set to true.
+			// A Controller must be visible and/or clickable to respond to click.
 			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
-			//this.sidebarCP5.getController("hamburger").setVisible(!this.sidebarCP5.getController("hamburger").isVisible());
 		} // if - hidePlayButton
 
 		// Hide scale:
