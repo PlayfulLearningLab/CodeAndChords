@@ -109,12 +109,13 @@ public class Melody implements Runnable {
 	}
 
 	/**
-	 * Where most of the work of playing the Melody is done.
+	 * Sets the instance variables with the same names to the values of the parameters,
+	 * then starts the thread that will send them to the playMelodyThread method.
 	 * 
 	 * @param key	String denoting the current key; do not include major or minor designation here
 	 * @param bpm	tempo in beats per minute
 	 * @param scale	either the String "major", "minor", or "chromatic"
-	 * @param rangeOctave	int giving the range octave; must be between 3 and 7 (TODO)
+	 * @param rangeOctave	int giving the range octave; must be between 3 and 6
 	 * @param instrument	Instrument that will play the Melody
 	 */
 	public void playMelody(String key, float bpm, String scale, int rangeOctave, Instrument instrument)
@@ -135,6 +136,17 @@ public class Melody implements Runnable {
 
 	} // playMelody
 
+	/**
+	 * Uses the given scale and key to create an array of Notes,
+	 * then loops through that array and plays them with the given Instrument.
+	 * 
+	 * @param key	String denoting the current key; do not include major or minor designation here
+	 * @param bpm	tempo in beats per minute
+	 * @param scale	either the String "major", "minor", or "chromatic"
+	 * @param rangeOctave	int giving the range octave; must be between 3 and 6
+	 * @param instrument	Instrument that will play the Melody
+	 * @throws InterruptedException
+	 */
 	private void playMelodyThread( String key, float bpm, String scale, int rangeOctave, Instrument instrument ) throws InterruptedException
 	{
 		float[][]	curMelody	= melodyLib.get(scale.trim().toLowerCase());
@@ -232,6 +244,10 @@ public class Melody implements Runnable {
 
 	}//playMelodyThread
 
+	/**
+	 * Stops the Instrument instance variable by calling stopNote() on it
+	 * and sets the melodyThreadRunning boolean instance var to false.
+	 */
 	public void stop()
 	{
 		this.instrument.stopNote();
@@ -239,6 +255,11 @@ public class Melody implements Runnable {
 
 	}
 
+	/**
+	 * Used to pause or un-pause the Instrument; calls pauseNote(input) on the Instrument instance variable.
+
+	 * @param input boolean indicating whether to pause or start the Instrument
+	 */
 	public void pause(boolean input)
 	{
 		this.paused = input ;
@@ -253,6 +274,12 @@ public class Melody implements Runnable {
 	 */
 	public void setRangeList()
 	{
+
+		int		lowRangeInt;
+		int		highRangeInt;
+		String	lowRangeString;
+		String	highRangeString;
+		
 		// Find position of notes in this key:
 		int		keyPos		= -1;
 		for(int i = 0; i < Melody.keys.length; i++)
@@ -275,9 +302,6 @@ public class Melody implements Runnable {
 			throw new IllegalArgumentException("Melody.setRangeList: key '" + key + "' is not a valid key.");
 		} // error checking
 
-
-		int		lowRangeInt;
-		String	lowRangeString;
 
 		if(this.scale.equals("chromatic"))
 		{
@@ -305,10 +329,8 @@ public class Melody implements Runnable {
 		}
 
 
-		int	highRangeInt	= (keyPos + 11) % 12;
-		// Get the leading tone, but take only the first of two-note Strings (e.g., ' G# / Ab ')
-		// (and remove the extra space from one-note Strings):
-		String	highRangeString	= Melody.keys[highRangeInt].substring(0, 3).trim(); // + this.rangeOctave;
+		highRangeInt	= keyPos;
+		highRangeString	= this.key;
 
 		int			octave		= 3;
 		// For keys from C to F#, the dominant scale degree (lowRange) is in a lower Midi octave.
@@ -354,6 +376,11 @@ public class Melody implements Runnable {
 		} // for
 	} // setRangeList
 
+	/**
+	 * Returns the list of possible range octave options as a String[]
+	 * 
+	 * @return rangeList instance variable
+	 */
 	public String[] getRangeList()
 	{
 		return this.rangeList;

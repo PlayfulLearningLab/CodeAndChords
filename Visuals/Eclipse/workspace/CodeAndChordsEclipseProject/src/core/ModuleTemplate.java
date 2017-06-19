@@ -2168,6 +2168,8 @@ public class ModuleTemplate {
 			{
 				this.playMelody();
 			} else {
+				// Unpauses the pause button so that it is ready to be paused when
+				// play is pressed again:
 				((Toggle)this.sidebarCP5.getController("pause")).setState(false);
 				this.melody.stop();
 			}
