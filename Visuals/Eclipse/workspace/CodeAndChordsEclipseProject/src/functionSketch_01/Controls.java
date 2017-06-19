@@ -90,7 +90,7 @@ public class Controls extends PApplet
 		cp5.addTextfield("bpmText")
 		.setPosition(x+80, y)
 		.setSize(170, 22)
-		.setText("120")
+		.setValue("120")
 		.setAutoClear(false)
 		.getCaptionLabel()
 		.setVisible(false);
@@ -212,7 +212,7 @@ public class Controls extends PApplet
 			break;
 
 		case "keyList":
-			sr.addItems( new String[] { "A","A# / Bb", "B", "C", "C# / Db","D", "D# / Eb","E","F","F# / Gb","G","G# / Ab", } )
+			sr.addItems( new String[] {  "C", "C# / Db","D", "D# / Eb","E","F","F# / Gb","G","G# / Ab","A","A# / Bb", "B" } )
 			.setValue(0f);
 			break;
 
@@ -287,16 +287,17 @@ public class Controls extends PApplet
 		case "bpmText":
 			// 
 			String bpm = cp5.get("bpmText").getStringValue();
+			System.out.println("bpm is " + bpm);
 			int    bpmInt = 120;
 			try
 			{
 				bpmInt = Integer.parseInt(bpm);
 			}
-			catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setText("120"); }
-			catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setText("120"); }
+			catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setValue("120"); }
+			catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setValue("120"); }
 
-			if (bpmInt < 40) { ((Textfield) cp5.get("bpmText")).setText("40"); }
-			if (bpmInt > 200) { ((Textfield) cp5.get("bpmText")).setText("200"); }
+			if (bpmInt < 40) { ((Textfield) cp5.get("bpmText")).setValue("40"); }
+			if (bpmInt > 200) { ((Textfield) cp5.get("bpmText")).setValue("200"); }
 
 			break;
 
@@ -343,7 +344,10 @@ public class Controls extends PApplet
 				
 
 			// get bpm:
-			bpmInt = Integer.parseInt(cp5.get("bpmText").getStringValue());
+			try{ bpmInt = Integer.parseInt(((Textfield) cp5.get("bpmText")).getStringValue()); } 
+			catch(NumberFormatException e) {bpmInt = 120;}
+			
+			System.out.println("playing this bpm: "  + bpmInt);
 
 			this.melody.playMelody(key, bpmInt, scale, rangeOctave, this.instrument);
 
@@ -376,6 +380,7 @@ public class Controls extends PApplet
 			Thread.sleep(100);
 			this.melody.stop();
 			((Button) cp5.get("pauseButton")).setLabel("Pause");
+			((Button) cp5.get("pauseButton")).setSwitch(false);
 			
 			this.instrument.setVolume(vol);
 			
