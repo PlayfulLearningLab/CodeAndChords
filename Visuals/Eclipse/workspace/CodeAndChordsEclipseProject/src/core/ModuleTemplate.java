@@ -2168,6 +2168,7 @@ public class ModuleTemplate {
 			{
 				this.playMelody();
 			} else {
+				((Toggle)this.sidebarCP5.getController("pause")).setState(false);
 				this.melody.stop();
 			}
 

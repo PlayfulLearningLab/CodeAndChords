@@ -166,11 +166,14 @@ public class Instrument {
 	
 	public void stopNote()
 	{
+		this.volume.clearDependents();
+		/*
 		this.gainEnvelope.clear();
 //		this.wavePlayer.pause(true);
 		new KillTrigger(this.wavePlayer);
 		new KillTrigger(this.frequencyGlide);
 		new KillTrigger(this.gainEnvelope);
+		*/
 	}
 	
 	public void pauseNote(boolean pause)

@@ -218,6 +218,7 @@ public class Melody implements Runnable {
 				}
 
 				nextNoteStartTime	= parent.millis() + notes[i].getDuration();
+//				System.out.println("nextNoteStartTime = " + nextNoteStartTime);
 
 
 				while(parent.millis() < nextNoteStartTime)	
