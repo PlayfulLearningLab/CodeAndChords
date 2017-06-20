@@ -62,7 +62,8 @@ public class Controls extends PApplet
 	{
 		//Keep refreshing the black background
 		background(0);
-
+		
+		//Makes the bpm box red if the value shown in the box has not been entered
 		if(!  cp5.get("bpmText").getStringValue().equals(((Textfield) cp5.get("bpmText")).getText())  )
 		{
 			cp5.get("bpmText").setColorForeground(Color.RED.getRGB());
@@ -81,6 +82,9 @@ public class Controls extends PApplet
 		 */
 	}
 
+	/**
+	 * This method sets up all of the controlp5 buttons, dropboxes, sliders, etc.
+	 */
 	private void setUpControls()
 	{
 		//Name all of the drop box lists to be created
@@ -164,15 +168,6 @@ public class Controls extends PApplet
 			//Fill the list
 			this.fillList( names[i] + "List" );
 
-			//Add label and list to GuideTone Group
-			/*
-			cp5.get("gtGroup")
-				.add(cp5.get(names[i] + "Label"));
-
-			cp5.get("gtGroup")
-				.add(cp5.get(names[i] + "List"));
-			 */
-
 		}//for()
 
 		cp5.addGroup("adsr");
@@ -237,16 +232,22 @@ public class Controls extends PApplet
 
 	}//setUpControls()
 
+	/**
+	 * this is a convenience method used to customize the look of all the ScrollableLists
+	 * @param sr - the ScrollableList you would like to customize
+	 */
 	private void customizeList(ScrollableList sr)
 	{
-		//sr.setBackgroundColor(color(190));
 		sr.setWidth(170);
 		sr.setItemHeight(22);
 		sr.setBarHeight(22);
-		//sr.setColorBackground(color(60));
-		//sr.setColorActive(255);
 	}
 
+	/**
+	 * This method fills the list passed in with the appropriate items
+	 * 
+	 * @param listName - the name of the list being filled
+	 */
 	private void fillList(String listName)
 	{
 		//This method checks what list was passed to it and then fills the list it was passed with the appropriate items
@@ -301,7 +302,12 @@ public class Controls extends PApplet
 
 	}// fillList()
 
-
+	/**
+	 * This method responds to contolp5 control events and uses a switch to perform the appropriate actions
+	 * 
+	 * @param theEvent
+	 * @throws InterruptedException
+	 */
 	public void controlEvent(ControlEvent theEvent) throws InterruptedException 
 	{	
 		String name = theEvent.getName();
@@ -333,7 +339,7 @@ public class Controls extends PApplet
 			break;
 
 		case "adsrList":
-
+			//if custom is selected, make sliders blue and movable, else make them gray and locked
 			if(0 == (int) cp5.get("adsrList").getValue())
 			{
 				cp5.getGroup("adsr").setColorForeground(this.defaultForeground);
@@ -368,7 +374,7 @@ public class Controls extends PApplet
 			break;
 
 		case "bpmText":
-			// 
+			// makes sure that the bpm entered is a number within the acceptable range
 			String bpm = cp5.get("bpmText").getStringValue();
 			System.out.println("bpm is " + bpm);
 			int    bpmInt = 120;
@@ -385,7 +391,7 @@ public class Controls extends PApplet
 			break;
 
 		case "playButton":
-
+			//if it is paused, unpause and stop the melody so a new one can be played
 			if(((Button) cp5.get("pauseButton")).isSwitch()) 
 			{
 				this.melody.pause(false);
@@ -398,7 +404,8 @@ public class Controls extends PApplet
 				Thread.sleep(20);
 				System.out.println("done with sleep");
 			}
-
+			
+			//make sure another melody is not already playing
 			if(!this.playing)
 			{
 				this.playing = true;
@@ -437,6 +444,8 @@ public class Controls extends PApplet
 				try
 				{
 					playBPM = Integer.parseInt(bpmString);
+					((Textfield) cp5.get("bpmText")).setStringValue(bpmString); 
+					
 				}
 				catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setStringValue("120"); ((Textfield) cp5.get("bpmText")).setText("120"); }
 				catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setStringValue("120"); ((Textfield) cp5.get("bpmText")).setText("120"); }
@@ -444,8 +453,6 @@ public class Controls extends PApplet
 				if (playBPM < 40) { ((Textfield) cp5.get("bpmText")).setStringValue("40"); ((Textfield) cp5.get("bpmText")).setText("40"); playBPM = 40;}
 				if (playBPM > 200) { ((Textfield) cp5.get("bpmText")).setStringValue("200"); ((Textfield) cp5.get("bpmText")).setText("200"); playBPM = 200;}
 
-				//try{ bpmInt = Integer.parseInt(((Textfield) cp5.get("bpmText")).getStringValue()); } 
-				//catch(NumberFormatException e) {bpmInt = 120;}
 
 				System.out.println("playing this bpm: "  + playBPM);
 
