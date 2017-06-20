@@ -36,11 +36,15 @@ public class Instrument {
 		// 0: even
 		new float[] { 100, 50, 90, 100 },
 		// 1: long attack
-		new float[] { 1500, 50, 80, 50 },
-		// 2: long decay + low sustain
-		new float[] { 100, 750, 60, 100 },
-		// 3: long release
-		new float[] { 100, 75, 80, 3000 },
+		new float[] { 1000, 500, 25, 100 },
+		// 2: long decay
+		new float[] { 100, 900, 50, 70 },
+		// 3: high sustain:
+		new float[] { 100, 500, 100, 70 },
+		// 4: low sustain:
+		new float[] { 100, 500, 10, 70 },
+		// 5: long release
+		new float[] { 50, 75, 80, 800 },
 	};
 	private PApplet		                 	parent;
 	
@@ -51,7 +55,7 @@ public class Instrument {
 	
 	private	Envelope		                gainEnvelope;
 	private	LinkedList<Envelope.Segment>	envelopeSegments;
-	private Gain		                 	envolope;
+	private Gain		                 	envelope;
 	
 	private Glide                           volumeGlide;
 	private Gain                            volume;
@@ -68,19 +72,19 @@ public class Instrument {
 		
 		this.setADSR(0);
 
-		
+		// audioContext <= volume (volumeGlide) <= envelope (gainEnvelope) <= wavePlayer (frequencyGlide)
 		this.frequencyGlide     = new Glide(this.audioContext, 440, 20);
 		this.wavePlayer		    = new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
 		
 		this.gainEnvelope	    = new Envelope(this.audioContext);
 		this.envelopeSegments	= new LinkedList<Envelope.Segment>();
-		this.envolope        	= new Gain(this.audioContext, 1, this.gainEnvelope);
+		this.envelope        	= new Gain(this.audioContext, 1, this.gainEnvelope);
 		
 		this.volumeGlide        = new Glide(this.audioContext, 1, 50);
 		this.volume             = new Gain(this.audioContext, 1, this.volumeGlide);
 		
-		this.envolope.addInput(this.wavePlayer);
-		this.volume.addInput(this.envolope);
+		this.envelope.addInput(this.wavePlayer);
+		this.volume.addInput(this.envelope);
 		this.audioContext.out.addInput(this.volume);
 
 		this.audioContext.start();
@@ -184,15 +188,7 @@ public class Instrument {
 			new StartTrigger(this.frequencyGlide);
 			new StartTrigger(this.gainEnvelope);
 		}
-		
-		/*
-		this.wavePlayer.pause(pause);
-		this.frequencyGlide.pause(pause);
-		this.gainEnvelope.pause(pause);
-		*/
-		
-		
-		System.out.println("pause = " + pause);
+
 	}
 	
 	/**
@@ -224,7 +220,8 @@ public class Instrument {
 		this.sustain	= Instrument.adsrPresets[presetNum][2];
 		this.release	= Instrument.adsrPresets[presetNum][3];
 		
-		
+
+		System.out.println("setADSR(int presetNum): " + attack + " / " + decay + " / " + sustain + " / " + release);
 
 	} // adsrPresets
 	
@@ -235,12 +232,17 @@ public class Instrument {
 		this.sustain = s;
 		this.release = r;
 		
-		System.out.println(a + " / " + d + " / " + s + " / " + r);
+		System.out.println("setADSR(float, float, float, float): " + a + " / " + d + " / " + s + " / " + r);
 	}
 	
 	public float[] getADSR()
 	{
 		return new float[] {this.attack, this.decay, this.sustain, this.release };
 	}
+	
+	public float[][] getADSRPresets()
+	{
+		return Instrument.adsrPresets;
+	} // getADSRPresets
 
 } // Instrument

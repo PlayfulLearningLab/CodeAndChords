@@ -279,7 +279,9 @@ public class Controls extends PApplet
 					"Custom",
 					"Even",
 					"Long Attack",
-					"Long Decay/Low Sustain",
+					"Long Decay",
+					"High Sustain",
+					"Low Sustain",
 					"Long Release"
 			})
 			.setValue(0f);
