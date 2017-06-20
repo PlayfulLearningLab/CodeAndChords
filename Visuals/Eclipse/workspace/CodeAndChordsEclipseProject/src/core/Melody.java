@@ -217,6 +217,7 @@ public class Melody implements Runnable {
 
 			float	nextNoteStartTime	= parent.millis();
 
+
 			// use the Note's duration to call instrument.play() at the appropriate time
 			for( int i = 0 ; i < notes.length && this.melodyThreadRunning; i++)
 			{
@@ -241,7 +242,7 @@ public class Melody implements Runnable {
 				}
 
 			} // for - play Notes
-		} // while
+
 
 	}//playMelodyThread
 
@@ -251,9 +252,9 @@ public class Melody implements Runnable {
 	 */
 	public void stop()
 	{
-		this.instrument.stopNote();
 		this.melodyThreadRunning = false;
-
+		this.instrument.stopNote();
+		
 	}
 
 	/**
@@ -265,6 +266,11 @@ public class Melody implements Runnable {
 	{
 		this.paused = input ;
 		this.instrument.pauseNote(input);
+	}
+	
+	public boolean isRunning()
+	{
+		return this.melodyThreadRunning;
 	}
 
 	/**
