@@ -211,6 +211,10 @@ public class Melody implements Runnable {
 
 		} // for - calculate midi notes
 
+		// This while loop is what keeps the melody repeating:
+		while(this.melodyThreadRunning)
+		{
+
 			float	nextNoteStartTime	= parent.millis();
 
 
