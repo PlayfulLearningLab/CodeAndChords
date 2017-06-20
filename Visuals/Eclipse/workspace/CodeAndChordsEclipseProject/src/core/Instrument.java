@@ -152,19 +152,29 @@ public class Instrument {
 	} // playNote
 	
 	/**
-	 * Stops the playing Note by clearing the dependents of this.volume (head of the chain after the AudioContext).
+	 * Stops the playing Note by clearing this.gainEnvelope and pausing this.wavePlayer.
 	 */
 	public void stopNote()
 	{
-		this.volume.clearDependents();
-		/*
 		this.gainEnvelope.clear();
-//		this.wavePlayer.pause(true);
+		this.wavePlayer.pause(true);
+		
+		// Clearing dependents didn't stop the note immediately:
+//		this.volume.clearDependents();
+		/*
+	
+		// Killing the players directly worked to stop,
+		// but then they wouldn't start again when play was pressed:
+		this.wavePlayer.kill();
+		this.frequencyGlide.kill();
+		this.gainEnvelope.kill();
+		/*
+		// KillTriggers work, but don't stop the note immediately:
 		new KillTrigger(this.wavePlayer);
 		new KillTrigger(this.frequencyGlide);
 		new KillTrigger(this.gainEnvelope);
 		*/
-	}
+	} // stopNote
 	
 	/**
 	 * Pauses or un-pauses the Instrument by passing this.wavePlayer, this.frequencyGlide and 
@@ -174,8 +184,10 @@ public class Instrument {
 	 */
 	public void pauseNote(boolean pause)
 	{
-		// Using PauseTrigger becausing calling .pause() led to one note being held indefinitely
-		// when the UGens were supposedly paused.
+		// Using PauseTrigger becausing calling .pause() allowed multiple notes to start playing
+		// when play was pressed again,
+		// and sometimes one note would be held indefinitely when the UGens were supposedly paused.
+		
 		if(pause)
 		{
 			new PauseTrigger(this.wavePlayer);
@@ -186,6 +198,7 @@ public class Instrument {
 			new StartTrigger(this.frequencyGlide);
 			new StartTrigger(this.gainEnvelope);
 		}
+
 
 	}
 	
