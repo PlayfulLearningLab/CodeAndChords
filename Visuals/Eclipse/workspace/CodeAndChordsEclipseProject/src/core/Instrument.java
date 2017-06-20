@@ -34,9 +34,9 @@ public class Instrument {
 
 	private static float[][]		adsrPresets	= new float[][] {
 		// 0: even
-		new float[] { 100, 50, 90, 100 },
+		new float[] { 100, 50, 50, 100 },
 		// 1: long attack
-		new float[] { 1000, 500, 25, 100 },
+		new float[] { 1000, 500, 25, 300 },
 		// 2: long decay
 		new float[] { 100, 900, 50, 70 },
 		// 3: high sustain:
@@ -99,7 +99,7 @@ public class Instrument {
 	 * 
 	 * @param note	Note whose midiNote is turned into a frequency and used to play it.
 	 */
-	public void playNote(Note note)
+	public void playNote(Note note, boolean followedByRest)
 	{
 		if(note == null)
 		{
@@ -197,10 +197,10 @@ public class Instrument {
 			new StartTrigger(this.wavePlayer);
 			new StartTrigger(this.frequencyGlide);
 			new StartTrigger(this.gainEnvelope);
-		}
+		} // if
 
 
-	}
+	} // pauseNote
 	
 	/**
 	 * Setter for the volumeGlide instance variable

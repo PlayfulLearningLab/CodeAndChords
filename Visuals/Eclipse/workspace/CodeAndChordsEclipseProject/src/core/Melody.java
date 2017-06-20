@@ -219,7 +219,7 @@ public class Melody implements Runnable {
 
 
 			// use the Note's duration to call instrument.play() at the appropriate time
-			for( int i = 0 ; i < notes.length && this.melodyThreadRunning; i++)
+			for( int i = 0 ; i < notes.length - 1 && this.melodyThreadRunning; i++)
 			{
 				instrument.playNote(notes[i]);
 
