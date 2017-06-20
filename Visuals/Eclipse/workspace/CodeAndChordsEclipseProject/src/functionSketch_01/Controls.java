@@ -23,10 +23,12 @@ public class Controls extends PApplet
 	private ControlP5         cp5;
 	private Melody            melody;
 	private Instrument	      instrument;
-	
+
 	private int               defaultForeground;
 	private int               defaultBackground;
 	private int               defaultActive;
+
+	private boolean           playing = false;
 
 
 	public static void main(String[] args)
@@ -45,7 +47,7 @@ public class Controls extends PApplet
 		this.cp5 = new ControlP5(this);
 		//Create a group to put all of the controls in
 		new Group(cp5, "gtGroup");
-		
+
 		// Initialize melody before calling setUpControls, b/c the latter uses melody.getRangeList():
 		this.melody	= new Melody(this); 
 		this.instrument	= new Instrument(this);
@@ -61,6 +63,7 @@ public class Controls extends PApplet
 		//Keep refreshing the black background
 		background(0);
 		
+		//Makes the bpm box red if the value shown in the box has not been entered
 		if(!  cp5.get("bpmText").getStringValue().equals(((Textfield) cp5.get("bpmText")).getText())  )
 		{
 			cp5.get("bpmText").setColorForeground(Color.RED.getRGB());
@@ -70,7 +73,7 @@ public class Controls extends PApplet
 			cp5.get("bpmText").setColorForeground(this.defaultForeground);
 			cp5.get("bpmText").setColorActive(this.defaultActive);
 		}
-		
+
 		/*
 		instrument.gainGlide.setValue(this.mouseX / (float)this.width);
 		 // update the frequency based on the position of the mouse
@@ -79,11 +82,14 @@ public class Controls extends PApplet
 		 */
 	}
 
+	/**
+	 * This method sets up all of the controlp5 buttons, dropboxes, sliders, etc.
+	 */
 	private void setUpControls()
 	{
 		//Name all of the drop box lists to be created
 		String[] names = new String[] { "range", "key", "scale" } ;
-		
+
 		PFont pfont = createFont("Arial",20,true); // use true/false for smooth/no-smooth
 		ControlFont largerStandard = new ControlFont(pfont,13);
 		//ControlFont    largerStandard    = new ControlFont(ControlP5.BitFontStandard58, 13);
@@ -93,12 +99,12 @@ public class Controls extends PApplet
 		.setFont(largerStandard)
 		.setText("volume")
 		.setPosition(30, 250);
-		
+
 		cp5.addSlider("volumeSlider", 0f, 1f, .8f, 110, 250, 170, 22)
 		.getCaptionLabel()
 		.setVisible(false);
-		
-		
+
+
 		//Position of first box
 		int  x = 30;
 		int  y = 200;
@@ -162,68 +168,59 @@ public class Controls extends PApplet
 			//Fill the list
 			this.fillList( names[i] + "List" );
 
-			//Add label and list to GuideTone Group
-			/*
-			cp5.get("gtGroup")
-				.add(cp5.get(names[i] + "Label"));
-
-			cp5.get("gtGroup")
-				.add(cp5.get(names[i] + "List"));
-			 */
-
 		}//for()
-		
+
 		cp5.addGroup("adsr");
-		
+
 		cp5.addLabel("attackLabel")
 		.setFont(largerStandard)
 		.setText("attack")
 		.setPosition(350, 100);
-		
+
 		cp5.addSlider("attackSlider", 0.01f, 1000f, 100f, 430, 100, 170, 22)
 		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
-		
+
 		cp5.addLabel("decayLabel")
 		.setFont(largerStandard)
 		.setText("decay")
 		.setPosition(350, 150);
-		
+
 		cp5.addSlider("decaySlider", 0.01f, 1000f, 500f, 430, 150, 170, 22)
 		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
-		
+
 		cp5.addLabel("sustainLabel")
 		.setFont(largerStandard)
 		.setText("sustain")
 		.setPosition(350, 200);
-		
+
 		cp5.addSlider("sustainSlider", 0f, 100f, 50f, 430, 200, 170, 22)
 		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
-		
+
 		cp5.addLabel("releaseLabel")
 		.setFont(largerStandard)
 		.setText("release")
 		.setPosition(350, 250);
-		
+
 		cp5.addSlider("releaseSlider", 0f, 1000f, 100f, 430, 250, 170, 22)
 		.setGroup("adsr")
 		.getCaptionLabel()
 		.setVisible(false);
-		
+
 		this.defaultForeground = cp5.get("releaseSlider").getColor().getForeground();
 		this.defaultBackground = cp5.get("releaseSlider").getColor().getBackground();
 		this.defaultActive = cp5.get("releaseSlider").getColor().getActive();
-		
+
 		cp5.addLabel("adsrLabel")
 		.setFont(largerStandard)
 		.setText("adsr")
 		.setPosition(350,50);
-		
+
 		cp5.addScrollableList("adsrList")
 		.setPosition(430,50)
 		.bringToFront()
@@ -235,16 +232,22 @@ public class Controls extends PApplet
 
 	}//setUpControls()
 
+	/**
+	 * this is a convenience method used to customize the look of all the ScrollableLists
+	 * @param sr - the ScrollableList you would like to customize
+	 */
 	private void customizeList(ScrollableList sr)
 	{
-		//sr.setBackgroundColor(color(190));
 		sr.setWidth(170);
 		sr.setItemHeight(22);
 		sr.setBarHeight(22);
-		//sr.setColorBackground(color(60));
-		//sr.setColorActive(255);
 	}
 
+	/**
+	 * This method fills the list passed in with the appropriate items
+	 * 
+	 * @param listName - the name of the list being filled
+	 */
 	private void fillList(String listName)
 	{
 		//This method checks what list was passed to it and then fills the list it was passed with the appropriate items
@@ -299,7 +302,12 @@ public class Controls extends PApplet
 
 	}// fillList()
 
-
+	/**
+	 * This method responds to contolp5 control events and uses a switch to perform the appropriate actions
+	 * 
+	 * @param theEvent
+	 * @throws InterruptedException
+	 */
 	public void controlEvent(ControlEvent theEvent) throws InterruptedException 
 	{	
 		String name = theEvent.getName();
@@ -331,13 +339,13 @@ public class Controls extends PApplet
 			break;
 
 		case "adsrList":
-			
+			//if custom is selected, make sliders blue and movable, else make them gray and locked
 			if(0 == (int) cp5.get("adsrList").getValue())
 			{
 				cp5.getGroup("adsr").setColorForeground(this.defaultForeground);
 				cp5.getGroup("adsr").setColorBackground(this.defaultBackground);
 				cp5.getGroup("adsr").setColorActive(this.defaultActive);
-				
+
 				((Slider) cp5.get("attackSlider")).unlock();
 				((Slider) cp5.get("decaySlider")).unlock();
 				((Slider) cp5.get("sustainSlider")).unlock();
@@ -348,25 +356,25 @@ public class Controls extends PApplet
 				cp5.getGroup("adsr").setColorBackground(Color.DARK_GRAY.getRGB());
 				cp5.getGroup("adsr").setColorForeground(Color.GRAY.getRGB());
 				cp5.getGroup("adsr").setColorActive(Color.GRAY.getRGB());
-				
+
 				this.instrument.setADSR( (int) cp5.get("adsrList").getValue() - 1);
 				float[] adsr = this.instrument.getADSR();
-				
+
 				((Slider) cp5.get("attackSlider")).setValue(adsr[0]).lock();
 				((Slider) cp5.get("decaySlider")).setValue(adsr[1]).lock();
 				((Slider) cp5.get("sustainSlider")).setValue(adsr[2]).lock();
 				((Slider) cp5.get("releaseSlider")).setValue(adsr[3]).lock();
-				
+
 			}
-			
+
 			break;
-			
+
 		case "volumeSlider":
-			this.instrument.setVolume( PApplet.map(cp5.getValue("volumeSlider"), 0, 1, 0, .2f) );
+			this.instrument.setVolume( PApplet.map(cp5.getValue("volumeSlider"), 0, 1, 0, 1) );
 			break;
 
 		case "bpmText":
-			// 
+			// makes sure that the bpm entered is a number within the acceptable range
 			String bpm = cp5.get("bpmText").getStringValue();
 			System.out.println("bpm is " + bpm);
 			int    bpmInt = 120;
@@ -383,59 +391,78 @@ public class Controls extends PApplet
 			break;
 
 		case "playButton":
-			
-			if(this.melody.isRunning()) 
-			{ 
-				this.melody.stop(); 
-				Thread.sleep(10); 
-				System.out.println("stopped");
-			}
-			
+			//if it is paused, unpause and stop the melody so a new one can be played
 			if(((Button) cp5.get("pauseButton")).isSwitch()) 
 			{
-				this.melody.pause(false); 
-				((Button) cp5.get("pauseButton")).setSwitch(false); 
+				this.melody.pause(false);
+				this.melody.stop();
 				((Button) cp5.get("pauseButton")).setLabel("Pause");
-				System.out.println("resume"); 
-			}
-			
-			// get key:
-			val = (int) cp5.get("keyList").getValue();
-			map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
-			key	= (String) map.get("name");
-
-			// get scale:
-			val = (int) cp5.get("scaleList").getValue();
-			map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
-			scale = (String) map.get("name");
-
-			// get range octave:
-			int	rangeOctave = (int) ( cp5.get("rangeList").getValue() + 3);
-
-			// get adsr presets:
-			val = (int) cp5.get("adsrList").getValue();
-			if(val == 0)
-			{
-				this.instrument.setADSR(cp5.getValue("attackSlider"), cp5.getValue("decaySlider"), cp5.getValue("sustainSlider"), cp5.getValue("releaseSlider"));
-			}
-			else
-			{
-				this.instrument.setADSR(val - 1);
-			}
+				((Button) cp5.get("pauseButton")).setSwitch(false);
+				this.playing = false;
 				
-
-			// get bpm:
-			try{ bpmInt = Integer.parseInt(((Textfield) cp5.get("bpmText")).getStringValue()); } 
-			catch(NumberFormatException e) {bpmInt = 120;}
+				System.out.println("done with puase");
+				Thread.sleep(20);
+				System.out.println("done with sleep");
+			}
 			
-			System.out.println("playing this bpm: "  + bpmInt);
+			//make sure another melody is not already playing
+			if(!this.playing)
+			{
+				this.playing = true;
+				System.out.println("Playing now");
 
-			this.melody.playMelody(key, bpmInt, scale, rangeOctave, this.instrument);
 
+				// get key:
+				val = (int) cp5.get("keyList").getValue();
+				map = (Map<String, Object>) cp5.get(ScrollableList.class, "keyList").getItem(val);
+				key	= (String) map.get("name");
+
+				// get scale:
+				val = (int) cp5.get("scaleList").getValue();
+				map = (Map<String, Object>) cp5.get(ScrollableList.class, "scaleList").getItem(val);
+				scale = (String) map.get("name");
+
+				// get range octave:
+				int	rangeOctave = (int) ( cp5.get("rangeList").getValue() + 3);
+
+				// get adsr presets:
+				val = (int) cp5.get("adsrList").getValue();
+				if(val == 0)
+				{
+					this.instrument.setADSR(cp5.getValue("attackSlider"), cp5.getValue("decaySlider"), cp5.getValue("sustainSlider"), cp5.getValue("releaseSlider"));
+				}
+				else
+				{
+					this.instrument.setADSR(val - 1);
+				}
+
+
+				// get bpm:
+				String bpmString = ((Textfield) cp5.get("bpmText")).getText();
+				System.out.println("bpm is " + bpmString);
+				int    playBPM = 120;
+				try
+				{
+					playBPM = Integer.parseInt(bpmString);
+					((Textfield) cp5.get("bpmText")).setStringValue(bpmString); 
+					
+				}
+				catch (NumberFormatException e) { ((Textfield) cp5.get("bpmText")).setStringValue("120"); ((Textfield) cp5.get("bpmText")).setText("120"); }
+				catch (NullPointerException e) { ((Textfield) cp5.get("bpmText")).setStringValue("120"); ((Textfield) cp5.get("bpmText")).setText("120"); }
+
+				if (playBPM < 40) { ((Textfield) cp5.get("bpmText")).setStringValue("40"); ((Textfield) cp5.get("bpmText")).setText("40"); playBPM = 40;}
+				if (playBPM > 200) { ((Textfield) cp5.get("bpmText")).setStringValue("200"); ((Textfield) cp5.get("bpmText")).setText("200"); playBPM = 200;}
+
+
+				System.out.println("playing this bpm: "  + playBPM);
+
+
+				this.melody.playMelody(key, playBPM, scale, rangeOctave, this.instrument);
+			}
 			break;
 
 		case "pauseButton":
-			
+
 			if(!((Button) cp5.get("pauseButton")).isSwitch()) 
 			{ 
 				this.melody.pause(true); 
@@ -450,22 +477,19 @@ public class Controls extends PApplet
 				((Button) cp5.get("pauseButton")).setLabel("Pause");
 				System.out.println("resumed"); 
 			}
-			
+
 			break;
 
 		case "stopButton":
-			float vol = PApplet.map(cp5.getValue("volumeSlider"), 0, 1, 0, .2f);
-			this.instrument.setVolume(0);
-			
+
 			this.melody.pause(false);
-			Thread.sleep(100);
 			this.melody.stop();
 			((Button) cp5.get("pauseButton")).setLabel("Pause");
 			((Button) cp5.get("pauseButton")).setSwitch(false);
+			this.playing = false;
 			
-			this.instrument.setVolume(vol);
-			
-			
+			System.out.println("Stop complete");
+
 
 			break;
 

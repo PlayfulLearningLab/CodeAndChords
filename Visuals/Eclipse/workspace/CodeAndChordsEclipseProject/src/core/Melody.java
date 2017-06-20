@@ -241,7 +241,7 @@ public class Melody implements Runnable {
 				//				System.out.println("nextNoteStartTime = " + nextNoteStartTime);
 
 
-				while(parent.millis() < nextNoteStartTime)	
+				while(parent.millis() < nextNoteStartTime && this.isRunning())	
 				{
 					if(this.paused) { nextNoteStartTime = nextNoteStartTime + 12; }
 					Thread.sleep(10);
@@ -249,7 +249,6 @@ public class Melody implements Runnable {
 
 			} // for - play Notes
 		} // while
-
 
 	}//playMelodyThread
 
@@ -261,7 +260,6 @@ public class Melody implements Runnable {
 	{
 		this.melodyThreadRunning = false;
 		this.instrument.stopNote();
-
 	}
 
 	/**

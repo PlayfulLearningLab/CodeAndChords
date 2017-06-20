@@ -122,6 +122,7 @@ public class Instrument {
 
 		if(!(note.isRest()))
 		{
+			this.gainEnvelope.pause(true);
 			this.gainEnvelope.clear();
 //			this.gainEnvelope.setValue(0);
 		}
@@ -143,6 +144,7 @@ public class Instrument {
 		if(note.getMidiNum() != -1)
 		{
 			this.wavePlayer.pause(false);
+			this.gainEnvelope.pause(false);
 			this.frequencyGlide.setValue(Pitch.mtof(note.getMidiNum()));
 //			System.out.println("Instrument.playNote: " + Pitch.mtof(note.getMidiNum()));
 		} else {
