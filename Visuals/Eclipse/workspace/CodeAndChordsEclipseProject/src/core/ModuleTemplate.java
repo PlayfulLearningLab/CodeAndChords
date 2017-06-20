@@ -227,9 +227,9 @@ public class ModuleTemplate {
 	// 		Button's: id % 3 == 0
 	// 		ColorWheel's: id % 3 == 1
 	// 		TextField's: id % 3 == 2
-	private	int			lastTextfieldId		= 21;
-	private	int			bpmSliderId			= 20;
-	private	int			bpmTextfieldId		= lastTextfieldId;
+	private	int			lastTextfieldId		= 23;
+	private	int			volumeSliderId		= 22;
+	private	int			volumeTextfieldId	= lastTextfieldId;
 	private	int			firstCustomColorId	= 24;
 	private	int			canvasColorSelectId	= 63;
 	private	int			firstColorSelectId	= canvasColorSelectId;
@@ -758,6 +758,7 @@ public class ModuleTemplate {
 		int		rangeY			= popoutSpacer;
 		int		adsrY			= (popoutSpacer * 2) + height;
 		int		bpmY			= (popoutSpacer * 3) + (height * 2);
+		int		volumeY			= (popoutSpacer * 3) + (height * 2);
 
 		this.sidebarCP5.addGroup("guideToneBackground")
 		.setPosition(this.leftAlign, guideToneY + 20)
@@ -767,7 +768,9 @@ public class ModuleTemplate {
 		.setVisible(false)
 		.hideBar();
 
-
+		String[]	labels	= new String[]	{ "bpmLabel", 	"volumeLabel" };
+		int[]		yVals	= new int[]		{ bpmY, 		volumeY	};
+		
 		// BPM Textlabel:
 		this.sidebarCP5.addLabel("bpmLabel")
 		.setPosition(popoutSpacer, bpmY + 4)
@@ -806,8 +809,8 @@ public class ModuleTemplate {
 				"Even",
 				"Long Attack",
 				"Long Decay",
-				"Low Sustain",
 				"High Sustain",
+				"Low Sustain",
 				"Long Release"
 		};
 
@@ -1700,8 +1703,8 @@ public class ModuleTemplate {
 
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
 
-		//		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
-		melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
+		this.melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
+//		this.melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave);
 	} // playMelody
 
 	/**
@@ -2692,11 +2695,11 @@ public class ModuleTemplate {
 			this.sidebarCP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
 
 			// TODO:
-			this.instrument.setVolume(0.2f);
+//			this.instrument.setVolume(0.2f);
 		} // Guide Tone Generator
 
 		// ADSR Presets Scrollable List:
-		if(controlEvent.getName().equals("adsrPresets"))
+		if(controlEvent.getName().equals("adsrPresetsDropdown"))
 		{
 			controlEvent.getController().bringToFront();
 

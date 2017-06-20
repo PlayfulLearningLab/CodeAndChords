@@ -44,7 +44,7 @@ public class Instrument {
 		// 4: low sustain:
 		new float[] { 100, 500, 10, 70 },
 		// 5: long release
-		new float[] { 100, 75, 80, 3000 },
+		new float[] { 50, 75, 80, 800 },
 	};
 	private PApplet		                 	parent;
 	
@@ -55,7 +55,7 @@ public class Instrument {
 	
 	private	Envelope		                gainEnvelope;
 	private	LinkedList<Envelope.Segment>	envelopeSegments;
-	private Gain		                 	envolope;
+	private Gain		                 	envelope;
 	
 	private Glide                           volumeGlide;
 	private Gain                            volume;
@@ -78,13 +78,13 @@ public class Instrument {
 		
 		this.gainEnvelope	    = new Envelope(this.audioContext);
 		this.envelopeSegments	= new LinkedList<Envelope.Segment>();
-		this.envolope        	= new Gain(this.audioContext, 1, this.gainEnvelope);
+		this.envelope        	= new Gain(this.audioContext, 1, this.gainEnvelope);
 		
 		this.volumeGlide        = new Glide(this.audioContext, 1, 50);
 		this.volume             = new Gain(this.audioContext, 1, this.volumeGlide);
 		
-		this.envolope.addInput(this.wavePlayer);
-		this.volume.addInput(this.envolope);
+		this.envelope.addInput(this.wavePlayer);
+		this.volume.addInput(this.envelope);
 		this.audioContext.out.addInput(this.volume);
 
 		this.audioContext.start();
@@ -218,7 +218,8 @@ public class Instrument {
 		this.sustain	= Instrument.adsrPresets[presetNum][2];
 		this.release	= Instrument.adsrPresets[presetNum][3];
 		
-		
+
+		System.out.println("setADSR(int presetNum): " + attack + " / " + decay + " / " + sustain + " / " + release);
 
 	} // adsrPresets
 	
@@ -229,7 +230,7 @@ public class Instrument {
 		this.sustain = s;
 		this.release = r;
 		
-		System.out.println(a + " / " + d + " / " + s + " / " + r);
+		System.out.println("setADSR(float, float, float, float): " + a + " / " + d + " / " + s + " / " + r);
 	}
 	
 	public float[] getADSR()
