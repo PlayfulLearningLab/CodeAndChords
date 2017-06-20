@@ -742,7 +742,7 @@ public class ModuleTemplate {
 		int		transBlackInt		= transparentBlack.getRGB();
 
 		int		boxWidth		= 220;
-		int		boxHeight		= 112;
+		int		boxHeight		= 130;
 
 		int		labelWidth		= 30;
 		int		listWidth		= 155;
@@ -758,7 +758,7 @@ public class ModuleTemplate {
 		int		rangeY			= popoutSpacer;
 		int		adsrY			= (popoutSpacer * 2) + height;
 		int		bpmY			= (popoutSpacer * 3) + (height * 2);
-		int		volumeY			= (popoutSpacer * 3) + (height * 2);
+		int		volumeY			= (popoutSpacer * 4) + (height * 3);
 
 		this.sidebarCP5.addGroup("guideToneBackground")
 		.setPosition(this.leftAlign, guideToneY + 20)
@@ -768,35 +768,53 @@ public class ModuleTemplate {
 		.setVisible(false)
 		.hideBar();
 
-		String[]	labels	= new String[]	{ "bpmLabel", 	"volumeLabel" };
-		int[]		yVals	= new int[]		{ bpmY, 		volumeY	};
+		String[]	labels		= new String[]	{ "bpmLabel", 	"volumeLabel" };
+		int[]		yVals		= new int[]		{ bpmY, 		volumeY	};
+		String[]	labelVals	= new String[]	{ "BPM",	"Volume"	};
+		float[][]	ranges		= new float[][]	{
+			// bpm range:
+			new float[] { 40, 	240 },
+			// volume range:
+			new float[] { 0.01f,	5	}
+		};
+		float[]		startingVals	= new float[]	{ 120, 1	};
 		
-		// BPM Textlabel:
-		this.sidebarCP5.addLabel("bpmLabel")
-		.setPosition(popoutSpacer, bpmY + 4)
-		//		.setWidth(labelWidth)
-		.setGroup("guideToneBackground")
-		.setValue("BPM");
+		int	id	= 20;
+		
+		for(int i = 0; i < labels.length; i++)
+		{
+			// BPM Textlabel:
+			this.sidebarCP5.addLabel(labels[i])
+			.setPosition(popoutSpacer, yVals[i] + 4)
+			//		.setWidth(labelWidth)
+			.setGroup("guideToneBackground")
+			.setValue(labelVals[i]);
 
-		this.sidebarCP5.addSlider("slider20")
-		.setPosition(listSliderX, bpmY)
-		.setSize(sliderWidth, height)
-		.setSliderMode(Slider.FLEXIBLE)
-		.setRange(40, 240)
-		.setValue(120)
-		.setLabelVisible(false)
-		.setGroup("guideToneBackground")
-		.setId(20);
+			this.sidebarCP5.addSlider("slider" + id)
+			.setPosition(listSliderX, yVals[i])
+			.setSize(sliderWidth, height)
+			.setSliderMode(Slider.FLEXIBLE)
+			.setRange(ranges[i][0], ranges[i][1])
+			.setValue(startingVals[i])
+			.setLabelVisible(false)
+			.setGroup("guideToneBackground")
+			.setId(id);
+			
+			id	= id + 1;
 
-		this.sidebarCP5.addTextfield("textfield21")
-		.setPosition(textfieldX, bpmY)
-		.setSize(textfieldWidth, height)
-		.setText(this.sidebarCP5.getController("slider20").getValue() + "")
-		.setLabelVisible(false)
-		.setAutoClear(false)
-		.setGroup("guideToneBackground")
-		.setId(this.lastTextfieldId)
-		.getCaptionLabel().setVisible(false);
+			this.sidebarCP5.addTextfield("textfield" + id)
+			.setPosition(textfieldX, yVals[i])
+			.setSize(textfieldWidth, height)
+			.setText(this.sidebarCP5.getController("slider" + (id - 1)).getValue() + "")
+			.setLabelVisible(false)
+			.setAutoClear(false)
+			.setGroup("guideToneBackground")
+			.setId(id)
+			.getCaptionLabel().setVisible(false);
+			
+			id	= id + 1;
+		} // for
+		
 
 		// "ADSR Presets" Textlabel
 		this.sidebarCP5.addTextlabel("adsrPresets")
@@ -2278,6 +2296,11 @@ public class ModuleTemplate {
 			if(id == 20)
 			{
 				this.bpm	= Math.max(Math.min((int)sliderValFloat, 240), 0);
+			}
+			
+			if(id == 22)
+			{
+				this.instrument.setVolume(Math.max(Math.min(sliderValFloat, 5), 0));
 			}
 
 			} catch (NullPointerException npe) {
