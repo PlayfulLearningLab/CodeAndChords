@@ -27,7 +27,7 @@ public class Controls extends PApplet
 	private int               defaultForeground;
 	private int               defaultBackground;
 	private int               defaultActive;
-	
+
 	private boolean           playing = false;
 
 
@@ -386,18 +386,24 @@ public class Controls extends PApplet
 
 		case "playButton":
 
-			
+			if(((Button) cp5.get("pauseButton")).isSwitch()) 
+			{
+				this.melody.pause(false);
+				this.melody.stop();
+				((Button) cp5.get("pauseButton")).setLabel("Pause");
+				((Button) cp5.get("pauseButton")).setSwitch(false);
+				this.playing = false;
+				
+				System.out.println("done with puase");
+				Thread.sleep(20);
+				System.out.println("done with sleep");
+			}
+
 			if(!this.playing)
 			{
 				this.playing = true;
+				System.out.println("Playing now");
 
-				if(((Button) cp5.get("pauseButton")).isSwitch()) 
-				{
-					this.melody.pause(false); 
-					((Button) cp5.get("pauseButton")).setSwitch(false); 
-					((Button) cp5.get("pauseButton")).setLabel("Pause");
-					System.out.println("resume"); 
-				}
 
 				// get key:
 				val = (int) cp5.get("keyList").getValue();
@@ -474,6 +480,8 @@ public class Controls extends PApplet
 			((Button) cp5.get("pauseButton")).setLabel("Pause");
 			((Button) cp5.get("pauseButton")).setSwitch(false);
 			this.playing = false;
+			
+			System.out.println("Stop complete");
 
 
 			break;

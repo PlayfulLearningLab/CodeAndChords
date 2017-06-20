@@ -158,6 +158,7 @@ public class Instrument {
 	 */
 	public void stopNote()
 	{
+		this.wavePlayer.pause(true);
 		this.volume.clearDependents();
 		/*
 		this.gainEnvelope.clear();
