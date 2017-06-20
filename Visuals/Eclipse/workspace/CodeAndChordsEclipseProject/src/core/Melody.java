@@ -242,6 +242,7 @@ public class Melody implements Runnable {
 				}
 
 			} // for - play Notes
+		} // while
 
 
 	}//playMelodyThread
