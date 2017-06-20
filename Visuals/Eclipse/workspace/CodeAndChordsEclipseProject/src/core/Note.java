@@ -15,7 +15,7 @@ public class Note {
 	private	boolean	isRest;		// true if the note is a rest
 	
 	/**
-	 * Creates a new Note with the given midiNum, duration, and amplitude.
+	 * Creates a new Note with the given midiNum, duration, and amplitude and sets isRest to false.
 	 * 
 	 * @param midiNum	int denoting the midi number of the Note
 	 * @param duration	float denoting the length of the Note in milliseconds
@@ -27,12 +27,12 @@ public class Note {
 	}
 	
 	/**
-	 * Creates a new Note with the given midiNum, duration, amplitude, and sets this.isRest.
+	 * Creates a new Note with the given midiNum, duration, amplitude, and isRest.
 	 * 
 	 * @param midiNum	int denoting the midi number of the Note
 	 * @param duration	float denoting the length of the Note in milliseconds
 	 * @param amplitude float denoting the amplitude of the Note (in unknown measurement - TODO?)
-	 * @param isRest	boolean that is true when the Note is a rest and false otherwise.
+	 * @param isRest	boolean that is true when the Note is a rest and false otherwise
 	 */
 	public Note(int midiNum, float duration, float amplitude, boolean isRest)
 	{
@@ -48,6 +48,6 @@ public class Note {
 	
 	public float getAmplitude()	{	return this.amplitude;	}
 	
-	public boolean	isRest()	{	return this.rest;		}
+	public boolean	isRest()	{	return this.isRest;		}
 
 }

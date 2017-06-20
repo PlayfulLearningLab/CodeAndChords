@@ -187,27 +187,33 @@ public class Melody implements Runnable {
 		int		midiNote;
 		float	duration;
 		float	amplitude;
+		boolean	isRest;
 
 		// Calculate midi notes, given the key and range:
 		for(int i = 0; i < curMelody.length; i++)
 		{
 			// If there is indeed a note at this part of the melody, add it to the midiNotes array:
-			if(curMelody[i].length > 1)
+			if(curMelody[i].length == 2)
 			{
 				scalePos	= (int) ((curMelody[i][0]) + keyPos);
 				midiNote	= (12 * (rangeOctave + 1)) + scalePos;
 
 				duration	= curMelody[i][1] * quarterNoteTime;
 				amplitude	= defaultAmp;
-			} else {
+				isRest		= false;
+			} else if(curMelody[i].length == 1){
 				// but if not, use -1 as a placeholder:
 				midiNote	= -1;
-				duration	= (float) (0.5 * quarterNoteTime);
+				duration	= curMelody[i][0] * quarterNoteTime;
 				amplitude	= 0;
+				isRest		= true;
+			} else {
+				throw new IllegalArgumentException("Melody.playMelodyThread: curMelody[" + i + "] (" + curMelody[i] + 
+						" is not a valid length; if indicating a rest, it must have length 1, and for all other notes, length 2.");
 			}
 
 			// create an array of Notes:
-			notes[i]	= new Note(midiNote, duration, amplitude);
+			notes[i]	= new Note(midiNote, duration, amplitude, isRest);
 
 		} // for - calculate midi notes
 
@@ -232,7 +238,7 @@ public class Melody implements Runnable {
 				}
 
 				nextNoteStartTime	= parent.millis() + notes[i].getDuration();
-//				System.out.println("nextNoteStartTime = " + nextNoteStartTime);
+				//				System.out.println("nextNoteStartTime = " + nextNoteStartTime);
 
 
 				while(parent.millis() < nextNoteStartTime)	
@@ -255,7 +261,7 @@ public class Melody implements Runnable {
 	{
 		this.melodyThreadRunning = false;
 		this.instrument.stopNote();
-		
+
 	}
 
 	/**
@@ -268,7 +274,7 @@ public class Melody implements Runnable {
 		this.paused = input ;
 		this.instrument.pauseNote(input);
 	}
-	
+
 	public boolean isRunning()
 	{
 		return this.melodyThreadRunning;
@@ -287,7 +293,7 @@ public class Melody implements Runnable {
 		int		highRangeInt;
 		String	lowRangeString;
 		String	highRangeString;
-		
+
 		// Find position of notes in this key:
 		int		keyPos		= -1;
 		for(int i = 0; i < Melody.keys.length; i++)
@@ -421,6 +427,13 @@ public class Melody implements Runnable {
 	{
 		HashMap<String, float[][]> hm = new HashMap<String, float[][]>();
 
+		// Each Note is represented by a float array where the first element is the scale degree 
+		// (of the chromatic scale; 0 is the tonic, 11 the leading tone; notes outside the octave either negative numbers
+		// for below or 12 and above for above).
+		
+		// Rests are indicated by an array of length 1, where the sole element of the array indicates
+		// the value of the rest in quarter notes (e.g., an eighth rest is would be "new float[] { 0.5 };").
+		
 		hm.put("chromatic", new float[][]
 				{ 
 			new float[] { 0,1 },  // 0:1
@@ -436,8 +449,7 @@ public class Melody implements Runnable {
 			new float[] { 10,1 },  // 2:3
 			new float[] { 11,1 },  // 2:4
 			new float[] { 12,2 },  // 3:1
-			new float[] {  },	// 3:2
-			new float[] {  },
+			new float[] { 1 },	// 3:2
 			new float[] { 12, (float) 0.5 },	// 3:3
 			new float[] { 11, (float) 0.5 },  
 			new float[] { 10, (float) 0.5 },	// 3:4
@@ -451,7 +463,7 @@ public class Melody implements Runnable {
 			new float[] { 2, (float) 0.5 },  // 4:4
 			new float[] { 1, (float) 0.5 },  
 			new float[] { 0, 1 },  			// 5:1
-			new float[] {  },
+			new float[] { 1 },
 				}  );
 
 		hm.put("major", new float[][]
@@ -460,30 +472,23 @@ public class Melody implements Runnable {
 			new float[] { 2,1 },  // 0:2
 			new float[] { 4,1 },  // 0:3
 			new float[] { 5,1 },  // 0:4
-			new float[] {  },  // 1:1
-			new float[] {  },
+			new float[] { 1 },  // 1:1
 			new float[] { 7,1 },  // 1:2
-			new float[] {  },  // 1:3
-			new float[] {  },
+			new float[] { 1 },  // 1:3
 			new float[] { 9,1 },  // 1:4
 			new float[] { 11,1 },  // 2:1
 			new float[] { 12,1 },  // 2:2
-			new float[] {  },  // 2:3
-			new float[] {  },
+			new float[] { 1 },  // 2:3
 			new float[] { 12,1 },  // 2:4
 			new float[] { 11,1 },  // 3:1
-			new float[] {  },  // 3:2
-			new float[] {  },
+			new float[] { 1 },  // 3:2
 			new float[] { 9, (float) 0.5 },  // 3:3
 			new float[] { 7, (float) 0.5 },  
 			new float[] { 5, (float) 0.5 },  // 3:4
 			new float[] { 4, (float) 0.5 },  
 			new float[] { 2, 1 },	// 4:1
 			new float[] { 0,1 },	// 4:2
-			new float[] {  },		// 4:3
-			new float[] {  },		// 4:4
-			new float[] {  },
-			new float[] {  },
+			new float[] { 2 },		// 4:3, 4:4
 			new float[] { 0,1 },	// 5:1
 			new float[] { -7, 1 },	// 5:2
 			new float[] { 0,1 },	// 5:3 
@@ -504,7 +509,7 @@ public class Melody implements Runnable {
 			new float[] { 4, (float) 0.5 },  // 7:4
 			new float[] { 2, (float) 0.5 },  
 			new float[] { 0, 1 },  // 8:1
-			new float[] {  },
+			new float[] { 1 },
 				} );
 
 		hm.put("minor", new float[][]
@@ -513,28 +518,23 @@ public class Melody implements Runnable {
 			new float[] { 2,1 },  // 0:2
 			new float[] { 3,1 },  // 0:3
 			new float[] { 5,1 },  // 0:4
-			new float[] {  },  // 1:1
-			new float[] {  },
+			new float[] { 1 },  // 1:1
 			new float[] { 7,1 },  // 1:2
-			new float[] {  },  // 1:3
-			new float[] {  },
+			new float[] { 1 },  // 1:3
 			new float[] { 8,1 },  // 1:4
 			new float[] { 10,1 },  // 2:1
 			new float[] { 12,1 },  // 2:2
-			new float[] {  },  // 2:3
-			new float[] {  },
+			new float[] { 1 },  // 2:3
 			new float[] { 12,1 },  // 2:4
 			new float[] { 10,1 },  // 3:1
-			new float[] {  },  // 3:2
-			new float[] {  },
+			new float[] { 1 },  // 3:2
 			new float[] { 8, (float) 0.5 },  // 3:3
 			new float[] { 7, (float) 0.5 },  
 			new float[] { 5, (float) 0.5 },  // 3:4
 			new float[] { 3, (float) 0.5 },  
 			new float[] { 2, 1 },	// 4:1
 			new float[] { 0,1 },	// 4:2
-			new float[] {  },		// 4:3
-			new float[] {  },
+			new float[] { 1 },		// 4:3
 			new float[] { 0,1 },	// 
 			new float[] { -7, 1 },	// 5:1
 			new float[] { 0,1 },	// 5:2
@@ -572,8 +572,7 @@ public class Melody implements Runnable {
 			new float[] { 3,(float) 0.5 },  // 9:3
 			new float[] { 2,(float) 0.5 },  
 			new float[] { 0,(float) 0.5 },  // 9:4
-			new float[] {  },
-			new float[] {  },
+			new float[] { 1 },
 			new float[] { 0, (float) 0.5 },  // 10:1
 			new float[] { 2, (float) 0.5 },  
 			new float[] { 3,(float) 0.5 },  // 10:2
@@ -589,7 +588,7 @@ public class Melody implements Runnable {
 			new float[] { 3,(float) 0.5 },  // 11:3
 			new float[] { 2,(float) 0.5 },  
 			new float[] { 0,(float) 1 },// 11:4
-			new float[] {  },
+			new float[] { 1 },
 				} );
 
 		return hm;

@@ -99,7 +99,7 @@ public class Instrument {
 	 * 
 	 * @param note	Note whose midiNote is turned into a frequency and used to play it.
 	 */
-	public void playNote(Note note, boolean followedByRest)
+	public void playNote(Note note)
 	{
 		if(note == null)
 		{
@@ -120,10 +120,10 @@ public class Instrument {
 		and the value falls to 0 over a time called the Release." - Sonifying Processing, p. 31
 		 */
 
-		if(note.getMidiNum() != -1)
+		if(!(note.isRest()))
 		{
 			this.gainEnvelope.clear();
-			this.gainEnvelope.setValue(0);
+//			this.gainEnvelope.setValue(0);
 		}
 
 		// Attack:
