@@ -215,7 +215,7 @@ public class ModuleTemplate {
 
 	// TODO: make private:
 	public Melody		melody;
-	private	Instrument	instrument;
+	public	Instrument	instrument;
 	private	int			bpm;
 	private	int			rangeOctave;
 
@@ -805,7 +805,9 @@ public class ModuleTemplate {
 		String[]	adsrItems	= new String[] {
 				"Even",
 				"Long Attack",
-				"Long Decay/Low Sustain",
+				"Long Decay",
+				"Low Sustain",
+				"High Sustain",
 				"Long Release"
 		};
 
@@ -848,6 +850,7 @@ public class ModuleTemplate {
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
 
+//		this.instrument.setVolume(0.2f);
 
 	} // addGuideTonePopout
 
@@ -2688,6 +2691,8 @@ public class ModuleTemplate {
 			this.sidebarCP5.getGroup("guideToneBackground").bringToFront();
 			this.sidebarCP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
 
+			// TODO:
+			this.instrument.setVolume(0.2f);
 		} // Guide Tone Generator
 
 		// ADSR Presets Scrollable List:
@@ -2699,7 +2704,7 @@ public class ModuleTemplate {
 
 			System.out.println("adsrPos = " + adsrPos);
 
-			if(adsrPos >= 0 && adsrPos < 4)
+			if(adsrPos >= 0 && adsrPos < this.instrument.getADSRPresets().length)
 			{
 				this.instrument.setADSR(adsrPos);
 			} else {
@@ -2714,7 +2719,7 @@ public class ModuleTemplate {
 
 			int	rangeOctave	= (int)controlEvent.getValue() + 3;
 
-			if(rangeOctave >= 3 && rangeOctave <= 7)
+			if(rangeOctave >= 3 && rangeOctave <= 5)
 			{
 				this.rangeOctave	= rangeOctave;
 			} else {

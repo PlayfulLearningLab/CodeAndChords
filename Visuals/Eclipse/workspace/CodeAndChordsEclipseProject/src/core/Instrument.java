@@ -36,10 +36,14 @@ public class Instrument {
 		// 0: even
 		new float[] { 100, 50, 90, 100 },
 		// 1: long attack
-		new float[] { 1500, 50, 80, 50 },
-		// 2: long decay + low sustain
-		new float[] { 100, 750, 60, 100 },
-		// 3: long release
+		new float[] { 1000, 500, 25, 100 },
+		// 2: long decay
+		new float[] { 100, 900, 50, 70 },
+		// 3: high sustain:
+		new float[] { 100, 500, 100, 70 },
+		// 4: low sustain:
+		new float[] { 100, 500, 10, 70 },
+		// 5: long release
 		new float[] { 100, 75, 80, 3000 },
 	};
 	private PApplet		                 	parent;
@@ -68,7 +72,7 @@ public class Instrument {
 		
 		this.setADSR(0);
 
-		
+		// audioContext <= volume (volumeGlide) <= envelope (gainEnvelope) <= wavePlayer (frequencyGlide)
 		this.frequencyGlide     = new Glide(this.audioContext, 440, 20);
 		this.wavePlayer		    = new WavePlayer(this.audioContext, this.frequencyGlide, Buffer.SINE);
 		
@@ -182,15 +186,7 @@ public class Instrument {
 			new StartTrigger(this.frequencyGlide);
 			new StartTrigger(this.gainEnvelope);
 		}
-		
-		/*
-		this.wavePlayer.pause(pause);
-		this.frequencyGlide.pause(pause);
-		this.gainEnvelope.pause(pause);
-		*/
-		
-		
-		System.out.println("pause = " + pause);
+
 	}
 	
 	/**
@@ -240,5 +236,10 @@ public class Instrument {
 	{
 		return new float[] {this.attack, this.decay, this.sustain, this.release };
 	}
+	
+	public float[][] getADSRPresets()
+	{
+		return Instrument.adsrPresets;
+	} // getADSRPresets
 
 } // Instrument

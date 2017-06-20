@@ -90,7 +90,7 @@ public class Melody implements Runnable {
 		this.bpm			= 120;
 		this.scale			= "major";
 		this.rangeOctave	= 4;
-		this.rangeList		= new String[4];
+		this.rangeList		= new String[3];
 	} // constructor(PApplet, Input)
 
 	/**
@@ -154,7 +154,7 @@ public class Melody implements Runnable {
 		//		int[]		midiNotes	= new int[scaleLength];
 		//		float[]		durations	= new float[scaleLength];
 		Note[]		notes		= new Note[curMelody.length];
-		float		defaultAmp	= 10;
+		float		defaultAmp	= 1;
 
 		// Find position of notes in this key:
 		int		keyPos		= -1;
@@ -349,20 +349,8 @@ public class Melody implements Runnable {
 			lowOctave	= octave;
 		}
 
-		// C is the only key where the leading tone is in the same Midi octave.
-		int	highOctave;
-		if(keyPos == 0)
-		{
-			highOctave	= octave;
-
-			if(this.scale.equals("chromatic"))
-			{
-				lowOctave	= octave;
-			}
-
-		} else {
-			highOctave	= octave + 1;
-		}
+		// the highest note will always be one octave above the tonic:
+		int	highOctave	= octave + 1;
 
 		int			lowRangeMidi;
 		int			highRangeMidi;

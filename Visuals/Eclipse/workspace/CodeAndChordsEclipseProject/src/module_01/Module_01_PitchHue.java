@@ -108,11 +108,12 @@ public class Module_01_PitchHue extends PApplet
 			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 50);
 		}
 
-
 	} // setup()
 
 	public void draw()
 	{
+		this.moduleTemplate.instrument.setVolume(20);
+		
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{
