@@ -18,6 +18,9 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
+ * (For more info on updates beyond this point, see Trello board Module_01 PitchHue 
+ *  and perhaps others as the modules progress.)
+ * 
  * 06/16/2017 - ModuleTemplate_01_04
  * Emily Meuer, Dan Mahota, Kristen Andrews update:
  *  - Guide tones generated, not played through .mp3's
