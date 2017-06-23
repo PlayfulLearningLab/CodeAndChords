@@ -9,16 +9,23 @@ import processing.core.PApplet;
 public class UserInterface extends PApplet {
 
 
-	private int fullScreenX;// = 925;
-	private int fullScreenY;// = 520;
+	private int fullScreenX = 925;
+	private int fullScreenY = 520;
 
-	private int menuWidth;//   = 300;
-	private int menuScreenX;// = this.fullScreenX - this.menuWidth;
-	private int menuScreenY;// = this.fullScreenY;
+	private int menuWidth = 300;
+	private int menuScreenX = this.fullScreenX - this.menuWidth;
 
 	private ControlP5 x;
 
-	private boolean menuIsOpen;
+	private boolean menuIsOpen = false;
+
+	private float rectHeight;
+	private float rectWidth;
+	private float rectPosX;
+	private float rectPosY;
+
+
+
 
 	public static void main(String[] args)
 	{
@@ -33,20 +40,17 @@ public class UserInterface extends PApplet {
 
 	public void setup()
 	{ 
-		this.fullScreenX = 925;
-		this.fullScreenY = 520;
-		this.menuWidth = 300;
-		this.menuScreenX = this.fullScreenX - this.menuWidth;
-		this.menuScreenY = this.fullScreenY;
-		this.menuIsOpen = false;
 
 		this.x = new ControlP5(this); 
- 
+
 		this.setUpControls();  
+		this.rectWidth = this.x.getValue("widthSlider");
+		this.rectHeight = this.x.getValue("heightSlider");
+		this.rectPosX = this.x.getValue("xPosSlider");
+		this.rectPosY = this.x.getValue("yPosSlider");
 
 		this.background(0);
-		this.stroke(100);
-		this.strokeWeight(2);
+
 
 		System.out.println("done with setup");
 	}
@@ -54,15 +58,21 @@ public class UserInterface extends PApplet {
 	public void draw() 
 	{
 		background(0);
-		if(this.menuIsOpen) { line(this.menuWidth, 0, this.menuWidth, this.fullScreenY); }
-		//else{background(0);}
+		if(this.menuIsOpen) 
+		{ 
+			this.stroke(100);
+			this.strokeWeight(2);
+			line(this.menuWidth, 0, this.menuWidth, this.fullScreenY); 
+		}
+
+		this.updateRectangle();
 
 	}
 
 	private void setUpControls()
 	{
 		this.x.addGroup("menu");
-		
+
 		this.x.addButton("menuButton")
 		.setPosition(20, 20)
 		.setSize(50, 50)
@@ -75,16 +85,46 @@ public class UserInterface extends PApplet {
 		.setSize(this.menuWidth/2, 50)
 		.setLabel("Close Menu");
 
-		this.x.addSlider("heightSlider", 0f, (float)this.fullScreenX, 300, (0 + this.menuWidth/8), 200, 3*(this.menuWidth/4), 22)
+		this.x.addLabel("xPos")
+		.setText("X Position")
+		.setGroup("menu")
+		.setPosition(this.menuWidth/8,125);
+		
+		this.x.addSlider("xPosSlider", 0f, (float)this.fullScreenX, 100, (0 + this.menuWidth/8), 150, 3*(this.menuWidth/4), 22)
 		.setGroup("menu")
 		.getCaptionLabel()
 		.setVisible(false);
+		
+		this.x.addLabel("yPos")
+		.setText("Y Position")
+		.setGroup("menu")
+		.setPosition(this.menuWidth/8,225);
 
-		this.x.addSlider("widthSlider", 0f, (float)this.fullScreenY, 400, (0 + this.menuWidth/8), 300, 3*(this.menuWidth/4), 22)
+		this.x.addSlider("yPosSlider", 0f, (float)this.fullScreenX, 100, (0 + this.menuWidth/8), 250, 3*(this.menuWidth/4), 22)
+		.setGroup("menu")
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		this.x.addLabel("height")
+		.setText("Rectangle Height")
+		.setGroup("menu")
+		.setPosition(this.menuWidth/8,325);
+
+		this.x.addSlider("heightSlider", 0f, (float)this.fullScreenX, 100, (0 + this.menuWidth/8), 350, 3*(this.menuWidth/4), 22)
+		.setGroup("menu")
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		this.x.addLabel("width")
+		.setText("Rectangle Width")
+		.setGroup("menu")
+		.setPosition(this.menuWidth/8,425);
+
+		this.x.addSlider("widthSlider", 0f, (float)this.fullScreenY, 100, (0 + this.menuWidth/8), 450, 3*(this.menuWidth/4), 22)
 		.setGroup("menu")
 		.getCaptionLabel()
 		.setVisible(false);;
-		
+
 		this.x.getGroup("menu")
 		.setVisible(false);
 
@@ -92,14 +132,11 @@ public class UserInterface extends PApplet {
 
 	}
 
-
-	//convenience methods to set screen back and forth when menu pops out
-	private float[] toFullScreen(float x, float y)
+	public void updateRectangle()
 	{
-		float xVal = map(x, 0, this.menuScreenX, 0, this.fullScreenX);
-		float yVal = map(y, 0, this.menuScreenY, 0, this.fullScreenY);
-
-		return new float[] {xVal, yVal}; 
+		stroke(250);
+		strokeWeight(3);
+		rect(this.displayPos(this.rectPosX),this.rectPosY,this.displaySize(this.rectWidth),this.rectHeight);
 	}
 
 
@@ -115,10 +152,10 @@ public class UserInterface extends PApplet {
 			this.menuIsOpen = true;
 
 			this.x.getController("menuButton").hide();
-			
+
 			this.x.getGroup("menu")
 			.setVisible(true);
-			
+
 
 			System.out.println("menuButton Done");
 
@@ -133,9 +170,25 @@ public class UserInterface extends PApplet {
 
 			this.x.getController("menuButton")
 			.setVisible(true);
-			
+
 			System.out.println("closeMenuButton Done");
 
+			break;
+
+		case "heightSlider":
+			this.rectHeight = this.x.getValue("heightSlider");
+			break;
+
+		case "widthSlider":
+			this.rectWidth = this.x.getValue("widthSlider");
+			break;
+			
+		case "xPosSlider":
+			this.rectPosX = this.x.getValue("xPosSlider");
+			break;
+			
+		case "yPosSlider":
+			this.rectPosY = this.x.getValue("yPosSlider");
 			break;
 
 		default:
@@ -147,14 +200,26 @@ public class UserInterface extends PApplet {
 
 	}
 
-	//convenience methods to set screen back and forth when menu pops out
-	private float[] toMenuScreen(float x, float y)
+	//checks if menu is open and adjusts values accordingly
+	private float displayPos(float x)
 	{
-		float xVal = map(x, 0, this.fullScreenX, 0, this.menuScreenX);
-		float yVal = map(y, 0, this.fullScreenY, 0, this.menuScreenY);
+		if(this.menuIsOpen)
+		{
+			x = map(x, 0, this.fullScreenX, 0, this.menuScreenX);
+			x = x + this.menuWidth;
+		}
 
-		xVal = xVal + this.menuWidth;
+		return x;
+	}
 
-		return new float[] {xVal, yVal}; 	}
+	private float displaySize(float x)
+	{
+		if(this.menuIsOpen)
+		{
+			x = map(x, 0, this.fullScreenX, 0, this.menuScreenX);
+		}
+
+		return x;
+	}
 
 }
