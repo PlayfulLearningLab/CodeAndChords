@@ -98,8 +98,9 @@ public class Instrument {
 	 * frequency of the given Note.
 	 * 
 	 * @param note	Note whose midiNote is turned into a frequency and used to play it.
+	 * @throws InterruptedException 
 	 */
-	public void playNote(Note note)
+	public void playNote(Note note) throws InterruptedException
 	{
 		if(note == null)
 		{
@@ -122,9 +123,10 @@ public class Instrument {
 
 		if(!(note.isRest()))
 		{
-			this.gainEnvelope.pause(true);
 			this.gainEnvelope.clear();
-//			this.gainEnvelope.setValue(0);
+			this.gainEnvelope.addSegment(0, 10);
+			//this.gainEnvelope.pause(true);
+			//this.gainEnvelope.setValue(0);
 		}
 
 		// Attack:
@@ -211,6 +213,7 @@ public class Instrument {
 	 */
 	public void setVolume(float vol)
 	{
+		//vol = parent.map(vol, 0, 1, 0, 2f);
 		this.volumeGlide.setValue(vol);
 		System.out.println("Volume set to " + vol);
 	}
