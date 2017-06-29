@@ -31,13 +31,13 @@
  */
 
 /*
- * The text above constitutes the entire PortAudio license; however, 
+ * The text above constitutes the entire PortAudio license; however,
  * the PortAudio community also makes the following non-binding requests:
  *
  * Any person wishing to distribute modifications to the Software is
  * requested to send the modifications to the original developer so that
- * they can be incorporated into the canonical version. It is also 
- * requested that these non-binding requests be included along with the 
+ * they can be incorporated into the canonical version. It is also
+ * requested that these non-binding requests be included along with the
  * license above.
  */
 
@@ -153,7 +153,7 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     long i;
     int finished;
     unsigned long framesLeft = data->maxFrameIndex - data->frameIndex;
-	
+
     (void) outputBuffer; /* Prevent unused variable warnings. */
     (void) timeInfo;
     (void) statusFlags;
@@ -243,15 +243,15 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 
 int selectDevice()
 {
-    int     			i, 
-						numDevices, 
+    int     			i,
+						numDevices,
 						defaultDisplayed;
     const PaDeviceInfo 	*deviceInfo;
-    PaStreamParameters 	inputParameters, 
+    PaStreamParameters 	inputParameters,
 						outputParameters;
 	PaStream*			stream;
     PaError 			err;
-	
+
     paTestData          data;
     int                 totalFrames;
     int                 numSamples;
@@ -259,14 +259,14 @@ int selectDevice()
 	char 				devSelection[4];
 	int					devSelectInt;
 
-    
+
     err = Pa_Initialize();
     if( err != paNoError )
     {
         printf( "ERROR: Pa_Initialize returned 0x%x\n", err );
         return -1;
     }
-    
+
     printf( "PortAudio version: 0x%08X\n", Pa_GetVersion());
     printf( "Version text: '%s'\n", Pa_GetVersionInfo()->versionText );
 
@@ -277,13 +277,13 @@ int selectDevice()
         err = numDevices;
         return -1;
     }
-    
+
     printf( "Number of devices = %d\n", numDevices );
     for( i=0; i<numDevices; i++ )
     {
         deviceInfo = Pa_GetDeviceInfo( i );
         printf( "--------------------------------------- device #%d\n", i );
-                
+
     /* Mark global and API specific default devices */
         defaultDisplayed = 0;
         if( i == Pa_GetDefaultInputDevice() )
@@ -297,7 +297,7 @@ int selectDevice()
             printf( "[ Default %s Input", hostInfo->name );
             defaultDisplayed = 1;
         }
-        
+
         if( i == Pa_GetDefaultOutputDevice() )
         {
             printf( (defaultDisplayed ? "," : "[") );
@@ -307,7 +307,7 @@ int selectDevice()
         else if( i == Pa_GetHostApiInfo( deviceInfo->hostApi )->defaultOutputDevice )
         {
             const PaHostApiInfo *hostInfo = Pa_GetHostApiInfo( deviceInfo->hostApi );
-            printf( (defaultDisplayed ? "," : "[") );                
+            printf( (defaultDisplayed ? "," : "[") );
             printf( " Default %s Output", hostInfo->name );
             defaultDisplayed = 1;
         }
@@ -363,7 +363,7 @@ int selectDevice()
         inputParameters.sampleFormat = paInt16;
         inputParameters.suggestedLatency = 0; /* ignored by Pa_IsFormatSupported() */
         inputParameters.hostApiSpecificStreamInfo = NULL;
-        
+
         outputParameters.device = i;
         outputParameters.channelCount = deviceInfo->maxOutputChannels;
         outputParameters.sampleFormat = paInt16;
@@ -391,18 +391,18 @@ int selectDevice()
             PrintSupportedStandardSampleRates( &inputParameters, &outputParameters );
         }
     } /* for numDevices */
-	
-	
-	printf("What input device would you like to use? ");	
+
+
+	printf("What input device would you like to use? ");
 	fgets(devSelection, 4, stdin);
 	devSelectInt	= atoi(devSelection);
-	
+
 	if(devSelectInt >= numDevices)
 	{
 		printf("Sorry; that number is out of the parameters; must be less than %d.", numDevices);
 		return -1;
 	} // if
-	
+
 	return devSelectInt;
 } // selectDevice
 
@@ -414,14 +414,17 @@ int main(void)
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
+    PaStream*           stream1;
     PaError             err = paNoError;
     paTestData          data;
+    paTestData          data1;
     int                 i;
     int                 totalFrames;
     int                 numSamples;
     int                 numBytes;
     SAMPLE              max, val;
     double              average;
+    int					numDevices;
 
     printf("patest_record.c\n"); fflush(stdout);
 
@@ -440,6 +443,9 @@ int main(void)
     err = Pa_Initialize();
     if( err != paNoError ) goto done;
 
+    numDevices	= 2;
+
+	// input stream 1:
 	device	= selectDevice();
     inputParameters.device = device; /* default input device */
     if (inputParameters.device == paNoDevice) {
@@ -467,6 +473,35 @@ int main(void)
     if( err != paNoError ) goto done;
     printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
 
+	// input stream 2:
+		device	= selectDevice();
+	    inputParameters.device = device; /* default input device */
+	    if (inputParameters.device == paNoDevice) {
+	        fprintf(stderr,"Error: No default input device.\n");
+	        goto done;
+	    }
+	    inputParameters.channelCount = 2;                    /* stereo input */
+	    inputParameters.sampleFormat = PA_SAMPLE_TYPE;
+	    inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
+	    inputParameters.hostApiSpecificStreamInfo = NULL;
+
+	    /* Record some audio. -------------------------------------------- */
+	    err = Pa_OpenStream(
+	              &stream1,
+	              &inputParameters,
+	              NULL,                  /* &outputParameters, */
+	              SAMPLE_RATE,
+	              FRAMES_PER_BUFFER,
+	              paClipOff,      /* we won't output out of range samples so don't bother clipping them */
+	              recordCallback,
+	              &data1 );
+	    if( err != paNoError ) goto done;
+
+	    err = Pa_StartStream( stream1 );
+	    if( err != paNoError ) goto done;
+	    printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
+
+	// while active:
     while( ( err = Pa_IsStreamActive( stream ) ) == 1 )
     {
         Pa_Sleep(100);
@@ -475,6 +510,9 @@ int main(void)
     if( err < 0 ) goto done;
 
     err = Pa_CloseStream( stream );
+    if( err != paNoError ) goto done;
+
+	err = Pa_CloseStream( stream1 );
     if( err != paNoError ) goto done;
 
     /* Measure maximum peak amplitude. */
@@ -543,15 +581,15 @@ int main(void)
     {
         err = Pa_StartStream( stream );
         if( err != paNoError ) goto done;
-        
+
         printf("Waiting for playback to finish.\n"); fflush(stdout);
 
         while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) Pa_Sleep(100);
         if( err < 0 ) goto done;
-        
+
         err = Pa_CloseStream( stream );
         if( err != paNoError ) goto done;
-        
+
         printf("Done.\n"); fflush(stdout);
     }
 
