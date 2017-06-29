@@ -46,6 +46,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <windows.h>
 #include "portaudio.h"
 
 #ifdef WIN32
@@ -55,6 +56,7 @@
 #include "pa_asio.h"
 #endif
 #endif
+
 
 /*******************************************************************/
 static void PrintSupportedStandardSampleRates(
@@ -95,7 +97,7 @@ static void PrintSupportedStandardSampleRates(
         printf( "None\n" );
     else
         printf( "\n" );
-}
+} // PrintSupportedStandardSampleRates
 
 /*******************************************************************/
 int main(void);
@@ -187,7 +189,7 @@ int main(void)
         if( Pa_GetHostApiInfo( deviceInfo->hostApi )->type == paASIO ){
             long minLatency, maxLatency, preferredLatency, granularity;
 
-            err = PaAsio_GetAvailableLatencyValues( i,
+            err = PaAsio_GetAvailableBufferSizes( i,
 		            &minLatency, &maxLatency, &preferredLatency, &granularity );
 
             printf( "ASIO minimum buffer size    = %ld\n", minLatency  );
@@ -249,4 +251,4 @@ error:
     fprintf( stderr, "Error number: %d\n", err );
     fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
     return err;
-}
+} // main
