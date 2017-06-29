@@ -182,6 +182,7 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     {
         for( i=0; i<framesToCalc; i++ )
         {
+			printf("inputText.recordCallback: i = %d.\n", i);
             *wptr++ = *rptr++;  /* left */
             if( NUM_CHANNELS == 2 ) *wptr++ = *rptr++;  /* right */
         }
@@ -414,10 +415,8 @@ int main(void)
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
-    PaStream*           stream1;
     PaError             err = paNoError;
     paTestData          data;
-    paTestData          data1;
     int                 i;
     int                 totalFrames;
     int                 numSamples;
@@ -445,7 +444,7 @@ int main(void)
 
     numDevices	= 2;
 
-	// input stream 1:
+	// input stream:
 	device	= selectDevice();
     inputParameters.device = device; /* default input device */
     if (inputParameters.device == paNoDevice) {
@@ -473,34 +472,6 @@ int main(void)
     if( err != paNoError ) goto done;
     printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
 
-	// input stream 2:
-		device	= selectDevice();
-	    inputParameters.device = device; /* default input device */
-	    if (inputParameters.device == paNoDevice) {
-	        fprintf(stderr,"Error: No default input device.\n");
-	        goto done;
-	    }
-	    inputParameters.channelCount = 2;                    /* stereo input */
-	    inputParameters.sampleFormat = PA_SAMPLE_TYPE;
-	    inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
-	    inputParameters.hostApiSpecificStreamInfo = NULL;
-
-	    /* Record some audio. -------------------------------------------- */
-	    err = Pa_OpenStream(
-	              &stream1,
-	              &inputParameters,
-	              NULL,                  /* &outputParameters, */
-	              SAMPLE_RATE,
-	              FRAMES_PER_BUFFER,
-	              paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-	              recordCallback,
-	              &data1 );
-	    if( err != paNoError ) goto done;
-
-	    err = Pa_StartStream( stream1 );
-	    if( err != paNoError ) goto done;
-	    printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
-
 	// while active:
     while( ( err = Pa_IsStreamActive( stream ) ) == 1 )
     {
@@ -510,9 +481,6 @@ int main(void)
     if( err < 0 ) goto done;
 
     err = Pa_CloseStream( stream );
-    if( err != paNoError ) goto done;
-
-	err = Pa_CloseStream( stream1 );
     if( err != paNoError ) goto done;
 
     /* Measure maximum peak amplitude. */
