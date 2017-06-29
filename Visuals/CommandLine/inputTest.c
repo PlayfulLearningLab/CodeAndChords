@@ -182,7 +182,6 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     {
         for( i=0; i<framesToCalc; i++ )
         {
-			printf("inputText.recordCallback: i = %d.\n", i);
             *wptr++ = *rptr++;  /* left */
             if( NUM_CHANNELS == 2 ) *wptr++ = *rptr++;  /* right */
         }
@@ -428,6 +427,7 @@ int main(void)
     printf("patest_record.c\n"); fflush(stdout);
 
     data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
+	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
     data.frameIndex = 0;
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(SAMPLE);
@@ -446,7 +446,7 @@ int main(void)
 
 	// input stream:
 	device	= selectDevice();
-    inputParameters.device = device; /* default input device */
+    inputParameters.device = device;
     if (inputParameters.device == paNoDevice) {
         fprintf(stderr,"Error: No default input device.\n");
         goto done;
