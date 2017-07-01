@@ -6,20 +6,131 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXCopyFilesBuildPhase section */
+		256033361F080880001736B4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2560331F1F0806D3001736B4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		256033201F0806D3001736B4 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		256033211F0806D3001736B4 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		256033221F0806D3001736B4 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		256033231F0806D3001736B4 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		256033291F0806F5001736B4 /* JavaVM.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaVM.framework; path = System/Library/Frameworks/JavaVM.framework; sourceTree = SDKROOT; };
+		2560332B1F08076A001736B4 /* com_portaudio_BlockingStream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = com_portaudio_BlockingStream.c; sourceTree = "<group>"; };
+		2560332C1F08076A001736B4 /* com_portaudio_PortAudio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = com_portaudio_PortAudio.c; sourceTree = "<group>"; };
+		2560332D1F08076A001736B4 /* jpa_tools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jpa_tools.c; sourceTree = "<group>"; };
+		256033311F0807F9001736B4 /* com_portaudio_BlockingStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = com_portaudio_BlockingStream.h; sourceTree = "<group>"; };
+		256033321F0807F9001736B4 /* com_portaudio_PortAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = com_portaudio_PortAudio.h; sourceTree = "<group>"; };
+		256033331F0807F9001736B4 /* jpa_tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpa_tools.h; sourceTree = "<group>"; };
+		256033381F080880001736B4 /* jportaudio */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jportaudio; sourceTree = BUILT_PRODUCTS_DIR; };
+		2560333A1F080880001736B4 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		256033351F080880001736B4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
 		256033071F0803E3001736B4 = {
 			isa = PBXGroup;
 			children = (
+				256033181F0804F7001736B4 /* jportaudio-libs */,
+				256033391F080880001736B4 /* jportaudio */,
+				256033171F0804F7001736B4 /* Products */,
+				2560331E1F0806D3001736B4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
+		256033171F0804F7001736B4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				256033381F080880001736B4 /* jportaudio */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		256033181F0804F7001736B4 /* jportaudio-libs */ = {
+			isa = PBXGroup;
+			children = (
+				256033311F0807F9001736B4 /* com_portaudio_BlockingStream.h */,
+				256033321F0807F9001736B4 /* com_portaudio_PortAudio.h */,
+				256033331F0807F9001736B4 /* jpa_tools.h */,
+				2560332B1F08076A001736B4 /* com_portaudio_BlockingStream.c */,
+				2560332C1F08076A001736B4 /* com_portaudio_PortAudio.c */,
+				2560332D1F08076A001736B4 /* jpa_tools.c */,
+			);
+			path = "jportaudio-libs";
+			sourceTree = "<group>";
+		};
+		2560331E1F0806D3001736B4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				256033291F0806F5001736B4 /* JavaVM.framework */,
+				2560331F1F0806D3001736B4 /* AudioToolbox.framework */,
+				256033201F0806D3001736B4 /* AudioUnit.framework */,
+				256033211F0806D3001736B4 /* Carbon.framework */,
+				256033221F0806D3001736B4 /* CoreAudio.framework */,
+				256033231F0806D3001736B4 /* CoreServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		256033391F080880001736B4 /* jportaudio */ = {
+			isa = PBXGroup;
+			children = (
+				2560333A1F080880001736B4 /* main.c */,
+			);
+			path = jportaudio;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		256033371F080880001736B4 /* jportaudio */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2560333C1F080880001736B4 /* Build configuration list for PBXNativeTarget "jportaudio" */;
+			buildPhases = (
+				256033341F080880001736B4 /* Sources */,
+				256033351F080880001736B4 /* Frameworks */,
+				256033361F080880001736B4 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = jportaudio;
+			productName = jportaudio;
+			productReference = 256033381F080880001736B4 /* jportaudio */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		256033081F0803E3001736B4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0820;
+				TargetAttributes = {
+					256033371F080880001736B4 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 2560330B1F0803E3001736B4 /* Build configuration list for PBXProject "jportaudio" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -29,23 +140,128 @@
 				en,
 			);
 			mainGroup = 256033071F0803E3001736B4;
+			productRefGroup = 256033171F0804F7001736B4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				256033371F080880001736B4 /* jportaudio */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		256033341F080880001736B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		2560330C1F0803E3001736B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 			};
 			name = Debug;
 		};
 		2560330D1F0803E3001736B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+			};
+			name = Release;
+		};
+		2560333D1F080880001736B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2560333E1F080880001736B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -57,6 +273,15 @@
 			buildConfigurations = (
 				2560330C1F0803E3001736B4 /* Debug */,
 				2560330D1F0803E3001736B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2560333C1F080880001736B4 /* Build configuration list for PBXNativeTarget "jportaudio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2560333D1F080880001736B4 /* Debug */,
+				2560333E1F080880001736B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
