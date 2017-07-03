@@ -2190,7 +2190,7 @@ public class ModuleTemplate {
 		if(controlEvent.getController().getName().equals("play"))
 		{
 			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
-			this.input.pause(val);
+			this.input.pause();
 			this.sidebarCP5.getController("pause").setVisible(val);
 			
 			if(val)
