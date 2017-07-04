@@ -4,10 +4,10 @@ import processing.core.PApplet;
 import processing.sound.*;
 
 import org.jaudiolibs.beads.AudioServerIO;
-//import org.jaudiolibs.beads.*;
 
-import net.beadsproject.beads.core.*;
-import net.beadsproject.beads.core.io.JavaSoundAudioIO;
+import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.TimeStamp;
+import net.beadsproject.beads.core.UGen;
 //import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.data.Sample;
@@ -15,7 +15,6 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
-import net.beadsproject.beads.ugens.Throughput;
 import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
 import net.beadsproject.beads.analysis.featureextractors.FFT;
@@ -28,7 +27,6 @@ import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import org.jaudiolibs.audioservers.jack.JackAudioServer;
 import org.jaudiolibs.audioservers.javasound.*;
  */
-import org.jaudiolibs.audioservers.*;
 
 /*
 import beads.AudioContext
@@ -46,11 +44,9 @@ import beads.Compressor;
  */
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
-import javax.sound.sampled.Port;
 
 public class Input extends PApplet {
 	/*
@@ -106,7 +102,6 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
 	ShortFrameSegmenter[]  sfsArray;             // holds the ShortFrameSegmenter objects connected to each input.
 	//int                    waitUntil;            // number of milliseconds to wait before checking for another key 
-	private SampleManager	sampleManager;
 	boolean					pause;
 
 	/**
@@ -261,7 +256,6 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	{
 		// Moved this from the constructor:
 		this.numInputs  = sampleFilenames.length;
-		this.sampleManager  = new SampleManager();
 		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
 		int  semaphore      = 1;
 
