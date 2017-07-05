@@ -4,6 +4,8 @@ import processing.core.*;
 
 import core.Input;
 import core.ModuleTemplate;
+import core.PortAudioAudioIO;
+import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
 public class Module_01_PitchHue extends PApplet
@@ -70,7 +72,8 @@ public class Module_01_PitchHue extends PApplet
 
 	public void setup() 
 	{
-		this.input  = new Input();
+//		this.input  = new Input();
+		this.input	= new Input(1, new AudioContext(new PortAudioAudioIO()));
 		
 		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
 		
