@@ -17,6 +17,11 @@ import org.jaudiolibs.audioservers.AudioServer;
 //import org.jaudiolibs.audioservers.javasound.JavasoundAudioServer;
 //import org.jaudiolibs.audioservers.javasound.JavasoundAudioServer.TimingMode;
 
+import javasound.JSAudioServer;
+import javasound.JavasoundAudioServer;
+import javasound.JavasoundAudioServer.TimingMode;
+import javasound.JackAudioServer;
+
 /**
  *
  * @author Neil C Smith <http://neilcsmith.net>
@@ -152,8 +157,8 @@ public abstract class AudioServerIO extends AudioIO implements AudioClient {
                    context.getBufferSize(),
                    true);
 		   try {
-//			server = JavasoundAudioServer.create(device, config, TimingMode.FramePosition, this);
-			server = JSAudioServer.create(device, config, TimingMode.FramePosition, this);
+			server = JavasoundAudioServer.create(device, config, TimingMode.FramePosition, this);
+//			server = JSAudioServer.create(device, config, TimingMode.FramePosition, this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

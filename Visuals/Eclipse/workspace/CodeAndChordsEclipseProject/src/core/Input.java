@@ -3,7 +3,7 @@ package core;
 import processing.core.PApplet;
 import processing.sound.*;
 
-import org.jaudiolibs.beads.AudioServerIO;
+//import org.jaudiolibs.beads.AudioServerIO;
 
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.TimeStamp;
