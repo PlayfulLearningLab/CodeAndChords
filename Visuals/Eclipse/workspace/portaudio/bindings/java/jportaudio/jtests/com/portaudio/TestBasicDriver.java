@@ -6,6 +6,7 @@ public class TestBasicDriver {
 		// TODO Auto-generated method stub
 		TestBasic	test	= new TestBasic();
 		try {
+			test.testRecordPlayShort();
 			test.testRecordPlayFloat();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
