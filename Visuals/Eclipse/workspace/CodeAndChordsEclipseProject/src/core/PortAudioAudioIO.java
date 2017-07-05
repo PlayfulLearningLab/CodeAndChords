@@ -1,21 +1,11 @@
 package core;
 
-//package net.beadsproject.beads.core.io;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.Line;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 
 import com.portaudio.BlockingStream;
-import com.portaudio.DeviceInfo;
 import com.portaudio.PortAudio;
 import com.portaudio.StreamParameters;
 
@@ -28,16 +18,7 @@ import net.beadsproject.beads.core.UGen;
 public class PortAudioAudioIO extends AudioIO {
 
 	/** The default system buffer size. */
-	public static final int DEFAULT_SYSTEM_BUFFER_SIZE = 5000;
-	
-	/** The mixer. */
-	private Mixer mixer;
-
-	/** The source data line. */
-	private SourceDataLine sourceDataLine;
-	
-	/** The system buffer size in frames. */
-	private int systemBufferSizeInFrames;
+//	public static final int DEFAULT_SYSTEM_BUFFER_SIZE = 5000;
 
 	/** Thread for running realtime audio. */
 	private Thread audioThread;
@@ -45,28 +26,25 @@ public class PortAudioAudioIO extends AudioIO {
 	/** The priority of the audio thread. */
 	private int threadPriority; 
 	
-	/** The current byte buffer. */
-	private byte[] bbuf;
-	
-	/**
-	 * The current float buffer.
-	 */
-	private	float[] buffer;
-	
 	private	BlockingStream	outStream;
 	private	BlockingStream	inStream;
 	
+	private	int				numInChannels;
+	private	int				numOutChannels;
+	
 	public PortAudioAudioIO() {
-		this(DEFAULT_SYSTEM_BUFFER_SIZE);
+		this(2);
 	}
 	
-	public PortAudioAudioIO(int systemBufferSize) {
-		this.systemBufferSizeInFrames = systemBufferSize;
+	public PortAudioAudioIO(int numChannels) {
+//		this.systemBufferSizeInFrames = systemBufferSize;
+		this.numInChannels	= numChannels;
+		this.numOutChannels	= numChannels;
 		setThreadPriority(Thread.MAX_PRIORITY);
 	}
 	
 	/**
-	 * Initialises JavaSound.
+	 * Initializes JavaSound.
 	 */
 	public boolean create() {
 		PortAudio.initialize();
@@ -74,7 +52,14 @@ public class PortAudioAudioIO extends AudioIO {
 		StreamParameters outParameters = new StreamParameters();
 //		outParameters.sampleFormat = PortAudio.FORMAT_FLOAT_32; // maybe use int_16>  b/c AudioContext.getAudioFormat.bitDepth = 16; was previously .FORMAT_FLOAT_32;
 		outParameters.device = PortAudio.getDefaultOutputDevice();
-		outParameters.channelCount = PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels;
+		if(this.numOutChannels > PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels)
+		{
+			System.out.println("PortAudioAudioIO: given number of channels was " + this.numOutChannels + 
+					", which is greater than " + PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels + 
+					", the maximum for the default device. this.numChannels has been changed to the default device maxOutputChannels.");
+			this.numOutChannels	= PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels;
+		}
+		outParameters.channelCount = this.numOutChannels;
 		outParameters.suggestedLatency = PortAudio.getDeviceInfo( outParameters.device ).defaultLowInputLatency;
 
 		int sampleRate = (int) context.getSampleRate();
@@ -85,26 +70,6 @@ public class PortAudioAudioIO extends AudioIO {
 		this.outStream.start();
 		
 		return true;
-		
-		/*getDefaultMixerIfNotAlreadyChosen();
-		if (mixer == null) {
-			return false;
-		}
-		DataLine.Info info = new DataLine.Info(SourceDataLine.class,
-				audioFormat);
-		try {
-			sourceDataLine = (SourceDataLine) mixer.getLine(info);
-			if (systemBufferSizeInFrames < 0)
-				sourceDataLine.open(audioFormat);
-			else
-				sourceDataLine.open(audioFormat, systemBufferSizeInFrames
-						* audioFormat.getFrameSize());
-		} catch (LineUnavailableException ex) {
-			System.out
-					.println(getClass().getName() + " : Error getting line\n");
-		}
-		return true;
-		*/
 	} // create
 	
 	/**
@@ -170,22 +135,15 @@ public class PortAudioAudioIO extends AudioIO {
 		
 		int bufferSizeInFrames = context.getBufferSize();
 		// TODO: might need to use audioFormat.getChannels() instead of ioAudioFormat.outputs
-		float[] interleavedOutput = new float[ioAudioFormat.outputs * bufferSizeInFrames];
-		int availableToWrite = this.outStream.getWriteAvailable();
-		
-		System.out.println( "runRealTime - this.outStream: availableToWrite =  " + availableToWrite );
-
+		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
 		while (context.isRunning()) {
 			update(); // this propagates update call to context
 			for (int i = 0, counter = 0; i < bufferSizeInFrames; ++i) {
-				for (int j = 0; j < ioAudioFormat.outputs; ++j) {
-					System.out.println("interleavedOutput[" + counter + "] = " + (interleavedOutput[counter]));
+				for (int j = 0; j < this.numOutChannels; ++j) {
 					interleavedOutput[counter++] = (int) context.out.getValue(j, i);
 				}
 			} // for - i
-			
-			System.out.println(this.outStream.getInfo().structVersion);
 
 			// TODO: maybe just write for availableToWrite, not whole buffer?
 			this.outStream.write( interleavedOutput, bufferSizeInFrames );
@@ -209,15 +167,19 @@ public class PortAudioAudioIO extends AudioIO {
 
 	@Override
 	protected UGen getAudioInput(int[] channels) {
+		for(int i = 0; i < channels.length; i++)
+		{
+			System.out.println("	channels[" + i + "] = " + channels[i]);
+		}
 		//TODO not properly implemented, this does not respond to channels arg.
 		IOAudioFormat ioAudioFormat = getContext().getAudioFormat();
 		AudioFormat audioFormat = 
 				new AudioFormat(ioAudioFormat.sampleRate, ioAudioFormat.bitDepth, ioAudioFormat.inputs, ioAudioFormat.signed, ioAudioFormat.bigEndian);
-		return new PortAudioInput(getContext(), audioFormat, this.inStream);
+		return new PortAudioInput(getContext(), audioFormat, this.inStream, this.numInChannels, channels);
 	}
 
 	/**
-	 * PortAudioInput gathers audio from the JavaSound audio input device.
+	 * PortAudioInput gathers audio from the default PortAudio audio input device.
 	 * @beads.category input
 	 */
 	private class PortAudioInput extends UGen {
@@ -225,15 +187,16 @@ public class PortAudioAudioIO extends AudioIO {
 		/** The audio format. */
 		private AudioFormat audioFormat;
 		
-		/** The target data line. */
-		
 		/**	The blocking stream.	*/
 		private	BlockingStream	inStream;
 		
-		/** Flag to tell whether JavaSound has been initialised. */
+		/** Flag to tell whether PortAudio has been initialized. */
 		private boolean portAudioInitialized;
 		
-		private float[] interleavedSamples;
+		private float[] 	interleavedSamples;
+		private	float[][]	nonInterleavedSamples;
+		private	int			numChannels;
+		private	int[]		channels;
 
 		/**
 		 * Instantiates a new RTInput.
@@ -243,10 +206,19 @@ public class PortAudioAudioIO extends AudioIO {
 		 * @param audioFormat
 		 *            the AudioFormat.
 		 */
-		PortAudioInput(AudioContext context, AudioFormat audioFormat, BlockingStream inStream) {
-			super(context, audioFormat.getChannels());
-			this.audioFormat = audioFormat;
-			this.inStream	= inStream;
+		PortAudioInput(AudioContext context, AudioFormat audioFormat, BlockingStream inStream, int numChannels, int[] channels) {
+			super(context, numChannels);
+			this.audioFormat 	= audioFormat;
+			this.inStream		= inStream;
+			this.numChannels	= numInChannels;
+			
+			this.channels		= new int[channels.length];
+			for(int i = 0; i < this.channels.length; i++)
+			{
+				this.channels[i]	= channels[i];
+				System.out.println("this.channels[" + i + "] = " + this.channels[i]);
+			}
+			
 			this.portAudioInitialized = false;
 		}
 		
@@ -254,12 +226,17 @@ public class PortAudioAudioIO extends AudioIO {
 		 * Set up JavaSound. Requires that JavaSound has been set up in AudioContext.
 		 */
 		public void initPortAudio() {
-			interleavedSamples = new float[context.getBufferSize() * audioFormat.getChannels()];
-
 			StreamParameters inParameters = new StreamParameters();
 			inParameters.sampleFormat = PortAudio.FORMAT_FLOAT_32; // Using b/c AudioContext.getAudioFormat.bitDepth = 16; was previously .FORMAT_FLOAT_32;
 			inParameters.device = PortAudio.getDefaultInputDevice();
-			inParameters.channelCount = PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels;
+			if(this.numChannels > PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels)
+			{
+				System.out.println("PortAudioInput: given number of channels was " + this.numChannels + 
+						", which is greater than " + PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels + 
+						", the maximum for the default device. this.numChannels has been changed to the default device maxInputChannels.");
+				this.numChannels	= PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels;
+			}
+			inParameters.channelCount = this.numChannels;
 			inParameters.suggestedLatency = PortAudio.getDeviceInfo( inParameters.device ).defaultLowInputLatency;
 
 			int sampleRate = (int) context.getSampleRate();
@@ -268,6 +245,9 @@ public class PortAudioAudioIO extends AudioIO {
 
 			inStream = PortAudio.openStream( inParameters, null, sampleRate, framesPerBuffer, flags );
 			inStream.start();
+
+			this.interleavedSamples 	= new float[context.getBufferSize() * this.numChannels];
+			this.nonInterleavedSamples	= new float[this.numChannels][context.getBufferSize() * this.numChannels];
 
 			portAudioInitialized = true;
 		} // initPortAudio
@@ -281,10 +261,35 @@ public class PortAudioAudioIO extends AudioIO {
 			if(!portAudioInitialized) {
 				initPortAudio();
 			}
-//			targetDataLine.read(bbuf, 0, bbuf.length);
+
 			inStream.read( interleavedSamples, bufferSize );
-//			AudioUtils.byteToFloat(interleavedSamples, bbuf, audioFormat.isBigEndian());
-			AudioUtils.deinterleave(interleavedSamples, audioFormat.getChannels(), bufferSize, bufOut);
+			
+			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);
+//			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, bufOut);
+			
+//			bufOut	= new float[this.channels.length][this.bufferSize];
+			int	bufPos		= 0;
+			int	nextChannel;
+			for(int i = 0; i < this.channels.length; i++)
+			{
+				nextChannel	= (this.channels[i] - 1);
+				
+				// Check to see if the current channel was asked for:
+				if( nextChannel < this.nonInterleavedSamples.length)
+				{
+					if(bufPos >= bufOut.length) {
+						throw new IllegalArgumentException("PortAudioInput.caluculateBuffer: bufPos " + bufPos + " is not within bounds.");
+					} // error checking
+					
+					for(int j = 0; j < bufOut[bufPos].length; j++)
+					{
+						bufOut[bufPos][j]	= this.nonInterleavedSamples[nextChannel][j];
+					} // for - j
+					
+					bufPos	= bufPos + 1;
+				} // if
+			} // for - i
+			
 		} // caluculateBuffer
 
 	} // class PortAudioInput
