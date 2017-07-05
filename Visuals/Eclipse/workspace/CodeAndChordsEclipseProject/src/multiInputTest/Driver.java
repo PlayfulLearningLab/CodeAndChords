@@ -4,9 +4,10 @@ import org.jaudiolibs.audioservers.AudioConfiguration;
 
 import com.portaudio.*;
 import processing.core.*;
-
+import core.PortAudioAudioIO;
 import core.PortAudioAudioServer;
 import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.IOAudioFormat;
 
 public class Driver extends PApplet {
 	
@@ -18,8 +19,12 @@ public class Driver extends PApplet {
 	
 	public void setup()
 	{
-		AudioContext ac	= new AudioContext();
-
+		AudioContext ac	= new AudioContext(new PortAudioAudioIO());
+		ac.start();
+		
+		IOAudioFormat	ioAudioFormat	= ac.getAudioFormat();
+		System.out.println("ioAudioFormat.bitDepth = " + ioAudioFormat.bitDepth);
+/*
 		paas	= new PortAudioAudioServer(new AudioConfiguration(44100, 2, 2, 512, true));
 		try {
 			paas.run();
@@ -33,6 +38,7 @@ public class Driver extends PApplet {
 		
 		paas.shutdown();
 		System.out.println("paas.isActive = " + paas.isActive());
+		*/
 	} // setup
 	
 	public void run()
