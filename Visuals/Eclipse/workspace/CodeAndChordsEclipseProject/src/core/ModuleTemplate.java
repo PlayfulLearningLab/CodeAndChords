@@ -240,6 +240,11 @@ public class ModuleTemplate {
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
+		this(parent, input, sidebarTitle, 0);
+	} // Constructor - PApplet, Input, String
+	
+	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int leftEdgeX)
+	{
 		this.parent	= parent;
 		this.input	= input;
 
@@ -260,7 +265,7 @@ public class ModuleTemplate {
 
 
 		//		this.leftEdgeXArray	= new int[] { 0, this.parent.width / 3 };
-		this.setLeftEdgeX(0);
+		this.setLeftEdgeX(leftEdgeX);
 		this.leftAlign	= (this.parent.width / 3) / 4;
 
 		this.sidebarTitle	= sidebarTitle;
