@@ -160,7 +160,7 @@ public class BlockingStream
 	}
 
 	/**
-	 * Atart audio I/O.
+	 * Start audio I/O.
 	 */
 	public native void start();
 
