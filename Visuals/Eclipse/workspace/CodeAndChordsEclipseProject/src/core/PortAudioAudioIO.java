@@ -259,9 +259,9 @@ public class PortAudioAudioIO extends AudioIO {
 
 			inStream.read( interleavedSamples, bufferSize );
 			
-			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);
-//			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, bufOut);
-			
+//			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);
+			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, bufOut);
+/*			
 //			bufOut	= new float[this.channels.length][this.bufferSize];
 			int	bufPos		= 0;
 			int	nextChannel;
@@ -284,7 +284,7 @@ public class PortAudioAudioIO extends AudioIO {
 					bufPos	= bufPos + 1;
 				} // if
 			} // for - i
-			
+*/
 		} // caluculateBuffer
 
 	} // class PortAudioInput
