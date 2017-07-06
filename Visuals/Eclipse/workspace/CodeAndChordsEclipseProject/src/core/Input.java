@@ -317,8 +317,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// getAudioInput needs an int[] with the number of the particular line.
-//			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
-			uGenArray[i]  = new Plug(this.ac, audioInput, i);
+			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
+//			uGenArray[i]  = new Plug(this.ac, audioInput, i);
 			
 			this.gainArray[i]	= new Gain(this.ac, 0, 0);
 		}

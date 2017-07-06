@@ -167,11 +167,6 @@ public class PortAudioAudioIO extends AudioIO {
 
 	@Override
 	protected UGen getAudioInput(int[] channels) {
-		for(int i = 0; i < channels.length; i++)
-		{
-			System.out.println("	channels[" + i + "] = " + channels[i]);
-		}
-		//TODO not properly implemented, this does not respond to channels arg.
 		IOAudioFormat ioAudioFormat = getContext().getAudioFormat();
 		AudioFormat audioFormat = 
 				new AudioFormat(ioAudioFormat.sampleRate, ioAudioFormat.bitDepth, ioAudioFormat.inputs, ioAudioFormat.signed, ioAudioFormat.bigEndian);
@@ -220,7 +215,7 @@ public class PortAudioAudioIO extends AudioIO {
 			}
 			
 			this.portAudioInitialized = false;
-		}
+		} // constructor
 		
 		/**
 		 * Set up JavaSound. Requires that JavaSound has been set up in AudioContext.
