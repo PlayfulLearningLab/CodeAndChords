@@ -78,7 +78,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	public void setup() 
 	{
 		// TODO: test with more inputs than are supported
-		this.numInputs	= 2;
+		this.numInputs	= 4;
 		this.input	= new Input(this.numInputs);
 		
 		// Even number of inputs:
@@ -100,7 +100,10 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			
 			for(int i = 0; i < this.yVals.length; i++)
 			{
-				yVals[i]	= (i / (this.numInputs / (this.numInputs / 2))) * rectHeight;
+				int	yPos	= i / (this.numInputs / 2);
+				int	yVal	= yPos * rectHeight;
+				yVals[i]	= yVal;
+				System.out.println(i + ": yPos = " + yPos + "; yVal = " + yVal);
 			} // for - yVals
 		} else {
 			// odd - only 9:
@@ -132,8 +135,14 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		//TODO: input will only initialize with the number of ins it can handle, and the numInputs here will not match that if it changes.
 		for(int i = 0; i < this.numInputs; i++)
 		{
-			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
 			
+			if(this.moduleTemplate[i].getSidebarCP5() != null)
+			{
+				this.moduleTemplate[i].getSidebarCP5().setVisible(false);
+				this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
+			}
+
 			this.nowBelow[i]			= false;
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
 			this.colorReached[i]		= false;
@@ -274,15 +283,17 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			//  background(this.curHue[0], this.curHue[1], this.curHue[2]);
 			fill(this.curHue[i][0], this.curHue[i][1], this.curHue[i][2]);		
 			// Rectangle: "the first two parameters set the location of the upper-left corner, the third sets the width, and the fourth sets the height."
-			rect(moduleTemplate[i].getLeftEdgeX(), this.yVals[i], rectWidth - (this.xVals[i] - moduleTemplate[i].getLeftEdgeX()), rectHeight);
+//			rect(moduleTemplate[i].getLeftEdgeX(), this.yVals[i], rectWidth - (this.xVals[i] - moduleTemplate[i].getLeftEdgeX()), rectHeight);
 			//		stroke(255);
+			rect(this.xVals[i], this.yVals[i], rectWidth, rectHeight);
+
 
 
 			if(this.moduleTemplate[i].isShowScale())
 			{
-
+				this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
 				// draws the legend along the bottom of the screen:
-				this.moduleTemplate[i].legend(goalHuePos[i]);
+				this.moduleTemplate[i].legend(goalHuePos[i], 14);
 			}
 
 			int	oldART	= this.attRelTran[i];
