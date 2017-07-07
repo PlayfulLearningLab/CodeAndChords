@@ -87,6 +87,7 @@ public class ModuleTemplate {
 	private ControlP5 	sidebarCP5;
 	private	Input		input;
 
+	private	int			modTempNum;	// Number to distinguish different instances of the class in the same sketch
 
 	private	int			leftAlign;
 	private	int			leftEdgeX;
@@ -244,10 +245,10 @@ public class ModuleTemplate {
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
-		this(parent, input, sidebarTitle, 0, 0, parent.width, parent.height);
+		this(parent, input, sidebarTitle, 0, 0, parent.width, parent.height, 0);
 	} // Constructor - PApplet, Input, String
 	
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int leftEdgeX, int topYVal, int rectWidth, int rectHeight)
+	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int leftEdgeX, int topYVal, int rectWidth, int rectHeight, int modTempNum)
 	{
 		System.out.println("topYVal = " + topYVal);
 		this.parent	= parent;
@@ -272,11 +273,12 @@ public class ModuleTemplate {
 		//		this.leftEdgeXArray	= new int[] { 0, this.parent.width / 3 };
 		this.originalLeftEdgeX	= leftEdgeX;
 		this.leftEdgeX			= leftEdgeX;
-		// TODO - change this value?
-		this.leftAlign	= this.originalLeftEdgeX + (this.parent.width / 3) / 4;
+		this.leftAlign	= (this.parent.width / 3) / 4;	// this value will be considered in relation to the position of sidebarGroup
 		this.rectWidth	= rectWidth;
 		this.rectHeight	= rectHeight;
 		this.topYVal	= topYVal;
+		
+		this.modTempNum	= modTempNum;
 
 		this.sidebarTitle	= sidebarTitle;
 
@@ -330,6 +332,9 @@ public class ModuleTemplate {
 	 */
 	private void initModuleTemplate()
 	{
+		this.sidebarCP5.addGroup("allControls")
+		.setValue(this.modTempNum);
+		
 		this.sidebarCP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
@@ -344,7 +349,8 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("title")
 		.setGroup("sidebarGroup")
-		.setPosition(this.leftAlign, 5)
+		.setGroup("allControls")
+		.setPosition(75, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
 		.setValue(this.sidebarTitle);
@@ -426,8 +432,6 @@ public class ModuleTemplate {
 		this.fillHSBColors();
 		this.updateColors(this.curColorStyle);
 
-		System.out.println("just about to add the sliders; sidebarCP5 = " + this.sidebarCP5);
-
 		this.addCustomPitchColor(textYVals[15], noteYVals);
 
 		addHSBSliders(modulateHSBVals);
@@ -452,10 +456,12 @@ public class ModuleTemplate {
 	 */
 	private void addOutsideButtons()
 	{
-		int	playX		= this.parent.width - 45;
-		int	playY		= 15;
+		int	playX		= this.originalLeftEdgeX + this.rectWidth - 45;
+		int	playY		= this.topYVal + 15;
 		int	playWidth	= 30;
 		int	playHeight	= 30;
+		
+		System.out.println("	playX = " + playX + "; playY = " + playY);
 
 		// add play button:
 		PImage[]	images	= { 
@@ -474,24 +480,25 @@ public class ModuleTemplate {
 		.updateSize();
 		
 		this.sidebarCP5.addToggle("pause")
-		.setPosition((playX - playWidth - 10), playY)
+		.setPosition(new float[] { (playX - playWidth - 10), playY } )
 		.setImages(pauseImage, images[0])
 		.updateSize()
 		.setVisible(false);
 
-		int	hamburgerX		= 10;
-		int	hamburgerY		= 13;
+		int	hamburgerX		= this.originalLeftEdgeX + 10;
+		int	hamburgerY		= this.topYVal + 13;
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
 
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
 		this.sidebarCP5.addButton("hamburger")
-		.setPosition(hamburgerX, hamburgerY)
+		.setPosition(new float[] { hamburgerX, hamburgerY })
 		.setImage(hamburger)
 		.setClickable(true)
 		.updateSize();
 
+		// Since this is part of sidebarGroup, its position *does* need to be relative to the group:
 		int	menuXX			= 5;
 		int	menuXY			= 5;
 		int	menuXWidth		= 15;
@@ -499,7 +506,7 @@ public class ModuleTemplate {
 		PImage	menuX	= this.parent.loadImage("menuX.png");
 		menuX.resize(menuXWidth, 0);
 		this.sidebarCP5.addButton("menuX")
-		.setPosition(menuXX, menuXY)
+		.setPosition(new float[] { menuXX, menuXY } )
 		.setImage(menuX)
 		.setGroup("sidebarGroup")
 		.updateSize();
@@ -2280,7 +2287,7 @@ public class ModuleTemplate {
 		//		int	sliderIDCutoff	= this.lastTextfieldId;
 
 		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
-		if(id % 2 == 0 && id < this.lastTextfieldId)
+		if(id % 2 == 0 && id < this.lastTextfieldId && id > -1)
 		{
 			try
 			{
