@@ -54,7 +54,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 	{
 		background(0);
 
-		this.input	= new Input(this.numInputs);
+		this.input	= new Input((this.numInputs + 4), true);
 		this.cp5	= new ControlP5(this);
 
 		this.side	= 200;
@@ -112,7 +112,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setPosition(this.xVals[i] + 3, this.yVals[i] + 3)
 			.setSize(this.side / 3, this.side)
 			.setBarHeight(15)
-			.setItemHeight(side / 13)
+			.setItemHeight((side - 36) / 13)
 			.setItems(this.listItems)
 			.setLabel("Line:")
 			.setGroup("controls" + i)
@@ -126,7 +126,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setId(id)
 			.setGroup("controls" + i)
 			.setRange(2, 1000)
-//			.setDefaultValue(this.lowThresholds[i])
+			.setValue(this.lowThresholds[i])
 			.setSliderMode(Slider.FLEXIBLE)
 			.bringToFront()
 			.getCaptionLabel().setVisible(false);
@@ -140,7 +140,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setId(id)
 			.setGroup("controls" + i)
 			.setRange(100, 5000)
-//			.setDefaultValue(this.maxSatThresholds[i])
+			.setValue(this.maxSatThresholds[i])
 			.setSliderMode(Slider.FLEXIBLE)
 			.bringToFront()
 			.getCaptionLabel().setVisible(false);
@@ -189,7 +189,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 
 	public void controlEvent(ControlEvent theControlEvent)
 	{
-		System.out.println("Got controlEvent " + theControlEvent.getName() + "; id = " + theControlEvent.getController().getId());
+		System.out.println("Got controlEvent " + theControlEvent.getName() + " with id " + theControlEvent.getController().getId());
 
 		int	id	= theControlEvent.getController().getId();
 

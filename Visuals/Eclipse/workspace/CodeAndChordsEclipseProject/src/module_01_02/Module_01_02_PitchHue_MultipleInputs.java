@@ -78,7 +78,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	public void setup() 
 	{
 		// TODO: test with more inputs than are supported
-		this.numInputs	= 2;
+		this.numInputs	= 4;
 		this.input	= new Input(this.numInputs);
 		
 		// Even number of inputs:
@@ -135,11 +135,12 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		//TODO: input will only initialize with the number of ins it can handle, and the numInputs here will not match that if it changes.
 		for(int i = 0; i < this.numInputs; i++)
 		{
-			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
+			System.out.println("passing " + this.xVals[i] + ", " + this.yVals[i] + " as x and y to new ModuleTemplate");
+			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight, i);
 			
 			if(this.moduleTemplate[i].getSidebarCP5() != null)
 			{
-				this.moduleTemplate[i].getSidebarCP5().setVisible(false);
+//				this.moduleTemplate[i].getSidebarCP5().setVisible(false);
 				this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
 			}
 
@@ -337,17 +338,11 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	{
 		try
 		{
-			for(int i = 0; i < this.moduleTemplate.length; i++)
-			{
-				// TODO: this might not be right:
-				if(theControlEvent.isAssignableFrom(this.moduleTemplate[i].getClass()));
-				{
-					this.moduleTemplate[i].controlEvent(theControlEvent);
-				}
-			} // for	
+			int	i	= modTempNum;	
 		} catch(Exception e)
 		{
-			println("Module_01_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
+			// TODO: put the print back in
+//			println("Module_01_02_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
 			//			e.printStackTrace();
 		}
 	} // controlEvent
