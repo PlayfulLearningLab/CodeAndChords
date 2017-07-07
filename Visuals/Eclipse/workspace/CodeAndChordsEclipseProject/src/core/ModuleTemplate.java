@@ -84,12 +84,16 @@ public class ModuleTemplate {
 	private	PApplet		parent;
 	//	public ControlP5 	nonSidebarCP5;
 	// TODO set private post-testing:
-	public ControlP5 	sidebarCP5;
+	private ControlP5 	sidebarCP5;
 	private	Input		input;
 
 
 	private	int			leftAlign;
 	private	int			leftEdgeX;
+	private	int			originalLeftEdgeX;
+	private	int			rectWidth;			// used for version with multiple ModuleTemplates within them
+	private	int			rectHeight;
+	private	int			topYVal;
 
 	private	String		sidebarTitle;
 
@@ -240,11 +244,12 @@ public class ModuleTemplate {
 
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
-		this(parent, input, sidebarTitle, 0);
+		this(parent, input, sidebarTitle, 0, 0, parent.width, parent.height);
 	} // Constructor - PApplet, Input, String
 	
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int leftEdgeX)
+	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int leftEdgeX, int topYVal, int rectWidth, int rectHeight)
 	{
+		System.out.println("topYVal = " + topYVal);
 		this.parent	= parent;
 		this.input	= input;
 
@@ -265,8 +270,13 @@ public class ModuleTemplate {
 
 
 		//		this.leftEdgeXArray	= new int[] { 0, this.parent.width / 3 };
-		this.setLeftEdgeX(leftEdgeX);
-		this.leftAlign	= (this.parent.width / 3) / 4;
+		this.originalLeftEdgeX	= leftEdgeX;
+		this.leftEdgeX			= leftEdgeX;
+		// TODO - change this value?
+		this.leftAlign	= this.originalLeftEdgeX + (this.parent.width / 3) / 4;
+		this.rectWidth	= rectWidth;
+		this.rectHeight	= rectHeight;
+		this.topYVal	= topYVal;
 
 		this.sidebarTitle	= sidebarTitle;
 
@@ -323,6 +333,7 @@ public class ModuleTemplate {
 		this.sidebarCP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
+		.setPosition(this.originalLeftEdgeX, 0)
 		.setVisible(false);
 
 		// Add play button, hamburger and menu x:
@@ -1235,7 +1246,7 @@ public class ModuleTemplate {
 		int		transBlackInt		= transparentBlack.getRGB();
 
 		this.sidebarCP5.addBackground("background")
-		.setPosition(0, 0)
+		.setPosition(this.originalLeftEdgeX, 0)
 		.setSize(this.parent.width / 3, this.parent.height)
 		.setBackgroundColor(transBlackInt)
 		.setGroup("sidebarGroup")
@@ -1513,18 +1524,26 @@ public class ModuleTemplate {
 		} // custom colorStyle
 
 	} // updateColors
-
+	
 	public void legend(int goalHuePos)
 	{
+		this.legend(goalHuePos, 24);
+	}
 
-		this.parent.textSize(24);
+	public void legend(int goalHuePos, int textSize)
+	{
+
+		this.parent.textSize(textSize);
 
 		//		String[]	notes	= this.getScale(this.curKeyOffset, this.majMinChrom);
 		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
 
-		float  sideWidth1   = (this.parent.width - leftEdgeX) / notes.length;
-		float  sideHeight  = this.parent.width / 12;
-		float	addToLastRect	= (this.parent.width - this.getLeftEdgeX()) - (sideWidth1 * notes.length);
+//		float  sideWidth1   = (this.rectWidth - this.leftEdgeX) / notes.length;
+		// TODO: ignores sidebar pop-out for now
+		float  sideWidth1   = this.rectWidth / notes.length;
+		// TODO: height pretty arbitrary right now:
+		float  sideHeight  = this.rectHeight / 7;
+		float	addToLastRect	= this.rectWidth - (sideWidth1 * notes.length);
 		float	sideWidth2	= sideWidth1;
 		//  float  side = height / colors.length;
 
@@ -1551,14 +1570,16 @@ public class ModuleTemplate {
 			//			this.parent.fill(255);
 
 			if (i == goalHuePos) {
-				this.parent.rect(leftEdgeX + (sideWidth1 * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth2, (float) (sideHeight * 1.5));
+				this.parent.rect(leftEdgeX + (sideWidth1 * i), ((this.topYVal + this.rectHeight) - (sideHeight * 1.5f)), sideWidth2, (float) (sideHeight * 1.5));
 				//      rect(0, (side * i), side * 1.5, side);
 			} else {
-				this.parent.rect(leftEdgeX + (sideWidth1 * i), this.parent.height - sideHeight, sideWidth2, sideHeight);
+				this.parent.rect(leftEdgeX + (sideWidth1 * i), (this.topYVal + this.rectHeight) - sideHeight, sideWidth2, sideHeight);
 				//      rect(0, (side * i), side, side);
 			}
+
+//			System.out.println("	legend; this.topYVal = " + this.topYVal + "; drawing at " + ((this.topYVal + this.rectHeight) - sideHeight));
 			this.parent.fill(0);
-			this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.35)), this.parent.height - 20);
+			this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.35)), (this.topYVal + this.rectHeight) - 15);
 		} // for
 		/*
 		// Last note:
@@ -1583,7 +1604,7 @@ public class ModuleTemplate {
 	private void displaySidebar()
 	{	
 		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
-		this.setLeftEdgeX(this.parent.width / 3);
+		this.setLeftEdgeX(this.originalLeftEdgeX + this.parent.width / 3);
 
 	} // displaySidebar
 
@@ -2227,7 +2248,7 @@ public class ModuleTemplate {
 		// MenuX button:
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
-			this.setLeftEdgeX(0);
+			this.setLeftEdgeX(this.originalLeftEdgeX);
 			//			this.sidebarCP5.setVisible(false);
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
 			this.sidebarCP5.getController("hamburger").setVisible(true);
@@ -2377,7 +2398,7 @@ public class ModuleTemplate {
 			String	filename	= this.filenames[this.majMinChrom][enharmonicPos];
 			this.inputFile	= "Piano Scale Reference Inputs/" + filename;
 
-			if(!(this.getLeftEdgeX() == 0)) {
+			if(!(this.getLeftEdgeX() == this.originalLeftEdgeX)) {
 				this.displaySidebar();
 			}
 
@@ -2989,6 +3010,11 @@ public class ModuleTemplate {
 	public float[][] getColors()
 	{
 		return this.colors;
+	}
+	
+	public ControlP5 getSidebarCP5()
+	{
+		return this.sidebarCP5;
 	}
 
 

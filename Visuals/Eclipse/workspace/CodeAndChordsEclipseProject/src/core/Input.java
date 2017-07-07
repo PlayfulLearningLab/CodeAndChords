@@ -299,10 +299,12 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		this.numInputs  = numInputs;
 
 		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
-		int[][]  inputNums  = new int[this.numInputs][1];
+		int[][]	inputNums2d	= new int[this.numInputs][1];
+		int[]	inputNums1d	= new int[this.numInputs];
 		for (int i = 0; i < this.numInputs; i++)
 		{
-			inputNums[i][0]  = i + 1;
+			inputNums2d[i][0]	= (i + 1);
+			inputNums1d[i]		= (i + 1);
 		} // for
 
 		// get the audio lines from the AudioContext:
@@ -312,7 +314,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		this.uGenArray  = new UGen[this.numInputs];
 		this.gainArray	= new Gain[this.numInputs];
 		
-		UGen	audioInput	= this.ac.getAudioInput();
+		UGen	audioInput	= this.ac.getAudioInput(inputNums1d);
 		
 		for (int i = 0; i < uGenArray.length; i++)
 		{
