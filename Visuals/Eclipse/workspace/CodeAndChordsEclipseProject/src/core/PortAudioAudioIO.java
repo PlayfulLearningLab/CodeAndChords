@@ -207,6 +207,8 @@ public class PortAudioAudioIO extends AudioIO {
 			this.inStream		= inStream;
 			this.numChannels	= numInChannels;
 			
+			System.out.println("PortAudioInput: numChannels = " + this.numChannels);
+			
 			this.channels		= new int[channels.length];
 			for(int i = 0; i < this.channels.length; i++)
 			{
