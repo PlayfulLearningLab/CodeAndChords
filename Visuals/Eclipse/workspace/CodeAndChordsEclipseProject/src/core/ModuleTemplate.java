@@ -349,7 +349,6 @@ public class ModuleTemplate {
 
 		this.sidebarCP5.addTextlabel("title")
 		.setGroup("sidebarGroup")
-		.setGroup("allControls")
 		.setPosition(75, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
@@ -2216,7 +2215,7 @@ public class ModuleTemplate {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-//		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
+		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
 
 		int	id	= controlEvent.getController().getId();
 		// Play button:

@@ -338,7 +338,13 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	{
 		try
 		{
-			int	i	= modTempNum;	
+			System.out.println("got controlEvent " + theControlEvent);
+			float modTempNum	= theControlEvent.getGroup().getValue();
+			
+			for(int i = 0; i < this.moduleTemplate.length; i++)
+			{
+				this.moduleTemplate[i].controlEvent(theControlEvent);
+			}
 		} catch(Exception e)
 		{
 			// TODO: put the print back in
@@ -346,37 +352,5 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			//			e.printStackTrace();
 		}
 	} // controlEvent
-
-
-
-
-	/**
-	 * Used in draw for determining whether a particular scale degree is in the 
-	 * major or minor scale;
-	 * returns the position of the element if it exists in the array,
-	 * or -1 if the element is not in the array.
-	 * 
-	 * @param array		int[] to be searched for the given element
-	 * @param element	int whose position in the given array is to be returned.
-	 * @return		position of the given element in the given array, or -1 
-	 * 				if the element does not exist in the array.
-	 */
-	private int  arrayContains(int[] array, int element)
-	{
-		if(array == null) {
-			throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.arrayContains(int[], int): array parameter is null.");
-		}
-
-		//  println("array.length = " + array.length);
-		for (int i = 0; i < array.length; i++)
-		{
-			//    println("array[i] = " + array[i]);
-			if (array[i] == element) {
-				return i;
-			} // if
-		} // for
-
-		return -1;
-	} // arrayContains(int[], int)
 
 } // class
