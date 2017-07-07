@@ -78,7 +78,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	public void setup() 
 	{
 		// TODO: test with more inputs than are supported
-		this.numInputs	= 4;
+		this.numInputs	= 2;
 		this.input	= new Input(this.numInputs);
 		
 		// Even number of inputs:

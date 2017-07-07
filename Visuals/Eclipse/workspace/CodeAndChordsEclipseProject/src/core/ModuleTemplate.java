@@ -2280,7 +2280,7 @@ public class ModuleTemplate {
 		//		int	sliderIDCutoff	= this.lastTextfieldId;
 
 		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
-		if(id % 2 == 0 && id < this.lastTextfieldId)
+		if(id % 2 == 0 && id < this.lastTextfieldId && id > -1)
 		{
 			try
 			{
