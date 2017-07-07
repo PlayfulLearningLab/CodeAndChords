@@ -107,6 +107,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setVisible(false)
 			.setId(i);
 
+			int	id	= (i + 12);
 			this.cp5.addScrollableList("list" + (i + 12))
 			.setPosition(this.xVals[i] + 3, this.yVals[i] + 3)
 			.setSize(this.side / 3, this.side)
@@ -115,31 +116,36 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setItems(this.listItems)
 			.setLabel("Line:")
 			.setGroup("controls" + i)
-			.setId(i + 12);
+			.setId(id);
 
+			id	= (i + 24);
 			this.cp5.addSlider("lowSlider" + (i + 24))
 			.setPosition( ( this.xVals[i] + 3 ), ( this.yVals[i] + side - 18 ) )
 			.setWidth(side - 6)
 			.setHeight(15)
+			.setId(id)
 			.setGroup("controls" + i)
 			.setRange(2, 1000)
-			.setDefaultValue(this.lowThresholds[i])
+//			.setDefaultValue(this.lowThresholds[i])
 			.setSliderMode(Slider.FLEXIBLE)
-			.setId(i + 24)
 			.bringToFront()
 			.getCaptionLabel().setVisible(false);
+			this.cp5.getController("lowSlider" + (i + 24)).update();
 
+			id	= (i + 36);
 			this.cp5.addSlider("highSlider" + (i + 36))
 			.setPosition( ( this.xVals[i] + 3 ), ( this.yVals[i] + side - 36 ) )
 			.setWidth(side - 6)
 			.setHeight(15)
+			.setId(id)
 			.setGroup("controls" + i)
 			.setRange(100, 5000)
-			.setDefaultValue(this.maxSatThresholds[i])
+//			.setDefaultValue(this.maxSatThresholds[i])
 			.setSliderMode(Slider.FLEXIBLE)
-			.setId(i + 36)
 			.bringToFront()
 			.getCaptionLabel().setVisible(false);
+			
+//			while(this.cp5.getController("lowSlider" + (id + 24)) == null)	{ }
 		} // for
 	} // setup
 
@@ -183,16 +189,18 @@ public class FunctionSketch_02_MultiInput extends PApplet
 
 	public void controlEvent(ControlEvent theControlEvent)
 	{
-		System.out.println("Got controlEvent " + theControlEvent.getName());
+		System.out.println("Got controlEvent " + theControlEvent.getName() + "; id = " + theControlEvent.getController().getId());
 
 		int	id	= theControlEvent.getController().getId();
 
 		// Clicked in a square:
-		if(id < 12)
+		if(id < 12 && id > -1)
 		{
 //			this.cp5.getController("list" + (id + 12)).setVisible(!this.cp5.getController("list" + (id + 12)).isVisible());
 			//			this.cp5.getController("list" + (id + 12)).setVisible(true);
-			this.cp5.getGroup("controls" + id).setVisible(!this.cp5.getGroup("controls" + id).isVisible());
+			System.out.println("this.cp5 = " + this.cp5 + "; this.cp5.getGroup(controls" + id + ") = " + this.cp5.getGroup("controls" + id));
+			boolean	visible	= this.cp5.getGroup("controls" + id).isVisible();
+			this.cp5.getGroup("controls" + id).setVisible(!visible);
 		}
 
 		// Clicked on a list:
