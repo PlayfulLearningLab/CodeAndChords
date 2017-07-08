@@ -9,6 +9,8 @@ import controlP5.ControlP5;
 import controlP5.Controller;
 import controlP5.ControllerGroup;
 import controlP5.Group;
+import controlP5.ScrollableList;
+import controlP5.Slider;
 import processing.core.PApplet;
 
 public class PolarShapes extends PApplet
@@ -90,6 +92,17 @@ public class PolarShapes extends PApplet
 
 		this.nextShape = this.shapeLib.get(this.nextShapeName);
 
+	}//initializeShapeLib()
+	
+	private float[] copy(float[] f)
+	{
+		float[] result = new float[f.length];
+		for(int i = 0; i < f.length; i++)
+		{
+			result[i] = f[i];
+		}
+		
+		return result;
 	}
 
 	public static void main(String[] args)
@@ -117,12 +130,9 @@ public class PolarShapes extends PApplet
 
 		this.initializeShapeLib();
 
-		for(int i = 0; i < this.steps; i++)
-		{
-			this.currentShape[i] = this.shapeLib.get("square")[i];
-			this.nextShape[i] = this.shapeLib.get("square")[i];
-		}
-
+		this.currentShape = this.copy(this.shapeLib.get("circle"));
+		this.nextShape = this.copy(this.shapeLib.get("circle"));
+		
 		this.initializeControls();
 
 	}
@@ -205,12 +215,94 @@ public class PolarShapes extends PApplet
 		.setSize(296, 100)
 		.setBarHeight(30)
 		.setGroup("shape")
+		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
 		.close();
 
-		this.cp5.addSlider("radius", .01f, 3, 1, 2, 100, 296, 48)
+		this.cp5.addSlider("radius", .01f, 3, 1, 2, 120, 296, 28)
 		.setGroup("shape")
 		.getCaptionLabel()
 		.hide();
+		
+		this.cp5.addSlider("a", .01f, 3, 1, 2, 170, 296, 28)
+		.setGroup("shape")
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addSlider("b", .01f, 3, 1, 2, 220, 296, 28)
+		.setGroup("shape")
+		.getCaptionLabel()
+		.hide();
+		
+		((Slider) this.cp5.addSlider("m1", 0, 15, 1, 2, 270, 296, 28)
+		.setGroup("shape"))
+		.setNumberOfTickMarks(16)
+		.snapToTickMarks(true)
+		.showTickMarks(false)
+		.getCaptionLabel()
+		.hide();
+		
+		((Slider) this.cp5.addSlider("m2", 0, 15, 1, 2, 320, 296, 28)
+		.setGroup("shape"))
+		.setNumberOfTickMarks(16)
+		.snapToTickMarks(true)
+		.showTickMarks(false)
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addSlider("n1", 0, 10, 1, 2, 370, 296, 28)
+		.setGroup("shape")
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addSlider("n2", 0, 10, 1, 2, 420, 296, 28)
+		.setGroup("shape")
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addSlider("n3", 0, 10, 1, 2, 470, 296, 28)
+		.setGroup("shape")
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addLabel("radiusLabel")
+		.setPosition(130,105)
+		.setText("Radius")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("aLabel")
+		.setPosition(130,155)
+		.setText("A Value")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("bLabel")
+		.setPosition(130,205)
+		.setText("B Value")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("m1Label")
+		.setPosition(130,255)
+		.setText("M1 Value")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("m2Label")
+		.setPosition(130,305)
+		.setText("M2 Value")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("n1Label")
+		.setPosition(130,355)
+		.setText("N1 Value")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("n2Label")
+		.setPosition(130,405)
+		.setText("N2 Value")
+		.setGroup("shape");
+		
+		this.cp5.addLabel("n3Label")
+		.setPosition(130,455)
+		.setText("N3 Value")
+		.setGroup("shape");
 
 		//Set morph menu visible to start
 
@@ -219,6 +311,12 @@ public class PolarShapes extends PApplet
 
 		((Group) this.cp5.get("morph"))
 		.setVisible(true);
+		
+		//Bring dropbox to front
+		
+		((ScrollableList) this.cp5.get("shapeSelect")
+		.bringToFront())
+		.setValue(0);
 
 	}
 
@@ -234,6 +332,8 @@ public class PolarShapes extends PApplet
 		this.stroke(100);
 		this.strokeWeight(3);
 		this.line(301,0,301,520);
+		
+		//this.cp5.get("a").setValue(this.cp5.getValue("b"));
 
 	}
 
@@ -270,15 +370,14 @@ public class PolarShapes extends PApplet
 		beginShape();
 
 		int i = 0;
-
-		//vertex((300 + (625/2))+(this.radius*100), 260);
-
+		
 		float x;
 		float y;
 
 
 		for(float theta = 0; theta <= 2 * PI; theta += this.incrament )
 		{
+			if(this.cp5.get("a").isVisible()) { this.currentShape = this.copy(this.nextShape); }
 
 			x = (this.currentShape[i] * this.radius) * cos(theta);
 			y = (this.currentShape[i] * this.radius) * sin(theta);
@@ -290,23 +389,52 @@ public class PolarShapes extends PApplet
 
 			i++;
 		}
-
+		
 		float theta = 0;
-		i=0;
-
+		i = 0;
+		
 		x = (this.currentShape[i] * this.radius) * cos(theta);
 		y = (this.currentShape[i] * this.radius) * sin(theta);
 
 		x += (300 + (625/2));
 		y += 260;
 
-		//vertex(x,y);
-
-		//vertex((300 + (625/2))+(this.radius*100), 260);
+		vertex(x,y);
 
 		endShape();
 
 	}//drawShape()
+	
+	private void updateSuperShape()
+	{
+		int index = (int) this.cp5.get("shapeSelect").getValue();
+		
+		this.superShapes[index] = new float[] { 
+				this.cp5.get("a").getValue(),
+				this.cp5.get("b").getValue(),
+				this.cp5.get("m1").getValue(),
+				this.cp5.get("m2").getValue(),
+				this.cp5.get("n1").getValue(),
+				this.cp5.get("n2").getValue(),
+				this.cp5.get("n3").getValue()};
+		
+		this.currentShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+		this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+	}
+	
+	private void setSliders()
+	{
+		int index = (int) this.cp5.get("shapeSelect").getValue();
+		
+		System.out.println(index);
+		
+		this.cp5.get("a").setValue(this.superShapes[index][0]);
+		this.cp5.get("m1").setValue(this.superShapes[index][2]);
+		this.cp5.get("n1").setValue(this.superShapes[index][4]);
+		this.cp5.get("n2").setValue(this.superShapes[index][5]);
+		this.cp5.get("n3").setValue(this.superShapes[index][6]);
+
+	}
 
 	public void controlEvent(ControlEvent theEvent) throws InterruptedException
 	{
@@ -331,6 +459,16 @@ public class PolarShapes extends PApplet
 
 			//this.printFloat(this.shapeLib.get("square"));
 			//this.printFloat(this.nextShape);
+			break;
+			
+		case "shapeSelect":
+			int index = (int) this.cp5.get("shapeSelect").getValue();
+			
+			this.currentShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+			this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+			
+			//this.setSliders();
+			
 			break;
 
 		case "shape1":
@@ -359,6 +497,14 @@ public class PolarShapes extends PApplet
 
 			((Group) this.cp5.get("shape"))
 			.show();
+			
+			this.currentShape = this.copy(this.makeSuperShape(this.superShapes[0]));
+			this.nextShape = this.copy(this.makeSuperShape(this.superShapes[0]));
+			
+			this.cp5.get("shapeSelect")
+			.setValue(0);
+			
+			//this.setSliders();
 
 			break;
 
@@ -375,6 +521,38 @@ public class PolarShapes extends PApplet
 
 			this.radius = this.cp5.getValue("radius");
 
+			break;
+			
+		case "a":
+			this.updateSuperShape();
+			this.cp5.get("b").setValue(this.cp5.getValue("a"));
+			break;
+			
+		case "b":
+			this.updateSuperShape();
+			this.cp5.get("a").setValue(this.cp5.getValue("b"));
+			break;
+			
+		case "m1":
+			this.updateSuperShape();
+			this.cp5.get("m2").setValue(this.cp5.getValue("m1"));
+			break;
+			
+		case "m2":
+			this.updateSuperShape();
+			this.cp5.get("m1").setValue(this.cp5.getValue("m2"));
+			break;
+			
+		case "n1":
+			this.updateSuperShape();
+			break;
+			
+		case "n2":
+			this.updateSuperShape();
+			break;
+			
+		case "n3":
+			this.updateSuperShape();
 			break;
 
 		case "morphTime":
