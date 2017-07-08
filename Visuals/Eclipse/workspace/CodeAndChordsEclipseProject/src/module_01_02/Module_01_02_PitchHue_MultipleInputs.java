@@ -3,7 +3,7 @@ package module_01_02;
 import processing.core.*;
 
 import core.Input;
-import core.ModuleTemplate;
+import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
@@ -55,7 +55,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	private int  curHuePos;
 
 //	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
-	private ModuleTemplate	moduleTemplate;
+	private ModuleTemplate01	moduleTemplate;
 	private boolean		nowBelow			= false;
 	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
 	private boolean		colorReached		= false;
@@ -76,7 +76,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 //		this.input	= new Input(16, new AudioContext(new PortAudioAudioIO()));
 		this.input	= new Input(3);
 		
-		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
+		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_02_PitchHueBackground");
 		
 		//		this.moduleTemplate.setCurKey("A", 2);
 		//		this.moduleTemplate.rainbow();
@@ -127,7 +127,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			this.moduleTemplate.setMenuVal();
 		}
 		
-		if (input.getAmplitude() > this.moduleTemplate.getThresholdLevel())
+		if (input.getAmplitude() > this.moduleTemplate.getThreshold())
 		{
 
 			this.nowBelow	= false;
