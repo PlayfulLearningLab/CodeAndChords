@@ -22,6 +22,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.yVals[i]	= this.yVals[i - 1] + distance;
 		}
 		
+		// already called addHideButtons in superclass with y-val of 26.
+		addInputThresholdSlider(this.yVals[1]);
+		
 //		this.initInput();
 	} // constructor
 	
@@ -80,7 +83,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	
 	private	void addInputThresholdSlider(int yVal)
 	{
-		
+		this.sidebarCP5.addLabel("inputThreshold")
+		.setPosition(this.leftAlign, yVal)
+		.setValue("Input \nThreshold");
 	} // addInputThresholdSlider
 
 	
