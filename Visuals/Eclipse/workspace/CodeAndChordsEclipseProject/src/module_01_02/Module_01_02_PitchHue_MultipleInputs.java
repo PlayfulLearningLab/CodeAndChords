@@ -74,7 +74,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	{
 //		this.input  = new Input();
 //		this.input	= new Input(16, new AudioContext(new PortAudioAudioIO()));
-		this.input	= new Input(3);
+		this.input	= new Input(2);
 		
 		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_02_PitchHueBackground");
 		
@@ -110,7 +110,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			
 			// divide the attack/release/transition value by 50
 			// and divide colorRange by that value to find the amount to add each 50 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 50);
+			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getAttRelTranVal(this.attRelTran) / 50);
 		}
 
 	} // setup()
@@ -281,7 +281,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 				
 				// divide the attack/release/transition value by 50
 				// and divide colorRange by that value to find the amount to add each 50 millis.
-				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getART(this.attRelTran) / 50);
+				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getAttRelTranVal(this.attRelTran) / 50);
 			}
 		} // if
 
