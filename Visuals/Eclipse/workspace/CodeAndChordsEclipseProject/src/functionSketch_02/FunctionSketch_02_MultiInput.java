@@ -15,9 +15,9 @@ public class FunctionSketch_02_MultiInput extends PApplet
 	int[]		yVals;
 	int[]		rectWidths;
 	int[]		rectHeights;
-	int			numInputs	= 5;
+	int			numInputs	= 12;
 	int[]		assigned;
-	boolean		assignAll	= false;
+	boolean		assignAll	= true;
 
 	Input		input;
 
@@ -105,8 +105,8 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			{
 				fill(0);
 				//				text(lineAssigned, (xVals[i] + 10), (yVals[i] + 15));
-				//				text(lineAmp, (xVals[i] + (this.width / 8)), (yVals[i] + 15));
-				text(0, (xVals[i] + (this.width / 8)), (yVals[i] + 15));
+				text(lineAmp, (xVals[i] + (this.width / 8)), (yVals[i] + 15));
+//				text(0, (xVals[i] + (this.width / 8)), (yVals[i] + 15));
 
 			}
 
