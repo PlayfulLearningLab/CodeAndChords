@@ -540,6 +540,11 @@ public abstract class ModuleTemplate {
 	
 	public float[] getCurHue()				{	return this.curHue;	}
 	
+	public float getAttRelTranVal(int attRelTranPos)
+	{
+		return this.attRelTranVals[attRelTranPos];
+	}
+	
 	public void setAttRelTranVal(int position, float val) {
 		if(position < 0 || position > this.attRelTranVals.length) {
 			throw new IllegalArgumentException("ModuleTemplate.setAttRelTranVal: position " + position + " is out of range; must be 0, 1, or 2.");
