@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Visuals",
+    "\\Visuals\\CommandLine",
+    "\\Visuals\\CommandLine\\windowsEmily",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings\\java",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings\\java\\c",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings\\java\\c\\build",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings\\java\\c\\build\\vs2010",
+    "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings\\java\\c\\build\\vs2010\\PortAudioJNI"
+  ],
+  "SelectedNode": "\\Visuals\\CommandLine\\windowsEmily\\portaudio\\bindings\\java\\c\\build\\vs2010\\PortAudioJNI\\PortAudioJNI.sln",
+  "PreviewInSolutionExplorer": false
+}

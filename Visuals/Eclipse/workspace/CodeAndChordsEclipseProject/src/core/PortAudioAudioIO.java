@@ -45,7 +45,7 @@ public class PortAudioAudioIO extends AudioIO {
 	
 	/**
 	 * Initializes JavaSound.
-	 */
+	 */ 
 	public boolean create() {
 		PortAudio.initialize();
 		
