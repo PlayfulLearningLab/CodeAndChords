@@ -10,13 +10,13 @@ import com.portaudio.TestBasic.SineOscillator;
 
 public class PlaySine
 {
-/*
+
 	public static void main( String[] args )
 	{
 		PlaySine player = new PlaySine();
 		player.play();
 	}
-	*/
+
 	/**
 	 * Write a sine wave to the stream.
 	 * @param stream
