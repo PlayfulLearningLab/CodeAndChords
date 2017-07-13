@@ -37,7 +37,7 @@ public abstract class ModuleTemplate {
 	private float	threshold;
 	private boolean	nowBelow;
 	
-	private int		attRelTranPos;		// 0 = attack, 1 = release, 2 = transition
+	private	int		attRelTranPos;		// 0 = attack, 1 = release, 2 = transition
 	private int 	checkpoint;		// For a timer that allows attack/release/transition sliders to be time-based.
 	private	float[]	attRelTranVals;
 	private float[] hueSatBrightnessMod; // This will store the hsb modulate values
@@ -51,11 +51,19 @@ public abstract class ModuleTemplate {
 
 	protected boolean	showScale;
 	
+	protected int		sliderHeight;
+	
 	protected int		lastSetSliderId;
 	protected int		lastSetTextfieldId;
 	protected int		lastSetColorSelectButtonId;
 	protected int		lastSetColorWheelId;
 	protected int		lastSetColorSelectTextfieldId;
+	
+	protected	int	nextSliderId;
+	protected	int	nextSTextfieldId;	// Textfield next to a slider
+	protected	int	nextButtonId;	// for Buttons that open a ColorWheel
+	protected	int	nextColorWheelId;		// ColorWheels
+	protected	int	nextCWTextfieldId;	// Textfield under a ColorWheels
 
 	
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
@@ -66,6 +74,8 @@ public abstract class ModuleTemplate {
 		
 		this.leftAlign	= (this.parent.width / 3) / 4;
 		this.leftEdgeX	= 0;
+		
+		this.sliderHeight	= 20;
 
 		this.curHue				= new float[3];
 		this.goalHue			= new float[3];
@@ -94,6 +104,12 @@ public abstract class ModuleTemplate {
 		this.bpm			= 120;
 		this.majMinChrom	= 2;	// chromatic
 		this.rangeOctave	= 3;
+		
+		this.nextSliderId		= 0;
+		this.nextSTextfieldId	= 100;
+		this.nextButtonId		= 200;
+		this.nextColorWheelId	= 300;
+		this.nextCWTextfieldId	= 400;
 		
 		this.initModuleTemplate();
 	} // constructor
