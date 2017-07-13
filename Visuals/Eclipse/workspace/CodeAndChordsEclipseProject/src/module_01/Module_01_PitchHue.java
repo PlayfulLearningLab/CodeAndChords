@@ -28,7 +28,6 @@ public class Module_01_PitchHue extends PApplet
 	public static void main(String[] args)
 	{
 
-		//Says cannot find or load main class???  This should not be an issue
 		PApplet.main("module_01.Module_01_PitchHue");
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
