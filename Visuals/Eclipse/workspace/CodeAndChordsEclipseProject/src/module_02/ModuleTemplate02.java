@@ -107,6 +107,15 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.setGroup("sidebarGroup");
 	} // addInputThresholdSlider
 
+	public void useSliderVal(int id, float val)
+	{
+		
+	} // useSliderVal
+	
+	protected int calculateNotePos(int pos)
+	{
+		return -1;
+	}
 	
 	public void controlEvent(ControlEvent controlEvent)
 	{
