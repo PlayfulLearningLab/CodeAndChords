@@ -1,4 +1,4 @@
-package module_01;
+package module_01_02;
 
 import processing.core.*;
 
@@ -8,7 +8,7 @@ import core.PortAudioAudioIO;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
-public class Module_01_PitchHue extends PApplet
+public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 {
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class Module_01_PitchHue extends PApplet
 	{
 
 		//Says cannot find or load main class???  This should not be an issue
-		PApplet.main("module_01.Module_01_PitchHue");
+		PApplet.main("module_01_02.Module_01_02_PitchHue_MultipleInputs");
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
@@ -72,9 +72,11 @@ public class Module_01_PitchHue extends PApplet
 
 	public void setup() 
 	{
-		this.input  = new Input();
+//		this.input  = new Input();
+//		this.input	= new Input(16, new AudioContext(new PortAudioAudioIO()));
+		this.input	= new Input(3);
 		
-		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_PitchHue");
+		this.moduleTemplate	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground");
 		
 		//		this.moduleTemplate.setCurKey("A", 2);
 		//		this.moduleTemplate.rainbow();
@@ -152,7 +154,7 @@ public class Module_01_PitchHue extends PApplet
 
 
 			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02.draw: newHuePos " + newHuePos + " is greater than colors.length (" + this.moduleTemplate.getColors().length + ") or less than 0.");
+				throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.draw: newHuePos " + newHuePos + " is greater than colors.length (" + this.moduleTemplate.getColors().length + ") or less than 0.");
 			}
 
 			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
@@ -321,7 +323,7 @@ public class Module_01_PitchHue extends PApplet
 	private int  arrayContains(int[] array, int element)
 	{
 		if(array == null) {
-			throw new IllegalArgumentException("Module_01_02.arrayContains(int[], int): array parameter is null.");
+			throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.arrayContains(int[], int): array parameter is null.");
 		}
 
 		//  println("array.length = " + array.length);
