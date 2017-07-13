@@ -134,12 +134,18 @@ public class PolarShapes extends PApplet
 		this.nextShape = this.copy(this.shapeLib.get("circle"));
 		
 		this.initializeControls();
+		
+		System.out.println("done with setup");
 
 	}
 
 	private void initializeControls()
 	{
+		System.out.println("CHECKPOINT 1");
+		
 		this.cp5 = new ControlP5(this);
+		
+		System.out.println("CHECKPOINT 2");
 
 		this.cp5.addGroup("shape");
 		this.cp5.addGroup("morph");
@@ -233,19 +239,13 @@ public class PolarShapes extends PApplet
 		.getCaptionLabel()
 		.hide();
 		
-		((Slider) this.cp5.addSlider("m1", 0, 15, 1, 2, 270, 296, 28)
-		.setGroup("shape"))
-		.setNumberOfTickMarks(16)
-		.snapToTickMarks(true)
-		.showTickMarks(false)
+		((Slider) this.cp5.addSlider("m1", 0, 15, 1, 2, 270, 296, 28))
+		.setGroup("shape")
 		.getCaptionLabel()
 		.hide();
 		
-		((Slider) this.cp5.addSlider("m2", 0, 15, 1, 2, 320, 296, 28)
-		.setGroup("shape"))
-		.setNumberOfTickMarks(16)
-		.snapToTickMarks(true)
-		.showTickMarks(false)
+		((Slider) this.cp5.addSlider("m2", 0, 15, 1, 2, 320, 296, 28))
+		.setGroup("shape")
 		.getCaptionLabel()
 		.hide();
 		
@@ -314,9 +314,8 @@ public class PolarShapes extends PApplet
 		
 		//Bring dropbox to front
 		
-		((ScrollableList) this.cp5.get("shapeSelect")
-		.bringToFront())
-		.setValue(0);
+		this.cp5.get("shapeSelect").bringToFront();
+		//.setValue(0);
 
 	}
 
@@ -422,14 +421,14 @@ public class PolarShapes extends PApplet
 		this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
 	}
 	
-	private void setSliders()
-	{
-		int index = (int) this.cp5.get("shapeSelect").getValue();
-		
+	private void setSliders(int index)
+	{		
 		System.out.println(index);
 		
 		this.cp5.get("a").setValue(this.superShapes[index][0]);
+		this.cp5.get("b").setValue(this.superShapes[index][1]);
 		this.cp5.get("m1").setValue(this.superShapes[index][2]);
+		this.cp5.get("m2").setValue(this.superShapes[index][3]);
 		this.cp5.get("n1").setValue(this.superShapes[index][4]);
 		this.cp5.get("n2").setValue(this.superShapes[index][5]);
 		this.cp5.get("n3").setValue(this.superShapes[index][6]);
@@ -438,8 +437,12 @@ public class PolarShapes extends PApplet
 
 	public void controlEvent(ControlEvent theEvent) throws InterruptedException
 	{
+		System.out.println("Starting ControlEvent()");
+		
 		String name = theEvent.getName();
-
+		
+		System.out.println("ControlEvent:	" + name);
+		
 		switch(name)
 		{
 		case "circle":
@@ -466,8 +469,6 @@ public class PolarShapes extends PApplet
 			
 			this.currentShape = this.copy(this.makeSuperShape(this.superShapes[index]));
 			this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
-			
-			//this.setSliders();
 			
 			break;
 
@@ -525,22 +526,24 @@ public class PolarShapes extends PApplet
 			
 		case "a":
 			this.updateSuperShape();
-			this.cp5.get("b").setValue(this.cp5.getValue("a"));
+			//this.cp5.get("b").setValue(this.cp5.getValue("a"));
 			break;
 			
 		case "b":
 			this.updateSuperShape();
-			this.cp5.get("a").setValue(this.cp5.getValue("b"));
+			//this.cp5.get("a").setValue(this.cp5.getValue("b"));
 			break;
 			
 		case "m1":
+			//this.cp5.get("m1").setValue((int) this.cp5.getValue("m1"));
 			this.updateSuperShape();
-			this.cp5.get("m2").setValue(this.cp5.getValue("m1"));
+			//this.cp5.get("m2").setValue(this.cp5.getValue("m1"));
 			break;
 			
 		case "m2":
+			//this.cp5.get("m2").setValue((int) this.cp5.getValue("m2"));
 			this.updateSuperShape();
-			this.cp5.get("m1").setValue(this.cp5.getValue("m2"));
+			//this.cp5.get("m1").setValue(this.cp5.getValue("m2"));
 			break;
 			
 		case "n1":
