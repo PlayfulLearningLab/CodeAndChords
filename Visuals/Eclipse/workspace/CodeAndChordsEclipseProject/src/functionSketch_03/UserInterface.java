@@ -24,6 +24,8 @@ public class UserInterface extends PApplet {
 	private float rectWidth;
 	private float rectPosX;
 	private float rectPosY;
+	
+	private float morph;
 
 
 
@@ -185,6 +187,17 @@ public class UserInterface extends PApplet {
 		.setPosition(30,300)
 		.setSize(100,30)
 		.setLabel("fill screen");
+		
+		this.x.addButton("morph")
+		.setGroup("shape")
+		.setPosition(30,350)
+		.setSize(100,30)
+		.setLabel("morph");
+		
+		this.x.addSlider("morphSlider", -3f, 3, 0, 150, 350, 120, 30)
+		.setGroup("shape")
+		.getCaptionLabel()
+		.setVisible(false);
 
 		this.x.getGroup("menu")
 		.setVisible(false);
@@ -219,6 +232,10 @@ public class UserInterface extends PApplet {
 		case "circle":
 			ellipse(this.displayPos(this.rectPosX+(this.rectWidth/2)),this.rectPosY+(this.rectHeight/2),this.displaySize(this.rectWidth),this.rectWidth);
 			break;
+			
+		case "morph":
+			this.drawMorph(this.displayPos(this.rectPosX),this.rectPosY,this.displaySize(this.rectWidth),this.rectHeight);
+			break;
 
 		default:
 
@@ -226,6 +243,37 @@ public class UserInterface extends PApplet {
 		}
 
 
+	}
+	
+	private void drawMorph(float xPos, float yPos, float width, float height)
+	{
+		float r = width;
+		
+		beginShape();
+		
+		for(float theta = 0; theta <= 2 * PI + .1; theta += .1f )
+		{
+			float x = rad(theta, r) * cos(theta);
+			float y = rad(theta, r) * sin(theta);
+			
+			x += (xPos + width/2);
+			y += (yPos + height/2);
+			
+			vertex(x,y);
+		}
+		
+		endShape();
+		
+	}
+	
+	private float rad(float theta, float r)
+	{
+		float circle = r;
+		float square = min( abs(r/cos(theta)), abs(r/sin(theta)) );
+		
+		float output = square + (circle - square)*this.morph;
+		
+		return output;
 	}
 	
 	private void updatePositionSliders()
@@ -336,7 +384,8 @@ public class UserInterface extends PApplet {
 			this.x.getController("heightSlider").setValue(this.fullScreenY);
 			this.x.getController("widthSlider").setValue(this.fullScreenX);
 			
-			
+		case "morph":
+			this.shape = "morph";
 			break;
 
 		case "heightSlider":
@@ -363,6 +412,10 @@ public class UserInterface extends PApplet {
 
 			this.updatePositionSliders();
 			
+			break;
+			
+		case "morphSlider":
+			this.morph = this.x.getValue("morphSlider");
 			break;
 
 		default:
