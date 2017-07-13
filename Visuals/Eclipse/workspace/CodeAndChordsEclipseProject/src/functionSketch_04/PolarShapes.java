@@ -1,4 +1,4 @@
-package functionSketch_03;
+package functionSketch_04;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -107,7 +107,7 @@ public class PolarShapes extends PApplet
 
 	public static void main(String[] args)
 	{
-		PApplet.main("functionSketch_03.PolarShapes");
+		PApplet.main("functionSketch_04.PolarShapes");
 	}
 
 	public void settings()
