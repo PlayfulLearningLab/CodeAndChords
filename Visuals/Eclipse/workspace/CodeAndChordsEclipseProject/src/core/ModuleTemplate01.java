@@ -516,7 +516,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int	labelWidth		= 70;
 
 		int	sliderWidth		= 170;
-		int	sliderHeight	= 20;
 
 		int	spacer			= 5;
 		int	tfWidth			= 40;
@@ -542,7 +541,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				transitionY
 		}; // yVals
 
-		int	id	= 0;
+//		int	id	= 0;
 		int	lowRange;
 		int	highRange;
 		int	startingValue;
@@ -569,28 +568,28 @@ public class ModuleTemplate01 extends ModuleTemplate {
 //				this.attackReleaseTransition[i - 1]	= startingValue;
 			}
 
-			this.sidebarCP5.addSlider("slider" + id)
+			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 			.setPosition(this.leftAlign, yVals[i])
-			.setSize(sliderWidth, sliderHeight)
+			.setSize(sliderWidth, this.sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(lowRange, highRange)
 			.setValue(startingValue)
 			.setLabelVisible(false)
 			.setGroup("sidebarGroup")
-			.setId(id);
+			.setId(this.nextSliderId);
 
-			id	= id + 1;
+			this.nextSliderId	= this.nextSliderId + 1;
 
-			this.sidebarCP5.addTextfield("textfield" + id)
+			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 			.setPosition(this.leftAlign + sliderWidth + spacer, yVals[i])
-			.setSize(tfWidth, sliderHeight)
-			.setText(this.sidebarCP5.getController("slider" + (id - 1)).getValue() + "")
+			.setSize(tfWidth, this.sliderHeight)
+			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 			.setLabelVisible(false)
 			.setAutoClear(false)
 			.setGroup("sidebarGroup")
-			.setId(id);
+			.setId(this.nextSTextfieldId);
 
-			id	= id + 1;
+			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 
 		} // for
 
@@ -738,7 +737,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		};
 		float[]		startingVals	= new float[]	{ 120, 1	};
 		
-		int	id	= 20;
+//		int	id	= 20;
 		
 		for(int i = 0; i < labels.length; i++)
 		{
@@ -749,7 +748,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			.setGroup("guideToneBackground")
 			.setValue(labelVals[i]);
 
-			this.sidebarCP5.addSlider("slider" + id)
+			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 			.setPosition(listSliderX, yVals[i])
 			.setSize(sliderWidth, height)
 			.setSliderMode(Slider.FLEXIBLE)
@@ -757,21 +756,21 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			.setValue(startingVals[i])
 			.setLabelVisible(false)
 			.setGroup("guideToneBackground")
-			.setId(id);
+			.setId(this.nextSliderId);
 			
-			id	= id + 1;
+			this.nextSliderId	= this.nextSliderId + 1;
 
-			this.sidebarCP5.addTextfield("textfield" + id)
+			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 			.setPosition(textfieldX, yVals[i])
 			.setSize(textfieldWidth, height)
-			.setText(this.sidebarCP5.getController("slider" + (id - 1)).getValue() + "")
+			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 			.setLabelVisible(false)
 			.setAutoClear(false)
 			.setGroup("guideToneBackground")
-			.setId(id)
+			.setId(this.nextSTextfieldId)
 			.getCaptionLabel().setVisible(false);
 			
-			id	= id + 1;
+			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for
 		
 
@@ -1228,7 +1227,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int	labelWidth		= 70;
 
 		int	sliderWidth		= 170;
-		int	sliderHeight	= 20;
 
 		int	spacer			= 5;	// distance between slider and corresponding textfield
 		int	tfWidth			= 40;	// width of Textfields
@@ -1248,26 +1246,26 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			.setValue(values[i]);
 
 			//	- Slider:
-			this.sidebarCP5.addSlider("slider" + id)
+			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 			.setPosition(this.leftAlign, hsb[i])
-			.setSize(sliderWidth, sliderHeight)
+			.setSize(sliderWidth, this.sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(-1, 1)
 			.setValue(0)
 			.setGroup("sidebarGroup")
-			.setId(id);
+			.setId(this.nextSliderId);
 
-			id	= id + 1;
+			this.nextSliderId	= this.nextSliderId + 1;
 
-			this.sidebarCP5.addTextfield("textfield" + id)
+			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 			.setPosition(this.leftAlign + sliderWidth + spacer, hsb[i])
-			.setSize(tfWidth, sliderHeight)
-			.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
+			.setSize(tfWidth, this.sliderHeight)
+			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId-100)).getValue() + "")
 			.setAutoClear(false)
 			.setGroup("sidebarGroup")
-			.setId(id);
+			.setId(this.nextSTextfieldId);
 
-			id	= id + 1;
+			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for   
 	}//the HSB Sliders Heavily Adapted from modSlider Method
 
@@ -1282,7 +1280,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int	labelWidth		= 70;
 
 		int	sliderWidth		= 170;
-		int	sliderHeight	= 20;
 
 		int	spacer			= 5;	// distance between slider and corresponding textfield
 		int	tfWidth			= 40;	// width of Textfields
@@ -1290,7 +1287,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		String[]	names	= new String[] { "redModLabel", "greenModLabel", "blueModLabel" };
 		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
-		int	id	= 8;		// this id picks up where the transition textfield - "textfield7" - left off.
+//		int	id	= 8;		// this id picks up where the transition textfield - "textfield7" - left off.
 
 		for(int i = 0; i < modulateYVals.length; i++)
 		{
@@ -1302,28 +1299,28 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			.setValue(values[i]);
 
 			//	- Slider:
-			this.sidebarCP5.addSlider("slider" + id)
+			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 			.setPosition(this.leftAlign, modulateYVals[i])
-			.setSize(sliderWidth, sliderHeight)
+			.setSize(sliderWidth, this.sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
 //			.setRange(-255, 255)
 //			.setValue(0)
 			//.setLabelVisible(false)
 			.setGroup("sidebarGroup")
-			.setId(id);
+			.setId(this.nextSliderId);
 			
-			id	= id + 1;
+			this.nextSliderId	= this.nextSliderId + 1;
 
 			//	- Textlabel:
-			this.sidebarCP5.addTextfield("textfield" + id)
+			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 			.setPosition(this.leftAlign + sliderWidth + spacer, modulateYVals[i])
-			.setSize(tfWidth, sliderHeight)
-			.setText(this.sidebarCP5.getController("slider" + (id-1)).getValue() + "")
+			.setSize(tfWidth, this.sliderHeight)
+			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId-100)).getValue() + "")
 			.setAutoClear(false)
 			.setGroup("sidebarGroup")
-			.setId(id);
+			.setId(this.nextSTextfieldId);
 
-			id	= id + 1;
+			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for
 	} // addModulateSliders
 
@@ -2142,7 +2139,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
-//		System.out.println("ModuleTemplate: theControlEvent.getController() = " + controlEvent.getController());
+		System.out.println("ModuleTemplate01: theControlEvent.getController() = " + controlEvent.getController());
 
 		int	id	= controlEvent.getController().getId();
 /*		// Play button:
@@ -2209,16 +2206,17 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		{
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
-/*
+*/
 		//		int	sliderIDCutoff	= this.lastTextfieldId;
 
-		// Sliders (sliders have even id num and corresponding textfields have the next odd number)
-		if(id % 2 == 0 && id < this.lastTextfieldId)
+		// Sliders (sliders have id num < 100 and corresponding textfields have slider id + 100)
+//		if(id % 2 == 0 && id < this.lastTextfieldId)
+		if(id > -1 && id < 100)
 		{
 			try
 			{
 				Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
-				Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 1));
+				Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 100));
 				String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
 
 				curTextfield.setText(sliderValString);
@@ -2232,36 +2230,39 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			}
 
 			// Attack, Release, and Transition:
-			if(id == 2 || id == 4 || id == 6)
+			if(id == 1 || id == 2 || id == 3)
 			{
-				int	pos	= (id / 2) - 1;
+//				int	pos	= (id / 2) - 1;
+				int	pos	= id - 1;
 //				this.attackReleaseTransition[pos]	= sliderValFloat;
 				super.setAttRelTranVal(pos, sliderValFloat);
 			}
 
 			// Red Modulate/Green Modulate/Blue Modulate:
-			if(id == 8 || id == 10 || id == 12)
+			if(id == 4 || id == 5 || id == 6)
 			{
-				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
+//				int	pos	= (id / 2) - 4;		
+				int	pos	= id - 4;	// red = 0, green = 1, blue = 2
 				this.redGreenBlueMod[pos]	= sliderValFloat;
 
 				this.applyColorModulate(super.getColors(), this.originalColors);
 			} // red/green/blue mod
 
-			if(id == 14 || id == 16 || id == 18)
+			if(id == 7 || id == 8 || id == 9)
 			{
-				int pos = (id/2)-7;
+//				int pos = (id/2)-7;
+				int pos = id - 7;
+				
 				super.setHueSatBrightnessMod(pos, sliderValFloat);
-
 				super.applyHSBModulate(getColors(), originalColors);
 			}//hsb mod
 
-			if(id == 20)
+			if(id == 10)
 			{
 				this.bpm	= Math.max(Math.min((int)sliderValFloat, 240), 0);
 			}
 			
-			if(id == 22)
+			if(id == 11)
 			{
 				this.instrument.setVolume(Math.max(Math.min(sliderValFloat, 5), 0));
 			}
@@ -2286,10 +2287,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 
 		// Textfields
-		if(id % 2 == 1 && id <= this.lastTextfieldId && id > 0)
+		if(id > 99 && id < 200)
 		{
 			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + id);
-			Slider		curSlider		= (Slider)this.sidebarCP5.getController("slider" + (id - 1));
+			Slider		curSlider		= (Slider)this.sidebarCP5.getController("slider" + (id - 100));
 
 			try	{
 				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
