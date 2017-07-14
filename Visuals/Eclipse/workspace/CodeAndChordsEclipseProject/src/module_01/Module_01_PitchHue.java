@@ -97,7 +97,7 @@ public class Module_01_PitchHue extends PApplet
 	{
 		try
 		{
-			//"; this.moduleTemplate = " + this.moduleTemplate);
+//			System.out.println("theControlEvent = " + theControlEvent);
 			this.moduleTemplate.controlEvent(theControlEvent);	
 		} catch(Exception e)
 		{

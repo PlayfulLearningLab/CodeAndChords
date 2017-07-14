@@ -94,6 +94,15 @@ public abstract class ModuleTemplate {
 	protected	int	firstColorSelectId	= -1;
 	
 	protected	int	lastColorSelectId	= -1;
+	
+	protected	int	thresholdSliderId	= -1;
+	
+	protected	int	firstARTSliderId	= -1;
+	protected	int	firstHSBSliderId	= -1;
+	protected	int	firstRGBSliderId	= -1;
+	protected	int	bpmSliderId			= -1;
+	protected	int	volumeSliderId		= -1;
+
 
 	/**
 	 * DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.
@@ -362,7 +371,7 @@ public abstract class ModuleTemplate {
 			this.checkpoint = (this.parent.millis() + 50);
 		} // if - adding every 50 millis
 
-		
+/*		
 		System.out.println("curHue: " + this.curHue[0] + ", " + 
 				+ this.curHue[1] + ", "
 				+ this.curHue[2]);
@@ -374,7 +383,7 @@ public abstract class ModuleTemplate {
 		System.out.println("colorAdd: " + this.colorAdd[0] + ", " + 
 				+ this.colorAdd[1] + ", "
 				+ this.colorAdd[2]);
-		 
+*/		 
 
 		float	lowBound;
 		float	highBound;
@@ -419,8 +428,6 @@ public abstract class ModuleTemplate {
 			{
 				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
 				
-				System.out.println("attRelTranVal[" + this.attRelTranPos + "] = " + this.attRelTranVals[this.attRelTranPos]);
-
 				// divide the attack/release/transition value by 50
 				// and divide colorRange by that value to find the amount to add each 50 millis.
 				this.colorAdd[i]	= this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50);
@@ -669,8 +676,35 @@ public abstract class ModuleTemplate {
 				curTextfield.setText(sliderValString);
 
 				float	sliderValFloat	= Float.parseFloat(sliderValString);
+				
 
-				this.useSliderVal(id, sliderValFloat);
+				// Hue/Saturation/Brightness modulate
+				if(this.firstHSBSliderId != -1 && 
+						id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
+				{
+					//			int pos = (id/2)-7;
+					int pos = id - this.firstHSBSliderId;
+
+					this.setHueSatBrightnessMod(pos, sliderValFloat);
+					this.applyHSBModulate(this.colors, originalColors);
+				}//hsb mod
+				
+				// Red Modulate/Green Modulate/Blue Modulate:
+				if(this.firstRGBSliderId != -1 &&
+						id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
+				{
+					//			int	pos	= (id / 2) - 4;		
+					int	pos	= id - this.firstRGBSliderId;	// red = 0, green = 1, blue = 2
+
+					this.redGreenBlueMod[pos]	= sliderValFloat;
+					this.applyColorModulate(this.colors, this.originalColors);
+				} // red/green/blue mod
+
+				else
+				{
+					this.useSliderVal(id, sliderValFloat);
+				}
+				
 			} catch (NullPointerException npe) {
 				System.out.println("ModuleTemplate.controlEvent - sliders: caught NullPoint - curTextfield = " + (Textfield)this.sidebarCP5.getController("textfield" + (id + 1)));
 			} // catch
@@ -752,9 +786,7 @@ public abstract class ModuleTemplate {
 
 			// canvas color (does not affect notes):
 			if((id % 100) == (this.canvasColorSelectId % 100))
-			{
-				System.out.println("	id % 100 = " + (id % 100));
-			
+			{			
 				this.canvasColor[0]	= color.getRed();
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
@@ -762,6 +794,7 @@ public abstract class ModuleTemplate {
 
 			else
 			{
+				System.out.println("About to pass calculateNotePos an id of " + id);
 				notePos	= this.calculateNotePos(id);
 
 				// error checking
@@ -782,7 +815,7 @@ public abstract class ModuleTemplate {
 		// ColorWheel Textfields
 		if(id > 399 && id < 500)
 		{
-
+			System.out.println("setting the Textfields called this");
 			id	= controlEvent.getId();
 			// Getting color value from the Textfield:
 			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
@@ -854,15 +887,15 @@ public abstract class ModuleTemplate {
 	 */
 	protected void resetModulateSlidersTextfields()
 	{
-		int	id	= this.firstColorModSliderId;
-		
-		System.out.println("resetModulateSlidersTextfields: id = " + id);
+		int	hsbId	= this.firstHSBSliderId;
+		int	rgbId	= this.firstRGBSliderId;
 
-		for(int i = 0; i < 6; i++)
+		for(int i = 0; i < 3; i++)
 		{
-			this.sidebarCP5.getController("slider" + id).setValue(0);
-
-			id	= id + 1;
+			this.sidebarCP5.getController("slider" + hsbId).setValue(0);
+			this.sidebarCP5.getController("slider" + rgbId).setValue(0);
+			hsbId	= hsbId + 1;
+			rgbId	= rgbId + 1;
 		} // for
 
 	} // resetModulateSlidersTextfields
