@@ -230,13 +230,17 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	// 		Button's: id % 3 == 0
 	// 		ColorWheel's: id % 3 == 1
 	// 		TextField's: id % 3 == 2
-	private	int			lastTextfieldId		= 23;
-	private	int			volumeSliderId		= 22;
-	private	int			volumeTextfieldId	= lastTextfieldId;
-	private	int			firstCustomColorId	= 24;
+//	private	int			lastTextfieldId		= 23;
+//	private	int			volumeSliderId		= 22;
+//	private	int			volumeTextfieldId	= lastTextfieldId;
+	
+	private	int			firstCustomColorId	= -1;
+	
 	//	private	int			canvasColorSelectId	= 63;
 	//	private	int			firstColorSelectId;
 	//	private	int			lastColorSelectId;
+//	private	int	firstHSBSliderId;
+//	private	int	firstRGBSliderId;
 
 	public ModuleTemplate01(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -412,8 +416,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.fillOriginalColors();
 		this.fillHSBColors();
 		this.updateColors(this.curColorStyle);
-
-		System.out.println("just about to add the sliders; sidebarCP5 = " + this.sidebarCP5);
 
 		this.addCustomPitchColor(textYVals[15], noteYVals);
 
@@ -933,20 +935,20 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		//		int	id	= this.nextButtonId;
 
+		this.canvasColorSelectId	= this.nextButtonId;
+		this.firstColorSelectId		= this.canvasColorSelectId;
+		
 		for(int i = 0; i < labels.length; i++)
 		{
-			// First button added is canvas color select:
-			if(i == 0)	
-			{	
-				this.canvasColorSelectId	= this.nextButtonId;
-				this.firstColorSelectId		= this.canvasColorSelectId;
-			} // if - first button
-
 			// Last button:
 			if(i == (labels.length - 1))
 			{
 				this.lastColorSelectId	= this.nextButtonId;
 			} // if - last button
+			
+			System.out.println("addColorSelectButtons: this.nextButtonId = " + this.nextButtonId);
+			System.out.println("addColorSelectButtons: this.nextColorWheelId = " + this.nextColorWheelId);
+			System.out.println("addColorSelectButtons: this.nextCWTextfieldId = " + this.nextCWTextfieldId);
 
 			this.sidebarCP5.addButton("button" + this.nextButtonId)
 			.setPosition(xVals[i], colorSelectY)
@@ -1032,6 +1034,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setValue("Custom Pitch Color");
 
+		this.firstCustomColorId	= this.nextButtonId;
+		
 		// Note Buttons, ColorWheels and corresponding Textfields will have id's of 24 or over;
 		// Button id % 3 == 0; ColorWheel id % 3 == 1, Textfield id % 3 == 2.
 		int	namePos	= 0;
@@ -1225,7 +1229,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		//		int	id	= 14;		// this id picks up where the modulate sliders leave off
 
-		this.firstColorModSliderId	= this.nextSliderId;
+		this.firstHSBSliderId	= this.nextSliderId;
 
 		for(int i = 0; i < hsb.length; i++)
 		{
@@ -1248,6 +1252,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			this.nextSliderId	= this.nextSliderId + 1;
 
+			// - Textfield:
 			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 			.setPosition(this.leftAlign + sliderWidth + spacer, hsb[i])
 			.setSize(tfWidth, this.sliderHeight)
@@ -1281,6 +1286,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		//		int	id	= 8;		// this id picks up where the transition textfield - "textfield7" - left off.
 
+		this.firstRGBSliderId	= this.nextSliderId;
 		for(int i = 0; i < modulateYVals.length; i++)
 		{
 			// - Textlabel:
@@ -1340,13 +1346,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
 		{
 			//			// if avoids errors during instantiation:
-			if(this.sidebarCP5.getController("button69") != null)
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
 			{
-				this.sidebarCP5.getController("button69").setLock(true);
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(true);
 			}
-			if(this.sidebarCP5.getController("button72") != null)
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
 			{
-				this.sidebarCP5.getController("button72").setLock(true);
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
 			}
 
 		}
@@ -1372,13 +1378,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			// Unlock 2nd Color Button, but keep 3rd Color locked:
 			// if avoids errors during instantiation:
-			if(this.sidebarCP5.getController("button69") != null)
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
 			{
-				this.sidebarCP5.getController("button69").setLock(false);
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(false);
 			}
-			if(this.sidebarCP5.getController("button72") != null)
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
 			{
-				this.sidebarCP5.getController("button72").setLock(true);
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
 			}
 		} // Dichromatic
 
@@ -1414,13 +1420,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			// Unlock all for Trichromatic:
 			// if avoids errors during instantiation:
-			if(this.sidebarCP5.getController("button69") != null)
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
 			{
-				this.sidebarCP5.getController("button69").setLock(false);
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(false);
 			}
-			if(this.sidebarCP5.getController("button72") != null)
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
 			{
-				this.sidebarCP5.getController("button72").setLock(false);
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(false);
 			}
 		} // Trichromatic
 
@@ -1429,15 +1435,16 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		{
 			// Populate the Textfields with the current colors in the colors array:
 			// (textfield id's start at 23 and go up by 3)
-			int	id	= 26;
+			int	id	= (this.firstCustomColorId % 100) + 400;	// CWTextfields start at 400
 			Textfield	curTextfield;
 
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
 			{
-
 				curTextfield 	= (Textfield)this.sidebarCP5.getController("textfield" + id);
+				System.out.println("curTextfield = " + curTextfield);
 				curTextfield.setText("rgb(" + this.colors[colorPos][0] + ", " + this.colors[colorPos][1] + ", " + this.colors[colorPos][2] + ")");
-				id	= id + 3;
+				curTextfield.submit();
+				id	= id + 1;
 			} // for - colorPos
 
 			// Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders:
@@ -2126,6 +2133,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	public void useSliderVal(int id, float val)
 	{
 		// TODO - error checking
+//		System.out.println("useSliderVal: id = " + id);
 
 		// Threshold:
 		if(id == 0)
@@ -2141,7 +2149,17 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			//			this.attackReleaseTransition[pos]	= sliderValFloat;
 			this.setAttRelTranVal(pos, val);
 		}
+/*
+		// Hue/Saturation/Brightness modulate
+		if(id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
+		{
+			//			int pos = (id/2)-7;
+			int pos = id - 7;
 
+			this.setHueSatBrightnessMod(pos, val);
+			this.applyHSBModulate(getColors(), originalColors);
+		}//hsb mod
+		
 		// Red Modulate/Green Modulate/Blue Modulate:
 		if(id == 4 || id == 5 || id == 6)
 		{
@@ -2152,15 +2170,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.applyColorModulate(this.colors, this.originalColors);
 		} // red/green/blue mod
 
-		if(id == 7 || id == 8 || id == 9)
-		{
-			//			int pos = (id/2)-7;
-			int pos = id - 7;
-
-			this.setHueSatBrightnessMod(pos, val);
-			this.applyHSBModulate(getColors(), originalColors);
-		}//hsb mod
-
+*/
 		if(id == 10)
 		{
 			this.bpm	= Math.max(Math.min((int)val, 240), 0);
@@ -2181,7 +2191,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
-		System.out.println("ModuleTemplate01: theControlEvent.getController() = " + controlEvent.getController());
+//		System.out.println("ModuleTemplate01: theControlEvent.getController() = " + controlEvent.getController());
 
 		int	id	= controlEvent.getController().getId();
 
@@ -2582,6 +2592,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 
+			System.out.println("curToggle = " + curToggle.internalValue());
 			/*
 			if(this.originalColors == null) {
 				this.originalColors = new float[super.colors.length][3];
@@ -2618,8 +2629,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				// switch off the ones that weren't just clicked, but keep the current one on:
 				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
 				{
+					System.out.println("setting " + toggleArray[i] + " to false");
 					toggleArray[i].setState(false);
 				} else {
+					System.out.println("setting " + toggleArray[i] + " to true");
 					toggleArray[i].setState(true);
 				}
 
@@ -2633,6 +2646,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.rainbow();
 			}
 
+			// Here, fill the CW and TF with the current colors?
 
 			// These calls have to come after all the colors have been set,
 			// so that originalColors and hsbColors can be filled with the latest:
@@ -2786,9 +2800,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @return	the position in colors that is to be changed
 	 */
 	protected	int	calculateNotePos(int id)
-	{
+	{		
 		int	notePos;
-
+/*
 		//		notePos	= ((id + 2) / 3) - 9;
 		//		notePos	= (notePos + keyAddVal - 3 + this.colors.length) % this.colors.length;
 
@@ -2800,21 +2814,33 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// subtracting 8 brings A to 0, A# to 1, B to 2, etc;
 		// subtracting curKeyEnharmonicOffset adjusts for the particular key;
 		// adding 12 and modding by 12 avoids negative numbers.
-		notePos	= ( ( id / 3) - 8 - this.curKeyEnharmonicOffset + 12 ) % 12;
-
-		if(id > 63)
+		notePos	= ( ( id / 3 ) - 8 - this.curKeyEnharmonicOffset + 12 ) % 12;
+*/
+		// Modding by 100 brings all into the 0-100 range - button range;
+		// subtracting curKeyEnharmonicOffset adjusts for the particular key;
+		// adding 12 and modding by 12 avoids negative numbers.
+		id	= id % 100;
+		notePos	= ( id - (this.firstCustomColorId % 100) - this.curKeyEnharmonicOffset + 12) % 12;
+		
+		
+		System.out.println("calculateNotePos: notePos = " + notePos);
+		
+		
+		int	modCanvasId	= this.canvasColorSelectId % 100;
+		if(id >= modCanvasId && id < (modCanvasId + 4))
 		{
+			System.out.println("does it think we are in this if?");
 			// Canvas:
-			if(id == 64)	{
+			if(id == modCanvasId)	{
 				throw new IllegalArgumentException("ModuleTemplate.calculateNotePos(int): id 64 should not be passed to this function, as it does not correspond to a note.");
 			}
 
 
 			// Tonic:
-			if(id == 66)	{	notePos	= 0;	}
+			if(id == (modCanvasId + 1))	{	notePos	= 0;	}
 
 			// 2nd Color:
-			if(id == 69)
+			if(id == (modCanvasId + 2))
 			{
 				if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
 				{
@@ -2835,7 +2861,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			} // 2nd color
 
 			//3rd color:
-			if(id == 72)
+			if(id == (modCanvasId + 3))
 			{
 				// only applies to trichromatic:
 				if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
@@ -2852,6 +2878,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			} // 3rd color
 		} // id > 63
 
+		System.out.println("calculateNotePos: notePos = " + notePos);
 		return	notePos;
 	} // calculateNotePos
 
