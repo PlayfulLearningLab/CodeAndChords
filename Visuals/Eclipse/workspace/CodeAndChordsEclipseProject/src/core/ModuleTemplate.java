@@ -794,7 +794,6 @@ public abstract class ModuleTemplate {
 
 			else
 			{
-				System.out.println("About to pass calculateNotePos an id of " + id);
 				notePos	= this.calculateNotePos(id);
 
 				// error checking
@@ -815,8 +814,9 @@ public abstract class ModuleTemplate {
 		// ColorWheel Textfields
 		if(id > 399 && id < 500)
 		{
-			System.out.println("setting the Textfields called this");
 			id	= controlEvent.getId();
+			System.out.println("controlEvent: event for a ColorWheel Textfield, id " + id);
+
 			// Getting color value from the Textfield:
 			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
 			for(int i = 0; i < tfValues.length; i++)
@@ -857,8 +857,9 @@ public abstract class ModuleTemplate {
 
 					else
 					{
-						int	notePos	= this.calculateNotePos(id);
-
+						// TODO - totally error checking! Don't forget to change this back!!
+//						int	notePos	= this.calculateNotePos(id);
+						int	notePos	= 0;
 
 						// error checking
 						if(notePos < 0 || notePos > this.colors.length)	{
@@ -914,6 +915,7 @@ public abstract class ModuleTemplate {
 		return colors;
 	}
 
+	// TODO: does this work or just create a pointer?
 	public void setColors(float[][] colors) {
 		this.colors = colors;
 	}
