@@ -67,19 +67,23 @@ import processing.core.PImage;
  */
 public class ModuleTemplate01 extends ModuleTemplate {
 
-	private	static	float	CS_RAINBOW	= 1;
-	private	static	float	CS_DICHROM	= 2;
-	private	static	float	CS_TRICHROM	= 3;
-	private  static	float	CS_CUSTOM	= 4;
+	// TODO: change to private after testing
+	public	static	float	CS_RAINBOW	= 1;
+	public	static	float	CS_DICHROM	= 2;
+	public	static	float	CS_TRICHROM	= 3;
+	public  static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
 	//	private boolean menuVis = false;
+	
+	// TODO: get rid of this (use local variable) later:
+	public float[][] trichromColors;
 
 	/**
 	 * DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.
 	 */
 	//	private	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
 
-	String  inputFile;
+//	String  inputFile;
 
 	private	PApplet		parent;
 	//	public ControlP5 	nonSidebarCP5;
@@ -95,11 +99,11 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	//	private	int			majMinChrom;
 	//	private	String		curKey;
-	private	int			scaleLength;
-	private int 		curKeyOffset;
-	private int 		curKeyEnharmonicOffset;
+//	private	int			scaleLength;
+//	private int 		curKeyOffset;
+//	private int 		curKeyEnharmonicOffset;
 	// to line pitches up with the correct scale degree of the current key.
-
+/*
 	private	final String[]	notesAtoAbFlats	= new String[] { 
 			"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"
 	};
@@ -107,19 +111,19 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	private final String[]	notesAtoGSharps	= new String[] { 
 			"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
 	};
-
-	// ALL notes here
+*/
+/*	// ALL notes here
 	private	final String[]	allNotes	= new String[] {
 			"A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab"
 	}; // allNotes
-
+*/
 	// Positions in filenames String[] here
-	private	final int[]	enharmonicPos	= new int[] {
+/*	private	final int[]	enharmonicPos	= new int[] {
 			0, 1, 1, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11
 	}; // enharmonicPos
-
+*/
 	// File names here
-	private	final	String[][] filenames	= new String[][] {
+/*	private	final	String[][] filenames	= new String[][] {
 		// major:
 		new String[] {
 				"Major/A Major.wav",
@@ -166,7 +170,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				"Chromatic/G#_Ab Chromatic.wav"
 		}
 	}; // filenames
-
+*/
 	private	final	int[][] scaleDegrees = new int[][] {
 		// major:
 		new int[]  { 0, 2, 4, 5, 7, 9, 11
@@ -234,7 +238,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	//	private	int			volumeSliderId		= 22;
 	//	private	int			volumeTextfieldId	= lastTextfieldId;
 
-	private	int			firstCustomColorId	= -1;
+//	private	int			firstCustomColorId	= -1;
 
 	//	private	int			canvasColorSelectId	= 63;
 	//	private	int			firstColorSelectId;
@@ -513,7 +517,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @param releaseY		y value of the Release slider group
 	 * @param transitionY	y value of the Transition slider group
 	 */
-	private void addSliders(int thresholdY, int attackY, int releaseY, int transitionY)
+/*	private void addSliders(int thresholdY, int attackY, int releaseY, int transitionY)
 	{
 		int	labelX			= 10;
 		int	labelWidth		= 70;
@@ -601,7 +605,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		//		this.setthreshold(10);
 
 	} // addSliders
-
+*/
 
 
 	/**
@@ -610,7 +614,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param keyY	y value of the menu and buttons.
 	 */
-	private void addKeySelector(int	keyY)
+/*	private void addKeySelector(int	keyY)
 	{
 
 		int	labelX			= 10;
@@ -632,7 +636,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		 */
 
 		// "Key" Textlabel
-		this.sidebarCP5.addTextlabel("key")
+/*		this.sidebarCP5.addTextlabel("key")
 		.setPosition(labelX, keyY + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Key");
@@ -689,14 +693,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 
 	} // addKeySelector
-
+*/
 	/**
 	 * TODO these comments - perhaps explain placement of guideToneY (should it be the same number as
 	 * is sent to addKeySelector?)
 	 * 
 	 * @param guideToneY
 	 */
-	private void addGuideTonePopout(int guideToneY)
+/*	private void addGuideTonePopout(int guideToneY)
 	{
 		// "Pop-out with range drop-down and envelope preset Buttons" and BPM.
 
@@ -836,7 +840,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		//		this.instrument.setVolume(0.2f);
 
 	} // addGuideTonePopout
-
+*/
 
 	/**
 	 * Method called during instantiation to initialize the color style Toggles
@@ -1214,7 +1218,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setVisible(false);
 	} // addNoteColorSelectors
-
+/*
 	private void addHSBSliders(int[] hsb)
 	{
 		int	labelX			= 10;
@@ -1266,13 +1270,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for   
 	}//the HSB Sliders Heavily Adapted from modSlider Method
-
+*/
 	/**
 	 * Method called during instantiation, to initialize the color modulate sliders.
 	 * 
 	 * @param modulateYVals	int[] of the y values of the red, green, and blue sliders, respectively.
 	 */
-	private void addModulateSliders(int[] modulateYVals)
+/*	private void addModulateSliders(int[] modulateYVals)
 	{
 		int	labelX			= 10;
 		int	labelWidth		= 70;
@@ -1323,16 +1327,16 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for
 	} // addModulateSliders
+*/
 
-
-
+/*
 	public void update()
 	{
 		this.sidebarCP5.getController("textfield1").setValue(this.sidebarCP5.getController("slider0").getValue());
 		((Textfield)this.sidebarCP5.getController("textfield1")).setText(this.sidebarCP5.getController("slider0").getValue() + "");
 
 	} // update
-
+*/
 	private void updateColors(float colorStyle)
 	{
 
@@ -1390,24 +1394,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
 			}
 
-			int	id	= (this.canvasColorSelectId % 100) + 301;
-//			this.updateColorWheel(id, (this.colors.length - 1));
-			System.out.println("updateColors(): Just didn't call updateColorwheel");
-
-			// Update tonic and 2nd Color Textfield and ColorWheel:
-			//			this.updateTextfield((this.canvasColorSelectId % 100) + 400, 0);
-			//			this.updateTextfield((this.canvasColorSelectId % 100) + 401, (this.colors.length - 1));
-/*			Textfield curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + ((this.canvasColorSelectId % 100) + 402));
-			System.out.println("textfield" + ((this.canvasColorSelectId % 100) + 402) + " = " + "textfield" + ((this.canvasColorSelectId % 100) + 402));
-			if(curTextfield != null)
-			{
-				curTextfield.setText("rgb(" + (int)this.colors[this.colors.length - 1][0] + ", " + (int)this.colors[this.colors.length - 1][1] + ", " + (int)this.colors[this.colors.length - 1][2] + ")");
-				curTextfield.submit();
-			} // if
-			else {
-				System.out.println("Tried to set Textfield in Dichromatic, but it was null");
-			}
-*/
 		} // Dichromatic
 
 		// Trichromatic:
@@ -1426,16 +1412,23 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// every other time:
 			else
 			{
-				if(this.getMajMinChrom() == 2)
+				if(this.majMinChrom == 2)
 				{
 					colorPos2	= 4;
 					colorPos3	= 8;
 				} else {
-					colorPos2	= 3;
-					colorPos3	= 4;
-				}
+	//				colorPos2	= 3;
+	//				colorPos3	= 4;
 
+					// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+					// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+					
+					colorPos2	= 5;
+					colorPos3	= 7;
+				}
+				
 				this.trichromatic_ThreeRGB(this.colors[0], this.colors[colorPos2], this.colors[colorPos3]);
+//				this.updateCustomPitchCWs();
 			} // else
 
 
@@ -1450,10 +1443,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(false);
 			}
 
-			// Update tonic, 2ndColor, and 3rdColor Textfield and ColorWheel:
-			/*			this.updateTextfield((this.canvasColorSelectId % 100) + 400, 0);
-			this.updateTextfield((this.canvasColorSelectId % 100) + 401, colorPos2);
-			this.updateTextfield((this.canvasColorSelectId % 100) + 402, colorPos3); */
 		} // Trichromatic
 
 		// Custom:
@@ -1468,23 +1457,12 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
 
-		// Populate the ColorSelect Textfields and 
-
-		// Populate the Textfields with the current colors in the colors array:
-		int	id	= (this.firstCustomColorId % 100) + 300;	// CWTextfields start at 400
-//		int	id	= (this.firstColorSelectId % 100) + 300;	// CWTextfields start at 400
-
-		
-		for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
-		{
-//			updateTextfield(id, colorPos);
-			updateColorWheel(id, colorPos);
-			id	= id + 1;
-		} // for - colorPos
-
+		System.out.println("updating custom pitch ColorWheels now...");
+		// Populate the CustomPitch ColorWheels with the current colors:
+		this.updateCustomPitchCWs();
 
 	} // updateColors
-
+/*
 	public void updateTextfield(int id, int colorPos)
 	{
 		Textfield curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + id);
@@ -1494,8 +1472,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			curTextfield.submit();
 		} // if
 	} // updateTextfield
-
-	public void updateColorWheel(int id, int colorPos)
+*//*
+	private void updateColorWheel(int id, int colorPos)
 	{
 		if(colorPos < 0 || colorPos >= this.colors.length)	{
 			throw new IllegalArgumentException("ModuleTemplate01.updateColorWheel: colorPos parameter " + colorPos + " is out of bounds; must be within 0 and " + (this.colors.length - 1));
@@ -1516,6 +1494,55 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int		rgbInt		= rgbColor.getRGB();
 		((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(rgbInt);
 	} // updateColorWheel
+	*/
+	
+	private void updateColorSelectCWs()
+	{
+		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		{
+			int colorSelectId	= (this.canvasColorSelectId % 100) + 301;
+			this.updateColorWheel(colorSelectId, 0);
+		} // if - rainbow
+		
+		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		{
+			int colorSelectId	= (this.canvasColorSelectId % 100) + 301;
+			this.updateColorWheel(colorSelectId, 0);
+			this.updateColorWheel(colorSelectId + 1, (this.colors.length - 1));
+		} // if - dichromatic
+		
+		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		{
+			int colorSelectId	= (this.canvasColorSelectId % 100) + 301;
+			
+			int	colorPos2;
+			int	colorPos3;
+			
+			if(this.majMinChrom == 2)
+			{
+				colorPos2	= 4;
+				colorPos3	= 8;
+			} else {
+				colorPos2	= 3;
+				colorPos3	= 4;
+			}
+			
+			this.updateColorWheel(colorSelectId, 0);
+			this.updateColorWheel(colorSelectId + 1, colorPos2);
+			this.updateColorWheel(colorSelectId + 2, colorPos3);
+		} // if - trichromatic
+	} // updateColorSelectCWs
+	
+	private void updateCustomPitchCWs()
+	{
+		int	id	= (this.firstCustomColorId % 100) + 300;	// ColorWheels start at 300
+		
+		for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
+		{
+			updateColorWheel(id, colorPos);
+			id	= id + 1;
+		} // for - colorPos
+	} // updateCustomPitchCWs
 
 	public void legend(int goalHuePos)
 	{
@@ -1523,7 +1550,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.parent.textSize(24);
 
 		//		String[]	notes	= this.getScale(this.curKeyOffset, this.majMinChrom);
-		String[]	notes	= this.getScale(this.curKey, this.getMajMinChrom());
+		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
 
 		float  sideWidth1   = (this.parent.width - leftEdgeX) / notes.length;
 		float  sideHeight  = this.parent.width / 12;
@@ -1547,7 +1574,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
 			// colors is filled all the way and only picked at the desired notes:
-			scaleDegree	= this.getScaleDegrees()[this.getMajMinChrom()][i];
+			scaleDegree	= this.scaleDegrees[this.majMinChrom][i];
 			colorPos	= scaleDegree;
 
 			this.parent.fill(this.colors[colorPos][0], this.colors[colorPos][1], this.colors[colorPos][2]);
@@ -1581,6 +1608,15 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.parent.fill(0);
 		this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth * i) + (sideWidth * 0.35)), this.parent.height - 20);
 		 */
+		/*
+		// TODO: remove after fixing trichrom-maj/minor bug:
+		// Testing to see what's really in colors:
+		for(int i = 0; i < this.colors.length; i++)
+		{
+			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
+			this.parent.ellipse(this.parent.width / 3 * 2, i * 30 + 60, 30, 30);
+		} // for
+		*/
 	} // legend
 
 	/*
@@ -1591,7 +1627,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	} // displaySidebar
 	 */
-
+/*
 	public String[] getScale(String key, int majMinChrom)
 	{
 		// find keyPos -- hey ! maybe I can just pass in keyPos.
@@ -1605,7 +1641,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	public String[] getScale(int keyPos, int majMinChrom)
 	{*/
-		String[][] majorScales	= new String[][] {
+/*		String[][] majorScales	= new String[][] {
 			new String[] { "A", "B", "C#", "D", "E", "F#", "G#" },
 			new String[] { "A#", "B#", "C##", "D#", "E#", "F##", "G##" },
 			new String[] { "Bb", "C", "D", "Eb", "F", "G", "A" },
@@ -1722,7 +1758,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.setKeyAddVal(modPosition);
 		 */
 
-	} // setCurKey
+//	} // setCurKey
 
 	/**
 	 * Calls playMelody(key, bpm, scale, rangeOctave) with the curKey, bpm, rangeOctave instance vars
@@ -1749,7 +1785,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @return		position of the given element in the given array, or -1 
 	 * 				if the element does not exist in the array.
 	 */
-	private int arrayContains(String[] array, String element) {
+/*	private int arrayContains(String[] array, String element) {
 		if(array == null) {
 			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): array parameter is null.");
 		}
@@ -1767,32 +1803,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		return -1;
 	}
-
-	/**
-	 * Used in draw for determining whether a particular scale degree is in the 
-	 * major or minor scale;
-	 * returns the position of the element if it exists in the array,
-	 * or -1 if the element is not in the array.
-	 * 
-	 * @param array		String[] to be searched for the given element
-	 * @param element	String whose position in the given array is to be returned.
-	 * @return		position of the given element in the given array, or -1 
-	 * 				if the element does not exist in the array.
-	 */
-	private int arrayContains(int[] array, int element) {
-		if(array == null) {
-			throw new IllegalArgumentException("Module_01_02.arrayContains(int[], int): array parameter is null.");
-		}
-		for (int i = 0; i < array.length; i++)
-		{
-			//    println("array[i] = " + array[i]);
-			if (array[i] == element) {
-				return i;
-			} // if
-		} // for
-
-		return -1;
-	}
+*/
 
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
@@ -1824,6 +1835,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
 		} // error checking
 
+		// TODO: this assumes maximum saturation and brightness; can we use the set values instead?
 		// find the complement:
 		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
 
@@ -1864,8 +1876,20 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		// Percent should be the percent of the difference between the first and second colors,
 		// but the math doesn't work if we divide by 100 here, so that will happen later.
-		float	percent		= 100 / this.scaleLength;
-
+//		float	percent		= 100 / this.scaleLength;
+		
+		// For a minor scale, divide by 11 so that the last note of the scale will be 2ndColor
+		// (rather than the leading tone, which doesn't show up in the minor scale - we just display natural minor)
+		// Everything else gets 12.
+		float	percent;
+		if(this.majMinChrom == 1)
+		{
+			percent	= 100 / 11;
+		} else 
+		{
+			percent		= 100 / 12;
+		}
+		
 		// There will be a difference for red, green, and blue.
 		float	difference;
 
@@ -1977,7 +2001,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int	color2pos;
 		int	color3pos;
 
-		if(this.getMajMinChrom() == 2)
+		if(this.majMinChrom == 2)
 		{
 			// if chromatic scale, put the colors equally throughout:
 			color2pos	= this.scaleLength / 3;
@@ -1998,9 +2022,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		float	redDelta3	= (rgbVals3[0] - rgbVals1[0]) / (this.scaleLength - color3pos);
 		float	greenDelta3	= (rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos);
 		float	blueDelta3	= (rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos);
-
+/*		
+		System.out.println("redDelta1 = " + redDelta1 + "; greenDelta1 = " + greenDelta1 + "; blueDelta1 = " + blueDelta1);
+		System.out.println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta1 + "; blueDelta2 = " + blueDelta2);
+		System.out.println("redDelta3 = " + redDelta3 + "; greenDelta3 = " + greenDelta1 + "; blueDelta3 = " + blueDelta3);
+*/
 		// This array has the trichromatic spectrum:
-		float[][]	trichromColors	= new float[this.scaleLength][3];
+//		float[][]	trichromColors	= new float[this.scaleLength][3];
+		this.trichromColors	= new float[this.scaleLength][3];
 
 		// fill first position with first color:
 		for(int i = 0; i < rgbVals1.length; i++)
@@ -2041,8 +2070,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
 			} // for - j
 		} // for - third color to first color
-
-		// fill colors with either the trichrom spectrum (diatonic notes) or black (non-diatonic notes):
+		
+		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
 		for(int i = 0; i < this.colors.length && trichromColorPos < trichromColors.length; i++)
 		{
@@ -2051,9 +2080,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.colors[i][0]	= trichromColors[trichromColorPos][0];
 			this.colors[i][1]	= trichromColors[trichromColorPos][1];
 			this.colors[i][2]	= trichromColors[trichromColorPos][2];
-
-
 		} // for
+		
+		this.updateCustomPitchCWs();
 	} //trichromatic_ThreeRGB
 
 	/**
@@ -2108,13 +2137,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			} // chromatic
 		}; // rainbowColors
 
-		for(int i = 0; i < this.colors.length && i < rainbowColors[this.getMajMinChrom()].length; i++)
+		for(int i = 0; i < this.colors.length && i < rainbowColors[this.majMinChrom].length; i++)
 		{
-			for(int j = 0; j < this.colors[i].length && j < rainbowColors[this.getMajMinChrom()][i].length; j++)
+			for(int j = 0; j < this.colors[i].length && j < rainbowColors[this.majMinChrom][i].length; j++)
 			{
 				//				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
-				this.colors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
-				this.hsbColors[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
+				this.colors[i][j]	= rainbowColors[this.majMinChrom][i][j];
+				this.hsbColors[i][j]	= rainbowColors[this.majMinChrom][i][j];
 			} // for - j (going through rgb values)
 		} // for - i (going through colors)
 
@@ -2203,11 +2232,11 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // for
 	} // applyHSBModulate
 	 */
-	public void useSliderVal(int id, float val)
+/*//	public void useSliderVal(int id, float val)
 	{
 		// TODO - error checking
 		//		System.out.println("useSliderVal: id = " + id);
-
+/*
 		// Threshold:
 		if(id == 0)
 		{
@@ -2244,7 +2273,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // red/green/blue mod
 
 		 */
-		if(id == 10)
+/*		if(id == 10)
 		{
 			this.bpm	= Math.max(Math.min((int)val, 240), 0);
 		}
@@ -2253,7 +2282,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		{
 			this.instrument.setVolume(Math.max(Math.min(val, 5), 0));
 		}
-	} // useSliderVal
+		*/
+//	} // useSliderVal
 
 	/**
 	 * This method handles the functionality of all the buttons, sliders, and textFields;
@@ -2272,6 +2302,25 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		//		if(id % 2 == 0 && id < this.lastTextfieldId)
 		if(id > -1 && id < 100)
 		{
+			// Color modulation applied in parent class;
+			// this just updates the ColorWheels (which are specific to this child)
+			
+			// Hue/Saturation/Brightness modulate
+			if(this.firstHSBSliderId != -1 && 
+					id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
+			{
+				this.updateColorSelectCWs();
+				this.updateColorSelectCWs();
+			}//hsb mod
+			
+			// Red Modulate/Green Modulate/Blue Modulate:
+			if(this.firstRGBSliderId != -1 &&
+					id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
+			{
+				this.updateColorSelectCWs();
+				this.updateColorSelectCWs();
+			} // red/green/blue mod
+			
 			/*			try
 			{
 				Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
@@ -2360,7 +2409,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // textField
 		 */
 		// Key dropdown ScrollableList:
-		if(controlEvent.getName().equals("keyDropdown"))
+/*		if(controlEvent.getName().equals("keyDropdown"))
 		{
 			// keyPos is the position of the particular key in the Scrollable List:
 			int	keyPos	= (int)controlEvent.getValue();
@@ -2386,13 +2435,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			} catch(ClassCastException cce) {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
 			} // catch
-
+*/
 			// Setting the input file:
-			int	enharmonicPos	= this.enharmonicPos[keyPos];
-			String	filename	= this.filenames[this.majMinChrom][enharmonicPos];
-			this.inputFile	= "Piano Scale Reference Inputs/" + filename;
+//			int	enharmonicPos	= this.enharmonicPos[keyPos];
+//			String	filename	= this.filenames[this.majMinChrom][enharmonicPos];
+//			this.inputFile	= "Piano Scale Reference Inputs/" + filename;
 
-			if(!(this.getLeftEdgeX() == 0)) {
+/*			if(!(this.getLeftEdgeX() == 0)) {
 				this.displaySidebar();
 			}
 
@@ -2425,7 +2474,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			}
 			 */
 
-		} // keyDropdown
+//		} // keyDropdown
 
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
@@ -2489,6 +2538,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		if(id >= 200 && id < 500 && (id % 100) >= (this.firstColorSelectId % 100) && (id % 100) <= (this.lastColorSelectId % 100))
 		{
 			this.updateColors(this.curColorStyle);
+			this.updateCustomPitchCWs();
 			
 /*			// if any of the colorSelect *Buttons* we pressed, update the ColorWheels
 			if(id == this.canvasColorSelectId + 1)
@@ -2728,9 +2778,26 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			{
 				this.rainbow();
 
+			}
+			
+
+			// Here, fill the CW and TF with the current colors?
+
+			// These calls have to come after all the colors have been set,
+			// so that originalColors and hsbColors can be filled with the latest:
+			this.fillOriginalColors();
+			this.fillHSBColors();
+			this.resetModulateSlidersTextfields();
+			this.applyColorModulate(this.colors, this.originalColors);
+			
+			this.updateColorSelectCWs();
+			
+/*
+			if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+			{
 				int colorSelectId	= (this.canvasColorSelectId % 100) + 301;
 				this.updateColorWheel(colorSelectId, 0);
-			}
+			} // if - rainbow
 			
 			if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
 			{
@@ -2759,18 +2826,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.updateColorWheel(colorSelectId + 1, colorPos2);
 				this.updateColorWheel(colorSelectId + 2, colorPos3);
 			} // if - trichromatic
-
-			// Here, fill the CW and TF with the current colors?
-
-			// These calls have to come after all the colors have been set,
-			// so that originalColors and hsbColors can be filled with the latest:
-			this.fillOriginalColors();
-			this.fillHSBColors();
-			this.resetModulateSlidersTextfields();
-			this.applyColorModulate(this.colors, this.originalColors);
-
+*/
 		} // colorStyle buttons
-
+/*
 		// Guide Tone Generator:
 		if(controlEvent.getName().equals("guideToneButton"))
 		{
@@ -2827,7 +2885,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent: rangeOctave " + rangeOctave + " is out of range.");
 			}
 		} // rangeDropdown
-
+*/
 	} // controlEvent
 
 	/**
@@ -2959,13 +3017,16 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				} else if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
 				{
 					// for tri, it's in the middle:
-					if(this.getMajMinChrom() == 2)
+					if(this.majMinChrom == 2)
 					{
 						// chromatic:
 						notePos	= 4;
 					} else {
 						// major and minor:
-						notePos	= 3;
+						// Position has to be 5, not 3, since colors is filled all the way and we just ignore
+						// non-diatonic tones, so 5 actually corresponds to the mediant scale degree.
+//						notePos	= 3;
+						notePos	= 5;
 					} // maj/min/Chrom
 				} // trichromatic
 			} // 2nd color
@@ -2976,13 +3037,16 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				// only applies to trichromatic:
 				if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
 				{
-					if(this.getMajMinChrom() == 2)
+					if(this.majMinChrom == 2)
 					{
 						// chromatic:
 						notePos	= 8;
 					} else {
 						// major and minor:
-						notePos	= 4;
+						// Position has to be 7, not 4, since colors is filled all the way and we just ignore
+						// non-diatonic tones, so 7 actually corresponds to the dominant scale degree.
+//						notePos	= 4;
+						notePos	= 7;
 					} // maj/min/Chrom
 				} // trichromatic
 			} // 3rd color
@@ -2990,7 +3054,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		return	notePos;
 	} // calculateNotePos
-
+/*
 	public int getLeftEdgeX() {
 		return leftEdgeX;
 	}
@@ -3040,14 +3104,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		return this.redGreenBlueMod[2];
 	}
 	 */
-	public int getMajMinChrom() {
-		return majMinChrom;
-	}
 
-	public int[][] getScaleDegrees() {
-		return scaleDegrees;
-	}
-
+/*
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
 	}
@@ -3055,6 +3113,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	public int getCurKeyOffset() {
 		return curKeyOffset;
 	}
+*/	
+	public float getCurColorStyle() {
+		return this.curColorStyle;
+	} // get CurColorStyle
 	/*
 	public	float[]	getCanvasColor()
 	{

@@ -2,6 +2,7 @@ package module_02;
 
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.Slider;
 import core.Input;
 import core.ModuleTemplate;
 import processing.core.PApplet;
@@ -10,7 +11,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	
 	int[]	yVals;
 	
-	int		spacer;	// determines the distance between the Sliders and Textfields
+	private int		shapeSize;
+	
+	private int		shapeSizeSliderId;
 
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -24,10 +27,16 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.yVals[i]	= this.yVals[i - 1] + distance;
 		}
 		
-		this.spacer	= 10;
+//		this.spacer	= 5;
 		
 		// already called addHideButtons in superclass with y-val of 26.
-		addInputThresholdSlider(this.yVals[1]);
+//		addInputThresholdSlider(this.yVals[1]);
+		
+		this.addSliders(this.yVals[1], this.yVals[3], this.yVals[4], this.yVals[5]);
+		
+		this.addShapeSizeSlider(this.yVals[2]);
+		
+		this.addRangeSegments(this.yVals[6], 4, 4, "Dynamic\nSegments");
 		
 //		this.initInput();
 	} // constructor
@@ -85,28 +94,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	} // addHideButtons
 	
-	private	void addInputThresholdSlider(int yVal)
-	{
-		float	defaultInThresh	= 10;
-		
-		int	labelX		= 10;
-		int	sliderWidth	= 170;
-		
-		int	sliderX		= this.leftAlign;
-		int	textFieldX	= this.leftAlign + sliderWidth + this.spacer;
-		
-		
-		this.sidebarCP5.addLabel("inputThreshold")
-		.setPosition(labelX, yVal)
-		.setValue("Input \nThreshold")
-		.setGroup("sidebarGroup");
-		
-		this.sidebarCP5.addSlider("inputThreshold")
-		.setPosition(sliderX, yVal)
-		.setValue(defaultInThresh)
-		.setGroup("sidebarGroup");
-	} // addInputThresholdSlider
-
 	public void useSliderVal(int id, float val)
 	{
 		
