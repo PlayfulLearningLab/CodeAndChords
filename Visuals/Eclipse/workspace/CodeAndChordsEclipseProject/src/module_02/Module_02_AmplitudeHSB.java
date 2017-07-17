@@ -10,8 +10,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
 	
-	private PShape 	shape;
-	int		shapeCenter;
+//	private PShape 	shape;
+//	int		shapeCenter;
 	
 	float[]	thresholds;
 	
@@ -33,9 +33,9 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		// set amplitude thresholds
 		this.thresholds	= new float[] {
 				2,		// piano
-				5,	// mezzo piano
-				10,	// mezzo forte
-				15	//forte
+				100,	// mezzo piano
+				200,	// mezzo forte
+				500	//forte
 		}; // thresholds
 		
 		// Define them some default colors
@@ -50,8 +50,10 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		
 		// create the shape
 		this.shapeMode(CENTER);
-		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, 400, 400);
-		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
+//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
+//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
+		
+		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
 	} // setup
 	
 	public void draw()
@@ -81,23 +83,39 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		// draw the shape
 		this.drawShape();
 		
+		this.fill(255);
 		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
 		
 //		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 	} // draw
 	
 	private void drawShape()
-	{		
-		this.shape.beginShape(ELLIPSE);
+	{	
+		float[]	curHue	= this.moduleTemplate.getCurHue();
+		this.fill(curHue[0], curHue[1], curHue[2]);
+		
+		float	shapeX		= ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
+		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
+		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
+		
+		this.ellipse(shapeX, this.height / 2, shapeWidth, shapeHeight);
+		
+		// Began with PShape, but decided that that is not worth it at the moment:
+/*		this.shape.beginShape(ELLIPSE);
 				
 		// adjust any shape parameters
+/*		this.shape.width	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
+		this.shape.height	= this.height * (this.moduleTemplate.getShapeSize() / 100);
+*/		
+/*		this.shape.scale((this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
+		
 		float[]	curHue	= this.moduleTemplate.getCurHue();
 		this.shape.fill(curHue[0], curHue[1], curHue[2]);
 
 		this.shape.endShape();
 		
 		shape(this.shape);
-
+*/
 
 	} // drawShape
 	
@@ -107,16 +125,14 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		
 		if(controlEvent.getController().getName().equals("hamburger"))
 		{
-			System.out.println("Did we get here? hamburger");
-			this.shape.translate(((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) - ((this.width / 2) - this.moduleTemplate.getLeftEdgeX()), 0);
-			this.shapeCenter	= (this.width / 2) + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) - ((this.width / 2) - this.moduleTemplate.getLeftEdgeX());
+			//this.shape.translate(((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) - ((this.width / 2) - this.moduleTemplate.getLeftEdgeX()), 0);
+			//this.shapeCenter	= (this.width / 2) + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) - ((this.width / 2) - this.moduleTemplate.getLeftEdgeX());
 		} // hamburger
 		
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
-			System.out.println("Did we get here?");
-			this.shape.translate((width / 2) - this.shapeCenter, 0);
-			this.shapeCenter	= this.width / 2;
+			//this.shape.translate((width / 2) - this.shapeCenter, 0);
+			//this.shapeCenter	= this.width / 2;
 		} // menuX
 	} // controlEvent
 } // Module_03_AmplitudeHSB

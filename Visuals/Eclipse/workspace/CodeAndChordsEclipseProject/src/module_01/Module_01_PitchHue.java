@@ -33,7 +33,6 @@ public class Module_01_PitchHue extends PApplet
 	} // main
 
 
-	private int  goalHuePos;
 	private int  curHuePos;
 
 	private Input  input;
@@ -82,9 +81,20 @@ public class Module_01_PitchHue extends PApplet
 		if(this.moduleTemplate.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
-			this.moduleTemplate.legend(goalHuePos);
+			this.moduleTemplate.legend(scaleDegree);
 		} // if showScale
-
+		
+/*
+		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
+		if(this.moduleTemplate.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+		{
+			for(int i = 0; i < moduleTemplate.trichromColors.length; i++)
+			{
+				this.fill(moduleTemplate.trichromColors[i][0], moduleTemplate.trichromColors[i][1], moduleTemplate.trichromColors[i][2]);
+				this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
+			}
+		} // if		
+*/
 	} // draw()
 
 
