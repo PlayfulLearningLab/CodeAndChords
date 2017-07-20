@@ -96,24 +96,4 @@ public class Module_01_PitchHue extends PApplet
 		} // if		
 */
 	} // draw()
-
-
-	/**
-	 * All modules with a ModuleTemplate must include this method.
-	 * 
-	 * @param theControlEvent	a ControlEvent that will be passed to controlEvent in ModuleTemplate.
-	 */
-	public void controlEvent(ControlEvent theControlEvent)
-	{
-		try
-		{
-//			System.out.println("theControlEvent = " + theControlEvent);
-			this.moduleTemplate.controlEvent(theControlEvent);	
-		} catch(Exception e)
-		{
-			println("Module_01_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
-			//			e.printStackTrace();
-		}
-	} // controlEvent
-
 } // class
