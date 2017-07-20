@@ -14,7 +14,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	//	private PShape 	shape;
 	//	int		shapeCenter;
 
-	float[]	thresholds;
+//	float[]	thresholds;
 
 	public static void main(String[] args)
 	{
@@ -32,7 +32,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 
 		// set amplitude thresholds
-		this.thresholds	= new float[] {
+		this.moduleTemplate.thresholds	= new float[] {
 				2,		// piano
 				100,	// mezzo piano
 				200,	// mezzo forte
@@ -59,6 +59,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 	public void draw()
 	{
+//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 		
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
@@ -72,9 +73,9 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
 
-		for(int i = 0; i < this.thresholds.length; i++)
+		for(int i = 0; i < this.moduleTemplate.thresholds.length; i++)
 		{
-			if(curAmp > this.thresholds[i]) {
+			if(curAmp > this.moduleTemplate.thresholds[i]) {
 				goalHuePos	= i;
 			} // if
 		} // for

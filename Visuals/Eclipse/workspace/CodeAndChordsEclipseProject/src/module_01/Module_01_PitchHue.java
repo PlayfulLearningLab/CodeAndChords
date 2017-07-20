@@ -18,7 +18,6 @@ public class Module_01_PitchHue extends PApplet
 
 	 * 08/01/2016
 	 * Emily Meuer
-
 	 *
 	 * Background changes hue based on pitch.
 	 *

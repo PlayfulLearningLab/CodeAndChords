@@ -2325,160 +2325,37 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.updateColorSelectCWs();
 			} // red/green/blue mod
 
-			/*			try
-			{
-				Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
-				Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 100));
-				String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
-
-				curTextfield.setText(sliderValString);
-
-				float	sliderValFloat	= Float.parseFloat(sliderValString);
-
-			// Threshold:
-			if(id == 0)
-			{
-				super.setThreshold(sliderValFloat);
-			}
-
-			// Attack, Release, and Transition:
-			if(id == 1 || id == 2 || id == 3)
-			{
-//				int	pos	= (id / 2) - 1;
-				int	pos	= id - 1;
-//				this.attackReleaseTransition[pos]	= sliderValFloat;
-				super.setAttRelTranVal(pos, sliderValFloat);
-			}
-
-			// Red Modulate/Green Modulate/Blue Modulate:
-			if(id == 4 || id == 5 || id == 6)
-			{
-//				int	pos	= (id / 2) - 4;		
-				int	pos	= id - 4;	// red = 0, green = 1, blue = 2
-				this.redGreenBlueMod[pos]	= sliderValFloat;
-
-				this.applyColorModulate(this.colors, this.originalColors);
-			} // red/green/blue mod
-
-			if(id == 7 || id == 8 || id == 9)
-			{
-//				int pos = (id/2)-7;
-				int pos = id - 7;
-
-				super.setHueSatBrightnessMod(pos, sliderValFloat);
-				super.applyHSBModulate(getColors(), originalColors);
-			}//hsb mod
-
-			if(id == 10)
-			{
-				this.bpm	= Math.max(Math.min((int)sliderValFloat, 240), 0);
-			}
-
-			if(id == 11)
-			{
-				this.instrument.setVolume(Math.max(Math.min(sliderValFloat, 5), 0));
-			}
-
-			} catch (NullPointerException npe) {
-				System.out.println("ModuleTemplate.controlEvent - sliders: caught NullPoint - curTextfield = " + (Textfield)this.sidebarCP5.getController("textfield" + (id + 1)));
-			}
-			 */
 		} // sliders
 
-		//The call for hsb changes
-		/*
-		 * the id numbers of the sliders should be 14 16 18, and the numSliders should change
-		 * if(id == INSERT || id == INSERT || id == INSERT)
-		 * int pos set position
-		 * this.hsbMod[pos] == sliderValFloat
-		 * So Basically, if the ID corresponds to the 
-		 * HSB sliders, apply it's modulate
-		 * Conversion to hsb then back to RGB
-		 * 
-		 */
-
-		/*
-		// Textfields
-		if(id > 99 && id < 200)
+		// ColorWheels
+		if(id > 299 && id < 400)
 		{
-			Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + id);
-			Slider		curSlider		= (Slider)this.sidebarCP5.getController("slider" + (id - 100));
+			// get current color:
+			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
-			try	{
-				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
-			} catch(NumberFormatException nfe) {
-				//System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
-				//"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
-			} // catch
-		} // textField
-		 */
-		// Key dropdown ScrollableList:
-		/*		if(controlEvent.getName().equals("keyDropdown"))
-		{
-			// keyPos is the position of the particular key in the Scrollable List:
-			int	keyPos	= (int)controlEvent.getValue();
+			int	rgbColor	= curCW.getRGB();
+			Color	color	= new Color(rgbColor);
 
-			// getItem returns a Map of the color, state, value, name, etc. of that particular item
-			//  in the ScrollableList:
-			Map<String, Object> keyMap = this.sidebarCP5.get(ScrollableList.class, "keyDropdown").getItem(keyPos);
+			id	= controlEvent.getId();
 
-			// All we want is the name:
-			String	key	= (String) keyMap.get("name");
-			this.curKey	= key;
-			this.curKeyOffset = keyPos;
-			this.curKeyEnharmonicOffset	= this.enharmonicPos[getCurKeyOffset()];
-
-			// Update Melody's key and rangeList selection:
-			this.melody.setKey(this.curKey);
-			this.melody.setRangeList();
-			try
+			// ignore canvas color, which has been set by the parent, but set notes for all others:
+			if((id % 100) != (this.canvasColorSelectId % 100))
 			{
-				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
-				.setItems(this.melody.getRangeList())
-				.setValue(0f);
-			} catch(ClassCastException cce) {
-				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
-			} // catch
-		 */
-		// Setting the input file:
-		//			int	enharmonicPos	= this.enharmonicPos[keyPos];
-		//			String	filename	= this.filenames[this.majMinChrom][enharmonicPos];
-		//			this.inputFile	= "Piano Scale Reference Inputs/" + filename;
+				int notePos	= this.calculateNotePos(id);	// the position in colors that is to be changed.
 
-		/*			if(!(this.getLeftEdgeX() == 0)) {
-				this.displaySidebar();
-			}
+				// error checking
+				if(notePos < 0 || notePos > this.colors.length)	{
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
+							"notePos " + notePos + " from id " + id + " is not a valid note position; " +
+							"it should be between 0 and " + this.colors.length);
+				} // error checking
 
-			// Attempts to make the list show in front of tonicColor button
-			// (fruitless because tonicColor has been brought to the front; I moved it over instead.
-			//  - but this can help show how to access the different types of the items).
-			/*
-			ScrollableList	sl	= ((ScrollableList)controlEvent.getController());
-			List<HashMap>	itemList	= sl.getItems();
+				this.colors[notePos][0]	= color.getRed();
+				this.colors[notePos][1]	= color.getGreen();
+				this.colors[notePos][2]	= color.getBlue();
+			} // else - not canvas
 
-			for(int i = 0; i < itemList.size(); i++)
-			{
-				System.out.println("itemList.get(i) = " + itemList.get(i).getClass());
-
-				HashMap	curItem	= itemList.get(i);
-				System.out.println("curItem.get('view') = " + curItem.get("view").getClass());
-	/*			
-				ScrollableList.ScrollableListView	viewSL	= (ScrollableList.ScrollableListView)curItem.get("view");
-				System.out.println("viewSL = " + viewSL);
-
-			} // for - i
-
-			if(sl.isOpen())
-			{
-				this.sidebarCP5.setAutoDraw(false);
-				controlEvent.getController().bringToFront();
-				controlEvent.getController().draw(this.parent.g);
-			} else {
-				this.sidebarCP5.setAutoDraw(true);
-			}
-		 */
-
-		//		} // keyDropdown
+		} // ColorWheels
 
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
