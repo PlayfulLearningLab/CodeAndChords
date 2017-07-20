@@ -27,12 +27,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected final String[]	notesAtoGSharps	= new String[] { 
 			"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
 	};
-	
+
 	// ALL notes here
 	protected	final String[]	allNotes	= new String[] {
 			"A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab"
 	}; // allNotes
-	
+
 	// Positions in filenames String[] here
 	private	final int[]	enharmonicPos	= new int[] {
 			0, 1, 1, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11
@@ -45,7 +45,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	protected	int			leftAlign;
 	protected	int			leftEdgeX;
-	
+
 	protected	int			labelX;
 	protected	int			labelWidth;
 	protected	int			spacer;
@@ -102,9 +102,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected Instrument	instrument;
 
 	protected boolean	showScale;
-	
+
 	protected	float	shapeSize;
-	
+
 	/**
 	 * This class's controlEvent() will set this.curRangeSegments, 
 	 * but it is up to child classes to implement the variable how they see fit.
@@ -176,7 +176,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.textfieldWidth	= 40;
 		this.sliderWidth	= 170;
 		this.sliderHeight	= 20;
-		
+
 
 		this.curHue				= new float[3];
 		this.goalHue			= new float[3];
@@ -224,7 +224,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
 		.setVisible(false);
-		
+
 
 		Color	transparentBlack	= new Color(0, 0, 0, 200);
 		int		transBlackInt		= transparentBlack.getRGB();
@@ -346,8 +346,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 				scaleX
 		};
 
-		int	id	= 4;
-
 		this.sidebarCP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
 		.setGroup("sidebarGroup")
@@ -358,11 +356,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.sidebarCP5.addToggle(names[i])
 			.setPosition(xVals[i], hideY)
 			.setWidth(hideWidth)
-			.setGroup("sidebarGroup")
-			.setId(id);
+			.setGroup("sidebarGroup");
 			this.sidebarCP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
-
-			id	= id + 1;
 		}
 
 		this.showScale = true;
@@ -420,7 +415,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		int	lowRange;
 		int	highRange;
 		int	startingValue;
-		
+
 		this.thresholdSliderId	= this.nextSliderId;
 		this.firstARTSliderId	= this.nextSliderId + 1;
 
@@ -615,7 +610,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		float[]		startingVals	= new float[]	{ 120, 1	};
 
 		//		int	id	= 20;
-		
+
 		this.bpmSliderId	= this.nextSliderId;
 		this.volumeSliderId	= this.nextSliderId + 1;
 
@@ -821,19 +816,19 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for
 	} // addModulateSliders
-	
+
 	protected void addShapeSizeSlider(int yVal)
 	{
 		this.shapeSize	= 50;
-		
+
 		// first add label:
 		this.sidebarCP5.addLabel("shapeSize")
 		.setPosition(this.labelX, yVal)
 		.setValue("Shape Size")
 		.setGroup("sidebarGroup");
-		
+
 		this.shapeSizeSliderId	= this.nextSliderId;
-		
+
 		this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 		.setPosition(this.leftAlign, yVal)
 		.setSize(this.sliderWidth, this.sliderHeight)
@@ -857,12 +852,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 	} // addShapeSizeSlider
-	
+
 	protected void addRangeSegments(int yVal, int numSegments, String label)
 	{
 		this.addRangeSegments(yVal, numSegments, numSegments, label);
 	}  // addRangeSegments(int, int, String)
-	
+
 	/**
 	 * 
 	 * @param yVal	y value for the label and Toggles.  Note that the label will be given the same values as the Toggles; 4 is not added, as it is to most Labels.
@@ -878,25 +873,25 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.totalRangeSegments	= numSegments;
 		System.out.println("just set totalRangeSegments to " + this.totalRangeSegments);
 		this.curRangeSegments	= defaultNumSegments;
-		
+
 		float	toggleSpace	= (this.parent.width / 3) - (this.labelX) - this.labelWidth - this.spacer;
 		int		toggleWidth	= (int)(toggleSpace / numSegments) - this.spacer;
-		
+
 		int[]	xVals	= new int[numSegments];
 		for(int i = 0; i < xVals.length; i++)
 		{
 			xVals[i]	= (this.leftAlign + (i * (toggleWidth + spacer)));
 		}
-		
+
 		this.sidebarCP5.addLabel("rangeSegments")
 		.setPosition(this.labelX, yVal)
-//		.setWidth(this.labelWidth)
+		//		.setWidth(this.labelWidth)
 		.setValue(label)
 		.setGroup("sidebarGroup");
-		
+
 		this.firstRangeSegmentsId	= this.nextToggleId;
 		System.out.println("firstRangeSegmentsId = " + this.firstRangeSegmentsId);
-		
+
 		for(int i = 0; i < numSegments; i++)
 		{
 			this.sidebarCP5.addToggle("toggle" + this.nextToggleId)
@@ -907,13 +902,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 			.setId(this.nextToggleId)
 			.setInternalValue(i + 1);
 			this.sidebarCP5.getController("toggle" + this.nextToggleId).getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-			
+
 
 			if(i == (this.curRangeSegments - 1))
 			{
 				((Toggle) this.sidebarCP5.getController("toggle" + this.nextToggleId)).setState(true);
 			}
-			
+
 			this.nextToggleId	= this.nextToggleId + 1;
 		} // for - adding Toggles
 	} // addRangeSegments
@@ -1023,23 +1018,23 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
 		int	oldARTpos	= this.attRelTranPos;
-		
-//		System.out.print("amplitude = " + this.input.getAmplitude() + ": ");
+
+		//		System.out.print("amplitude = " + this.input.getAmplitude() + ": ");
 
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
 		if(!this.nowBelow && !colorReached) 
 		{	
 			this.attRelTranPos	= 0;
-//			System.out.println("attack!!!!");
+			//			System.out.println("attack!!!!");
 		} else if(!this.nowBelow && colorReached) {
 			// Or, if coming from one super-threshold note to another, use the transition value:
 			this.attRelTranPos	= 2;
-//			System.out.println("transition.... transition [doooooo do dooo do do ] - transition!");
+			//			System.out.println("transition.... transition [doooooo do dooo do do ] - transition!");
 		} else if(this.nowBelow) {
 			// Or, if volume fell below the threshold, switch to release value:
 			this.attRelTranPos	= 1;
-//			System.out.println("re....lent! re...coil! re...verse!");
+			//			System.out.println("re....lent! re...coil! re...verse!");
 		}
 
 		if(this.attRelTranPos != oldARTpos)
@@ -1298,13 +1293,17 @@ public abstract class ModuleTemplate implements ControlListener  {
 			try
 			{
 				Slider	curSlider	= (Slider)this.sidebarCP5.getController("slider" + id);
-				Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 100));
-				
-				String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
 
-				curTextfield.setText(sliderValString);
+				float	sliderValFloat	= curSlider.getValue();
 
-				float	sliderValFloat	= Float.parseFloat(sliderValString);
+				if((Textfield)this.sidebarCP5.getController("textfield" + (id + 100)) != null)
+				{
+					Textfield	curTextfield	= (Textfield)this.sidebarCP5.getController("textfield" + (id + 100));
+
+					String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
+
+					curTextfield.setText(sliderValString);			
+				} // if connected to Textfield
 
 
 				// Threshold:
@@ -1322,7 +1321,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 					//			this.attackReleaseTransition[pos]	= sliderValFloat;
 					this.setAttRelTranVal(pos, sliderValFloat);
 				} // attack/release/transition
-				
+
 				// Hue/Saturation/Brightness modulate
 				if(this.firstHSBSliderId != -1 && 
 						id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
@@ -1344,7 +1343,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 					this.redGreenBlueMod[pos]	= sliderValFloat;
 					this.applyColorModulate(this.colors, this.originalColors);
 				} // red/green/blue mod
-				
+
 				if(this.bpmSliderId != -1 && id == this.bpmSliderId)
 				{
 					this.bpm	= Math.max(Math.min((int)sliderValFloat, 240), 0);
@@ -1354,14 +1353,14 @@ public abstract class ModuleTemplate implements ControlListener  {
 				{
 					this.instrument.setVolume(Math.max(Math.min(sliderValFloat, 5), 0));
 				}
-				
+
 				if(this.shapeSizeSliderId != -1 && id == this.shapeSizeSliderId)
 				{
 					this.shapeSize	= (int)sliderValFloat;
 				}
 
 			} catch (NullPointerException npe) {
-				System.out.println("ModuleTemplate.controlEvent - sliders: caught NullPointer; curTextfield = " + (Textfield)this.sidebarCP5.getController("textfield" + (id + 1)));
+				System.out.println("ModuleTemplate.controlEvent - sliders: caught NullPointer; curTextfield = " + (Textfield)this.sidebarCP5.getController("textfield" + (id + 100)));
 			} // catch
 		} // if - slider
 
@@ -1415,8 +1414,30 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 			this.fillOriginalColors();
 			this.fillHSBColors();
-			this.resetModulateSlidersTextfields();
-			this.applyColorModulate(this.colors, this.originalColors);
+			//			this.resetModulateSlidersTextfields();
+
+			// Reset whichever of the sliders is applicable:
+			if(this.firstRGBSliderId > -1)
+			{
+				this.resetRGBSlidersTextfields();
+			}
+			if(this.firstHSBSliderId > -1)
+			{
+				this.resetHSBSlidersTextfields();
+			}
+
+			// Apply the colorModuleate
+			if(this.firstRGBSliderId > -1 && this.firstHSBSliderId > -1)
+			{
+				this.applyColorModulate(this.colors, this.originalColors);
+			} else {
+				if(this.firstHSBSliderId > -1)
+				{
+					this.applyHSBModulate(this.colors, this.hsbColors);
+				}
+			} // if - RGBSliderId > -1
+
+			//			this.applyColorModulate(this.colors, this.originalColors);
 
 			// Not calling updateColors() here because it should only be called by colorSelect buttons:
 			//			this.updateColors(this.curColorStyle);
@@ -1435,10 +1456,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			Textfield	curColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 100));
 			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
 
-
-			int	notePos;	// the position in colors that is to be changed.
-			id	= controlEvent.getId();
-
 			// canvas color (does not affect notes):
 			if((id % 100) == (this.canvasColorSelectId % 100))
 			{			
@@ -1446,26 +1463,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
 			} // if - canvas
-			else
-			{
-				notePos	= this.calculateNotePos(id);
-
-				if(notePos == 5)
-				{
-					System.out.println("	Hey!! notePos == 5!!");
-				}
-
-				// error checking
-				if(notePos < 0 || notePos > this.colors.length)	{
-					throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
-							"notePos " + notePos + " from id " + id + " is not a valid note position; " +
-							"it should be between 0 and " + this.colors.length);
-				} // error checking
-
-				this.colors[notePos][0]	= color.getRed();
-				this.colors[notePos][1]	= color.getGreen();
-				this.colors[notePos][2]	= color.getBlue();
-			} // else - not canvas
 
 		} // ColorWheels
 
@@ -1502,34 +1499,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 					int		rgbInt		= rgbColor.getRGB();
 					((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 100))).setRGB(rgbInt);
 
-
-					// canvas color (does not affect notes):
-					if((id % 100) == (this.canvasColorSelectId % 100))
-					{
-						System.out.println("	id % 100 = " + (id % 100));
-
-						this.canvasColor[0]	= red;
-						this.canvasColor[1]	= green;
-						this.canvasColor[2]	= blue;
-					}
-
-					else
-					{
-						// TODO - totally error checking! Don't forget to change this back!!
-						//						int	notePos	= this.calculateNotePos(id);
-						int	notePos	= 0;
-
-						// error checking
-						if(notePos < 0 || notePos > this.colors.length)	{
-							throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
-									"notePos " + notePos + " from id " + id + " is not a valid note position; " +
-									"it should be between 0 and " + this.colors.length);
-						} // error checking
-
-						this.colors[notePos][0]	= red;
-						this.colors[notePos][1]	= green;
-						this.colors[notePos][2]	= blue;
-					} // else
 				} // if - rgb
 
 			} catch(Exception e) {
@@ -1537,7 +1506,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 						+ e.getMessage());
 			} // catch
 		} // ColorWheel Textfields
-		
+
 		// Toggles
 		if(id > 499 && id < 600)
 		{
@@ -1577,7 +1546,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 				System.out.println("this.curRangeSegments = " + this.curRangeSegments);
 			} // range segments
 		} // Toggles
-		
+
 		// Key dropdown ScrollableList:
 		if(controlEvent.getName().equals("keyDropdown"))
 		{
@@ -1607,7 +1576,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
 			} // catch
 		} // if
-		
+
 
 		// Guide Tone Generator:
 		if(controlEvent.getName().equals("guideToneButton"))
@@ -1691,13 +1660,47 @@ public abstract class ModuleTemplate implements ControlListener  {
 			} // for
 		} else {
 			System.out.println("ModuleTemplate.resetModulateSlidersTextfields: either HSB or RGB sliders have not yet been initialized " +
-						"(firstHSBSliderId = " + this.firstHSBSliderId + " and firstRGBSliderId = " + this.firstRGBSliderId);
+					"(firstHSBSliderId = " + this.firstHSBSliderId + " and firstRGBSliderId = " + this.firstRGBSliderId);
 		} // else - let the user know that we ignored this method call
 
 	} // resetModulateSlidersTextfields
 
+	protected void resetRGBSlidersTextfields()
+	{
+		if(this.firstRGBSliderId > -1)
+		{
+			int	rgbId	= this.firstRGBSliderId;
+
+			for(int i = 0; i < 3; i++)
+			{
+				this.sidebarCP5.getController("slider" + rgbId).setValue(0);
+				rgbId	= rgbId + 1;
+			} // for
+		} else {
+			System.out.println("ModuleTemplate.resetRGBSlidersTextfields: RGB sliders have not yet been initialized " +
+					"(firstRGBSliderId = " + this.firstRGBSliderId + ")");
+		} // else - let the user know that we ignored this method call
+	} // resetRGBSlidersTextfields
+
+	protected void resetHSBSlidersTextfields()
+	{
+		if(this.firstHSBSliderId > -1)
+		{
+			int	hsbId	= this.firstHSBSliderId;
+
+			for(int i = 0; i < 3; i++)
+			{
+				this.sidebarCP5.getController("slider" + hsbId).setValue(0);
+				hsbId	= hsbId + 1;
+			} // for
+		} else {
+			System.out.println("ModuleTemplate.resetHSBSlidersTextfields: HSB sliders have not yet been initialized " +
+					"(firstHSBSliderId = " + this.firstHSBSliderId + ")");
+		} // else - let the user know that we ignored this method call
+	} // resetHSBSlidersTextfields
+
 	public void useSliderVal(int id, float val)	{	}
-	
+
 
 	public String[] getScale(String key, int majMinChrom)
 	{
@@ -1830,7 +1833,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		 */
 
 	} // setCurKey
-	
+
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
 	 * major or minor scale;
@@ -1867,7 +1870,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		if(colorPos < 0 || colorPos >= this.colors.length)	{
 			throw new IllegalArgumentException("ModuleTemplate01.updateColorWheel: colorPos parameter " + colorPos + " is out of bounds; must be within 0 and " + (this.colors.length - 1));
 		} // error checking
-		
+
 		int	red		= (int)this.colors[colorPos][0];
 		int	green	= (int)this.colors[colorPos][1];
 		int	blue	= (int)this.colors[colorPos][2];
@@ -1876,7 +1879,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		red		= Math.min(255, Math.max(0, red));
 		green	= Math.min(255, Math.max(0, green));
 		blue	= Math.min(255, Math.max(0, blue));
-		
+
 		// Set corresponding ColorWheel:
 		//					Color	rgbColor	= new Color(this.tonicColor[0], this.tonicColor[1], this.tonicColor[2]);
 		Color	rgbColor	= new Color(red, green, blue);
@@ -1884,7 +1887,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		System.out.println("this.sidebarCP5.getController(colorWheel" + id + ") = " + this.sidebarCP5.getController("colorWheel" + id));
 		((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(rgbInt);
 	} // updateColorWheel
-	
+
 	public int getCheckpoint()				{	return this.checkpoint;		}
 
 	public void setCheckpoint(int newVal)	{	this.checkpoint	= newVal;	}
@@ -1951,11 +1954,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 	public float getBlueModulate() {
 		return this.redGreenBlueMod[2];
 	}
-	
+
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
 	}
-	
+
 	public float getShapeSize() {
 		return this.shapeSize;
 	}
