@@ -8,6 +8,7 @@ import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlFont;
+import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.ScrollableList;
 import controlP5.Slider;
@@ -16,7 +17,7 @@ import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public abstract class ModuleTemplate {
+public abstract class ModuleTemplate implements ControlListener  {
 
 
 	protected	final String[]	notesAtoAbFlats	= new String[] { 
@@ -80,7 +81,7 @@ public abstract class ModuleTemplate {
 	private	boolean		colorReached;
 
 	private	Input	input;
-	private float	threshold;
+	protected float	threshold;
 	private boolean	nowBelow;
 
 	private	int		attRelTranPos;		// 0 = attack, 1 = release, 2 = transition
@@ -103,6 +104,11 @@ public abstract class ModuleTemplate {
 	protected boolean	showScale;
 	
 	protected	float	shapeSize;
+	
+	/**
+	 * This class's controlEvent() will set this.curRangeSegments, 
+	 * but it is up to child classes to implement the variable how they see fit.
+	 */
 	protected	int		curRangeSegments;
 	protected	int		totalRangeSegments;
 
@@ -191,6 +197,8 @@ public abstract class ModuleTemplate {
 		this.threshold		= 10;
 
 		this.sidebarCP5		= new ControlP5(this.parent);
+		// TODO: unwise cast.
+		this.sidebarCP5.addListener((ControlListener)this);
 
 
 		this.melody			= new Melody(this.parent, this.input);
@@ -215,6 +223,17 @@ public abstract class ModuleTemplate {
 		this.sidebarCP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
+		.setVisible(false);
+		
+
+		Color	transparentBlack	= new Color(0, 0, 0, 200);
+		int		transBlackInt		= transparentBlack.getRGB();
+
+		this.sidebarCP5.addBackground("background")
+		.setPosition(0, 0)
+		.setSize(this.parent.width / 3, this.parent.height)
+		.setBackgroundColor(transBlackInt)
+		.setGroup("sidebarGroup")
 		.setVisible(false);
 
 		// Add play button, hamburger and menu x:
@@ -430,9 +449,9 @@ public abstract class ModuleTemplate {
 			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 			.setPosition(this.leftAlign, yVals[i])
 			.setSize(this.sliderWidth, this.sliderHeight)
-			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(lowRange, highRange)
 			.setValue(startingValue)
+			.setSliderMode(Slider.FLEXIBLE)
 			.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(this.nextSliderId);
@@ -857,6 +876,7 @@ public abstract class ModuleTemplate {
 		}
 
 		this.totalRangeSegments	= numSegments;
+		System.out.println("just set totalRangeSegments to " + this.totalRangeSegments);
 		this.curRangeSegments	= defaultNumSegments;
 		
 		float	toggleSpace	= (this.parent.width / 3) - (this.labelX) - this.labelWidth - this.spacer;
@@ -1196,6 +1216,13 @@ public abstract class ModuleTemplate {
 
 	} // displaySidebar
 
+	/**
+	 * Since ModuleTemplate implements ControlListener, it needs to have this method
+	 * to "catch" the controlEvents from the ControlP5 (sidebarCP5).
+	 * 
+	 * Any child classes that want to also use controlEvents can have their own controlEvent
+	 * as long as they call super.controlEvent first.
+	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		int	id	= controlEvent.getController().getId();
@@ -1346,6 +1373,7 @@ public abstract class ModuleTemplate {
 
 			try	{
 				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
+
 			} catch(NumberFormatException nfe) {
 				//System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
 				//"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
@@ -1571,6 +1599,7 @@ public abstract class ModuleTemplate {
 			this.melody.setRangeList();
 			try
 			{
+				System.out.println("this.sidebarCP5.getController('rangeDropdown') = " + this.sidebarCP5.getController("rangeDropdown"));
 				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
 				.setItems(this.melody.getRangeList())
 				.setValue(0f);
@@ -1594,6 +1623,7 @@ public abstract class ModuleTemplate {
 			} else {
 
 				//				this.sidebarCP5.setAutoDraw(true);
+				System.out.println("this.sidebarCP5.getGroup('background') = " + this.sidebarCP5.getGroup("background"));
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
@@ -1646,16 +1676,23 @@ public abstract class ModuleTemplate {
 	 */
 	protected void resetModulateSlidersTextfields()
 	{
-		int	hsbId	= this.firstHSBSliderId;
-		int	rgbId	= this.firstRGBSliderId;
-
-		for(int i = 0; i < 3; i++)
+		if(this.firstHSBSliderId > -1 && this.firstRGBSliderId > -1)
 		{
-			this.sidebarCP5.getController("slider" + hsbId).setValue(0);
-			this.sidebarCP5.getController("slider" + rgbId).setValue(0);
-			hsbId	= hsbId + 1;
-			rgbId	= rgbId + 1;
-		} // for
+
+			int	hsbId	= this.firstHSBSliderId;
+			int	rgbId	= this.firstRGBSliderId;
+
+			for(int i = 0; i < 3; i++)
+			{
+				this.sidebarCP5.getController("slider" + hsbId).setValue(0);
+				this.sidebarCP5.getController("slider" + rgbId).setValue(0);
+				hsbId	= hsbId + 1;
+				rgbId	= rgbId + 1;
+			} // for
+		} else {
+			System.out.println("ModuleTemplate.resetModulateSlidersTextfields: either HSB or RGB sliders have not yet been initialized " +
+						"(firstHSBSliderId = " + this.firstHSBSliderId + " and firstRGBSliderId = " + this.firstRGBSliderId);
+		} // else - let the user know that we ignored this method call
 
 	} // resetModulateSlidersTextfields
 
@@ -1844,6 +1881,7 @@ public abstract class ModuleTemplate {
 		//					Color	rgbColor	= new Color(this.tonicColor[0], this.tonicColor[1], this.tonicColor[2]);
 		Color	rgbColor	= new Color(red, green, blue);
 		int		rgbInt		= rgbColor.getRGB();
+		System.out.println("this.sidebarCP5.getController(colorWheel" + id + ") = " + this.sidebarCP5.getController("colorWheel" + id));
 		((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(rgbInt);
 	} // updateColorWheel
 	
