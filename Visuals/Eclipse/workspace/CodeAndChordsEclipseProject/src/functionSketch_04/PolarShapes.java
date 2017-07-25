@@ -15,6 +15,17 @@ import controlP5.Slider;
 import processing.core.PApplet;
 import processing.core.PShape;
 
+
+/*
+ * This is version 1 of shape morphing.
+ * 
+ * 		This version is all contained within the class PolarShapes, but moving forward,
+ * 			an abstract class named Shape will be created so that different kinds of 
+ * 			shapes can be created as child classes.  Supershape will be one such child,
+ * 			named after the formula that is used to create it, the superformula
+ */
+
+
 @SuppressWarnings("unused")
 public class PolarShapes extends PApplet
 {
@@ -456,7 +467,7 @@ public class PolarShapes extends PApplet
 		{
 			if(this.morphType == 0)
 			{
-				if(Math.abs(distance[i]) < .05f)
+				if(Math.abs(distance[i]) == 0.0)
 				{
 					this.currentShape[i] = this.nextShape[i];
 				}
@@ -474,19 +485,15 @@ public class PolarShapes extends PApplet
 
 			if(this.morphType == 1)
 			{
-				if(distance[i] == 0)
+				if(Math.abs(distance[i]) < 0.05f)
 				{
-					//this.currentShape[i] = this.nextShape[i]; 
-					//this.velocity[i] = 0;
+					this.currentShape[i] = this.nextShape[i]; 
 				}
 				else
 				{
-					this.velocity[i] += (distance[i]/this.morphTime)*(this.accelerationIndex/20);
-					this.velocity[i] -= (this.velocity[i]/this.decay);
+					this.velocity[i] += (distance[i]/this.morphTime)*(this.accelerationIndex/20) - (this.velocity[i]/this.decay);
 					this.currentShape[i] += this.velocity[i];
 
-
-					//if(Math.abs(this.currentShape[i] - this.nextShape[i]) <= .5) { this.currentShape[i] = this.nextShape[i]; }
 				}
 			}
 
@@ -521,7 +528,7 @@ public class PolarShapes extends PApplet
 
 			shape.vertex(x,y);
 			
-			if(Math.abs(this.currentShape[i] - this.nextShape[i]) == 0 && i > 1 && i < this.steps - 3) 
+			if(Math.abs(this.currentShape[i] - this.nextShape[i]) == 0 && i > 1 && i < this.steps - 3 && false) 
 			{
 				float cusp = this.checkForCuspBeforeNextVertex(1, new float[] {this.currentShape[i - 1], this.currentShape[i], this.currentShape[i + 1], this.currentShape[i + 2]}, this.incrament, (theta - this.incrament), 0 );
 				x = (cusp*this.radius) * cos(this.radForCusp);
