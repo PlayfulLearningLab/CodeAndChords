@@ -157,7 +157,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		}; // thresholds
 
 		// Define them some default colors
-		this.moduleTemplate.setColors(new float[][] {
+		this.moduleTemplate.colors = new float[][] {
 			new float[] { 255, 0, 0 },
 			new float[] { 0, 255, 0 },
 			new float[] { 0, 0, 255 },

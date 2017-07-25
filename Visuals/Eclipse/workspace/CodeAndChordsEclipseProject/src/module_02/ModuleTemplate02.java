@@ -342,11 +342,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 	} // addColorSelectButtons
 	
-	public void useSliderVal(int id, float val)
-	{
-		
-	} // useSliderVal
-	
 	protected int calculateNotePos(int pos)
 	{
 		return -1;
