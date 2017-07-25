@@ -4,6 +4,7 @@ import processing.core.*;
 
 import core.Input;
 import core.ModuleTemplate;
+import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
@@ -68,8 +69,17 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 
 	private	float[][]		colorRange;
 	private	float[][]		colorAdd;
-
-
+/*
+//	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
+	private ModuleTemplate01	moduleTemplate;
+	private boolean		nowBelow			= false;
+	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
+	private boolean		colorReached		= false;
+	private int			attRelTran	= 0;	// 0 = attack, 1 = release, 2 = transition
+	
+	private	float[]		colorRange	= new float[3];
+	private	float[]		colorAdd	= new float[3];
+*/
 	public void settings()
 	{
 		size(925, 520);
@@ -77,9 +87,11 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 
 	public void setup() 
 	{
-		// TODO: test with more inputs than are supported
-		this.numInputs	= 2;
-		this.input	= new Input(this.numInputs);
+//		this.input  = new Input();
+//		this.input	= new Input(16, new AudioContext(new PortAudioAudioIO()));
+		this.input	= new Input(2);
+		
+//		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_02_PitchHueBackground");
 		
 		// Even number of inputs:
 		if((this.numInputs % 2) == 0 && (this.numInputs < 9))
@@ -137,23 +149,32 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		{
 			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
 			
-			if(this.moduleTemplate[i].getSidebarCP5() != null)
-			{
-				this.moduleTemplate[i].getSidebarCP5().setVisible(false);
-				this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
-			}
+
+			// divide the attack/release/transition value by 50
+			// and divide colorRange by that value to find the amount to add each 50 millis.
+			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate[i].getAttRelTranVal(this.attRelTran) / 50);
+
+		
+		if(this.moduleTemplate[i].getSidebarCP5() != null)
+		{
+			this.moduleTemplate[i].getSidebarCP5().setVisible(false);
+			this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
+		}
 
 			this.nowBelow[i]			= false;
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
 			this.colorReached[i]		= false;
 			this.attRelTran[i]			= 0;
 
-			// Round, because the Midi notes come out with decimal places, and we want to get
-			// to the real closest note, not just the next note down.
-			// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
-			curHuePos[i]    = Math.min(round(input.getAdjustedFundAsMidiNote(i + 1) % 12), 11);
-			this.curHue[i]		= new float[] { 255, 255, 255 };
-
+		/*
+		// The following line is necessary so that key press shows the menu button
+		if (keyPressed == true) 
+		{
+			this.moduleTemplate.setMenuVal();
+		}
+		
+		if (input.getAmplitude() > this.moduleTemplate.getThreshold())
+		{
 			for(int j = 0; j < this.curHue[i].length; j++)
 			{
 				this.colorRange[i][j]	= Math.abs(this.goalHue[i][j] - this.curHue[i][j]);
@@ -164,7 +185,10 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			} // for - j
 
 		} // for - i
+		*/
 
+		} // for
+		
 		noStroke();
 		background(150);
 
@@ -291,9 +315,12 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 
 			if(this.moduleTemplate[i].isShowScale())
 			{
-				this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
-				// draws the legend along the bottom of the screen:
-				this.moduleTemplate[i].legend(goalHuePos[i], 14);
+
+				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
+				
+				// divide the attack/release/transition value by 50
+				// and divide colorRange by that value to find the amount to add each 50 millis.
+				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getAttRelTranVal(this.attRelTran) / 50);
 			}
 
 			int	oldART	= this.attRelTran[i];
