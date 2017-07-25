@@ -34,7 +34,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		super(parent, input, sidebarTitle);
 		
-		this.yVals		= new int[17];
+		this.yVals		= new int[18];
 		this.yVals[0]	= 26;
 		int	distance	= (this.parent.height - this.yVals[0]) / this.yVals.length;
 		for(int i = 1; i < this.yVals.length; i++)
@@ -70,8 +70,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		this.addColorSelectButtons(this.yVals[7]);
 		
+		this.addHSBSliders(new int[] { this.yVals[8], this.yVals[9], this.yVals[10] });
+		
 		int	verticalSpacer	= distance - this.sliderHeight;
-		this.addThresholdSliders(yVals[8], 3);
+		this.addThresholdSliders(yVals[11], verticalSpacer);
 		
 //		this.initInput();
 	} // constructor
@@ -125,6 +127,18 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	} // addHideButtons
 	
+	public void legend()
+	{
+		int	diameter	= 70;
+		int	startingX	= ((this.parent.width - this.leftEdgeX) / 2) - (diameter * 2) + this.leftEdgeX + (diameter / 2);
+		
+		for(int i = 0; i < this.colors.length; i++)
+		{
+			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
+			this.parent.ellipse(startingX + (i * diameter), this.parent.height - 35, diameter, diameter);
+		} // for
+	} // legend
+	
 	private void addThresholdSliders(int yVal, int verticalSpacer)
 	{
 		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
@@ -141,7 +155,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		// Since some i's will add a couple rows of labels and sliders,
 		// this variable keeps track of which "level" of y the next thing should be added to.
-		float	yPos		= 0;
+//		float	yPos		= 0;
 		
 		String[]	names	= new String[] {
 				"forteThresh",
@@ -173,7 +187,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		for(int i = 0; i < names.length; i++)
 		{			
 			this.sidebarCP5.addLabel(names[i])
-			.setPosition(this.labelX, yVal + (yPos * (verticalSpacer + this.sliderHeight)))
+			.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)))
 			.setValue(labels[i])
 			.setGroup("sidebarGroup");
 			
@@ -181,7 +195,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			if(i % 2 == 0)
 			{
 				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-				.setPosition(this.leftAlign, yVal + (yPos * (verticalSpacer + this.sliderHeight)))
+				.setPosition(this.leftAlign, yVal + (i * (verticalSpacer + this.sliderHeight)))
 				.setSize(this.sliderWidth, this.sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
 				.setRange(10, 7000)
@@ -193,7 +207,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				this.nextSliderId	= this.nextSliderId + 1;
 				
 				this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-				.setPosition(textfieldX, yVal + (yPos * (verticalSpacer + this.sliderHeight)))
+				.setPosition(textfieldX, yVal + (i * (verticalSpacer + this.sliderHeight)))
 				.setWidth(this.textfieldWidth)
 				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 				.setAutoClear(false)
@@ -204,12 +218,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				System.out.println("	nextSTextfieldId = " + this.nextSTextfieldId);
 				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 				
-				yPos	= yPos + 1.5f;
+//				yPos	= yPos + 1.5f;
 			} // if - Forte Thresholds
 			
 			// "As-Is" labels, percent sliders
 			if(i % 2 == 1)
 			{
+				/*
 				this.sidebarCP5.addLabel(names[i] + "AsIs")
 				.setPosition(this.leftAlign + (this.sliderWidth / 2),
 						(float) (yVal + (yPos * (verticalSpacer + this.sliderHeight))))
@@ -218,10 +233,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				.setGroup("sidebarGroup");
 				
 				yPos	= yPos + 1;
+				*/
 				
 				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-				.setPosition(this.leftAlign, 
-						(float) (yVal + (yPos * (verticalSpacer + this.sliderHeight)) - (verticalSpacer * 2)) )
+				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
 				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
 				.setRange(-1, 1)
 				.setValue(0)
@@ -233,7 +248,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				// Also need to increment nextSTextfieldId so that they don't get out of sync
 				// (since this slider had no connected Textfield).
 				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
-				yPos	= yPos + 1;
+//				yPos	= yPos + 1;
 			} // if - "As-Is, percent sliders
 		} // for
 		// Add labels
@@ -341,7 +356,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		super.controlEvent(controlEvent);
 		
-		System.out.println("ModuleTemplate02.controlEvent: controlEvent = " + controlEvent);
+//		System.out.println("ModuleTemplate02.controlEvent: controlEvent = " + controlEvent);
 		
 		int	id	= controlEvent.getId();
 		
@@ -353,7 +368,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			
 			float	segmentValue	= (this.forteThreshold - this.threshold) / this.totalRangeSegments;
 			
-			this.thresholds	= new float[this.totalRangeSegments];
+			this.thresholds	= new float[this.curRangeSegments];
 			for(int i = 0; i < this.thresholds.length; i++)
 			{
 				this.thresholds[i]	= this.threshold + segmentValue * i;
