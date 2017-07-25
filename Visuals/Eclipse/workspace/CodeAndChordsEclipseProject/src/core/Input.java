@@ -518,7 +518,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 						//       println("i = " + i);
 						//       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
 						this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude() * 100;
+						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude(); // * 100;
 
 						// ignores pitches with amplitude lower than "sensitivity":
 						if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
