@@ -89,6 +89,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+		
+		this.moduleTemplate.legend();
 	} // draw
 
 	private void drawShape()
