@@ -1,5 +1,7 @@
 package controlP5;
 
+import java.awt.Color;
+
 /**
  * controlP5 is a processing gui library.
  * 
@@ -383,10 +385,11 @@ public class ColorWheel extends Controller< ColorWheel > {
 		double h = ( max + min ) / 2;
 		double s = ( max + min ) / 2;
 		double l = ( max + min ) / 2;
-
+		
 		if ( max == min ) {
 			h = s = 0; // achromatic
 		} else {
+
 			double d = max - min;
 			s = l > 0.5 ? ( d / ( 2 - max - min ) ) : ( d / ( max + min ) );
 			if ( max == rgb[ 0 ] ) {
@@ -511,7 +514,7 @@ public class ColorWheel extends Controller< ColorWheel > {
 		if ( minRGB == maxRGB ) {
 			return new double[] { 0 , 0 , minRGB };
 		}
-
+		
 		// Colors other than black-gray-white:
 		double d = ( r == minRGB ) ? g - b : ( ( b == minRGB ) ? r - g : b - r );
 		double h = ( r == minRGB ) ? 3 : ( ( b == minRGB ) ? 1 : 5 );
