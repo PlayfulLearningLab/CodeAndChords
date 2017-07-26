@@ -11,6 +11,7 @@ import controlP5.Textfield;
 import core.Input;
 import core.ModuleTemplate;
 import processing.core.PApplet;
+import core.Shape;
 
 public class ModuleTemplate02 extends ModuleTemplate {
 	

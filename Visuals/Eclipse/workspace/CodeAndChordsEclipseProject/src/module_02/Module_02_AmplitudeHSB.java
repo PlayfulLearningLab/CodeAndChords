@@ -1,15 +1,21 @@
 package module_02;
 
+import java.awt.Color;
+
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import core.Input;
 import processing.core.PApplet;
 import processing.core.PShape;
+import core.Shape;
 
 public class Module_02_AmplitudeHSB extends PApplet {
 
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
+	
+	private Shape     			shape;
+
 
 	//	private PShape 	shape;
 	//	int		shapeCenter;
@@ -50,10 +56,15 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.textSize(32);
 
 		// create the shape
+		
+		//Ask Emily:  What does this do?
 		this.shapeMode(CENTER);
 		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
-
+		
+		this.shape = new Shape(this, this.moduleTemplate.getMenuWidth());
+		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
+		
 		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
 	} // setup
 
@@ -86,8 +97,10 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.drawShape();
 
 		this.fill(255);
+		this.textAlign(CENTER,CENTER);
 		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
-
+		this.textAlign(LEFT,BASELINE);
+		
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 		
 		this.moduleTemplate.legend();
@@ -95,14 +108,26 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 	private void drawShape()
 	{	
+		
 		float[]	curHue	= this.moduleTemplate.getCurHue();
 		this.fill(curHue[0], curHue[1], curHue[2]);
 
 		float	shapeX		= ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
 		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
 		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
-
-		this.ellipse(shapeX, this.height / 2, shapeWidth, shapeHeight);
+		
+		this.shapeMode(CORNER);
+		PShape pShape = this.shape.getPShape();
+		pShape.fill(curHue[0], curHue[1], curHue[2]);
+		this.shape(pShape, shapeX, this.height/2);
+		this.shapeMode(CENTER);
+		
+		
+		//this.stroke(Color.red.getRGB());
+		//this.strokeWeight(10);
+		//this.point(shapeX, this.height/2);
+		
+		
 
 		// Began with PShape, but decided that that is not worth it at the moment:
 		/*		this.shape.beginShape(ELLIPSE);

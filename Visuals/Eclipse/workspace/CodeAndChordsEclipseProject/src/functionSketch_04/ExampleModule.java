@@ -1,11 +1,13 @@
 package functionSketch_04;
 
+import core.Shape;
 import processing.core.PApplet;
+import processing.core.PShape;
 
 public class ExampleModule extends PApplet { 
 	
 	
-	private Shape shape = new Shape(this);
+	private Shape shape = new Shape(this, 300);
 	
 
 	public static void main(String[] args)
@@ -26,7 +28,8 @@ public class ExampleModule extends PApplet {
 	
 	public void draw()
 	{
-		shape.drawShape();
+		PShape pShape = shape.getPShape();
+		shape(pShape, 400, 250);
 	}
 	
 	
