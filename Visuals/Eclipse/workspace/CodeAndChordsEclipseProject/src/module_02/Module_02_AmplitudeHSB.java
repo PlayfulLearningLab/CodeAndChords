@@ -50,7 +50,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.shape = new Shape(this, this.moduleTemplate.getMenuWidth());
 		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
 		
-		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
 	} // setup
 
 	public void draw()
