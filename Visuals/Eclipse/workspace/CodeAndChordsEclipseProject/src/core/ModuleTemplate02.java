@@ -9,6 +9,7 @@ import controlP5.ControlP5;
 import controlP5.Slider;
 import controlP5.Textfield;
 import processing.core.PApplet;
+import core.Shape;
 
 public class ModuleTemplate02 extends ModuleTemplate {
 

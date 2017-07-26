@@ -4,12 +4,19 @@
 
  @brief Example that shows how to play sine waves using JPortAudio.
 */
-package com.portaudio;
+//package portaudio;
 
 import com.portaudio.TestBasic.SineOscillator;
 
 public class PlaySine
 {
+
+	public static void main( String[] args )
+	{
+		PlaySine player = new PlaySine();
+		player.play();
+	}
+
 	/**
 	 * Write a sine wave to the stream.
 	 * @param stream
@@ -81,9 +88,4 @@ public class PlaySine
 		System.out.println( "JPortAudio test complete." );
 	}
 
-	public static void main( String[] args )
-	{
-		PlaySine player = new PlaySine();
-		player.play();
-	}
 }
