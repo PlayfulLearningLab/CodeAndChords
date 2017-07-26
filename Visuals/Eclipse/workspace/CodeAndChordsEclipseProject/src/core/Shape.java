@@ -1,4 +1,4 @@
-package functionSketch_04;
+package core;
 
 import processing.core.PApplet;
 import processing.core.PShape;
@@ -23,21 +23,7 @@ public class Shape {
 	private float 		menuWidth;
 	private float		screenWidth;
 
-	//constructors
-	public Shape(PApplet p)
-	{
-		this.pApp = p;
-		this.initializeVariables();
-	}
-
-	public Shape(PApplet p, int steps)
-	{
-		this.pApp = p;
-		this.initializeVariables();
-		this.steps = steps;
-		
-	}
-	
+	//constructors	
 	public Shape(PApplet p, float menuWidth)
 	{
 		this.pApp = p;
@@ -45,7 +31,7 @@ public class Shape {
 		this.menuWidth = menuWidth;
 	}
 
-	public Shape(PApplet p, int steps, float menuWidth)
+	public Shape(PApplet p, float menuWidth, int steps)
 	{
 		this.pApp = p;
 		this.initializeVariables();
@@ -61,14 +47,13 @@ public class Shape {
 		this.currentShape = new float[this.steps];
 		this.nextShape = new float[this.steps];
 		
-		this.xPos = 450;
-		this.yPos = 250;
+		this.xPos = 925/2;
+		this.yPos = 520/2;
 		this.xStretch = 1;
 		this.yStretch = 1;
 		this.rotation = 0;
 
 		this.menuIsOpen = false;
-		this.menuWidth = 300;
 		this.screenWidth = 925;
 
 		for(int i = 0; i < this.steps; i++)
@@ -132,13 +117,10 @@ public class Shape {
 
 
 	//Implemented Methods
-	public void drawShape()
+	public PShape getPShape()
 	{
 		PShape shape = this.pApp.createShape();
 		shape.beginShape();
-		shape.stroke(255);
-		shape.strokeWeight(2);
-		shape.noFill();
 
 		float x;
 		float y;
@@ -150,28 +132,20 @@ public class Shape {
 			x = (float) (this.currentShape[i]*Math.cos(theta));
 			y = (float) (this.currentShape[i]*Math.sin(theta));
 
-			x = PApplet.map(x, 0, 1, 0, this.xStretch);
-			y = PApplet.map(y, 0, 1, 0, this.yStretch);
+			//x = PApplet.map(x, 0, 1, 0, this.xStretch);
+			//y = PApplet.map(y, 0, 1, 0, this.yStretch);
 
-			if(this.menuIsOpen) 
-			{
-				x = PApplet.map(x, 0, this.screenWidth, 0, (this.screenWidth - this.menuWidth));
-			}
-
+			System.out.println(x + "    -    " + y);
+			
 			shape.vertex(x, y);
 			i++;
 		}//for()
 
 		shape.rotate(this.rotation);
+		
+		shape.endShape();
 
-		if(this.menuIsOpen)
-		{
-			this.pApp.shape(shape, (this.xPos + this.menuWidth), this.yPos);
-		}
-		else
-		{
-			this.pApp.shape(shape, this.xPos, this.yPos);
-		}
+		return shape;
 
 
 	}//drawShape()
