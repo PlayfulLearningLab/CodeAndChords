@@ -50,9 +50,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 	}; // enharmonicPos
 
 	protected	PApplet	parent;
-
 	protected	ControlP5	sidebarCP5;
 	private		String		sidebarTitle;
+	
+	private     float		menuWidth;
+	private     boolean  	menuIsOpen = false;
 
 	protected	int			leftAlign;
 	protected	int			leftEdgeX;
@@ -272,6 +274,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sidebarCP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
+//		.setPosition(this.originalLeftEdgeX, 0)
+		.setPosition(0, 0)
 		.setVisible(false);
 
 
@@ -368,6 +372,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		.setGroup("sidebarGroup")
 		.updateSize()
 		.bringToFront();
+		
+		this.menuWidth = this.sidebarCP5.getController("menuX").getWidth();
+		
 	} // addOutsideButtons
 
 	/**
@@ -1071,7 +1078,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		float	lowBound;
 		float	highBound;
 
-
 		for (int i = 0; i < 3; i++)
 		{
 			lowBound	= this.goalHue[i] - 5;
@@ -1319,6 +1325,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		// Hamburger button:
 		if(controlEvent.getController().getName().equals("hamburger"))
 		{
+			this.menuIsOpen = true;
 			this.displaySidebar();
 			controlEvent.getController().setVisible(false);
 			this.sidebarCP5.getWindow().resetMouseOver();
@@ -2045,6 +2052,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 	public float getShapeSize() {
 		return this.shapeSize;
 	}
+	
+	public ControlP5 getSidebarCP5()
+	{
+		return this.sidebarCP5;
+	}
 
 	/**
 	 * communicates with keyPressed event in draw() of driver
@@ -2056,5 +2068,15 @@ public abstract class ModuleTemplate implements ControlListener  {
 		((Toggle)this.sidebarCP5.getController("menuButton")).setState(false);
 		this.sidebarCP5.getController("hamburger").setVisible(true);
 	}//set menu val
+	
+	public float getMenuWidth()
+	{
+		return this.menuWidth;
+	}
+	
+	public boolean menuIsOpen()
+	{
+		return this.menuIsOpen;
+	}
 
 } // ModuleTemplate

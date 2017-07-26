@@ -3,6 +3,7 @@ package module_01_02;
 import processing.core.*;
 
 import core.Input;
+import core.ModuleTemplate;
 import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
 import net.beadsproject.beads.core.AudioContext;
@@ -44,16 +45,31 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	 */
 
 	private Input  input;
+	private	int		numInputs;
+
+	private	int[]	xVals;
+	private	int[]	yVals;
+	private	int		rectWidth;
+	private	int		rectHeight;
 
 
-	// TODO: initialize in a better place.
-	private float[]  goalHue	= new float[3];
-	private float[]  curHue;
+	private float[][]  goalHue;
+	private float[][]  curHue;
 
-	private int  newHuePos;
-	private int  goalHuePos;
-	private int  curHuePos;
+	private int[]  newHuePos;
+	private int[]  goalHuePos;
+	private int[]  curHuePos;
 
+	private ModuleTemplate[]	moduleTemplate;
+
+	private boolean[]		nowBelow;
+	private boolean[][]		colorReachedArray;
+	private boolean[]		colorReached;
+	private int[]			attRelTran;		// 0 = attack, 1 = release, 2 = transition
+
+	private	float[][]		colorRange;
+	private	float[][]		colorAdd;
+/*
 //	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
 	private ModuleTemplate01	moduleTemplate;
 	private boolean		nowBelow			= false;
@@ -63,8 +79,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	
 	private	float[]		colorRange	= new float[3];
 	private	float[]		colorAdd	= new float[3];
-
-	
+*/
 	public void settings()
 	{
 		size(925, 520);
@@ -76,51 +91,82 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 //		this.input	= new Input(16, new AudioContext(new PortAudioAudioIO()));
 		this.input	= new Input(2);
 		
-		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_02_PitchHueBackground");
+//		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_02_PitchHueBackground");
 		
-		//		this.moduleTemplate.setCurKey("A", 2);
-		//		this.moduleTemplate.rainbow();
-
-
-
-		//  input        = new Input(inputFile);
-
-		noStroke();
-		background(150);
-		
-
-		// Round, because the Midi notes come out with decimal places, and we want to get
-		// to the real closest note, not just the next note down.
-		// However, also have to find min, in case it rounds up to 12 (we want no more than 11).
-		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
-		if(curHuePos < 0 || curHuePos > this.moduleTemplate.getColors().length) {
-			//System.out.println("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; setting to 0.");
-			//curHuePos	= 0;
-		}
-
-		this.curHue	= new float[] { 255, 255, 255 };
-		// The following line caused problems!
-		// (That is, it made that position in colors follow curHue as the latter changed.)
-		// Never use it.
-		//		curHue	= this.moduleTemplate.colors[curHuePos];
-		
-		for(int i = 0; i < this.curHue.length; i++)
+		// Even number of inputs:
+		if((this.numInputs % 2) == 0 && (this.numInputs < 9))
 		{
-			this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
+			this.xVals	= new int[this.numInputs];
+			this.yVals	= new int[this.numInputs];
 			
+			this.rectWidth	= this.width / (this.numInputs / 2);
+			this.rectHeight	= this.height / 2;
+			
+			for(int i = 0; i < this.xVals.length; i++)
+			{
+				int xPos	= i % (this.numInputs / 2);
+				int xVal	= xPos * (rectWidth);
+				xVals[i]	= xVal;
+				System.out.println(i + ": xPos = " + xPos + "; xVal = " + xVal);
+			} // for - xVals
+			
+			for(int i = 0; i < this.yVals.length; i++)
+			{
+				int	yPos	= i / (this.numInputs / 2);
+				int	yVal	= yPos * rectHeight;
+				yVals[i]	= yVal;
+				System.out.println(i + ": yPos = " + yPos + "; yVal = " + yVal);
+			} // for - yVals
+		} else {
+			// odd - only 9:
+			if(this.numInputs == 9)
+			{
+				this.xVals	= new int[] { 0, (this.width / 3), ((this.width / 3) * 2)	};
+				this.yVals	= new int[] { 0, (this.height / 3), ((this.height / 3) * 2)	};
+			} else {
+				throw new IllegalArgumentException("Module_01_02: numInputs is " + this.numInputs + "; must be either 2, 4, 6, 8, or 9.");
+			} // else
+		} // else - odds
+
+		this.goalHue		= new float[this.numInputs][3];
+		this.curHue			= new float[this.numInputs][3];
+
+		this.newHuePos		= new int[this.numInputs];
+		this.goalHuePos		= new int[this.numInputs];
+		this.curHuePos		= new int[this.numInputs];
+
+		this.moduleTemplate	= new ModuleTemplate[this.numInputs];
+
+		this.nowBelow			= new boolean[this.numInputs];
+		this.colorReachedArray	= new boolean[this.numInputs][3];
+		this.colorReached		= new boolean[this.numInputs];
+		this.attRelTran			= new int[this.numInputs];		// 0 = attack, 1 = release, 2 = transition
+
+		this.colorRange		= new float[this.numInputs][3];
+		this.colorAdd		= new float[this.numInputs][3];
+		//TODO: input will only initialize with the number of ins it can handle, and the numInputs here will not match that if it changes.
+		for(int i = 0; i < this.numInputs; i++)
+		{
+			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
+			
+
 			// divide the attack/release/transition value by 50
 			// and divide colorRange by that value to find the amount to add each 50 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getAttRelTranVal(this.attRelTran) / 50);
-		}
-
-	} // setup()
-
-	public void draw()
-	{
-
-//		System.out.println("input.getAdjustedFundAsMidiNote(1) = " + input.getAdjustedFundAsMidiNote(1));
+			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate[i].getAttRelTranVal(this.attRelTran) / 50);
 
 		
+		if(this.moduleTemplate[i].getSidebarCP5() != null)
+		{
+			this.moduleTemplate[i].getSidebarCP5().setVisible(false);
+			this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
+		}
+
+			this.nowBelow[i]			= false;
+			this.colorReachedArray[i]	= new boolean[] { false, false, false };
+			this.colorReached[i]		= false;
+			this.attRelTran[i]			= 0;
+
+		/*
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{
@@ -129,161 +175,182 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		
 		if (input.getAmplitude() > this.moduleTemplate.getThreshold())
 		{
-
-			this.nowBelow	= false;
-
-			// subtracting keyAddVal gets the number into the correct key 
-			// (simply doing % 12 finds the scale degree in C major).
-			//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-			int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.moduleTemplate.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-
-			// chromatic:
-			//			if(this.moduleTemplate.getMajMinChrom() == 2) {
-			newHuePos	= scaleDegree;
-			//			} else {
-			// major or minor:
-
-			//				int	inScale	= this.arrayContains(this.moduleTemplate.getScaleDegrees()[this.moduleTemplate.getMajMinChrom()], scaleDegree);
-
-			//				if(inScale > -1) {
-			//					newHuePos	= inScale;
-			//					println(newHuePos + " is the position in this scale.");
-			//				} // if - check if degree is in the scale
-
-//			} // if - current scale is Major or Minor
-
-
-			if(newHuePos > this.moduleTemplate.getColors().length || newHuePos < 0)	{
-				throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.draw: newHuePos " + newHuePos + " is greater than colors.length (" + this.moduleTemplate.getColors().length + ") or less than 0.");
-			}
-
-			//  newHue  = newHue * 30;  // this is for HSB, when newHue is the color's H value
-
-			// set goalHue to the color indicated by the current pitch:
-			if (newHuePos != goalHuePos) {
-				goalHuePos  = newHuePos;
-			} // if
-			
-			for(int i = 0; i < this.goalHue.length; i++)
+			for(int j = 0; j < this.curHue[i].length; j++)
 			{
-				this.goalHue[i]	= this.moduleTemplate.getColors()[goalHuePos][i];
-			}
+				this.colorRange[i][j]	= Math.abs(this.goalHue[i][j] - this.curHue[i][j]);
 
-			
-		} else {
-			// volume not above the threshold:
-			this.nowBelow	= true;
+				// divide the attack/release/transition value by 50
+				// and divide colorRange by that value to find the amount to add each 50 millis.
+				this.colorAdd[i][j]	= this.colorRange[i][j] / (this.moduleTemplate[i].getART(this.attRelTran[i]) / 50);
+			} // for - j
 
-			this.goalHue	= new float[] { 
-					this.moduleTemplate.getCanvasColor()[0],
-					this.moduleTemplate.getCanvasColor()[1],
-					this.moduleTemplate.getCanvasColor()[2]
-			};
-			
-		} // else - above/below threshold
+		} // for - i
+		*/
 
-		
-		if(this.moduleTemplate.getCheckpoint() < this.millis())
-		{
-			for(int i = 0; i < 3; i++)
-			{
-				if(this.curHue[i] < this.goalHue[i])
-				{
-					this.curHue[i]	=	this.curHue[i] + this.colorAdd[i];
-				} else if(this.curHue[i] > this.goalHue[i])
-				{
-					this.curHue[i]	=	this.curHue[i] - this.colorAdd[i];
-				}
-			} // for - i
-			
-			this.moduleTemplate.setCheckpoint(this.millis() + 50);
-		} // if - adding every 50 millis
-		
-		/*
-		System.out.println("curHue: " + this.curHue[0] + ", " + 
-				+ this.curHue[1] + ", "
-				+ this.curHue[2]);
-		System.out.println("goalHue: " + this.goalHue[0] + ", " + 
-						+ this.goalHue[1] + ", "
-						+ this.goalHue[2]);
-		System.out.println("input.getAmplitude() = " + input.getAmplitude());
-*/
-
-		float	lowBound;
-		float	highBound;
-
-
-		for (int i = 0; i < 3; i++)
-		{
-//			lowBound	= this.goalHue[i] - this.moduleTemplate.getART(attRelTran);
-//			highBound	= this.goalHue[i] + this.moduleTemplate.getART(attRelTran);
-			
-			lowBound	= this.goalHue[i] - 5;
-			highBound	= this.goalHue[i] + 5;
-			
-
-			// First, check colors and add/subtract as necessary:
-			if (this.curHue[i] >= highBound)
-			{
-//				this.curHue[i] = this.curHue[i] - this.moduleTemplate.getART(attRelTran);
-			} else if (this.curHue[i] <= lowBound)
-			{
-//				this.curHue[i]  = this.curHue[i] + this.moduleTemplate.getART(attRelTran);
-			} // if - adjust colors
-
-
-			// Now check colors for whether they have moved into the boundaries:
-			if(this.curHue[i] < highBound && this.curHue[i] > lowBound) {
-				// if here, color has been reached.
-				this.colorReachedArray[i]	= true;
-			} else {
-				this.colorReachedArray[i]	= false;
-			}
 		} // for
+		
+		noStroke();
+		background(150);
 
-		// If all elements of the color are in range, then the color has been reached:
-		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
+	} // setup()
 
-		//  background(this.curHue[0], this.curHue[1], this.curHue[2]);
-		fill(this.curHue[0], this.curHue[1], this.curHue[2]);		
-		rect(moduleTemplate.getLeftEdgeX(), 0, width - moduleTemplate.getLeftEdgeX(), height);
-		//		stroke(255);
-
-
-		if(this.moduleTemplate.isShowScale())
+	public void draw()
+	{	
+		for(int i = 0; i < this.numInputs; i++)
 		{
-
-			// draws the legend along the bottom of the screen:
-			this.moduleTemplate.legend(goalHuePos);
-		}
-		
-		int	oldART	= this.attRelTran;
-
-		// If coming from a low amplitude note and not yet reaching a color,
-		// use the attack value to control the color change:
-		if(!this.nowBelow && !colorReached) 
-		{	
-			this.attRelTran	= 0;
-		} else if(!this.nowBelow && colorReached) {
-			// Or, if coming from one super-threshold note to another, use the transition value:
-			this.attRelTran	= 2;
-		} else if(this.nowBelow) {
-			// Or, if volume fell below the threshold, switch to release value:
-			this.attRelTran	= 1;
-		}
-		
-		if(this.attRelTran != oldART)
-		{			
-			// Calculate color ranges:
-			for(int i = 0; i < this.curHue.length; i++)
+//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
+//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
+			
+			// The following line is necessary so that key press shows the menu button
+			if (keyPressed == true) 
 			{
+				this.moduleTemplate[i].setMenuVal();
+			} // if keyPressed
+
+			if (input.getAmplitude(i + 1) > this.moduleTemplate[i].getThresholdLevel())
+			{
+				this.nowBelow[i]	= false;
+
+				// subtracting keyAddVal gets the number into the correct key 
+				// (simply doing % 12 finds the scale degree in C major).
+				//newHuePos  = round(input.getAdjustedFundAsMidiNote(1)) % 12;
+				int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.moduleTemplate[i].getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+
+				newHuePos[i]	= scaleDegree;
+
+				if(newHuePos[i] > this.moduleTemplate[i].getColors().length || newHuePos[i] < 0)	{
+					throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.draw: newHuePos " + newHuePos[i] + " is greater than colors.length (" + this.moduleTemplate[i].getColors().length + ") or less than 0.");
+				}
+
+				// set goalHue to the color indicated by the current pitch:
+				if (newHuePos[i] != goalHuePos[i]) {
+					goalHuePos[i]  = newHuePos[i];
+				} // if
+
+				for(int k = 0; k < this.goalHue[i].length; k++)
+				{
+					this.goalHue[i][k]	= this.moduleTemplate[i].getColors()[goalHuePos[i]][k];
+				}
+
+
+			} else {
+				// volume not above the threshold:
+				this.nowBelow[i]	= true;
+
+				this.goalHue[i]	= new float[] { 
+						this.moduleTemplate[i].getCanvasColor()[0],
+						this.moduleTemplate[i].getCanvasColor()[1],
+						this.moduleTemplate[i].getCanvasColor()[2]
+				};
+
+			} // else - above/below threshold
+
+
+			if(this.moduleTemplate[i].getCheckpoint() < this.millis())
+			{
+				for(int l = 0; l < 3; l++)
+				{
+					if(this.curHue[i][l] < this.goalHue[i][l])
+					{
+						this.curHue[i][l]	=	this.curHue[i][l] + this.colorAdd[i][l];
+					} else if(this.curHue[i][l] > this.goalHue[i][l])
+					{
+						this.curHue[i][l]	=	this.curHue[i][l] - this.colorAdd[i][l];
+					}
+				} // for - l
+
+				this.moduleTemplate[i].setCheckpoint(this.millis() + 50);
+			} // if - adding every 50 millis
+
+			/*
+			System.out.println("curHue: " + this.curHue[0] + ", " + 
+					+ this.curHue[1] + ", "
+					+ this.curHue[2]);
+			System.out.println("goalHue: " + this.goalHue[0] + ", " + 
+							+ this.goalHue[1] + ", "
+							+ this.goalHue[2]);
+			System.out.println("input.getAmplitude() = " + input.getAmplitude());
+			 */
+
+			float	lowBound;
+			float	highBound;
+
+			// TODO: is this loop doing anything necessary?
+			// - setting colorReachedArray
+			for (int m = 0; m < 3; m++)
+			{
+				lowBound	= this.goalHue[i][m] - 5;
+				highBound	= this.goalHue[i][m] + 5;
+
+				// First, check colors and add/subtract as necessary:
+				if (this.curHue[i][m] >= highBound)
+				{
+					//					this.curHue[m] = this.curHue[m] - this.moduleTemplate.getART(attRelTran);
+				} else if (this.curHue[i][m] <= lowBound)
+				{
+					//					this.curHue[m]  = this.curHue[m] + this.moduleTemplate.getART(attRelTran);
+				} // if - adjust colors
+
+
+				// Now check colors for whether they have moved into the boundaries:
+				if(this.curHue[i][m] < highBound && this.curHue[i][m] > lowBound) {
+					// if here, color has been reached.
+					this.colorReachedArray[i][m]	= true;
+				} else {
+					this.colorReachedArray[i][m]	= false;
+				}
+			} // for
+
+			// If all elements of the color are in range, then the color has been reached:
+			this.colorReached[i]	= this.colorReachedArray[i][0] && this.colorReachedArray[i][1] && this.colorReachedArray[i][2];
+
+			//  background(this.curHue[0], this.curHue[1], this.curHue[2]);
+			fill(this.curHue[i][0], this.curHue[i][1], this.curHue[i][2]);		
+			// Rectangle: "the first two parameters set the location of the upper-left corner, the third sets the width, and the fourth sets the height."
+//			rect(moduleTemplate[i].getLeftEdgeX(), this.yVals[i], rectWidth - (this.xVals[i] - moduleTemplate[i].getLeftEdgeX()), rectHeight);
+			//		stroke(255);
+			rect(this.xVals[i], this.yVals[i], rectWidth, rectHeight);
+
+
+
+			if(this.moduleTemplate[i].isShowScale())
+			{
+
 				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
 				
 				// divide the attack/release/transition value by 50
 				// and divide colorRange by that value to find the amount to add each 50 millis.
 				this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate.getAttRelTranVal(this.attRelTran) / 50);
 			}
-		} // if
+
+			int	oldART	= this.attRelTran[i];
+
+			// If coming from a low amplitude note and not yet reaching a color,
+			// use the attack value to control the color change:
+			if(!this.nowBelow[i] && !colorReached[i]) 
+			{	
+				this.attRelTran[i]	= 0;
+			} else if(!this.nowBelow[i] && colorReached[i]) {
+				// Or, if coming from one super-threshold note to another, use the transition value:
+				this.attRelTran[i]	= 2;
+			} else if(this.nowBelow[i]) {
+				// Or, if volume fell below the threshold, switch to release value:
+				this.attRelTran[i]	= 1;
+			}
+
+			if(this.attRelTran[i] != oldART)
+			{			
+				// Calculate color ranges:
+				for(int n = 0; n < this.curHue[i].length; n++)
+				{
+					this.colorRange[i][n]	= Math.abs(this.goalHue[i][n] - this.curHue[i][n]);
+
+					// divide the attack/release/transition value by 50
+					// and divide colorRange by that value to find the amount to add each 50 millis.
+					this.colorAdd[i][n]	= this.colorRange[i][n] / (this.moduleTemplate[i].getART(this.attRelTran[i]) / 50);
+				}
+			} // if
+		} // for
 
 	} // draw()
 
@@ -297,12 +364,18 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	{
 		try
 		{
-			//"; this.moduleTemplate = " + this.moduleTemplate);
-			this.moduleTemplate.controlEvent(theControlEvent);	
+			for(int i = 0; i < this.moduleTemplate.length; i++)
+			{
+				// TODO: this might not be right:
+				if(theControlEvent.isAssignableFrom(this.moduleTemplate[i].getClass()));
+				{
+					this.moduleTemplate[i].controlEvent(theControlEvent);
+				}
+			} // for	
 		} catch(Exception e)
 		{
 			println("Module_01_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
-//			e.printStackTrace();
+			//			e.printStackTrace();
 		}
 	} // controlEvent
 

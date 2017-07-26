@@ -45,7 +45,7 @@ public class PortAudioAudioIO extends AudioIO {
 	
 	/**
 	 * Initializes JavaSound.
-	 */
+	 */ 
 	public boolean create() {
 		PortAudio.initialize();
 		
@@ -207,6 +207,8 @@ public class PortAudioAudioIO extends AudioIO {
 			this.inStream		= inStream;
 			this.numChannels	= numInChannels;
 			
+			System.out.println("PortAudioInput: numChannels = " + this.numChannels);
+			
 			this.channels		= new int[channels.length];
 			for(int i = 0; i < this.channels.length; i++)
 			{
@@ -259,9 +261,9 @@ public class PortAudioAudioIO extends AudioIO {
 
 			inStream.read( interleavedSamples, bufferSize );
 			
-			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);
-//			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, bufOut);
-			
+//			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);
+			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, bufOut);
+/*			
 //			bufOut	= new float[this.channels.length][this.bufferSize];
 			int	bufPos		= 0;
 			int	nextChannel;
@@ -284,7 +286,7 @@ public class PortAudioAudioIO extends AudioIO {
 					bufPos	= bufPos + 1;
 				} // if
 			} // for - i
-			
+*/
 		} // caluculateBuffer
 
 	} // class PortAudioInput

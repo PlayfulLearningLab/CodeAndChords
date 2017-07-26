@@ -104,15 +104,17 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	float[]                fundamentalArray;     // holds the current pitch, in hertz, of each input.
 	float[]					amplitudeArray;		// holds the current amplitude of each input; format undefined
 	int                    numInputs;            // number of lines / mics
+	int						adjustedNumInputs;
 	//float                  pitch;                // 
 	PowerSpectrum[]        psArray;              // holds the PowerSpectrum objects connected to each input.
 	float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
 	ShortFrameSegmenter[]  sfsArray;             // holds the ShortFrameSegmenter objects connected to each input.
 	//int                    waitUntil;            // number of milliseconds to wait before checking for another key 
 	boolean					pause;
+	boolean					skip5thru8;
 
 	/**
-	 *  Creates an Input object connected to Jack, with the given number of inputs.
+	 *  Creates an Input object connected to PortAudio, with the given number of inputs.
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
@@ -120,6 +122,19 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	{
 //		this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+		
+	} // constructor - int, AudioContext
+	
+	/**
+	 *  Creates an Input object connected to PortAudio, with the given number of inputs,
+	 * as well as the option to skip inputs 5-8 (this assumes that you will have adjusted for the skip
+	 * and passed in 4 more inputs than you plan to need; e.g., numInputs = 16 for 12 lines).
+	 *
+	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
+	 */
+	public Input(int numInputs, boolean skip5thru8)
+	{
+		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8);
 		
 	} // constructor - int, AudioContext
 
@@ -131,6 +146,19 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 */
 	public Input(int numInputs, AudioContext audioContext)
 	{
+		this(numInputs, audioContext, false);
+	} // int, AudioContext
+	
+	/**
+	 * Creates an Input object with the given number of inputs and the particular AudioContext,
+	 * as well as the option to skip inputs 5-8 (this assumes that you will have adjusted for the skip
+	 * and passed in 4 more inputs than you plan to need; e.g., numInputs = 16 for 12 lines).
+	 * @param numInputs
+	 * @param audioContext
+	 * @param skip5thru8
+	 */
+	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8)
+	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
 		} // if(numInputs < 1)
@@ -139,10 +167,19 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		} // if(numInputs < 1)
 
 		this.numInputs  = numInputs;
-		this.ac = audioContext;
+		this.ac 		= audioContext;
+		this.skip5thru8	= skip5thru8;
+		
+		if(this.skip5thru8)
+		{
+			this.adjustedNumInputs	= this.numInputs - 4;
+			System.out.println("this.adjustedNumInputs = " + this.adjustedNumInputs);
+		} else {
+			this.adjustedNumInputs	= this.numInputs;
+		} // 
 
 		this.uGenArrayFromNumInputs(this.numInputs);
-	} // constructor(int)
+	} // constructor(int, AudioContext, boolean)
 	
 	/**
 	 * Constructor for creating an Input object with 2 lines, 
@@ -229,6 +266,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	{
 		// Moved this from the constructor:
 		this.numInputs  = sampleFilenames.length;
+		this.adjustedNumInputs	= this.numInputs;
 		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
 		int  semaphore      = 1;
 
@@ -278,7 +316,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		} // for
 
 		uGenArray  = new UGen[SampleManager.getGroup("group").size()];
-		this.gainArray	= new Gain[this.numInputs];
+		this.gainArray	= new Gain[this.adjustedNumInputs];
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
@@ -296,32 +334,44 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 	public void uGenArrayFromNumInputs(int numInputs)
 	{
-		this.numInputs  = numInputs;
+		// TODO: make sure we set this everywhere else
+//		this.numInputs  = numInputs;
 
 		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
-		int[][]  inputNums  = new int[this.numInputs][1];
-		for (int i = 0; i < this.numInputs; i++)
+		int[][]	inputNums2d	= new int[this.numInputs][1];
+		int[]	inputNums1d	= new int[this.numInputs];
+		for (int i = 0; i < inputNums2d.length; i++)
 		{
-			inputNums[i][0]  = i + 1;
+			inputNums2d[i][0]	= (i + 1);
+			inputNums1d[i]		= (i + 1);
 		} // for
 
 		// get the audio lines from the AudioContext:
 		//    this.inputsUGen = ac.getAudioInput(inputNums);
 
 		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
-		this.uGenArray  = new UGen[this.numInputs];
-		this.gainArray	= new Gain[this.numInputs];
+		this.uGenArray  = new UGen[this.adjustedNumInputs];
+		this.gainArray	= new Gain[this.adjustedNumInputs];
+		System.out.println("uGenArray.length = " + this.uGenArray.length);
 		
-		UGen	audioInput	= this.ac.getAudioInput();
+		UGen	audioInput	= this.ac.getAudioInput(inputNums1d);
 		
+		int	channelPos	= 0;
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// getAudioInput needs an int[] with the number of the particular line.
-			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
-//			uGenArray[i]  = new Plug(this.ac, audioInput, i);
+//			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
+			if(channelPos == 4 && this.skip5thru8)
+			{
+				channelPos	= 8;
+			}
 			
+			uGenArray[i]  = new Plug(this.ac, audioInput, channelPos);
+			System.out.println("Input: uGenArray[" + i + "] = " + uGenArray[i]);
 			this.gainArray[i]	= new Gain(this.ac, 0, 0);
-		}
+			
+			channelPos	= channelPos + 1;
+		} // for
 
 		initInput(uGenArray);
 	} // uGenArrayFromNumInputs
@@ -353,7 +403,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
 //		g = new Gain(this.ac, 1, (float) 0.5);
 
-		this.gainArray	= new Gain[this.numInputs];
+		this.gainArray	= new Gain[this.adjustedNumInputs];
 		for(int i = 0; i < this.gainArray.length; i++)
 		{
 			if(this.gainArray[i] == null)
@@ -369,7 +419,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 		// The ShortFrameSegmenter splits the sound into smaller, manageable portions;
 		// this creates an array of SFS's and adds the UGens to them:
-		this.sfsArray  = new ShortFrameSegmenter[this.numInputs];
+		this.sfsArray  = new ShortFrameSegmenter[this.adjustedNumInputs];
 		for (int i = 0; i < this.sfsArray.length; i++)
 		{
 			this.sfsArray[i] = new ShortFrameSegmenter(this.ac);
@@ -379,7 +429,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		}
 
 		// Creates an array of FFTs and adds them to the SFSs:
-		this.fftArray  = new FFT[this.numInputs];
+		this.fftArray  = new FFT[this.adjustedNumInputs];
 		for (int i = 0; i < this.fftArray.length; i++)
 		{
 			this.fftArray[i] = new FFT();
@@ -390,7 +440,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 		// Creates an array of PowerSpectrum's and adds them to the FFTs
 		// (the PowerSpectrum is what will actually perform the FFT):
-		this.psArray  = new PowerSpectrum[this.numInputs];
+		this.psArray  = new PowerSpectrum[this.adjustedNumInputs];
 		for (int i = 0; i < this.psArray.length; i++)
 		{
 			this.psArray[i] = new PowerSpectrum();
@@ -401,7 +451,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 		// Creates an array of FrequencyEMMs and adds them to the PSs
 		// (using my version of the Frequency class - an inner class further down - to allow access to amplitude):
-		this.frequencyArray  = new FrequencyEMM[this.numInputs];
+		this.frequencyArray  = new FrequencyEMM[this.adjustedNumInputs];
 		for (int i = 0; i < this.frequencyArray.length; i++)
 		{
 			this.frequencyArray[i] = new FrequencyEMM(44100);
@@ -411,7 +461,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		} // for
 
 		// Adds the SFSs (and everything connected to them) to the AudioContext:
-		for (int i = 0; i < this.numInputs; i++)
+		for (int i = 0; i < this.adjustedNumInputs; i++)
 		{
 			this.ac.out.addDependent(sfsArray[i]);
 		} // for - addDependent
@@ -424,23 +474,28 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		this.sensitivity  = 10;
 
 		// Initializes the arrays that will hold the pitches:
-		this.fundamentalArray = new float[this.numInputs];
-		this.adjustedFundArray = new float[this.numInputs];
-		this.amplitudeArray	= new float[this.numInputs];
+		this.fundamentalArray = new float[this.adjustedNumInputs];
+		this.adjustedFundArray = new float[this.adjustedNumInputs];
+		this.amplitudeArray	= new float[this.adjustedNumInputs];
 
 		// Gets the ball rolling on analysis:
 		this.setFund();
 	} // initInput(UGen[])
 
 	/**
-	 * Subtracts 4 from the numInputs variable because I added 4
-	 * to account for the fact that the two interfaces together skip lines 5-8.l
-	 *
 	 * @return  int  number of input channels.
 	 */
 	public int  getNumInputs() {
 		return this.numInputs;
 	} // getNumInputs
+	
+	/**
+	 * 
+	 * @return	int number of input channels, adjusted for skipping lines 5-8 (if skipped, will be 4 less than this.numInputs)
+	 */
+	public int getAdjustedNumInputs() {
+		return this.adjustedNumInputs;
+	} // getAdjustedNumInputs
 
 	/**
 	 *  Fills the fundamentalArray and adjustedFundArray with the current pitches of each input line:
@@ -453,7 +508,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			// TODO: maybe this won't be necessary once the threads are implemented.
 			if(!this.pause)
 			{
-				for (int i = 0; i < this.numInputs; i++)
+				for (int i = 0; i < this.adjustedNumInputs; i++)
 				{
 					//     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
 
@@ -735,8 +790,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 *  @param   String    name of the method that called this method, used in the exception message.
 	 */
 	private void inputNumErrorCheck(int inputNum, String method) {
-		if (inputNum > this.numInputs) {
-			IllegalArgumentException iae = new IllegalArgumentException("InputClass_Jack.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.numInputs + ", the number of inputs.");
+		if (inputNum > this.adjustedNumInputs) {
+			IllegalArgumentException iae = new IllegalArgumentException("InputClass_Jack.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.adjustedNumInputs + ", the number of inputs.");
 			iae.printStackTrace();
 		}
 		if (inputNum < 1) {
