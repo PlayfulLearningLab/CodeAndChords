@@ -17,8 +17,20 @@ import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PImage;
 
+/**
+ * July 2017
+ * 
+ * Abstract class for all the ModuleTemplate (sidebar) components that are needed for more than one module.
+ * 
+ * @author Emily Meuer
+ *
+ */
 public abstract class ModuleTemplate implements ControlListener  {
 
+
+	/**
+	 * These lists of notes allow the position of any given note to be found in the current scale.
+	 */
 	protected	final String[]	notesAtoAbFlats	= new String[] { 
 			"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"
 	};
@@ -59,86 +71,114 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * must be initiated by child class.
 	 */
 	protected	float[][]	colors;
+	
+	/**	Current hue (as opposed to the goal hue, which may not have been reached)	 */
 	private	float[]			curHue;
+	
+	/**	Hue that corresponds to the current sound, but to which curHue may not yet have faded	*/
 	private	float[]			goalHue;
+	
+	/**	The color when sound is below the threshold	*/
 	protected	float[]		canvasColor;
+	
+	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
 	private	float[]			colorAdd;
+	
+	/**	The difference between the R, G, and B values of 2 colors that are being faded between	*/
 	private	float[]			colorRange;
 
-	/**
-	 * The current colors which hsb sliders are altering;
-	 * must be initiated by child class.
-	 */
+	/**	The current colors which hsb sliders are altering; must be initiated by child class.	*/
 	protected float[][]   hsbColors; //the current colors at which hsb is altering
 
-	/**
-	 * filled in the Custom color style to allow RGB modifications to colors;
-	 * must be initiated by child class.
-	 */
+	/**	Filled in the Custom color style to allow RGB modifications to colors;	must be initiated by child class.	*/
 	protected	float[][]	originalColors;
 
-
+	/**	Flags whether the curHue R, G, and B values have come within an acceptable range of the goalHue	*/
 	private boolean[]	colorReachedArray;
+	
+	/**	True if all values in the colorReachedArray are true; used to determine fade speed (whether this is attack, release, or transition)	*/
 	private	boolean		colorReached;
 
-	private	Input	input;
+	/**	Input from which the class will get all its audio data	*/
+	protected	Input	input;
+	
+	/**	Volume below which input will be ignored	*/
 	protected float	threshold;
+	
+	/**	Flag denoting whether or not the current volume is below the threshold	*/
 	private boolean	nowBelow;
 
-	private	int		attRelTranPos;		// 0 = attack, 1 = release, 2 = transition
-	private int 	checkpoint;		// For a timer that allows attack/release/transition sliders to be time-based.
+	/**	Attack, Release, or Transition - 0 = attack, 1 = release, 2 = transition	*/
+	private	int		attRelTranPos;
+	
+	/**	For a timer that allows attack/release/transition sliders to be time-based	*/
+	private int 	checkpoint;
+	
+	/**	Stores the values of the attack, release, and transition sliders	*/
 	private	float[]	attRelTranVals;
 
-	protected	float[]	redGreenBlueMod;	// this will store the red/green/blue modulate values
-	protected	float[] hueSatBrightnessMod; // This will store the hsb modulate values
+	/**	Stores the values of the red, green, and blue modulate sliders	*/
+	protected	float[]	redGreenBlueMod;
+	
+	/**	Stores the values of the hue, saturation, and brightness modulate sliders	*/
+	protected	float[] hueSatBrightnessMod;
 
+	/**	Melody object that guide tones will use to play scales	*/
 	protected Melody		melody;
+	
+	/**	Letter (and '#' or 'b', if necessary) designating the current key	*/
 	protected String		curKey;
+	
+	/**	The current key is this many keys away from "A" (the first in allNotes)	*/
 	protected int 		curKeyOffset;
+	
+	/**	The current key is this many letter names away from "A," with enharmonic keys (e.g., C# and Db) together counting for one position	*/
 	protected int 		curKeyEnharmonicOffset;
+	
+	/**	Length of the current scale (chromatic is longer than major and minor)	*/
 	protected	int			scaleLength;
+	
+	/**	Current beats per minute	*/
 	protected	int			bpm;
+	
+	/**	Current scale quality: 0 = major, 1 = minor, 2 = chromatic	*/
 	protected int 		majMinChrom;
+	
+	/**	The current octave of the guide tones	*/
 	protected int			rangeOctave;
+	
+	/**	Instrument object used to play the guide tone scales	*/
 	protected Instrument	instrument;
 
+	/**	Signifies whether or not the legend at the bottom of the screen is to be visible	*/
 	protected boolean	showScale;
 
+	/**	Size of the shape (if there is one) from 1-100, designating the diameter in relation to the sketch canvas
+	 * (e.g., shapeSize of 50 means that the shape diameter will be 50% of the sketch size)	*/
 	protected	float	shapeSize;
 
 	/**
+	 * The current number of range segements (i.e., sections into which the spectrum, be it of amplitude or frequency, is split).
+	 * 
 	 * This class's controlEvent() will set this.curRangeSegments, 
 	 * but it is up to child classes to implement the variable how they see fit.
 	 */
 	protected	int		curRangeSegments;
+	
+	/**	The total number of range segments available to this instance	*/
 	protected	int		totalRangeSegments;
-
-	protected int		lastSetSliderId;
-	protected int		lastSetTextfieldId;
-	protected int		lastSetColorSelectButtonId;
-	protected int		lastSetColorWheelId;
-	protected int		lastSetColorSelectTextfieldId;
-
-	/**
-	 * If a child class adds a canvas color select Button,
-	 * they should set this variable to the value of the Button's id, for use in controlEvent:
+	
+	/**	
+	 * All of the following are id's that have the potential to be used in controlEvent;
+	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
+	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
 	protected	int	canvasColorSelectId	= -1;
-
-	/**
-	 * If a child class adds color modulate sliders (RGB or HSB)
-	 * they should set this variable to the value of the Button's id, for use in resetModulateSliders:
-	 */
 	protected	int	firstColorModSliderId	= -1;
-
 	protected	int	firstColorSelectId	= -1;
-
 	protected	int	lastColorSelectId	= -1;
 	protected	int	firstCustomColorId	= -1;
-
-
 	protected	int	thresholdSliderId	= -1;
-
 	protected	int	firstARTSliderId	= -1;
 	protected	int	firstHSBSliderId	= -1;
 	protected	int	firstRGBSliderId	= -1;
@@ -147,12 +187,14 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected	int	shapeSizeSliderId	= -1;
 	protected	int	firstRangeSegmentsId	= -1;
 
-
-	/**
-	 * DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.
-	 */
+	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
 
+	/**
+	 * The following are id's that are used within the add____ methods to keep id numbering consistent.
+	 * They are initially set to 0 (nextSliderId), 100 (nextSTextfieldId), 200 (nextButtonId), 
+	 * 300 (nextColorWheelId), 400 (nextCWTextfieldId) and 500 (nextToggleId), and incremented as Controllers are added.
+	 */
 	protected	int	nextSliderId;
 	protected	int	nextSTextfieldId;	// Textfield next to a slider
 	protected	int	nextButtonId;	// for Buttons that open a ColorWheel
@@ -160,7 +202,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected	int	nextCWTextfieldId;	// Textfield under a ColorWheels
 	protected	int	nextToggleId;
 
-
+	/**
+	 * Constructor
+	 * 
+	 * @param parent	PApplet used to draw, etc.; will instantiate this.parent instance var
+	 * @param input		Input for all audio input; will instantiate this.input
+	 * @param sidebarTitle	String designating the title of the module to which this template corresponds
+	 */
 	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent			= parent;
@@ -170,7 +218,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.leftAlign	= (this.parent.width / 3) / 4;
 		this.leftEdgeX	= 0;
 
-		// TODO: note that these are not implemented consistently in ModuleTemplate_01:
 		this.labelX			= 10;
 		this.labelWidth		= 70;
 		this.spacer			= 5;
@@ -178,10 +225,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sliderWidth	= 170;
 		this.sliderHeight	= 20;
 
-
 		this.curHue				= new float[3];
 		this.goalHue			= new float[3];
-		this.canvasColor		= new float[] { 0, 0, 0 };
+		this.canvasColor		= new float[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		this.colorAdd			= new float[3];
 		this.colorRange			= new float[3];
 
@@ -198,7 +244,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.threshold		= 10;
 
 		this.sidebarCP5		= new ControlP5(this.parent);
-		// TODO: unwise cast.
 		this.sidebarCP5.addListener((ControlListener)this);
 
 
@@ -219,6 +264,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.initModuleTemplate();
 	} // constructor
 
+	/**
+	 * Called at the end of the constructor to add the sidebar title,
+	 * "outside buttons" (hamburger and play/pause/stop cluster)
+	 * and "hide buttons" (top row of sidebar, for hiding Scale, PlayButton, MenuButton).
+	 */
 	private void initModuleTemplate()	
 	{
 		this.sidebarCP5.addGroup("sidebarGroup")
@@ -263,10 +313,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.addHideButtons(26);
 
-		// TODO: depending on what kind of guide tones this needs, might move addGuideTonePopout() here
-
 	} // initModuleTemplate
 
+	/**
+	 * Adds "outside buttons": hamburger and play/pause/stop Buttons
+	 */
 	protected void addOutsideButtons()
 	{
 		int	playX		= this.parent.width - 45;
@@ -326,6 +377,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 		
 	} // addOutsideButtons
 
+	/**
+	 * Adds "hide buttons" - hide Menu, hide Play Button, and hide Scale
+	 * 
+	 * @param hideY	y value at which the row will be displayed
+	 */
 	protected void addHideButtons(int	hideY)
 	{
 		int	hideWidth   = 69;
@@ -339,7 +395,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		String[]	names	= new String[] { 
 				"playButton",
 				"menuButton",
-				"scale"
+				"legend"
 		};
 		String[]	labels	= new String[] {
 				"Play Button",
@@ -463,7 +519,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			.setPosition(this.leftAlign + sliderWidth + spacer, yVals[i])
 			.setSize(tfWidth, this.sliderHeight)
 			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
-			//			.setLabelVisible(false)
 			.setAutoClear(false)
 			.setGroup("sidebarGroup")
 			.setId(this.nextSTextfieldId)
@@ -472,9 +527,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 
 		} // for
-
-		// TODO: what even is Threshold? Are we able to measure decibels?
-		//		this.setthreshold(10);
 
 	} // addSliders
 
@@ -565,10 +617,10 @@ public abstract class ModuleTemplate implements ControlListener  {
 	} // addKeySelector
 
 	/**
-	 * TODO these comments - perhaps explain placement of guideToneY (should it be the same number as
-	 * is sent to addKeySelector?)
+	 * Adds the guide tone pop-out with range and envelope preset select dropdowns, bpm and volume sliders.
 	 * 
-	 * @param guideToneY
+	 * @param guideToneY	y value for the top of the pop-out; 
+	 * 						for ModuleTemplate_01, this is same as the value for addKeySelector
 	 */
 	protected void addGuideTonePopout(int guideToneY)
 	{
@@ -654,7 +706,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 		} // for
 
-
 		// "ADSR Presets" Textlabel
 		this.sidebarCP5.addTextlabel("adsrPresets")
 		.setPosition(popoutSpacer, adsrY)
@@ -674,7 +725,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sidebarCP5.addScrollableList("adsrPresetsDropdown")
 		.setPosition(listSliderX, adsrY)
 		.setWidth(listWidth)
-		//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(adsrItems)
@@ -683,7 +733,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		.setGroup("guideToneBackground")
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
-
 
 		// "Range" Textlabel
 		this.sidebarCP5.addTextlabel("range")
@@ -696,11 +745,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.melody.setScale(scales[this.majMinChrom]);
 		this.melody.setRangeList();
 
-
 		this.sidebarCP5.addScrollableList("rangeDropdown")
 		.setPosition(listSliderX, rangeY)
 		.setWidth(listWidth)
-		//		.setHeight(boxHeight - (popoutSpacer * 2))
 		.setBarHeight(18)
 		.setItemHeight(18)
 		.setItems(this.melody.getRangeList())
@@ -710,10 +757,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 		.bringToFront()
 		.getCaptionLabel().toUpperCase(false);
 
-		//		this.instrument.setVolume(0.2f);
-
 	} // addGuideTonePopout
 
+	/**
+	 * Adds the hue, saturation, and brightness modulate sliders
+	 * 
+	 * @param hsb	array of y values for each slider
+	 */
 	protected void addHSBSliders(int[] hsb)
 	{
 		int	labelX			= 10;
@@ -767,7 +817,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	}//the HSB Sliders Heavily Adapted from modSlider Method
 
 	/**
-	 * Method called during instantiation, to initialize the color modulate sliders.
+	 * Method called during instantiation, to initialize the RGB color modulate sliders.
 	 * 
 	 * @param modulateYVals	int[] of the y values of the red, green, and blue sliders, respectively.
 	 */
@@ -823,6 +873,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for
 	} // addModulateSliders
 
+	/**
+	 * Adds the slider for adjusting shape size
+	 * 
+	 * @param yVal	y value for this slider
+	 */
 	protected void addShapeSizeSlider(int yVal)
 	{
 		this.shapeSize	= 50;
@@ -859,16 +914,25 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 	} // addShapeSizeSlider
 
+	/**
+	 * Adds the Buttons for selecting the number of range segments.
+	 * 
+	 * @param yVal	y value for the row of Buttons
+	 * @param numSegments	total number of segments (current number of segments will be set to this total)
+	 * @param label	text to display on the label at the beginning of the row
+	 */
 	protected void addRangeSegments(int yVal, int numSegments, String label)
 	{
 		this.addRangeSegments(yVal, numSegments, numSegments, label);
 	}  // addRangeSegments(int, int, String)
 
 	/**
+	 * Adds the Buttons for selecting the number of range segments.
 	 * 
-	 * @param yVal	y value for the label and Toggles.  Note that the label will be given the same values as the Toggles; 4 is not added, as it is to most Labels.
-	 * @param numSegments
-	 * @param label
+	 * @param yVal	y value for the row of Buttons
+	 * @param numSegments	total number of range segments
+	 * @param defaultNumSegments	number of segments that are set as current at the beginning
+	 * @param label	text to display on the label at the beginning of the row
 	 */
 	protected void addRangeSegments(int yVal, int numSegments, int defaultNumSegments, String label)
 	{
@@ -919,7 +983,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for - adding Toggles
 	} // addRangeSegments
 
-
+	/**
+	 * Sets this.goalHue to the value of the given position in this.colors
+	 * 
+	 * @param position	either a position in colors or -1 for canvas color
+	 */
 	public void setGoalHue(int position)
 	{
 		if(position > this.getColors().length || position < -1) {
@@ -937,13 +1005,18 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} else {	
 			for(int i = 0; i < this.goalHue.length; i++)
 			{
-				this.goalHue[i]	= this.getColors()[position][i];	
+				this.goalHue[i]	= this.colors[position][i];	
 			} // for - colors
 		} // else
 
 	} // setGoalHue
 
-
+	/**
+	 * Takes the values of curHue from its current values to the values in goalHue
+	 * over the time that is designated by the attack, release, and transition sliders
+	 * 
+	 * @param position	position in colors to which curHue should fade
+	 */
 	public void fade(int position)
 	{
 		if(position > this.getColors().length || position < -1) {
@@ -1131,10 +1204,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 			//			((((hsb[i1] + this.hueSatBrightnessMod[i1]) * 100) % 100) / 100)
 			// Applies the status of the sliders to the newly-converted color:
 
-			System.out.println("hsb[0] = " + hsb[0]);
 			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + 1) % 1;
-//			hsb[0]	= 5.5f;
-
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
 			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2], 1), 0);
 
@@ -1162,7 +1232,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		if(this.hsbColors == null) {
 			this.hsbColors = new float[this.colors.length][3];
-			System.out.println("fillHSBColors: this.hsbColors = " + this.hsbColors);
 		}
 
 		for(int i = 0; i < this.hsbColors.length; i++)
@@ -1200,7 +1269,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 	/**
 	 * Calls playMelody(key, bpm, scale, rangeOctave) with the curKey, bpm, rangeOctave instance vars
 	 * and the string corresponding to the majMinChrom instance var ("major", "minor", or "chromatic").
-	 * @param scale
 	 */
 	private void playMelody()
 	{
@@ -1290,8 +1358,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
 		} // if - hidePlayButton
 
-		// Hide scale:
-		if(controlEvent.getName().equals("scale"))
+		// Hide legend:
+		if(controlEvent.getName().equals("legend"))
 		{
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}
@@ -1339,12 +1407,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 					int pos = id - this.firstHSBSliderId;
 
 					this.setHueSatBrightnessMod(pos, sliderValFloat);
-					// TODO how about this?
+					
+					// Only fill hsbColors the first time (to avoid over modulating):
 					if(this.hsbColors == null)
 					{
 						this.fillHSBColors();
 					}
-//					this.fillHSBColors();
 					this.applyHSBModulate(this.colors, this.hsbColors);
 				}//hsb mod
 
@@ -1406,13 +1474,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.sidebarCP5.getGroup("background").setVisible(true);
 				this.sidebarCP5.getGroup("background").bringToFront();
 
-				// Do the following only in ModuleTemplate01:
-				/*				// only call updateColors() for colorSelect Buttons:
-				if(controlEvent.getId() >= this.firstColorSelectId && controlEvent.getId() <= this.lastColorSelectId)
-				{
-					this.updateColors(this.curColorStyle);
-				}
-				 */
 			} else {
 
 				this.sidebarCP5.setAutoDraw(true);
@@ -1429,7 +1490,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 			this.fillOriginalColors();
 			this.fillHSBColors();
-			//			this.resetModulateSlidersTextfields();
 
 			// Reset whichever of the sliders is applicable:
 			if(this.firstRGBSliderId > -1)
@@ -1448,15 +1508,10 @@ public abstract class ModuleTemplate implements ControlListener  {
 			} else {
 				if(this.firstHSBSliderId > -1)
 				{
-//					this.fillHSBColors();
 					this.applyHSBModulate(this.colors, this.hsbColors);
 				}
 			} // if - RGBSliderId > -1
 
-			//			this.applyColorModulate(this.colors, this.originalColors);
-
-			// Not calling updateColors() here because it should only be called by colorSelect buttons:
-			//			this.updateColors(this.curColorStyle);
 		} // Color Select Buttons
 
 		// ColorWheels
@@ -1593,7 +1648,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			} // catch
 		} // if
 
-
 		// Guide Tone Generator:
 		if(controlEvent.getName().equals("guideToneButton"))
 		{
@@ -1616,8 +1670,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.sidebarCP5.getGroup("guideToneBackground").bringToFront();
 			this.sidebarCP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
 
-			// TODO:
-			//			this.instrument.setVolume(0.2f);
 		} // Guide Tone Generator
 
 		// ADSR Presets Scrollable List:
@@ -1654,6 +1706,14 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	} // controlEvent
 
+	/**
+	 * Subclasses should implement this to return a position in colors after receiving the id of a Controller
+	 * (e.g., id's from customColorColorWheels and Textfields return the position in colors that corresponds
+	 * to the note that they represent).
+	 * 
+	 * @param id	id of a Controller
+	 * @return		position in colors that the change to that Controller should affect
+	 */
 	protected abstract int calculateNotePos(int id);
 
 	/**
@@ -1681,6 +1741,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	} // resetModulateSlidersTextfields
 
+	/**
+	 * Sets the RGB modulate Sliders and Textfields to 0
+	 */
 	protected void resetRGBSlidersTextfields()
 	{
 		if(this.firstRGBSliderId > -1)
@@ -1698,6 +1761,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // else - let the user know that we ignored this method call
 	} // resetRGBSlidersTextfields
 
+	/**
+	 * Sets the HSB modulate Sliders and Textfields to 0
+	 */
 	protected void resetHSBSlidersTextfields()
 	{
 		if(this.firstHSBSliderId > -1)
@@ -1715,9 +1781,14 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // else - let the user know that we ignored this method call
 	} // resetHSBSlidersTextfields
 
-	public void useSliderVal(int id, float val)	{	}
-
-
+	/**
+	 * Given the name of a key (e.g., "A#", "Bb") and the quality (0 for major, 1 for minor, 2 for chromatic), 
+	 * returns the appropriate scale (minor = natural minor).
+	 * 
+	 * @param key	String indicating the key of the scale
+	 * @param majMinChrom	int indicating quality of the scale: 0 = major, 1 = minor, 2 = chromatic
+	 * @return	String[] with the notes of this particular scale
+	 */
 	public String[] getScale(String key, int majMinChrom)
 	{
 		// find keyPos -- hey ! maybe I can just pass in keyPos.
@@ -1821,10 +1892,15 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	} // getScale
 
+	/**
+	 * Updates the keyDropdown ScrollableList and sets the current key and all 
+	 * connected variables: this.majMinChrom, this.scaleLength, this.curKey, this.keyAddVal.
+	 * 
+	 * @param key	String indicating the key (e.g., "D", "Eb")
+	 * @param majMinChrom	int indicating quality of the scale: 0 = major, 1 = minor, 2 = chromatic
+	 */
 	public void setCurKey(String key, int majMinChrom)
 	{
-
-
 		// Check both sharps and flats, and take whichever one doesn't return -1:
 		int	keyPos	= this.arrayContains(this.allNotes, key);
 
@@ -1839,8 +1915,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.scaleLength	= this.getScale(key, majMinChrom).length;
 
 		this.sidebarCP5.getController("keyDropdown").setValue(keyPos);
-
-
 
 		// The following happen in controlEvent - "keyDropdown"
 		/*
@@ -1880,7 +1954,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 		return -1;
 	}
 
-
+	/**
+	 * Updates the ColorWheel with the given id to the color at colorPos in this.colors
+	 * 
+	 * @param id	int indicating the ColorWheel to be updated
+	 * @param colorPos	int indicating the position in colors that will be used to set the ColorWheel
+	 */
 	protected void updateColorWheel(int id, int colorPos)
 	{
 		if(colorPos < 0 || colorPos >= this.colors.length)	{
@@ -1914,11 +1993,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	public float[][] getColors() {
 		return colors;
-	}
-
-	// TODO: does this work or just create a pointer?
-	public void setColors(float[][] colors) {
-		this.colors = colors;
 	}
 
 	public float[] getCurHue()				{	return this.curHue;	}
