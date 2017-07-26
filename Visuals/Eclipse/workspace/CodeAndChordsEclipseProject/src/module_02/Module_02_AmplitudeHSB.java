@@ -65,17 +65,23 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			} // if
 		} // for
 
+//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
+
 		this.moduleTemplate.fade(goalHuePos);
 
 		// draw the shape
 		this.drawShape();
 
-		this.fill(255);
-		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
+//		this.fill(255);
+//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 		
-		this.moduleTemplate.legend();
+		if(this.moduleTemplate.isShowScale())
+		{
+			// draws the legend along the bottom of the screen:
+			this.moduleTemplate.legend(goalHuePos);
+		} // if showScale
 	} // draw
 
 	private void drawShape()
