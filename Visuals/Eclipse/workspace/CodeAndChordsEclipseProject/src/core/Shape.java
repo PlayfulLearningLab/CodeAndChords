@@ -8,7 +8,7 @@ public class Shape {
 	private PApplet 	pApp;
 
 	private int 		steps;
-	private float 		incrament;
+	private float 		increment;
 
 	private float[] 	currentShape;
 	private float[] 	nextShape;
@@ -42,7 +42,7 @@ public class Shape {
 	private void initializeVariables()
 	{
 		this.steps = 500;
-		this.incrament = (float)(2*Math.PI)/this.steps;
+		this.increment = (float)(2*Math.PI)/this.steps;
 		
 		this.currentShape = new float[this.steps];
 		this.nextShape = new float[this.steps];
@@ -73,7 +73,7 @@ public class Shape {
 	public void setSteps(int numSteps)
 	{
 		this.steps = numSteps;
-		this.incrament = (float) (2*Math.PI)/this.steps;
+		this.increment = (float) (2*Math.PI)/this.steps;
 		this.currentShape = new float[this.steps];
 		this.nextShape = new float[this.steps];
 	}
@@ -127,7 +127,7 @@ public class Shape {
 
 		int i = 0;
 
-		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 		{
 			x = (float) (this.currentShape[i]*Math.cos(theta));
 			y = (float) (this.currentShape[i]*Math.sin(theta));
@@ -135,7 +135,7 @@ public class Shape {
 			//x = PApplet.map(x, 0, 1, 0, this.xStretch);
 			//y = PApplet.map(y, 0, 1, 0, this.yStretch);
 
-			System.out.println(x + "    -    " + y);
+//			System.out.println(x + "    -    " + y);
 			
 			shape.vertex(x, y);
 			i++;
@@ -150,7 +150,7 @@ public class Shape {
 
 	}//drawShape()
 
-	public void setCurrentShape(String shapeType, float[] paramaters)
+	public void setCurrentShape(String shapeType, float[] parameters)
 	{
 		float[] shape = new float[(int) this.steps];
 
@@ -161,15 +161,15 @@ public class Shape {
 
 		case "supershape":
 			
-			float a = paramaters[0];
-			float b = paramaters[1];
-			float m1 = paramaters[2];
-			float m2 = paramaters[3];
-			float n1 = paramaters[4];
-			float n2 = paramaters[5];
-			float n3 = paramaters[6];
+			float a = parameters[0];
+			float b = parameters[1];
+			float m1 = parameters[2];
+			float m2 = parameters[3];
+			float n1 = parameters[4];
+			float n2 = parameters[5];
+			float n3 = parameters[6];
 			
-			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
@@ -202,7 +202,7 @@ public class Shape {
 		this.currentShape = shape;
 	}
 	
-	public void setNextShape(String shapeType, float[] paramaters)
+	public void setNextShape(String shapeType, float[] parameters)
 	{
 		float[] shape = new float[(int) this.steps];
 
@@ -213,15 +213,15 @@ public class Shape {
 
 		case "supershape":
 			
-			float a = paramaters[0];
-			float b = paramaters[1];
-			float m1 = paramaters[2];
-			float m2 = paramaters[3];
-			float n1 = paramaters[4];
-			float n2 = paramaters[5];
-			float n3 = paramaters[6];
+			float a = parameters[0];
+			float b = parameters[1];
+			float m1 = parameters[2];
+			float m2 = parameters[3];
+			float n1 = parameters[4];
+			float n2 = parameters[5];
+			float n3 = parameters[6];
 			
-			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
