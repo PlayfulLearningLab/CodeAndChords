@@ -5,6 +5,7 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import core.Input;
+import core.ModuleTemplate02;
 import processing.core.PApplet;
 import processing.core.PShape;
 import core.Shape;
@@ -37,22 +38,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.input	= new Input();
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 
-		// set amplitude thresholds
-		this.moduleTemplate.thresholds	= new float[] {
-				2,		// piano
-				100,	// mezzo piano
-				200,	// mezzo forte
-				500	//forte
-		}; // thresholds
-
-		// Define them some default colors
-		this.moduleTemplate.setColors(new float[][] {
-			new float[] { 255, 0, 0 },
-			new float[] { 0, 255, 0 },
-			new float[] { 0, 0, 255 },
-			new float[] { 150, 50, 150 }
-		});
-
 		this.textSize(32);
 
 		// create the shape
@@ -84,26 +69,31 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
 
-		for(int i = 0; i < this.moduleTemplate.thresholds.length; i++)
+		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
 		{
-			if(curAmp > this.moduleTemplate.thresholds[i]) {
+			if(curAmp > this.moduleTemplate.getThresholds()[i]) {
 				goalHuePos	= i;
 			} // if
 		} // for
+
+//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
 		this.moduleTemplate.fade(goalHuePos);
 
 		// draw the shape
 		this.drawShape();
 
-		this.fill(255);
-		this.textAlign(CENTER,CENTER);
-		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
-		this.textAlign(LEFT,BASELINE);
-		
+
+//		this.fill(255);
+//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
+
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 		
-		this.moduleTemplate.legend();
+		if(this.moduleTemplate.isShowScale())
+		{
+			// draws the legend along the bottom of the screen:
+			this.moduleTemplate.legend(goalHuePos);
+		} // if showScale
 	} // draw
 
 	private void drawShape()
