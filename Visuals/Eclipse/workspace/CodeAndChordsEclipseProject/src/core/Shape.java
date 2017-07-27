@@ -9,57 +9,59 @@ public class Shape {
 
 	private int 		steps;
 	private float 		incrament;
+	
+	private int   		numShapes;
+	private int 		shapeIndex;
 
-	private float[] 	currentShape;
+	private float[][] 	currentShape;
 	private float[] 	nextShape;
 
-	private float 		xPos;
-	private float 		yPos;
 	private float 		xStretch;
 	private float 		yStretch;
 	private float 		rotation;
 
-	private boolean 	menuIsOpen;
-	private float 		menuWidth;
-	private float		screenWidth;
-
 	//constructors	
-	public Shape(PApplet p, float menuWidth)
+	public Shape(PApplet p)
 	{
+		if(p == null) throw new IllegalArgumentException("PApplet parameter cannot be null");
+		
 		this.pApp = p;
+		this.steps = 500;
 		this.initializeVariables();
-		this.menuWidth = menuWidth;
 	}
 
-	public Shape(PApplet p, float menuWidth, int steps)
+	public Shape(PApplet p, int steps)
 	{
+		if(p == null) throw new IllegalArgumentException("PApplet parameter cannot be null");
+		if(steps < 10) throw new IllegalArgumentException("steps must be greater than or equal to ten");
+		if(steps > 1000) throw new IllegalArgumentException("steps must be less than 1000");
+		
 		this.pApp = p;
-		this.initializeVariables();
 		this.steps = steps;
-		this.menuWidth = menuWidth;
+		this.initializeVariables();
 	}
 
 	private void initializeVariables()
 	{
-		this.steps = 500;
 		this.incrament = (float)(2*Math.PI)/this.steps;
 		
-		this.currentShape = new float[this.steps];
-		this.nextShape = new float[this.steps];
+		this.numShapes = 5;
+		this.shapeIndex = 0;
 		
-		this.xPos = 925/2;
-		this.yPos = 520/2;
+		this.currentShape = new float[this.numShapes][this.steps];
+		this.nextShape = new float[this.steps];
+
 		this.xStretch = 1;
 		this.yStretch = 1;
 		this.rotation = 0;
 
-		this.menuIsOpen = false;
-		this.screenWidth = 925;
-
 		for(int i = 0; i < this.steps; i++)
 		{
-			this.currentShape[i] = 0;
-			this.nextShape[i] = 50;
+			for(int i2 = 0; i2 < this.numShapes; i2++)
+			{
+				this.currentShape[i2][i] = 0;
+			}
+			this.nextShape[i] = 100;
 		}
 	}
 
@@ -67,52 +69,25 @@ public class Shape {
 	//Setter Methods
 	public void setPApplet(PApplet pa)
 	{
+		if(pa == null) throw new IllegalArgumentException("PApplet parameter cannot be null");
 		this.pApp = pa;
-	}
-
-	public void setSteps(int numSteps)
-	{
-		this.steps = numSteps;
-		this.incrament = (float) (2*Math.PI)/this.steps;
-		this.currentShape = new float[this.steps];
-		this.nextShape = new float[this.steps];
-	}
-
-	public void setXPos (float xPos)
-	{
-		this.xPos  = xPos;
-	}
-
-	public void setYPos (float yPos)
-	{
-		this.yPos = yPos;
 	}
 
 	public void setXStretch (float xStretch)
 	{
+		if(xStretch <= 0) throw new IllegalArgumentException("xStretch must be greater than 0");
 		this.xStretch = xStretch;
 	}
 
-
 	public void setYStretch (float yStretch)
 	{
+		if(yStretch <= 0) throw new IllegalArgumentException("yStretch must be greater than 0");
 		this.yStretch = yStretch;
 	}
-
 
 	public void setRotation (float rotationInRadians)
 	{
 		this.rotation = rotationInRadians;
-	}
-
-	public void setMenuWidth(float menuWidth)
-	{
-		this.menuWidth = menuWidth;
-	}
-
-	public void setMenuIsOpen(boolean isOpen)
-	{
-		this.menuIsOpen = isOpen;
 	}
 
 
@@ -129,13 +104,11 @@ public class Shape {
 
 		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
 		{
-			x = (float) (this.currentShape[i]*Math.cos(theta));
-			y = (float) (this.currentShape[i]*Math.sin(theta));
+			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
+			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
 
-			//x = PApplet.map(x, 0, 1, 0, this.xStretch);
-			//y = PApplet.map(y, 0, 1, 0, this.yStretch);
-
-			System.out.println(x + "    -    " + y);
+			x = PApplet.map(x, 0, 1, 0, this.xStretch);
+			y = PApplet.map(y, 0, 1, 0, this.yStretch);
 			
 			shape.vertex(x, y);
 			i++;
@@ -150,7 +123,7 @@ public class Shape {
 
 	}//drawShape()
 
-	public void setCurrentShape(String shapeType, float[] paramaters)
+	public void setCurrentShape(String shapeType, float[] parameters)
 	{
 		float[] shape = new float[(int) this.steps];
 
@@ -161,13 +134,15 @@ public class Shape {
 
 		case "supershape":
 			
-			float a = paramaters[0];
-			float b = paramaters[1];
-			float m1 = paramaters[2];
-			float m2 = paramaters[3];
-			float n1 = paramaters[4];
-			float n2 = paramaters[5];
-			float n3 = paramaters[6];
+			if(parameters.length != 7) throw new IllegalArgumentException("A supershape takes 7 parameters and you passed in " + parameters.length);
+			
+			float a = parameters[0];
+			float b = parameters[1];
+			float m1 = parameters[2];
+			float m2 = parameters[3];
+			float n1 = parameters[4];
+			float n2 = parameters[5];
+			float n3 = parameters[6];
 			
 			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
 			{
@@ -191,18 +166,16 @@ public class Shape {
 			}//for()
 			break;
 			
-			default:
-				System.out.println("setCurrentShape() Switch error: default");
-				break;
+			default: throw new IllegalArgumentException("Parameter shapeType did not match any valid shape types");
 			
 		}//switch
 
 
 
-		this.currentShape = shape;
+		this.currentShape[this.shapeIndex] = shape;
 	}
 	
-	public void setNextShape(String shapeType, float[] paramaters)
+	public void setNextShape(String shapeType, float[] parameters)
 	{
 		float[] shape = new float[(int) this.steps];
 
@@ -213,13 +186,15 @@ public class Shape {
 
 		case "supershape":
 			
-			float a = paramaters[0];
-			float b = paramaters[1];
-			float m1 = paramaters[2];
-			float m2 = paramaters[3];
-			float n1 = paramaters[4];
-			float n2 = paramaters[5];
-			float n3 = paramaters[6];
+			if(parameters.length != 7) throw new IllegalArgumentException("A supershape takes 7 parameters and you passed in " + parameters.length);
+			
+			float a = parameters[0];
+			float b = parameters[1];
+			float m1 = parameters[2];
+			float m2 = parameters[3];
+			float n1 = parameters[4];
+			float n2 = parameters[5];
+			float n3 = parameters[6];
 			
 			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
 			{
@@ -243,9 +218,7 @@ public class Shape {
 			}//for()
 			break;
 			
-			default:
-				System.out.println("setNextShape() Switch error: default");
-				break;
+			default: throw new IllegalArgumentException("Parameter shapeType did not match any valid shape types");
 			
 		}//switch
 
@@ -254,4 +227,6 @@ public class Shape {
 		this.nextShape = shape;
 	}
 
-}
+	
+	
+}//Shapes
