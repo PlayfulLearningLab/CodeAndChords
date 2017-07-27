@@ -6,9 +6,11 @@ import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import controlP5.ControllerInterface;
 import controlP5.Slider;
 import controlP5.Textfield;
 import processing.core.PApplet;
+import processing.core.PShape;
 import core.Shape;
 
 public class ModuleTemplate02 extends ModuleTemplate {
@@ -28,11 +30,16 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	// thresholds is not private so that the module can access it
 	float[]	thresholds;
+	
+	private boolean shapeMenuIsOpen;
+	
 
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
 		super(parent, input, sidebarTitle);
 
+		this.shapeMenuIsOpen = false;
+		
 		this.yVals		= new int[18];
 		this.yVals[0]	= 26;
 		int	distance	= (this.parent.height - this.yVals[0]) / this.yVals.length;
@@ -49,6 +56,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				500	//forte
 		}; // thresholds
 		this.forteThreshold	= this.thresholds[this.thresholds.length - 1];
+		 
+		this.addShapeCustomizationControls();
 
 		this.colors	= new float[this.totalRangeSegments][3];
 		this.colors	= new float[][] {
@@ -361,6 +370,16 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 	} // addColorSelectButtons
 
+	protected void addShapeCustomizationControls()
+	{
+		this.sidebarCP5.addButton("shapeMenuButton")
+		.setPosition(30, (float)this.yVals[17])
+		.setHeight(30)
+		.setWidth(250)
+		.setLabel("Shape Menu")
+		.setGroup("sidebarGroup");
+	}
+	
 	protected int calculateNotePos(int pos)
 	{
 		return -1;
@@ -448,11 +467,23 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.colors[colorPos][1]	= color.getGreen();
 			this.colors[colorPos][2]	= color.getBlue();
 		} // ColorWheels
+		
+		if(controlEvent.getName() == "shapeMenuButton")
+		{
+			this.shapeMenuIsOpen = true;
+			
+		}//shapeMenuButton
+		
 	} // controlEvent
 
 	public float[] getThresholds()
 	{
 		return this.thresholds;
+	}
+	
+	public boolean getShapeMenuIsOpen()
+	{
+		return this.shapeMenuIsOpen;
 	}
 
 } // ModuleTemplate02
