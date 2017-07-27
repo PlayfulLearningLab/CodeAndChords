@@ -40,8 +40,8 @@ public class Module_01_PitchHue extends PApplet
 
 	public void settings()
 	{
-		fullScreen();
-//		size(925, 520);
+//		fullScreen();
+		size(925, 520);
 	} // settings
 
 	public void setup() 
