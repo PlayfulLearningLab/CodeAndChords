@@ -17,12 +17,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	
 	private Shape     			shape;
 
-
-	//	private PShape 	shape;
-	//	int		shapeCenter;
-
-//	float[]	thresholds;
-
 	public static void main(String[] args)
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
@@ -62,7 +56,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			this.moduleTemplate.setMenuVal();
 		}
 
-		background(150);
+		background(this.moduleTemplate.getBackgroundColor()[0], this.moduleTemplate.getBackgroundColor()[1], this.moduleTemplate.getBackgroundColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();

@@ -1303,7 +1303,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// ColorWheels
 		if(id > 299 && id < 400)
 		{
-			// get current color:
+			// This all happens in ModuleTemplate:
+/*			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
 			int	rgbColor	= curCW.getRGB();
@@ -1327,7 +1328,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.colors[notePos][1]	= color.getGreen();
 				this.colors[notePos][2]	= color.getBlue();
 			} // else - not canvas
-
+*/
 		} // ColorWheels
 
 		// Major/Minor/Chromatic buttons
@@ -1487,7 +1488,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		{			
 			// Canvas:
 			if(id == modCanvasId)	{
-				throw new IllegalArgumentException("ModuleTemplate.calculateNotePos(int): id 64 should not be passed to this function, as it does not correspond to a note.");
+				throw new IllegalArgumentException("ModuleTemplate.calculateNotePos(int): id " + id + " should not be passed to this function, as it does not correspond to a note.");
 			}
 
 			// Tonic:

@@ -40,11 +40,13 @@ public class Module_01_PitchHue extends PApplet
 
 	public void settings()
 	{
-		size(925, 520);
+		fullScreen();
+//		size(925, 520);
 	} // settings
 
 	public void setup() 
 	{
+		
 		this.input  = new Input();
 		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
 
