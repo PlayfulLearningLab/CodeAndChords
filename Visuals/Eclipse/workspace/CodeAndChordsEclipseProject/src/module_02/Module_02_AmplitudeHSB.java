@@ -16,6 +16,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	private ModuleTemplate02	moduleTemplate;
 	
 	private Shape     			shape;
+	
+	private PShape 				shapeMenuFadedBackground;
 
 
 	//	private PShape 	shape;
@@ -39,6 +41,10 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 
 		this.textSize(32);
+				
+		this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
+		Color fadedBlack = new Color(0, 0, 0, .5f);
+		this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
 
 		// create the shape
 		
@@ -47,7 +53,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
 		
-		this.shape = new Shape(this, this.moduleTemplate.getMenuWidth());
+		this.shape = new Shape(this);
 		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
 		
 		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
@@ -94,6 +100,12 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		} // if showScale
+		
+		if(this.moduleTemplate.getShapeMenuIsOpen())
+		{
+			this.drawShapeMenu();
+		}
+		
 	} // draw
 
 	private void drawShape()
@@ -108,7 +120,9 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		
 		this.shapeMode(CORNER);
 		PShape pShape = this.shape.getPShape();
+		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
+		pShape.endShape();
 		this.shape(pShape, shapeX, this.height/2);
 		this.shapeMode(CENTER);
 		
@@ -137,5 +151,11 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		 */
 
 	} // drawShape
+	
+	private void drawShapeMenu()
+	{
+		shape(this.shapeMenuFadedBackground);
+	}
+	
 
 } // Module_03_AmplitudeHSB
