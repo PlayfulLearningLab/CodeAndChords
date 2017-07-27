@@ -61,6 +61,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
+		
+		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
 		{

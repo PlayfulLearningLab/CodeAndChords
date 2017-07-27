@@ -26,17 +26,17 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	/**	The highest amplitude threshold	*/
 	private	float	forteThreshold;
 	
+	/**	The minimum value for threshold Sliders	*/
 	private	float	minThreshold;
 
 	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
 	private	int	firstThresholdSliderId	= -1;
 
-
-	/**	Stores the saturation modulate value that is related to a threshold	*/
-//	private	float	saturationSlider;
-
-	/**	Stores the brightness modulate value that is related to a threshold	*/
-//	private	float	brightnessSlider;
+	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
+	private	float[] satBrightThresholdVals;
+	
+	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
+	private	float[]	satBrightPercentVals;
 
 	
 	/**
@@ -68,6 +68,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		}; // thresholds
 		this.forteThreshold	= this.thresholds[this.thresholds.length - 1];
 		this.minThreshold	= 101;
+		
+		this.satBrightThresholdVals	= new float[2];
+		this.satBrightPercentVals	= new float[2];
 
 		this.colors	= new float[][] {
 			new float[] { 255, 0, 0 },
@@ -430,6 +433,18 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 	} // resetThresholds
 	
+	public void applyThresholdSBModulate(float curAmp)
+	{
+		float	satMappingVal		= PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100);
+		float	brightMappingVal	= PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[1], this.minThreshold + 1), 0, 100);
+
+		this.hueSatBrightPercentMod[1]	= (this.satBrightPercentVals[0] * satMappingVal) / 100;
+		this.hueSatBrightPercentMod[2]	= (this.satBrightPercentVals[1] * brightMappingVal) / 100;
+
+		if(this.hsbColors == null)	{	this.fillHSBColors();	}
+		this.applyHSBModulate(this.colors, this.hsbColors);
+	} // applyThresholdSBModulate
+	
 
 	/**
 	 * Applies the values from this.hueSatBrightnessMod to the contents of this.colors.
@@ -494,7 +509,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // dynamic segment buttons
 		
 		// Saturation and Brightness Percent Sliders:
-		if(controlEvent.getName().equals("saturationSlider") || 
+/*		if(controlEvent.getName().equals("saturationSlider") || 
 				controlEvent.getName().equals("brightnessSlider"))
 		{
 
@@ -504,38 +519,43 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			if(this.hsbColors == null)	{	this.fillHSBColors();	}			
 			this.applyHSBModulate(this.colors, this.hsbColors);
 		} // if - sat/brightness percent Sliders
+	*/
 		
 		// Saturation and Brightness Threshold and Percent Sliders:
 		if(this.firstThresholdSliderId != -1 &&
 				( ( id > this.firstThresholdSliderId ) && ( id < this.firstThresholdSliderId + 5 ) ) )
 		{
-			int		percentPos	= (id - this.firstThresholdSliderId + 1) / 2;
+			int		arrayPos	= (id - this.firstThresholdSliderId - 1) / 2;
+/*			
 			float	mappingVal;
 			float	thresholdVal;
 			float	curAmp		= this.input.getAmplitude();
 			
 			float	percentVal;
+*/
 			
 			// Percent Sliders
 			if((id - this.firstThresholdSliderId) % 2 == 1)
 			{
-				thresholdVal	= this.sidebarCP5.getValue("slider" + (id + 1));
-				percentVal		= controlEvent.getValue();
+				this.satBrightPercentVals[arrayPos]		= controlEvent.getValue();
+				this.satBrightThresholdVals[arrayPos]	= this.sidebarCP5.getValue("slider" + (id + 1));
+//				percentVal		= controlEvent.getValue();
 			} else {
 				// Threshold Sliders
-				thresholdVal	= controlEvent.getValue();
-				percentVal		= this.sidebarCP5.getValue("slider" + (id - 1));
+				this.satBrightThresholdVals[arrayPos]	= controlEvent.getValue();
+				this.satBrightPercentVals[arrayPos]		= this.sidebarCP5.getValue("slider" + (id - 1));
 			}
 						
 //			System.out.println("thresholdVal = " + thresholdVal);
 //			System.out.println("percentVal = " + percentVal);
-			mappingVal	= PApplet.map(curAmp, 0, Math.max(thresholdVal, this.minThreshold + 1), 0, 100);
+/*			mappingVal	= PApplet.map(curAmp, 0, Math.max(thresholdVal, this.minThreshold + 1), 0, 100);
 			System.out.println("mappingVal = " + mappingVal);
 
-			this.hueSatBrightPercentMod[percentPos]	= (percentVal * mappingVal) / 100;
+			this.hueSatBrightPercentMod[arrayPos]	= (percentVal * mappingVal) / 100;
+			*/
 			
-			if(this.hsbColors == null)	{	this.fillHSBColors();	}			
-			this.applyHSBModulate(this.colors, this.hsbColors);
+//			if(this.hsbColors == null)	{	this.fillHSBColors();	}	
+//			this.applyHSBModulate(this.colors, this.hsbColors);
 		} // if - sat/brightness threshold Sliders
 
 		// ColorWheels - now this all happens in ModuleTemplate (post 7/26):
