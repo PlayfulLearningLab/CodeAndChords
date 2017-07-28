@@ -1487,7 +1487,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 			} else {
 
-				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
@@ -1541,7 +1540,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 			// canvas color (does not affect notes):
 			if( ( this.canvasColorSelectId != -1) && 
 					( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) ) )
-			{			
+			{
 				this.canvasColor[0]	= color.getRed();
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
@@ -1560,6 +1559,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.colors[colorPos][0]	= color.getRed();
 				this.colors[colorPos][1]	= color.getGreen();
 				this.colors[colorPos][2]	= color.getBlue();
+				
+				System.out.println("ModuleTemplate.controlEvent: colorPos = " + colorPos);
+				System.out.println("colors[" + colorPos + "][0] = " + this.colors[colorPos][0]);
 			} // else - not canvas
 
 		} // ColorWheels
