@@ -583,9 +583,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		 * 		I'll check ModuleTemplate.controlEvent...
 		 * 		Nothing there.
 		 * 
-		 * And - I know that it has something to do with settin the canvas color?
+		 * And - I know that it has something to do with setting the canvas color?
 		 * Not true; I just know that that defined that it couldn't show the last one;
 		 * this might be a completely different issue.
+		 * Actually... both canvasColor and backgroundColor work fine. :/
 		 */
 		
 		// ColorWheels - now this all happens in ModuleTemplate (post 7/26):
