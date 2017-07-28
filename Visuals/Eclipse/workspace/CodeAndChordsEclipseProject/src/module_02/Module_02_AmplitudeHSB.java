@@ -93,7 +93,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		if(this.moduleTemplate.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
-//			this.moduleTemplate.legend(goalHuePos);
+			this.moduleTemplate.legend(goalHuePos);
 		} // if showScale
 		
 		if(this.moduleTemplate.getShapeMenuIsOpen())
