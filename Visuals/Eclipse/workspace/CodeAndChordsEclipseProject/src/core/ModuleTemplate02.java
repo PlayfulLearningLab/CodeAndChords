@@ -5,9 +5,12 @@ import java.awt.Color;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.ControllerInterface;
 import controlP5.Slider;
 import controlP5.Textfield;
 import processing.core.PApplet;
+import processing.core.PShape;
+import core.Shape;
 
 /**
  * July 2017
@@ -36,6 +39,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
 	private	float[] satBrightThresholdVals;
+	
+	private boolean shapeMenuIsOpen;
 
 	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
 	private	float[]	satBrightPercentVals;
@@ -52,6 +57,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		super(parent, input, sidebarTitle);
 
+		this.shapeMenuIsOpen = false;
+		
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
 		this.yVals[0]	= 26;
@@ -73,6 +80,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		this.satBrightThresholdVals	= new float[2];
 		this.satBrightPercentVals	= new float[2];
+		 
+		this.addShapeCustomizationControls();
 
 		this.colors	= new float[][] {
 			new float[] { 255, 0, 0 },
@@ -406,6 +415,16 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 	} // addColorSelectButtons
 
+	protected void addShapeCustomizationControls()
+	{
+		this.sidebarCP5.addButton("shapeMenuButton")
+		.setPosition(30, (float)this.yVals[17])
+		.setHeight(30)
+		.setWidth(250)
+		.setLabel("Shape Menu")
+		.setGroup("sidebarGroup");
+	}
+
 	/**
 	 * Given the id of a ColorWheel or Textfield, returns the corresponding position in colors
 	 */
@@ -560,8 +579,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.colors[colorPos][1]	= color.getGreen();
 			this.colors[colorPos][2]	= color.getBlue();
 
-		} // ColorWheels
-*/
+		} // ColorWheels*/
+		
+		if(controlEvent.getName() == "shapeMenuButton")
+		{
+			this.shapeMenuIsOpen = true;
+			
+		}//shapeMenuButton
 	} // controlEvent
 
 	/**
@@ -572,6 +596,11 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	public float[] getThresholds()
 	{
 		return this.thresholds;
+	}
+	
+	public boolean getShapeMenuIsOpen()
+	{
+		return this.shapeMenuIsOpen;
 	}
 
 } // ModuleTemplate02
