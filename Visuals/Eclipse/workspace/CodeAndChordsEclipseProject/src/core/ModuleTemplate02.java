@@ -181,8 +181,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
 
-			//			System.out.println("this.colors[" + i + "][0] = " + this.colors[i][0] + "; this.colors[" + i + "][1] = " +
-			//					this.colors[i][1] + "; this.colors[" + i + "][2] = " + this.colors[i][2]);
+						System.out.println("this.colors[" + i + "][0] = " + this.colors[i][0] + "; this.colors[" + i + "][1] = " +
+								this.colors[i][1] + "; this.colors[" + i + "][2] = " + this.colors[i][2]);
 
 			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
 
@@ -442,8 +442,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 					"), which should not be sent to this method, since it does not designate a position in this.colors.");
 		}
 
-		System.out.println("calculateNotePos: id = " + id);
-
 		return (id % 100) - (this.firstColorSelectId % 100);
 	} // calculateNotePos
 
@@ -497,6 +495,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		int	id	= controlEvent.getId();
 
+/*
+		if(id != this.canvasColorSelectId && id != this.backgroundColorSelectId && id > 299 && id < 400)
+		{
+			int	colorPos	= this.calculateNotePos(id);
+			System.out.println("colors[colorPos][0] = " + this.colors[colorPos][0]);
+		}
+*/
+		
 		// Re-calculate thresholds for dynamicSegment Buttons, lowThreshold and forteThreshold sliders:
 		if( ( (this.firstRangeSegmentsId > -1) && 
 				(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments) )
@@ -507,8 +513,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			if(id == this.firstThresholdSliderId) {
 				this.forteThreshold	= controlEvent.getValue();
 			}
+			
 			this.resetThresholds();
 		} // dynamic segment buttons
+		
 
 		// Saturation and Brightness Percent Sliders:
 		/*		if(controlEvent.getName().equals("saturationSlider") || 
@@ -522,6 +530,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.applyHSBModulate(this.colors, this.hsbColors);
 		} // if - sat/brightness percent Sliders
 		 */
+
 
 		// Saturation and Brightness Threshold and Percent Sliders:
 		if(this.firstThresholdSliderId != -1 &&
@@ -560,6 +569,17 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			//			this.applyHSBModulate(this.colors, this.hsbColors);
 		} // if - sat/brightness threshold Sliders
 
+
+		this.legend(0);
+		
+		/*
+		 * So what's going on?
+		 * 
+		 * When I draw the legend in controlEvent but outside of any ifs, it will get the color
+		 * that I'm currently changing correct.  But the other colors revert back to their
+		 * original states!
+		 */
+		
 		// ColorWheels - now this all happens in ModuleTemplate (post 7/26):
 /*		if( (id > 299) && id <= 400)
 		{
