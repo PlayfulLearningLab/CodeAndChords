@@ -1486,6 +1486,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 			} else {
 
+				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
 				this.displaySidebar();
 			}
