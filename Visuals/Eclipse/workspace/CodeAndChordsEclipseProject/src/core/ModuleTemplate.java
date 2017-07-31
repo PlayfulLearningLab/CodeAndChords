@@ -1300,10 +1300,15 @@ public abstract class ModuleTemplate implements ControlListener  {
 	/**
 	 * Displays the "sidebarGroup" of this.sidebarCP5
 	 */
-	protected void displaySidebar()
+	protected void displaySidebar(boolean show)
 	{	
-		this.sidebarCP5.getGroup("sidebarGroup").setVisible(true);
-		this.leftEdgeX 	= this.parent.width / 3;
+		this.sidebarCP5.getGroup("sidebarGroup").setVisible(show);
+		if(show)
+		{
+			this.leftEdgeX 	= this.parent.width / 3;
+		} else {
+			this.leftEdgeX	= 0;
+		}
 
 	} // displaySidebar
 
@@ -1348,7 +1353,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		if(controlEvent.getController().getName().equals("hamburger"))
 		{
 			this.menuIsOpen = true;
-			this.displaySidebar();
+			this.displaySidebar(true);
 			controlEvent.getController().setVisible(false);
 			this.sidebarCP5.getWindow().resetMouseOver();
 		} // if - hamburger
@@ -1356,9 +1361,10 @@ public abstract class ModuleTemplate implements ControlListener  {
 		// MenuX button:
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
-			this.leftEdgeX	= 0;
-			//			this.sidebarCP5.setVisible(false);
+			this.displaySidebar(false);
+/*			this.leftEdgeX	= 0;
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+*/
 			this.sidebarCP5.getController("hamburger").setVisible(true);
 			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
 		} // if - menuX
@@ -1505,7 +1511,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 				
 				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
-				this.displaySidebar();
+				this.displaySidebar(false);
 			}
 
 			this.sidebarCP5.getController("button" + (controlEvent.getId())).bringToFront();
@@ -1722,7 +1728,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 				//				this.sidebarCP5.setAutoDraw(true);
 				System.out.println("this.sidebarCP5.getGroup('background') = " + this.sidebarCP5.getGroup("background"));
 				this.sidebarCP5.getGroup("background").setVisible(false);
-				this.displaySidebar();
 			}
 
 			this.sidebarCP5.getGroup("guideToneBackground").bringToFront();
