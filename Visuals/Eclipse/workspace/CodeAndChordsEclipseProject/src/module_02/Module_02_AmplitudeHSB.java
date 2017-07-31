@@ -7,6 +7,7 @@ import controlP5.ControlListener;
 import core.Input;
 import core.ModuleTemplate02;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PShape;
 import core.Shape;
 
@@ -33,10 +34,13 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	{		
 		this.input	= new Input();
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
+		
+		// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
+//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
 
 		this.textSize(32);
 				
-		this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
+		this.shapeMenuFadedBackground = this.createShape(PConstants.RECT, 0, 0, 925, 520);
 		Color fadedBlack = new Color(0, 0, 0, .5f);
 		this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
 
@@ -62,7 +66,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			this.moduleTemplate.setMenuVal();
 		}
 
-		background(this.moduleTemplate.getBackgroundColor()[0], this.moduleTemplate.getBackgroundColor()[1], this.moduleTemplate.getBackgroundColor()[2]);
+		background(this.moduleTemplate.getCanvasColor()[0], this.moduleTemplate.getCanvasColor()[1], this.moduleTemplate.getCanvasColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
