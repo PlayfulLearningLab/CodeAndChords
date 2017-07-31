@@ -172,9 +172,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		this.parent.textSize(24);
 
-		float  sideWidth1   = (this.parent.width - leftEdgeX) / this.thresholds.length;
-		float  sideHeight  = this.parent.width / 12;	// pretty arbitrary
-		float	addToLastRect	= (this.parent.width - this.getLeftEdgeX()) - (sideWidth1 * this.thresholds.length);
+		float	sideWidth1   = (this.parent.width - this.leftEdgeX) / this.thresholds.length;
+		float	sideHeight  = this.parent.width / 12;	// pretty arbitrary
+		float	addToLastRect	= (this.parent.width - this.leftEdgeX) - (sideWidth1 * this.thresholds.length);
 		float	sideWidth2	= sideWidth1;
 
 		this.parent.noStroke();
