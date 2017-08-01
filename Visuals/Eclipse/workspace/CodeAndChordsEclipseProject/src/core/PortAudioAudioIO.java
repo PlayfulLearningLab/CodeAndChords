@@ -32,6 +32,8 @@ public class PortAudioAudioIO extends AudioIO {
 	private	int				numInChannels;
 	private	int				numOutChannels;
 	
+	private	boolean			isRunning;
+	
 	public PortAudioAudioIO() {
 		this(2);
 	}
@@ -44,7 +46,7 @@ public class PortAudioAudioIO extends AudioIO {
 	}
 	
 	/**
-	 * Initializes JavaSound.
+	 * Initializes PortAudio.
 	 */ 
 	public boolean create() {
 		PortAudio.initialize();
@@ -90,7 +92,7 @@ public class PortAudioAudioIO extends AudioIO {
 		return this.threadPriority;
 	}
 
-	/** Shuts down JavaSound elements, SourceDataLine and Mixer. */
+	/** Shuts down PortAudio elements, SourceDataLine and Mixer. */
 	protected boolean destroy() {
 		if(this.inStream != null)
 		{
@@ -105,6 +107,7 @@ public class PortAudioAudioIO extends AudioIO {
 		} // outStream not null
 		
 		PortAudio.terminate();
+		System.out.println("PortAudio terminated.");
 		return true;
 	}
 
@@ -113,12 +116,13 @@ public class PortAudioAudioIO extends AudioIO {
 	protected boolean start() {
 		audioThread = new Thread(new Runnable() {
 			public void run() {
-				//create JavaSound stuff only when needed
+				//create PortAudio stuff only when needed
 				create();
 				//start the update loop
 				runRealTime();
+				System.out.println("PortAudioAudioIO: returned from runRealTime()");
 				//return from above method means context got stopped, so now clean up
-				destroy();
+	//			destroy();
 			}
 		});
 		audioThread.setPriority(threadPriority);
@@ -126,10 +130,19 @@ public class PortAudioAudioIO extends AudioIO {
 		return true;
 	}
 	
+	@Override
+	public boolean stop()
+	{
+		this.isRunning	= false;
+		return destroy();
+	} // stop
+	
 	/** Update loop called from within audio thread (created in start() method). */
 	private void runRealTime() {		
 		AudioContext context = getContext();
-		IOAudioFormat ioAudioFormat = getContext().getAudioFormat();
+		this.isRunning	= true;
+		
+//		IOAudioFormat ioAudioFormat = getContext().getAudioFormat();
 //		AudioFormat audioFormat = 
 //				new AudioFormat(ioAudioFormat.sampleRate, ioAudioFormat.bitDepth, ioAudioFormat.outputs, ioAudioFormat.signed, ioAudioFormat.bigEndian);
 		
@@ -137,7 +150,9 @@ public class PortAudioAudioIO extends AudioIO {
 		// TODO: might need to use audioFormat.getChannels() instead of ioAudioFormat.outputs
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
-		while (context.isRunning()) {
+//		while (context.isRunning()) {
+		while(this.isRunning)
+		{
 			update(); // this propagates update call to context
 			for (int i = 0, counter = 0; i < bufferSizeInFrames; ++i) {
 				for (int j = 0; j < this.numOutChannels; ++j) {

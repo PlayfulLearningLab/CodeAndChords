@@ -90,6 +90,8 @@ Using the Harmonic Product Spectrum to better locate the pitch.
    - an option would be to have them pass the AudioFormat, since that's what has channel nums, ut credo.
 
 	 */
+	
+	private	DisposeHandler		disposeHandler;
 
 	AudioContext         	ac;
 	float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
@@ -386,6 +388,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	 */
 	private void initInput(UGen[] uGenArray)
 	{
+		// initialize the DisposeHandler:
+		this.disposeHandler	= new DisposeHandler(this);
+		
 		/*
   Default compressor values:
    threshold - .5
@@ -1017,6 +1022,51 @@ import beads.TimeStamp;
 		{
 			uGenArray[i].pause(pause);
 		}
+	} // pause
+	
+	/**
+	 * Stops the AudioContext
+	 * @return	true
+	 */
+	public boolean stopContext()
+	{
+		this.ac.stop();
+		
+		return true;
 	}
+	
+	/**
+	 * Getter for this.ac
+	 * @return	AudioContext instance variable
+	 */
+	public AudioContext getAudioContext()
+	{
+		return this.ac;
+	} // getAudioContext
+	
+	public class DisposeHandler {
+
+//		PApplet	pa;
+		Input	input;
+
+		DisposeHandler(PApplet pa)
+		{
+			this.input	= (Input)pa;
+			pa.registerMethod("dispose", this);
+		}
+
+		public void dispose()
+		{
+			this.input.ac.stop();
+			if(this.input.ac.getAudioIO().getClass().getName().equalsIgnoreCase("PortAudioAudioIO"))
+			{
+				((PortAudioAudioIO)this.input.ac.getAudioIO()).stop();
+			} // if - PAAIO
+			
+			println("Closing sketch");
+//			((PortAudioAudioIO)this.module.input.getAudioContext().getAudioIO()).destroy();
+		}
+	} // DisposeHandler
+
 	
 } // Input class
