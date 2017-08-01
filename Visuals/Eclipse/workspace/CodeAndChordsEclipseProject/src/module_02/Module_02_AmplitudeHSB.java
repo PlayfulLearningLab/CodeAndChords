@@ -15,6 +15,8 @@ import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends PApplet {
 
+	private	DisposeHandler		disposeHandler;
+	
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
 
@@ -34,6 +36,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 	public void setup()
 	{
+		this.disposeHandler	= new DisposeHandler(this);
+		
 		// This uses the PortAudioAudioIO by default...
 		this.input	= new Input();
 		// ...but to use JavaSoundAudioIO rather than PortAudio:
@@ -163,7 +167,19 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	{
 		shape(this.shapeMenuFadedBackground);
 	}
-/*
+
+	/**
+	 * 08/01/2017
+	 * Emily Meuer
+	 * 
+	 * Class to stop the Input (which needs to stop the AudioContext,
+	 * because it needs to stop the AudioIO, esp. when it's using the PortAudioAudioIO,
+	 * which needs to call PortAudio.terminate to avoid a weird set of 
+	 * NoClassDefFoundError/ClassNotFoundException/BadFileDescriptor errors that will happen occassionaly on start-up).
+	 * 
+	 * Taken from https://forum.processing.org/two/discussion/579/run-code-on-exit-follow-up
+	 *
+	 */
 	public class DisposeHandler {
 
 //		PApplet	pa;
@@ -178,23 +194,9 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 		public void dispose()
 		{
-			
-			this.module.input.stopContext();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-//			this.module.input.getAudioContext().stop();
-			
-//			while(this.module.input.getAudioContext().isRunning())	{	}
-			
-			println("Closing sketch");
-//			((PortAudioAudioIO)this.module.input.getAudioContext().getAudioIO()).destroy();
+			this.module.input.stop();
 		}
 	} // DisposeHandler
-*/
+
 
 } // Module_03_AmplitudeHSB

@@ -116,9 +116,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		this.addShapeCustomizationControls(this.yVals[16]);
 		//		this.initInput();
-		
-		this.sidebarCP5.addButton("stopContext")
-		.setPosition(this.parent.width / 2, this.parent.height / 2);
 	} // constructor
 
 	/**
