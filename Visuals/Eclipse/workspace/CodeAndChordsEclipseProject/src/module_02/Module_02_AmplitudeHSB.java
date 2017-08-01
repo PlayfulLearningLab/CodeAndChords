@@ -6,18 +6,20 @@ import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import core.Input;
 import core.ModuleTemplate02;
+import core.PortAudioAudioIO;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
 import core.Shape;
+import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends PApplet {
 
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
-	
+
 	private Shape     			shape;
-	
+
 	private PShape 				shapeMenuFadedBackground;
 
 	public static void main(String[] args)
@@ -31,35 +33,39 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	} // settings
 
 	public void setup()
-	{		
+	{
+		// This uses the PortAudioAudioIO by default...
 		this.input	= new Input();
+		// ...but to use JavaSoundAudioIO rather than PortAudio:
+		//		this.input	= new Input(2, new AudioContext());
+
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
-		
+
 		// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
-//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
+		//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
 
 		this.textSize(32);
-				
+
 		this.shapeMenuFadedBackground = this.createShape(PConstants.RECT, 0, 0, 925, 520);
 		Color fadedBlack = new Color(0, 0, 0, .5f);
 		this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
 
 		// create the shape
-		
+
 		//Ask Emily:  What does this do?
 		this.shapeMode(CENTER);
 		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
-		
+
 		this.shape = new Shape(this);
 		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
-		
+
 	} // setup
 
 	public void draw()
 	{
-//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
-		
+		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{
@@ -68,13 +74,10 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 		background(this.moduleTemplate.getCanvasColor()[0], this.moduleTemplate.getCanvasColor()[1], this.moduleTemplate.getCanvasColor()[2]);
 
-		System.out.println("canvasColor = rgb(" + this.moduleTemplate.getCanvasColor()[0] + 
-				", " + this.moduleTemplate.getCanvasColor()[1] + ", " + this.moduleTemplate.getCanvasColor()[2] + ")");
-		
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
-		
+
 		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
@@ -82,11 +85,11 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			if(curAmp > this.moduleTemplate.getThresholds()[i]) {
 				goalHuePos	= i;
 			} // if
-			
-//			System.out.println("curAmp = " + curAmp);
+
+			//			System.out.println("curAmp = " + curAmp);
 		} // for
 
-//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
+		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
 		this.moduleTemplate.fade(goalHuePos);
 
@@ -94,34 +97,34 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.drawShape();
 
 
-//		this.fill(255);
-//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
+		//		this.fill(255);
+		//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
-		
+
 		if(this.moduleTemplate.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		} // if showScale
-		
+
 		if(this.moduleTemplate.getShapeMenuIsOpen())
 		{
 			this.drawShapeMenu();
 		}
-		
+
 	} // draw
 
 	private void drawShape()
 	{	
-		
+
 		float[]	curHue	= this.moduleTemplate.getCurHue();
 		this.fill(curHue[0], curHue[1], curHue[2]);
 
 		float	shapeX		= ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
 		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
 		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
-		
+
 		this.shapeMode(CORNER);
 		PShape pShape = this.shape.getPShape();
 		pShape.beginShape();
@@ -129,13 +132,13 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		pShape.endShape();
 		this.shape(pShape, shapeX, this.height/2);
 		this.shapeMode(CENTER);
-		
-		
+
+
 		//this.stroke(Color.red.getRGB());
 		//this.strokeWeight(10);
 		//this.point(shapeX, this.height/2);
-		
-		
+
+
 
 		// Began with PShape, but decided that that is not worth it at the moment:
 		/*		this.shape.beginShape(ELLIPSE);
@@ -155,11 +158,43 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		 */
 
 	} // drawShape
-	
+
 	private void drawShapeMenu()
 	{
 		shape(this.shapeMenuFadedBackground);
 	}
-	
+/*
+	public class DisposeHandler {
+
+//		PApplet	pa;
+		
+		Module_02_AmplitudeHSB	module;
+
+		DisposeHandler(PApplet pa)
+		{
+			module	= (Module_02_AmplitudeHSB)pa;
+			pa.registerMethod("dispose", this);
+		}
+
+		public void dispose()
+		{
+			
+			this.module.input.stopContext();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+//			this.module.input.getAudioContext().stop();
+			
+//			while(this.module.input.getAudioContext().isRunning())	{	}
+			
+			println("Closing sketch");
+//			((PortAudioAudioIO)this.module.input.getAudioContext().getAudioIO()).destroy();
+		}
+	} // DisposeHandler
+*/
 
 } // Module_03_AmplitudeHSB

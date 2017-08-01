@@ -86,17 +86,18 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			new float[] { 255, 0, 0 },
 			new float[] { 0, 255, 0 },
 			new float[] { 0, 0, 255 },
-			new float[]	{ 255, 0, 0 }
+			new float[]	{ 255, 255, 0 }
 //			new float[] { 150, 50, 150 },
 		};
 		
-		this.legendColors	= new float[][] {
-			new float[] { 255, 0, 0 },
-			new float[] { 0, 255, 0 },
-			new float[] { 0, 0, 255 },
-			new float[]	{ 255, 0, 0 }
-//			new float[] { 150, 50, 150 },
-		};
+		this.legendColors	= new float[this.colors.length][3];
+		for(int i = 0; i < this.colors.length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.legendColors[i][j]	= this.colors[i][j];
+			} // for - j
+		} // for - i
 
 		// already called addHideButtons in superclass with y-val of 26.
 
@@ -115,6 +116,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		this.addShapeCustomizationControls(this.yVals[16]);
 		//		this.initInput();
+		
+		this.sidebarCP5.addButton("stopContext")
+		.setPosition(this.parent.width / 2, this.parent.height / 2);
 	} // constructor
 
 	/**
