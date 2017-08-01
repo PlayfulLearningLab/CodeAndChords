@@ -68,6 +68,9 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 		background(this.moduleTemplate.getCanvasColor()[0], this.moduleTemplate.getCanvasColor()[1], this.moduleTemplate.getCanvasColor()[2]);
 
+		System.out.println("canvasColor = rgb(" + this.moduleTemplate.getCanvasColor()[0] + 
+				", " + this.moduleTemplate.getCanvasColor()[1] + ", " + this.moduleTemplate.getCanvasColor()[2] + ")");
+		
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
@@ -79,6 +82,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			if(curAmp > this.moduleTemplate.getThresholds()[i]) {
 				goalHuePos	= i;
 			} // if
+			
+//			System.out.println("curAmp = " + curAmp);
 		} // for
 
 //		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
