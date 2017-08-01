@@ -120,9 +120,6 @@ public class PortAudioAudioIO extends AudioIO {
 				create();
 				//start the update loop
 				runRealTime();
-				System.out.println("PortAudioAudioIO: returned from runRealTime()");
-				//return from above method means context got stopped, so now clean up
-	//			destroy();
 			}
 		});
 		audioThread.setPriority(threadPriority);
@@ -134,6 +131,13 @@ public class PortAudioAudioIO extends AudioIO {
 	public boolean stop()
 	{
 		this.isRunning	= false;
+		try {
+			// Give it a little time to get out of the loop in runRealTime()
+			Thread.sleep(25);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		return destroy();
 	} // stop
 	
