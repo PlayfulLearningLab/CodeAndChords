@@ -90,6 +90,20 @@ public class Shape {
 		this.rotation = rotationInRadians;
 	}
 
+	public void setShapeIndex(int index)
+	{
+		if(index < 0) throw new IllegalArgumentException("index can not be less than zero");
+		if(index >= this.numShapes) throw new IllegalArgumentException("index can not be greater than or equal to the number of shapes");
+		
+		this.shapeIndex = index;
+	}
+	
+	//Getter Methods
+	
+	public int getShapeIndex ()
+	{
+		return this.shapeIndex;
+	}
 
 	//Implemented Methods
 	public PShape getPShape()
@@ -123,6 +137,40 @@ public class Shape {
 
 	}//drawShape()
 
+	public PShape getScaledPShape(float[] scale)
+	{
+		PShape shape = this.pApp.createShape();
+		shape.beginShape();
+
+		float x;
+		float y;
+
+		int i = 0;
+
+		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		{
+			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
+			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
+
+			x = PApplet.map(x, 0, 1, 0, this.xStretch);
+			y = PApplet.map(y, 0, 1, 0, this.yStretch);
+			
+			x = PApplet.map(x, scale[0], scale[1], scale[2], scale[3]);
+			y = PApplet.map(y, scale[0], scale[1], scale[2], scale[3]);
+			
+			
+			shape.vertex(x, y);
+			i++;
+		}//for()
+
+		shape.rotate(this.rotation);
+		
+		shape.endShape();
+
+		return shape;
+		
+	}
+	
 	public void setCurrentShape(String shapeType, float[] parameters)
 	{
 		float[] shape = new float[(int) this.steps];

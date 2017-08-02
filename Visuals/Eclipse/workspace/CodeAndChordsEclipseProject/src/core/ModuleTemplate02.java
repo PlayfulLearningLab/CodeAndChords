@@ -2,16 +2,22 @@ package core;
 
 import java.awt.Color;
 
+import controlP5.Background;
+import controlP5.CColor;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import controlP5.Controller;
+import controlP5.ControllerGroup;
 import controlP5.ControllerInterface;
 import controlP5.Slider;
 import controlP5.Textfield;
+import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PShape;
 import core.Shape;
+import module_02.Module_02_AmplitudeHSB;
 
 public class ModuleTemplate02 extends ModuleTemplate {
 
@@ -27,17 +33,20 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	private	int	firstThresholdSliderId	= -1;
 	private	int	firstColorSelectCWId	= -1;
+	
+	private Module_02_AmplitudeHSB module2;
+	private boolean  shapeMenuIsOpen;
 
 	// thresholds is not private so that the module can access it
 	float[]	thresholds;
-	
-	private boolean shapeMenuIsOpen;
-	
+		
 
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
 		super(parent, input, sidebarTitle);
-
+		
+		this.module2 = (Module_02_AmplitudeHSB) parent;
+		
 		this.shapeMenuIsOpen = false;
 		
 		this.yVals		= new int[18];
@@ -370,6 +379,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 	} // addColorSelectButtons
 
+	//a
+	
 	protected void addShapeCustomizationControls()
 	{
 		this.sidebarCP5.addButton("shapeMenuButton")
@@ -378,6 +389,64 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.setWidth(250)
 		.setLabel("Shape Menu")
 		.setGroup("sidebarGroup");
+		
+		this.sidebarCP5.addGroup("shapeMenuGroup");
+		
+		
+		//Ask Emily if she knows how to make the alpha setting darker.  Nothing I do will change it
+		int fb = new Color((int)0,(int)0,(int)0, (int)250).getRGB();
+		CColor fadedBackground = new CColor();
+		//fadedBackground.setAlpha();
+
+		this.sidebarCP5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		((Slider) this.sidebarCP5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		((Slider) this.sidebarCP5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("n1", 0, 10, 1, 15, 320, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("n2", 0, 10, 1, 15, 370, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("n3", 0, 10, 1, 15, 420, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+		
+		this.sidebarCP5.addScrollableList("shapeSelect")
+		.setPosition(15,70)
+		.setSize(150, 100)
+		.setBarHeight(30)
+		.setGroup("shapeMenuGroup")
+		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
+		.close()
+		.setValue(this.module2.getShape().getShapeIndex());
+		
+		
+		
+		this.sidebarCP5.getGroup("shapeMenuGroup")
+		.setVisible(false);
+		
 	}
 	
 	protected int calculateNotePos(int pos)
@@ -470,9 +539,69 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		if(controlEvent.getName() == "shapeMenuButton")
 		{
+			//open the menu
 			this.shapeMenuIsOpen = true;
 			
+			//set the shape select list
+			System.out.println(this.module2.getShape().getShapeIndex());
+			this.sidebarCP5.getController("shapeSelect").setValue(this.module2.getShape().getShapeIndex());
+			
+			//make the shape menu visible
+			this.sidebarCP5.getGroup("shapeMenuGroup")
+			.setVisible(true);
+			
+			//hide the other controls
+			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+						
+			
 		}//shapeMenuButton
+		
+		if(controlEvent.getName() == "shapeSelect")
+		{
+			this.module2.getShape().setShapeIndex((int) this.sidebarCP5.getController("shapeSelect").getValue());
+		}
+		
+		if(controlEvent.getName() == "a")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("a"), this.module2.getShape().getShapeIndex(), 0);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
+		
+		if(controlEvent.getName() == "b")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("b"), this.module2.getShape().getShapeIndex(), 1);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
+		
+		if(controlEvent.getName() == "m1")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("m1"), this.module2.getShape().getShapeIndex(), 2);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
+		
+		if(controlEvent.getName() == "m2")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("m2"), this.module2.getShape().getShapeIndex(), 3);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
+		
+		if(controlEvent.getName() == "n1")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("n1"), this.module2.getShape().getShapeIndex(), 4);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
+		
+		if(controlEvent.getName() == "n2")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("n2"), this.module2.getShape().getShapeIndex(), 5);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
+		
+		if(controlEvent.getName() == "n3")
+		{
+			this.module2.setSuperShape( this.sidebarCP5.getValue("n3"), this.module2.getShape().getShapeIndex(), 6);
+			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
+		}
 		
 	} // controlEvent
 
@@ -480,10 +609,11 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		return this.thresholds;
 	}
-	
+
 	public boolean getShapeMenuIsOpen()
 	{
 		return this.shapeMenuIsOpen;
 	}
+	
 
 } // ModuleTemplate02
