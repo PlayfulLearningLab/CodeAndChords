@@ -5,6 +5,7 @@ import processing.core.*;
 import core.Input;
 import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
+import module_02.Module_02_AmplitudeHSB;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
@@ -31,6 +32,7 @@ public class Module_01_PitchHue extends PApplet
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
+	private	DisposeHandler	disposeHandler;
 
 	private int  curHuePos;
 
@@ -46,6 +48,7 @@ public class Module_01_PitchHue extends PApplet
 
 	public void setup() 
 	{
+		this.disposeHandler	= new DisposeHandler(this);
 		
 		this.input  = new Input();
 		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
@@ -85,7 +88,7 @@ public class Module_01_PitchHue extends PApplet
 			this.moduleTemplate.legend(scaleDegree);
 		} // if showScale
 		
-/*
+
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
 		if(this.moduleTemplate.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 		{
@@ -95,6 +98,37 @@ public class Module_01_PitchHue extends PApplet
 				this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
 			}
 		} // if		
-*/
+
 	} // draw()
+	
+
+	/**
+	 * 08/01/2017
+	 * Emily Meuer
+	 * 
+	 * Class to stop the Input (which needs to stop the AudioContext,
+	 * because it needs to stop the AudioIO, esp. when it's using the PortAudioAudioIO,
+	 * which needs to call PortAudio.terminate to avoid a weird set of 
+	 * NoClassDefFoundError/ClassNotFoundException/BadFileDescriptor errors that will happen occassionaly on start-up).
+	 * 
+	 * Taken from https://forum.processing.org/two/discussion/579/run-code-on-exit-follow-up
+	 *
+	 */
+	public class DisposeHandler {
+
+//		PApplet	pa;
+		
+		Module_01_PitchHue	module;
+
+		DisposeHandler(PApplet pa)
+		{
+			module	= (Module_01_PitchHue)pa;
+			pa.registerMethod("dispose", this);
+		}
+
+		public void dispose()
+		{
+			this.module.input.stop();
+		}
+	} // DisposeHandler
 } // class

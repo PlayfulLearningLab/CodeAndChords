@@ -138,7 +138,12 @@ public class PortAudioAudioIO extends AudioIO {
 			e.printStackTrace();
 		}
 
-		return destroy();
+		if(!destroy())	{
+			throw new IllegalArgumentException("PortAudioAudioIO: destroy() returned false.");
+		}
+
+//		return destroy();
+		return true;
 	} // stop
 	
 	/** Update loop called from within audio thread (created in start() method). */
