@@ -1181,6 +1181,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int	trichromColorPos	= 0;
 		for(int i = 0; i < this.colors.length && trichromColorPos < trichromColors.length; i++)
 		{
+			// TODO: I don't think that these positions are being set correctly :/
 			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
 
 			this.colors[i][0]	= trichromColors[trichromColorPos][0];
@@ -1299,7 +1300,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 					id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
 			{
 				this.updateColorSelectCWs();
-				this.updateColorSelectCWs();
+				this.updateCustomPitchCWs();
 			}//hsb mod
 
 			// Red Modulate/Green Modulate/Blue Modulate:
@@ -1307,7 +1308,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 					id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
 			{
 				this.updateColorSelectCWs();
-				this.updateColorSelectCWs();
+				this.updateCustomPitchCWs();
 			} // red/green/blue mod
 
 		} // sliders
