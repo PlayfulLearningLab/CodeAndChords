@@ -8,10 +8,14 @@ import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.Slider;
 import processing.core.PApplet;
+import processing.core.PShape;
 
 public class ShapeEditor implements ControlListener{
 	
 	private PApplet 	parent;
+	
+	private Shape 		shape;
+	private int			shapeIndex;
 	
 	private ControlP5	cp5;
 	
@@ -52,11 +56,16 @@ public class ShapeEditor implements ControlListener{
 	 * @param fullAppletWidth 		width of the window that this shape will be displayed in
 	 * @param fullAppletHeight 		height of the window that this shape will be displayed in
 	 */
-	public ShapeEditor(PApplet parent, float fullAppletWidth, float fullAppletHeight)
+	public ShapeEditor(PApplet parent, Shape shape,float fullAppletWidth, float fullAppletHeight)
 	{
 		//make sure the PApplet isn't null and then set the parent instance variable
 		if(parent == null) throw new IllegalArgumentException("PApplet parameter parent is null");
-		this.parent = parent;
+		else this.parent = parent;
+		
+		if(shape == null) throw new IllegalArgumentException("Shape parameter is null");
+		else this.shape = shape;
+		
+		this.shapeIndex = 0;
 		
 		this.cp5 = new ControlP5(parent);
 		
@@ -117,11 +126,16 @@ public class ShapeEditor implements ControlListener{
 	 * @param shapeWindowHeight		height of the shape editor window
 	 * @param menuWidth				width of the menu (this is added on to the shapeWindowWidth)
 	 */
-	public ShapeEditor(PApplet parent, float shapeWindowWidth, float shapeWindowHeight, float menuWidth)
+	public ShapeEditor(PApplet parent, Shape shape, float shapeWindowWidth, float shapeWindowHeight, float menuWidth)
 	{
 		//make sure the PApplet isn't null and then set the parent instance variable
 				if(parent == null) throw new IllegalArgumentException("PApplet parameter parent is null");
-				this.parent = parent;
+				else this.parent = parent;
+				
+				if(shape == null) throw new IllegalArgumentException("Shape parameter is null");
+				else this.shape = shape;
+				
+				this.shapeIndex = 0;
 				
 				this.cp5 = new ControlP5(this.parent);
 				
@@ -167,41 +181,114 @@ public class ShapeEditor implements ControlListener{
 		this.parent.stroke(50);
 		this.parent.fill(50);
 		this.parent.rect((this.seXPos + this.menuWidth), this.seYPos, -3, this.seHeight);
+		
+		PShape ps = this.shape.getPShape();
+		ps.beginShape();
+		ps.stroke(255);
+		ps.fill(255);
+		ps.endShape();
+		this.parent.shape(ps, (this.seXPos + this.menuWidth + (this.seWidth/2)), (this.seYPos + (this.seHeight/2)));
 
 
 	}//drawSE
 	
 	private void addMenuControls()
 	{	
-		this.cp5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
-		.getCaptionLabel()
-		.hide();
-
-		this.cp5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
-		.getCaptionLabel()
-		.hide();
-
-		((Slider) this.cp5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
-		.getCaptionLabel()
-		.hide();
-
-		((Slider) this.cp5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
-		.getCaptionLabel()
-		.hide();
+		int  		numControllers = 6;  
+		float[] 	yVals = new float[(int)numControllers];
+		
+		float spacing = (this.seHeight / numControllers) + 2;
+		
+		for(int i = 0; i < numControllers; i++)
+		{
+			yVals[i] = spacing*(1+i);
+		}
 		
 		this.cp5.addScrollableList("shapeSelect")
-		.setPosition(15,70)
+		.setPosition(15,yVals[0])
 		.setSize(150, 100)
 		.setBarHeight(30)
 		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
+		.setValue(0)
 		.close();
 		
+		this.cp5.addSlider("size", .01f, 3, 1, 15, (int)yVals[1], 150, 28)
+		.getCaptionLabel()
+		.hide();
+
+		this.cp5.addSlider("numPoints", .01f, 3, 1, 15, (int)yVals[2], 150, 28)
+		.getCaptionLabel()
+		.hide();
+
+		((Slider) this.cp5.addSlider("n1", 0, 15, 1, 15, (int)yVals[3], 150, 28))
+		.getCaptionLabel()
+		.hide();
+
+		((Slider) this.cp5.addSlider("n2", 0, 15, 1, 15, (int)yVals[4], 150, 28))
+		.getCaptionLabel()
+		.hide();
+		
+		((Slider) this.cp5.addSlider("n3", 0, 15, 1, 15, (int)yVals[5], 150, 28))
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addLabel("sizeLabel")
+		.setPosition(15, yVals[1] - (spacing/3))
+		.setValue("Shape Size");
+		
+		this.cp5.addLabel("numPointsLabel")
+		.setPosition(15, yVals[2] - (spacing/3))
+		.setValue("Number of Points");
+		
+		this.cp5.addLabel("n1Label")
+		.setPosition(15, yVals[3] - (spacing/3))
+		.setValue("N1");
+		
+		this.cp5.addLabel("n2Label")
+		.setPosition(15, yVals[4] - (spacing/3))
+		.setValue("N2");
+		
+		this.cp5.addLabel("n3Label")
+		.setPosition(15, yVals[5] - (spacing/3))
+		.setValue("N3");
+		
+		this.cp5.getController("shapeSelect")
+		.bringToFront();
 	}
 
 
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
 		
+		System.out.println(theEvent.getLabel());
+		switch(theEvent.getLabel()){
+		
+		case "shapeSelect":
+			this.shape.setShapeIndex((int)theEvent.getValue());
+			System.out.println(theEvent.getLabel());
+			break;
+		
+		case "size":
+			
+			break;
+			
+		case "numPoints":
+			
+			break;
+			
+		case "n1":
+			
+			break;
+			
+		case "n2":
+			
+			break;
+			
+		case "n3":
+			
+			break;
+		
+		}
 		
 	}
 	

@@ -11,6 +11,8 @@ public class testModule extends PApplet implements Runnable {
 	private Shape 		shape;
 	private ShapeEditor shapeEditor;
 	
+	private int 		shapeIndex;
+	
 	private boolean		shapeEditorRunning;
 	
 	private boolean 	testingStarted = false;
@@ -30,11 +32,13 @@ public class testModule extends PApplet implements Runnable {
 	public void setup()
 	{
 		this.shape = new Shape(this);
-		this.shapeEditorRunning = false;
+		this.shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,2,1});
+		
+		this.shapeEditorRunning = true;
 		System.out.println("checkpoint a");
-		this.shapeEditor = new ShapeEditor(this, 925, 520);
+		this.shapeEditor = new ShapeEditor(this, this.shape, 925, 520);
 		System.out.println("checkpoint b");
-	}
+		}
 	
 	public void draw()
 	{
@@ -44,7 +48,7 @@ public class testModule extends PApplet implements Runnable {
 		if(!this.testingStarted)
 		{
 			this.testingStarted = true;
-			new Thread(this).start();
+			//new Thread(this).start();
 		}
 		this.shapeEditor.runSE(this.shapeEditorRunning);
 	}
@@ -68,7 +72,18 @@ public class testModule extends PApplet implements Runnable {
 			}
 		}
 	}
+	
+	public void setShapeIndex(int index)
+	{
+		this.shapeIndex = index;
+	}
 
+	public int getShapeIndex()
+	{
+		return this.shapeIndex;
+	}
+	
+	
 	@Override
 	public void run() 
 	{
