@@ -19,7 +19,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
-<<<<<<< HEAD
 	
 	private float[][]			superShapes;
 	
@@ -27,11 +26,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	
 	private float  				x;
 	private float				y;
-	
-=======
->>>>>>> master
-
-	private Shape     			shape;
 
 	private PShape 				shapeMenuFadedBackground;
 
@@ -51,7 +45,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		
 		// This uses the PortAudioAudioIO by default...
 		this.input	= new Input();
-<<<<<<< HEAD
 		
 		this.shape = new Shape(this);
 		this.superShapes = new float[][] 
@@ -69,12 +62,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			shape.setCurrentShape("supershape", this.superShapes[i]);
 		}
 		
-		
-=======
-		// ...but to use JavaSoundAudioIO rather than PortAudio:
-		//		this.input	= new Input(2, new AudioContext());
-
->>>>>>> master
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 		
 		this.x = ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
@@ -84,20 +71,12 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
 		//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
 
-		this.textSize(32);
-<<<<<<< HEAD
-				
+		this.textSize(32);				
 		
 		
 		//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
 		//Color fadedBlack = new Color(0, 0, 0, .5f);
 		//this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
-=======
-
-		this.shapeMenuFadedBackground = this.createShape(PConstants.RECT, 0, 0, 925, 520);
-		Color fadedBlack = new Color(0, 0, 0, .5f);
-		this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
->>>>>>> master
 
 		// create the shape
 
@@ -105,15 +84,10 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.shapeMode(CENTER);
 		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
-<<<<<<< HEAD
-				
-		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
-=======
 
 		this.shape = new Shape(this);
 		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
 
->>>>>>> master
 	} // setup
 
 	public void draw()
@@ -163,16 +137,11 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		{
 			this.drawShapeMenu();
 		}
-<<<<<<< HEAD
 		else
 		{
 			this.drawShape();
 		}
 		
-		
-=======
-
->>>>>>> master
 	} // draw
 
 	private void drawShape()
@@ -217,15 +186,12 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		 */
 
 	} // drawShape
-<<<<<<< HEAD
 	
 	public Shape getShape()
 	{
 		return this.shape;
 	}
 	
-=======
->>>>>>> master
 
 	private void drawShapeMenu()
 	{
@@ -268,7 +234,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	{
 		this.superShapes[shapeNum][paramNum] = val;
 	}
-<<<<<<< HEAD
 	
 	public float[] getCurrentSuperShape()
 	{
@@ -276,8 +241,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	}
 	
 	
-=======
-
 	/**
 	 * 08/01/2017
 	 * Emily Meuer
@@ -307,7 +270,5 @@ public class Module_02_AmplitudeHSB extends PApplet {
 			this.module.input.stop();
 		}
 	} // DisposeHandler
-
->>>>>>> master
 
 } // Module_03_AmplitudeHSB
