@@ -105,6 +105,29 @@ public class ShapeEditor implements ControlListener{
 		this.seXPos = 0;
 		this.seYPos = (fullAppletHeight - scaledHeight)/2;
 		
+		this.cp5.addBackground("b1")
+		.setPosition(0, 0)
+		.setSize((int)fullAppletWidth, (int)((fullAppletHeight - this.seHeight)/2) + 1)
+		.setBackgroundColor( (new Color((int)0,(int)0,(int)0, (int)200)).getRGB());
+		
+		this.cp5.addBackground("b2")
+		.setPosition(0, (int)(fullAppletHeight) - ((fullAppletHeight - this.seHeight)/2))
+		.setSize((int)fullAppletWidth, (int)((fullAppletHeight - this.seHeight)/2) + 2)
+		.setBackgroundColor( (new Color((int)0,(int)0,(int)0, (int)200)).getRGB());
+		
+		if(this.seXPos != 0)
+		{
+			this.cp5.addBackground("b3")
+			.setPosition(0, (int)(fullAppletHeight - this.seHeight)/2)
+			.setSize((int)(fullAppletWidth - this.seWidth)/2, (int)this.seHeight)
+			.setBackgroundColor( (new Color((int)0,(int)0,(int)0, (int)200)).getRGB());
+			
+			this.cp5.addBackground("b4")
+			.setPosition((int) fullAppletWidth - ((fullAppletWidth - this.seWidth)/2), (int)(fullAppletHeight - this.seHeight)/2)
+			.setSize((int)(fullAppletWidth - this.seWidth)/2, (int)this.seHeight)
+			.setBackgroundColor( (new Color((int)0,(int)0,(int)0, (int)200)).getRGB());
+		}
+		
 		this.scaledWindow = true;
 		this.trueShapeMode = false;
 		
@@ -173,10 +196,6 @@ public class ShapeEditor implements ControlListener{
 		this.parent.fill(0); 
 		this.parent.rect(this.seXPos, this.seYPos, (this.seWidth + this.menuWidth), this.seHeight);
 		
-		this.parent.stroke(50);
-		this.parent.fill(50);
-		this.parent.rect((this.seXPos + this.menuWidth), this.seYPos, -3, this.seHeight);
-		
 		PShape ps = this.shape.getPShape();
 		ps.beginShape();
 		ps.stroke(255);
@@ -184,6 +203,27 @@ public class ShapeEditor implements ControlListener{
 		ps.endShape();
 		this.parent.shape(ps, (this.seXPos + this.menuWidth + (this.seWidth/2)), (this.seYPos + (this.seHeight/2)));
 
+		this.parent.rect(this.seXPos, this.seYPos, this.menuWidth, this.seHeight);
+		
+		this.parent.stroke(Color.CYAN.getRGB());
+		this.parent.fill(Color.CYAN.getRGB());
+		this.parent.rect((this.seXPos + this.menuWidth), this.seYPos, -3, this.seHeight);
+		
+		this.parent.stroke(Color.CYAN.getRGB());
+		this.parent.fill(Color.CYAN.getRGB());
+		this.parent.rect((this.seXPos), this.seYPos, this.seWidth + this.menuWidth, 3);
+		
+		this.parent.stroke(Color.CYAN.getRGB());
+		this.parent.fill(Color.CYAN.getRGB());
+		this.parent.rect((this.seXPos), this.seYPos + this.seHeight, this.seWidth + this.menuWidth, -3);
+		
+		this.parent.stroke(Color.CYAN.getRGB());
+		this.parent.fill(Color.CYAN.getRGB());
+		this.parent.rect((this.seXPos + this.menuWidth + this.seWidth), this.seYPos, -3, this.seHeight);
+		
+		this.parent.stroke(Color.CYAN.getRGB());
+		this.parent.fill(Color.CYAN.getRGB());
+		this.parent.rect((this.seXPos), this.seYPos, 3, this.seHeight);
 
 	}//drawSE
 	
@@ -200,8 +240,8 @@ public class ShapeEditor implements ControlListener{
 		}
 		
 		this.cp5.addScrollableList("shapeSelect")
-		.setPosition(15,yVals[0])
-		.setSize(150, 100)
+		.setPosition((int)(this.seXPos + this.menuWidth/8),yVals[0])
+		.setSize((int)(this.menuWidth /4 * 3), 100)
 		.setBarHeight(30)
 		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
 		.setValue(0)
@@ -249,6 +289,7 @@ public class ShapeEditor implements ControlListener{
 		
 		this.cp5.getController("shapeSelect")
 		.bringToFront();
+		
 	}
 
 	@Override
@@ -266,8 +307,9 @@ public class ShapeEditor implements ControlListener{
 			break;
 			
 		case "numPoints":
-			int val = (int)theEvent.getValue();
-			theEvent.getController().setValue(val);
+			float val = (float) Math.floor(theEvent.getValue());
+			if(val == 0) theEvent.getController().setValue(.01f);
+			else theEvent.getController().setValue(val);
 			this.shape.setCurrentShape("supershape", new float[] { -1, -1, val, val, -1, -1, -1 });
 			break;
 			
