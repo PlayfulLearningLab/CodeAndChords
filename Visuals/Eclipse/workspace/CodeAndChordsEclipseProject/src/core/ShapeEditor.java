@@ -269,7 +269,7 @@ public class ShapeEditor implements ControlListener{
 			break;
 		
 		case "size":
-			
+			//this.shape.setCurrentShape("supershape", parameters);
 			break;
 			
 		case "numPoints":

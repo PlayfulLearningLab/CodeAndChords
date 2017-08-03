@@ -119,6 +119,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.input	= input;
 
 		this.colors 		= new float[12][3];
+		this.legendColors	= new float[12][3];
 		this.originalColors	= new float[12][3];
 		this.hsbColors      = new float[12][3];
 
@@ -778,14 +779,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
 			{
 				int colorSelectId	= (this.canvasColorSelectId % 100) + 301;
-				this.updateColorWheel(colorSelectId, 0);
+				this.updateColorWheelFromColors(colorSelectId, 0);
 			} // if - rainbow
 
 			if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
 			{
 				int colorSelectId	= (this.canvasColorSelectId % 100) + 301;
-				this.updateColorWheel(colorSelectId, 0);
-				this.updateColorWheel(colorSelectId + 1, (this.colors.length - 1));
+				this.updateColorWheelFromColors(colorSelectId, 0);
+				this.updateColorWheelFromColors(colorSelectId + 1, (this.colors.length - 1));
 			} // if - dichromatic
 
 			if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
@@ -804,9 +805,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 					colorPos3	= 4;
 				}
 
-				this.updateColorWheel(colorSelectId, 0);
-				this.updateColorWheel(colorSelectId + 1, colorPos2);
-				this.updateColorWheel(colorSelectId + 2, colorPos3);
+				this.updateColorWheelFromColors(colorSelectId, 0);
+				this.updateColorWheelFromColors(colorSelectId + 1, colorPos2);
+				this.updateColorWheelFromColors(colorSelectId + 2, colorPos3);
 			} // if - trichromatic
 		} // if canvasColorSelectId > -1
 		else
@@ -827,7 +828,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
 			{
-				updateColorWheel(id, colorPos);
+				updateColorWheelFromColors(id, colorPos);
 				id	= id + 1;
 			} // for - colorPos
 		} else {
@@ -875,6 +876,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			colorPos	= scaleDegree;
 
 			this.parent.fill(this.colors[colorPos][0], this.colors[colorPos][1], this.colors[colorPos][2]);
+//			this.parent.fill(this.legendColors[colorPos][0], this.legendColors[colorPos][1], this.legendColors[colorPos][2]);
 			//			this.parent.fill(255);
 
 			if (i == goalHuePos) {
@@ -1252,7 +1254,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			for(int colorPos = 0; colorPos < this.colors.length; colorPos++)
 			{
-				this.updateColorWheel(id, colorPos);
+				this.updateColorWheelFromColors(id, colorPos);
 
 				id	= id + 1;
 			} // for - colorPos
@@ -1303,7 +1305,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// ColorWheels
 		if(id > 299 && id < 400)
 		{
-			// get current color:
+			// This all happens in ModuleTemplate:
+/*			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
 			int	rgbColor	= curCW.getRGB();
@@ -1327,7 +1330,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.colors[notePos][1]	= color.getGreen();
 				this.colors[notePos][2]	= color.getBlue();
 			} // else - not canvas
-
+*/
 		} // ColorWheels
 
 		// Major/Minor/Chromatic buttons
@@ -1487,7 +1490,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		{			
 			// Canvas:
 			if(id == modCanvasId)	{
-				throw new IllegalArgumentException("ModuleTemplate.calculateNotePos(int): id 64 should not be passed to this function, as it does not correspond to a note.");
+				throw new IllegalArgumentException("ModuleTemplate.calculateNotePos(int): id " + id + " should not be passed to this function, as it does not correspond to a note.");
 			}
 
 			// Tonic:
