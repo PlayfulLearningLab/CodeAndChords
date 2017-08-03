@@ -13,12 +13,16 @@ public class Shape {
 	private int   		numShapes;
 	private int 		shapeIndex;
 
+	private float[][]	currentShapeParameters;	
+	//May need to add a string at some point to identify which type of shape the parameters make
+	
 	private float[][] 	currentShape;
 	private float[] 	nextShape;
 
 	private float 		xStretch;
 	private float 		yStretch;
 	private float 		rotation;
+	private float 		scale = 1;
 
 	//constructors	
 	public Shape(PApplet p)
@@ -47,6 +51,8 @@ public class Shape {
 		
 		this.numShapes = 5;
 		this.shapeIndex = 0;
+		
+		this.currentShapeParameters = new float[numShapes][];
 		
 		this.currentShape = new float[this.numShapes][this.steps];
 		this.nextShape = new float[this.steps];
@@ -120,9 +126,12 @@ public class Shape {
 		{
 			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
 			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
-
+			
 			x = PApplet.map(x, 0, 1, 0, this.xStretch);
 			y = PApplet.map(y, 0, 1, 0, this.yStretch);
+			
+			x *= this.scale;
+			y *= this.scale;
 			
 			shape.vertex(x, y);
 			i++;
@@ -173,6 +182,13 @@ public class Shape {
 	
 	public void setCurrentShape(String shapeType, float[] parameters)
 	{
+		for(int i = 0; i < parameters.length; i++)
+		{
+			if(parameters[i] == -1) parameters[i] = this.currentShapeParameters[this.shapeIndex][i];
+		}
+		
+		this.currentShapeParameters[this.shapeIndex] = parameters;
+		
 		float[] shape = new float[(int) this.steps];
 
 		int i = 0;

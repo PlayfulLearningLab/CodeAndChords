@@ -2,6 +2,7 @@ package functionSketch_04;
 
 import java.awt.Color;
 
+import controlP5.ControlEvent;
 import core.Shape;
 import core.ShapeEditor;
 import processing.core.PApplet;
@@ -33,6 +34,12 @@ public class testModule extends PApplet implements Runnable {
 	{
 		this.shape = new Shape(this);
 		this.shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,2,1});
+		
+		for(int i = 0; i < 5; i++)
+		{
+			this.shape.setShapeIndex(i);
+			this.shape.setCurrentShape("supershape", new float[] {1,1,i+1,i+1,1,1,1});
+		}
 		
 		this.shapeEditorRunning = true;
 		System.out.println("checkpoint a");
@@ -109,5 +116,6 @@ public class testModule extends PApplet implements Runnable {
 		if(!this.shapeEditorRunning) 		this.shapeEditorRunning = true;
 		System.out.println("testing ended");
 	}
+
 	
 }
