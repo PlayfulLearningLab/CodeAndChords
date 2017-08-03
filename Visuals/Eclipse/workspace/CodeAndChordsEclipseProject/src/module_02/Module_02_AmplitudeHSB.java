@@ -11,23 +11,23 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
 import core.Shape;
+import core.ShapeEditor;
+import core.ShapeEditorInterface;
 import net.beadsproject.beads.core.AudioContext;
 
-public class Module_02_AmplitudeHSB extends PApplet {
+public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterface {
 
 	private	DisposeHandler		disposeHandler;
 	
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
 	
-	private float[][]			superShapes;
-	
 	private Shape     			shape;
+	
+	private ShapeEditor			shapeEditor;
 	
 	private float  				x;
 	private float				y;
-
-	private PShape 				shapeMenuFadedBackground;
 
 	public static void main(String[] args) 
 	{
@@ -44,10 +44,11 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		this.disposeHandler	= new DisposeHandler(this);
 		
 		// This uses the PortAudioAudioIO by default...
-		this.input	= new Input();
+		//this.input	= new Input();
+		this.input    = new Input(2, new AudioContext());
 		
 		this.shape = new Shape(this);
-		this.superShapes = new float[][] 
+		float[][] superShapes = new float[][] 
 				{
 					new float[] { 1, 1, 0, 0, 1, 1, 1 },
 					new float[] { 1, 1, 5, 5, 1, 1, 1 },
@@ -59,8 +60,11 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		for(int i = 0; i < 5; i++)
 		{
 			this.shape.setShapeIndex(i);
-			shape.setCurrentShape("supershape", this.superShapes[i]);
+			shape.setCurrentShape("supershape", superShapes[i]);
 		}
+		
+		this.shapeEditor = new ShapeEditor(this, this.shape, 925, 520);
+		this.shapeEditor.setIsRunning(false);
 		
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 		
@@ -80,13 +84,9 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 		// create the shape
 
-		//Ask Emily:  What does this do?
-		this.shapeMode(CENTER);
+		//this.shapeMode(CENTER);
 		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
-
-		this.shape = new Shape(this);
-		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
 
 	} // setup
 
@@ -127,20 +127,22 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
-		if(this.moduleTemplate.isShowScale())
+		if(this.shapeEditor.getIsRunning())
 		{
-			// draws the legend along the bottom of the screen:
-			this.moduleTemplate.legend(goalHuePos);
-		} // if showScale
-
-		if(this.moduleTemplate.getShapeMenuIsOpen())
-		{
-			this.drawShapeMenu();
+			//this.drawShapeMenu();
 		}
 		else
 		{
 			this.drawShape();
 		}
+		
+		this.shapeEditor.runSE();
+		
+		if(this.moduleTemplate.isShowScale())
+		{
+			// draws the legend along the bottom of the screen:
+			this.moduleTemplate.legend(goalHuePos);
+		} // if showScale
 		
 	} // draw
 
@@ -148,18 +150,19 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	{	
 
 		float[]	curHue	= this.moduleTemplate.getCurHue();
-		this.fill(curHue[0], curHue[1], curHue[2]);
+		//this.fill(curHue[0], curHue[1], curHue[2]);
+		this.fill(255);
 
 		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
 		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
 
-		this.shapeMode(CORNER);
+		//this.shapeMode(CORNER);
 		PShape pShape = this.shape.getPShape();
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
 		pShape.endShape();
 		this.shape(pShape, this.x, this.y);
-		this.shapeMode(CENTER);
+		//this.shapeMode(CENTER);
 
 
 		//this.stroke(Color.red.getRGB());
@@ -230,15 +233,11 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		
 	}
 	
-	public void setSuperShape(float val, int shapeNum, int paramNum)
+	public void setShapeEditorRunning(boolean isRunning)
 	{
-		this.superShapes[shapeNum][paramNum] = val;
+		this.shapeEditor.setIsRunning(isRunning);
 	}
 	
-	public float[] getCurrentSuperShape()
-	{
-		return this.superShapes[this.shape.getShapeIndex()];
-	}
 	
 	
 	/**
