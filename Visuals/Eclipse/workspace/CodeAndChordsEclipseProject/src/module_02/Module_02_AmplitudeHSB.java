@@ -6,14 +6,20 @@ import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import core.Input;
 import core.ModuleTemplate02;
+import core.PortAudioAudioIO;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PShape;
 import core.Shape;
+import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends PApplet {
 
+	private	DisposeHandler		disposeHandler;
+	
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
+<<<<<<< HEAD
 	
 	private float[][]			superShapes;
 	
@@ -22,11 +28,12 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	private float  				x;
 	private float				y;
 	
+=======
+>>>>>>> master
 
-	//	private PShape 	shape;
-	//	int		shapeCenter;
+	private Shape     			shape;
 
-//	float[]	thresholds;
+	private PShape 				shapeMenuFadedBackground;
 
 	public static void main(String[] args) 
 	{
@@ -39,8 +46,12 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	} // settings
 
 	public void setup()
-	{		
+	{
+		this.disposeHandler	= new DisposeHandler(this);
+		
+		// This uses the PortAudioAudioIO by default...
 		this.input	= new Input();
+<<<<<<< HEAD
 		
 		this.shape = new Shape(this);
 		this.superShapes = new float[][] 
@@ -59,90 +70,120 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		}
 		
 		
+=======
+		// ...but to use JavaSoundAudioIO rather than PortAudio:
+		//		this.input	= new Input(2, new AudioContext());
+
+>>>>>>> master
 		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 		
 		this.x = ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
 		this.y = this.height/2;
 		
 
+		// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
+		//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
+
 		this.textSize(32);
+<<<<<<< HEAD
 				
 		
 		
 		//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
 		//Color fadedBlack = new Color(0, 0, 0, .5f);
 		//this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
+=======
+
+		this.shapeMenuFadedBackground = this.createShape(PConstants.RECT, 0, 0, 925, 520);
+		Color fadedBlack = new Color(0, 0, 0, .5f);
+		this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
+>>>>>>> master
 
 		// create the shape
-		
+
 		//Ask Emily:  What does this do?
 		this.shapeMode(CENTER);
 		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
+<<<<<<< HEAD
 				
 		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
+=======
+
+		this.shape = new Shape(this);
+		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
+
+>>>>>>> master
 	} // setup
 
 	public void draw()
 	{
-//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
-		
+		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{
 			this.moduleTemplate.setMenuVal();
 		}
 
-		background(150);
+		background(this.moduleTemplate.getCanvasColor()[0], this.moduleTemplate.getCanvasColor()[1], this.moduleTemplate.getCanvasColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
+
+		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
 		{
 			if(curAmp > this.moduleTemplate.getThresholds()[i]) {
 				goalHuePos	= i;
 			} // if
+
+			//			System.out.println("curAmp = " + curAmp);
 		} // for
 
-//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
+		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
 		this.moduleTemplate.fade(goalHuePos);
 
 
-//		this.fill(255);
-//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
+		//		this.fill(255);
+		//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
-		
+
 		if(this.moduleTemplate.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 		} // if showScale
-		
+
 		if(this.moduleTemplate.getShapeMenuIsOpen())
 		{
 			this.drawShapeMenu();
 		}
+<<<<<<< HEAD
 		else
 		{
 			this.drawShape();
 		}
 		
 		
+=======
+
+>>>>>>> master
 	} // draw
 
 	private void drawShape()
 	{	
-		
+
 		float[]	curHue	= this.moduleTemplate.getCurHue();
 		this.fill(curHue[0], curHue[1], curHue[2]);
 
 		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
 		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
-		
+
 		this.shapeMode(CORNER);
 		PShape pShape = this.shape.getPShape();
 		pShape.beginShape();
@@ -150,13 +191,13 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		pShape.endShape();
 		this.shape(pShape, this.x, this.y);
 		this.shapeMode(CENTER);
-		
-		
+
+
 		//this.stroke(Color.red.getRGB());
 		//this.strokeWeight(10);
 		//this.point(shapeX, this.height/2);
-		
-		
+
+
 
 		// Began with PShape, but decided that that is not worth it at the moment:
 		/*		this.shape.beginShape(ELLIPSE);
@@ -176,12 +217,15 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		 */
 
 	} // drawShape
+<<<<<<< HEAD
 	
 	public Shape getShape()
 	{
 		return this.shape;
 	}
 	
+=======
+>>>>>>> master
 
 	private void drawShapeMenu()
 	{
@@ -224,6 +268,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	{
 		this.superShapes[shapeNum][paramNum] = val;
 	}
+<<<<<<< HEAD
 	
 	public float[] getCurrentSuperShape()
 	{
@@ -231,5 +276,38 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	}
 	
 	
+=======
+
+	/**
+	 * 08/01/2017
+	 * Emily Meuer
+	 * 
+	 * Class to stop the Input (which needs to stop the AudioContext,
+	 * because it needs to stop the AudioIO, esp. when it's using the PortAudioAudioIO,
+	 * which needs to call PortAudio.terminate to avoid a weird set of 
+	 * NoClassDefFoundError/ClassNotFoundException/BadFileDescriptor errors that will happen occassionaly on start-up).
+	 * 
+	 * Taken from https://forum.processing.org/two/discussion/579/run-code-on-exit-follow-up
+	 *
+	 */
+	public class DisposeHandler {
+
+//		PApplet	pa;
+		
+		Module_02_AmplitudeHSB	module;
+
+		DisposeHandler(PApplet pa)
+		{
+			module	= (Module_02_AmplitudeHSB)pa;
+			pa.registerMethod("dispose", this);
+		}
+
+		public void dispose()
+		{
+			this.module.input.stop();
+		}
+	} // DisposeHandler
+
+>>>>>>> master
 
 } // Module_03_AmplitudeHSB

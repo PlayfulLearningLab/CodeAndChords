@@ -1,4 +1,4 @@
-package core;
+package core.Archive_Input;
 
 import processing.core.PApplet;
 import processing.sound.*;
@@ -55,15 +55,42 @@ import javax.sound.sampled.Mixer;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
-public class Input {
-	/**
-	 * 08/01/2017
+import core.PortAudioAudioIO;
+
+public class Input_01 extends PApplet {
+	/*
+	 * 11/04/2016
 	 * 
-	 * Emily Meuer
+	 * This looks super important for us: https://github.com/jaudiolibs/audioservers.
 	 * 
-	 * Version 02:
-	 *  - Input no longer extends PApplet
-	 *  - String[] filenames no longer accepted as constructor parameters
+10/05/2016
+Using the Harmonic Product Spectrum to better locate the pitch.
+
+	 ** As of mid-July, 2016, the following is NOT true:
+  "Notate bene: inputNum passed to constructor must be 4 greater
+  than the actual desired number of inputs."
+
+	 ** Watch for that NullPointerException -- add a try-catch? ** 
+     - 8/17: added try/catch
+
+ (Why doesn't it need jna-jack__.jar in the code folder?  B/c it's in the old one?)
+
+ Emily Meuer
+ 07/06 Update: works with both the Behringer and Motu interfaces
+ to get more than 4 inputs!
+
+ 06/29/2016
+
+ Updating InputClass_EMM to communicate with Jack;
+ based on BeadsJNA.
+
+ To change in classes that implement this:
+ - size()/settings() can be in main tab.
+ - getFund() etc. takes an int parameter specifying which input is in question.
+
+	 ** If I pass it an AudioContext, do I have to worry about it having the wrong number of inputs or outputs?
+   - an option would be to have them pass the AudioFormat, since that's what has channel nums, ut credo.
+
 	 */
 
 	AudioContext         	ac;
@@ -93,7 +120,7 @@ public class Input {
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
-	public Input(int numInputs)
+	public Input_01(int numInputs)
 	{
 //		this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
@@ -107,7 +134,7 @@ public class Input {
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
-	public Input(int numInputs, boolean skip5thru8)
+	public Input_01(int numInputs, boolean skip5thru8)
 	{
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8);
 		
@@ -119,7 +146,7 @@ public class Input {
 	 *  @param  numInputs     an int specifying the number of lines in the AudioFormat.
 	 *  @param  audioContext  an AudioContext whose input lines will be procurred as a UGen and used for the analysis calculations.
 	 */
-	public Input(int numInputs, AudioContext audioContext)
+	public Input_01(int numInputs, AudioContext audioContext)
 	{
 		this(numInputs, audioContext, false);
 	} // int, AudioContext
@@ -132,7 +159,7 @@ public class Input {
 	 * @param audioContext
 	 * @param skip5thru8
 	 */
-	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8)
+	public Input_01(int numInputs, AudioContext audioContext, boolean skip5thru8)
 	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
@@ -162,7 +189,7 @@ public class Input {
 	 * 
 	 * @param leftAndRight	Simply distinguishes this constructor from the others
 	 */
-/*	public Input(boolean leftAndRight)
+	public Input_01(boolean leftAndRight)
 	{
 		this.numInputs	= 1;
 		AudioIn	in1	= new AudioIn(this, 0);
@@ -204,19 +231,109 @@ public class Input {
 		}
 
 		initInput(this.uGenArray);
-
-	} // constructor(boolean, boolean)
 		*/
+	} // constructor(boolean, boolean)
 	
 	/**
 	 * Constructor for creating a one (or two?)-channel Input object 
 	 * from the machine's default audio input device;
 	 * does not require Jack.
 	 */
-	public Input()
+	public Input_01()
 	{
 		this(2); //, new AudioContext());
 	} // constructor()
+
+	/**
+	 * Constructor for creating an Input object from an audio file.
+	 * NB: string parameter must include src/[modulePackageName]/[iterationPackageName]/fileName
+	 *
+	 * @param  filename  String specifying the audio file; must be in the format src/[modulePackageName]/[iterationPackageName]/"fileName"
+	 */
+	Input_01(String[] filenames)
+	{
+		this.ac =  new AudioContext();
+
+		this.uGenArrayFromSample(filenames);
+
+		initInput(uGenArray);
+	} // constructor(String[])
+
+	public void uGenArrayFromSample(String sampleFilename)
+	{
+		this.uGenArrayFromSample(new String[] { sampleFilename });
+	} // uGenArrayFromSample
+
+	public void uGenArrayFromSample(String[] sampleFilenames)
+	{
+		
+		// Moved this from the constructor:
+		this.numInputs  = sampleFilenames.length;
+		this.adjustedNumInputs	= this.numInputs;
+		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
+		int  semaphore      = 1;
+
+		try {
+			//      samples  = new Sample[sampleFilenames.length];
+
+			for (int i = 0; i < samples.length; i++)
+			{
+				samples[i]  = new Sample(sketchPath(sampleFilenames[i]));
+//				samples[i]  = new Sample("./" + sampleFilenames[i]);
+			} // for
+		}
+		catch(Exception e)
+		{
+			semaphore  = 0;
+		}
+		if (semaphore == 0)
+		{
+			try {
+				for (int i = 0; i < samples.length; i++)
+				{
+					samples[i]  = new Sample(dataPath(sampleFilenames[i]));
+				} // for
+
+				semaphore  = 1;
+			}
+			catch(Exception e)
+			{
+				// if there is an error, show an error message (at the bottom of the processing window)
+				System.out.println("Exception while attempting to load sample!");
+				e.printStackTrace(); // then print a technical description of the error
+				throw new IllegalArgumentException("Input.constructor(String[]): the specified files could not be found.");
+				//    exit(); // and exit the program
+			}
+		} // if
+
+		if (semaphore  == 0)
+		{
+			RuntimeException re  = new RuntimeException("Input.constructor(String[]): the specified files could not be found.");
+			re.printStackTrace();
+			throw re;
+		} // if
+
+		for (int i = 0; i < samples.length; i++)
+		{
+			SampleManager.addToGroup("group", samples[i]);
+		} // for
+
+		uGenArray  = new UGen[SampleManager.getGroup("group").size()];
+		this.gainArray	= new Gain[this.adjustedNumInputs];
+		for (int i = 0; i < uGenArray.length; i++)
+		{
+			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
+			uGenArray[i]  = new SamplePlayer(this.ac, SampleManager.getGroup("group").get(i));
+			((SamplePlayer) uGenArray[i]).setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+			
+			this.gainArray[i]	= new Gain(this.ac, 1);
+		} // for
+		
+		SampleManager.destroyGroup("group");
+
+
+		initInput(uGenArray);
+	} // uGenArrayFromSample(String[])
 
 	public void uGenArrayFromNumInputs(int numInputs)
 	{
@@ -906,13 +1023,54 @@ import beads.TimeStamp;
 		}
 	} // pause
 	
-
 	/**
-	 * Stops the AudioContext, which will stop the AudioIO.
+	 * Stops the AudioContext
+	 * @return	true
 	 */
-	public void stop()
+	public boolean stopContext()
 	{
 		this.ac.stop();
-	} // stop
+		
+		return true;
+	}
+	
+	/**
+	 * Getter for this.ac
+	 * @return	AudioContext instance variable
+	 */
+	public AudioContext getAudioContext()
+	{
+		return this.ac;
+	} // getAudioContext
+	/*
+	// 8/1/2017
+	 * Emily Meuer
+	 * 
+	 * Started trying this before moving to the next version:
+	 * 
+	public class DisposeHandler {
+
+//		PApplet	pa;
+		Input	input;
+
+		DisposeHandler(PApplet pa)
+		{
+			this.input	= (Input)pa;
+			pa.registerMethod("dispose", this);
+		}
+
+		public void dispose()
+		{
+			this.input.ac.stop();
+			if(this.input.ac.getAudioIO().getClass().getName().equalsIgnoreCase("PortAudioAudioIO"))
+			{
+				((PortAudioAudioIO)this.input.ac.getAudioIO()).stop();
+			} // if - PAAIO
+			
+			System.out.println("Closing sketch");
+//			((PortAudioAudioIO)this.module.input.getAudioContext().getAudioIO()).destroy();
+		}
+	} // DisposeHandler
+*/
 	
 } // Input class

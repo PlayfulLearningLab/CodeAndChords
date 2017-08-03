@@ -72,7 +72,7 @@ public class Shape {
 		if(pa == null) throw new IllegalArgumentException("PApplet parameter cannot be null");
 		this.pApp = pa;
 	}
-
+	
 	public void setXStretch (float xStretch)
 	{
 		if(xStretch <= 0) throw new IllegalArgumentException("xStretch must be greater than 0");
@@ -181,9 +181,9 @@ public class Shape {
 		switch(shapeType){
 
 		case "supershape":
-			
+
 			if(parameters.length != 7) throw new IllegalArgumentException("A supershape takes 7 parameters and you passed in " + parameters.length);
-			
+
 			float a = parameters[0];
 			float b = parameters[1];
 			float m1 = parameters[2];
@@ -233,9 +233,8 @@ public class Shape {
 		switch(shapeType){
 
 		case "supershape":
-			
 			if(parameters.length != 7) throw new IllegalArgumentException("A supershape takes 7 parameters and you passed in " + parameters.length);
-			
+
 			float a = parameters[0];
 			float b = parameters[1];
 			float m1 = parameters[2];
