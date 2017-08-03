@@ -15,12 +15,9 @@ public class ShapeEditor implements ControlListener{
 	private PApplet 	parent;
 	
 	private Shape 		shape;
-	private int			shapeIndex;
 	
 	private ControlP5	cp5;
-	
-	private boolean 	shapeEditorVisible = true;
-	
+		
 	//these refer to the size of the shape editor window, not the full module window
 	private float		seWidth;
 	private float 		seHeight;
@@ -64,10 +61,9 @@ public class ShapeEditor implements ControlListener{
 		
 		if(shape == null) throw new IllegalArgumentException("Shape parameter is null");
 		else this.shape = shape;
-		
-		this.shapeIndex = 0;
-		
+				
 		this.cp5 = new ControlP5(parent);
+		this.cp5.addListener(this);
 		
 		//make sure the window values are within a reasonable range
 		if(fullAppletWidth < 100 || fullAppletWidth > 2000 || fullAppletHeight < 50 || fullAppletHeight > 1000)
@@ -134,15 +130,14 @@ public class ShapeEditor implements ControlListener{
 				
 				if(shape == null) throw new IllegalArgumentException("Shape parameter is null");
 				else this.shape = shape;
-				
-				this.shapeIndex = 0;
-				
+								
 				this.cp5 = new ControlP5(this.parent);
+				this.cp5.addListener(this);
 				
 				//make sure the window values are within a reasonable range
 				if(shapeWindowWidth < 50 || shapeWindowWidth > 2000 || shapeWindowHeight < 50 || shapeWindowHeight > 2000)
 				{
-						throw new IllegalArgumentException("Make sure your applet dimensions are correct");
+					throw new IllegalArgumentException("Make sure your applet dimensions are correct");
 				}
 				
 				this.seWidth = shapeWindowWidth;
@@ -157,7 +152,7 @@ public class ShapeEditor implements ControlListener{
 	}//constructor
 	
 	public void runSE(boolean shapeMenuRunning)
-	{
+	{		
 		if(shapeMenuRunning)
 		{
 			this.drawSE();
@@ -212,23 +207,23 @@ public class ShapeEditor implements ControlListener{
 		.setValue(0)
 		.close();
 		
-		this.cp5.addSlider("size", .01f, 3, 1, 15, (int)yVals[1], 150, 28)
+		this.cp5.addSlider("size", .01f, 3, 1, (int)(this.seXPos + (this.menuWidth/8)), (int)yVals[1], (int)(this.menuWidth /4 * 3), 28)
 		.getCaptionLabel()
 		.hide();
 
-		this.cp5.addSlider("numPoints", .01f, 3, 1, 15, (int)yVals[2], 150, 28)
+		this.cp5.addSlider("numPoints", .01f, 15, 1, (int)(this.seXPos + (this.menuWidth/8)), (int)yVals[2], (int)(this.menuWidth /4 * 3), 28)
 		.getCaptionLabel()
 		.hide();
 
-		((Slider) this.cp5.addSlider("n1", 0, 15, 1, 15, (int)yVals[3], 150, 28))
+		((Slider) this.cp5.addSlider("n1", .01f, 10, 1, (int)(this.seXPos + this.menuWidth/8), (int)yVals[3], (int)(this.menuWidth /4 * 3), 28))
 		.getCaptionLabel()
 		.hide();
 
-		((Slider) this.cp5.addSlider("n2", 0, 15, 1, 15, (int)yVals[4], 150, 28))
+		((Slider) this.cp5.addSlider("n2", .01f, 10, 1, (int)(this.seXPos + this.menuWidth/8), (int)yVals[4], (int)(this.menuWidth /4 * 3), 28))
 		.getCaptionLabel()
 		.hide();
 		
-		((Slider) this.cp5.addSlider("n3", 0, 15, 1, 15, (int)yVals[5], 150, 28))
+		((Slider) this.cp5.addSlider("n3", .01f, 10, 1, (int)(this.seXPos + this.menuWidth/8), (int)yVals[5], (int)(this.menuWidth /4 * 3), 28))
 		.getCaptionLabel()
 		.hide();
 		
@@ -256,36 +251,36 @@ public class ShapeEditor implements ControlListener{
 		.bringToFront();
 	}
 
-
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
 		
-		System.out.println(theEvent.getLabel());
-		switch(theEvent.getLabel()){
+		switch(theEvent.getName()){
 		
 		case "shapeSelect":
 			this.shape.setShapeIndex((int)theEvent.getValue());
-			System.out.println(theEvent.getLabel());
+			System.out.println(theEvent.getValue());
 			break;
 		
 		case "size":
-			//this.shape.setCurrentShape("supershape", parameters);
+			this.shape.setCurrentShape("supershape", new float[] { theEvent.getValue(), theEvent.getValue(), -1, -1, -1, -1, -1 });
 			break;
 			
 		case "numPoints":
-			
+			int val = (int)theEvent.getValue();
+			theEvent.getController().setValue(val);
+			this.shape.setCurrentShape("supershape", new float[] { -1, -1, val, val, -1, -1, -1 });
 			break;
 			
 		case "n1":
-			
+			this.shape.setCurrentShape("supershape", new float[] { -1,-1,-1, -1, theEvent.getValue(), -1, -1 });
 			break;
 			
 		case "n2":
-			
+			this.shape.setCurrentShape("supershape", new float[] { -1,-1,-1, -1, -1, theEvent.getValue(), -1 });
 			break;
 			
 		case "n3":
-			
+			this.shape.setCurrentShape("supershape", new float[] { -1,-1,-1, -1, -1, -1, theEvent.getValue() });
 			break;
 		
 		}
