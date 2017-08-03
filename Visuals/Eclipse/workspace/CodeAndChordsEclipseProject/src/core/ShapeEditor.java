@@ -14,6 +14,8 @@ public class ShapeEditor implements ControlListener{
 	
 	private PApplet 	parent;
 	
+	private boolean 	isRunning;
+	
 	private Shape 		shape;
 	
 	private ControlP5	cp5;
@@ -174,9 +176,9 @@ public class ShapeEditor implements ControlListener{
 				
 	}//constructor
 	
-	public void runSE(boolean shapeMenuRunning)
+	public void runSE()
 	{		
-		if(shapeMenuRunning)
+		if(this.isRunning)
 		{
 			this.drawSE();
 			if(!this.cp5.isVisible())
@@ -192,10 +194,15 @@ public class ShapeEditor implements ControlListener{
 	
 	private void drawSE()
 	{
+		System.out.println("drawSE() is running");
+		
 		this.parent.stroke(0);
 		this.parent.fill(0); 
 		this.parent.rect(this.seXPos, this.seYPos, (this.seWidth + this.menuWidth), this.seHeight);
 		
+		//this.parent.shapeMode(this.parent.CORNER);
+		
+	
 		PShape ps = this.shape.getPShape();
 		ps.beginShape();
 		ps.stroke(255);
@@ -224,6 +231,8 @@ public class ShapeEditor implements ControlListener{
 		this.parent.stroke(Color.CYAN.getRGB());
 		this.parent.fill(Color.CYAN.getRGB());
 		this.parent.rect((this.seXPos), this.seYPos, 3, this.seHeight);
+		
+		//this.parent.shapeMode(this.parent.CENTER);
 
 	}//drawSE
 	
@@ -290,6 +299,26 @@ public class ShapeEditor implements ControlListener{
 		this.cp5.getController("shapeSelect")
 		.bringToFront();
 		
+		this.cp5.addButton("exitButton")
+		.setLabel("Close Shape Editor")
+		.setPosition( (this.menuWidth + this.seWidth + this.seXPos)/2 - 75, 5)
+		.setSize(150, 40);
+		
+	}
+	
+	public void setIsRunning(boolean isRunningFlag)
+	{
+		this.isRunning = isRunningFlag;
+		if(isRunningFlag) 
+		{
+			this.cp5.get("b1").bringToFront();
+			this.cp5.get("exitButton").bringToFront();
+		}
+	}
+	
+	public boolean getIsRunning()
+	{
+		return this.isRunning;
 	}
 
 	@Override
@@ -325,6 +354,10 @@ public class ShapeEditor implements ControlListener{
 			this.shape.setCurrentShape("supershape", new float[] { -1,-1,-1, -1, -1, -1, theEvent.getValue() });
 			break;
 		
+		case "exitButton":
+			this.isRunning = false;
+			break;
+			
 		}
 		
 	}

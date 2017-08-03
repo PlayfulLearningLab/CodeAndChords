@@ -42,22 +42,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
 	private	int	firstThresholdSliderId	= -1;
-//<<<<<<< HEAD
-	private	int	firstColorSelectCWId	= -1;
-	
-	private Module_02_AmplitudeHSB module2;
-	private boolean  shapeMenuIsOpen;
-
-	// thresholds is not private so that the module can access it
-	float[]	thresholds;
-		
-//=======
 
 	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
 	private	float[] satBrightThresholdVals;
 	
+	private Module_02_AmplitudeHSB module2;;
+	
 	private boolean shapeMenuIsOpen;
-//>>>>>>> master
 
 	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
 	private	float[]	satBrightPercentVals;
@@ -784,10 +775,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			
 			//make the shape menu visible
 			this.sidebarCP5.getGroup("shapeMenuGroup")
-			.setVisible(true);
+			.setVisible(false);
 			
 			//hide the other controls
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+			
+			this.sidebarCP5.getController("menuX").update();
+			
+			this.module2.setShapeEditorRunning(true);
 						
 			
 		}//shapeMenuButton
@@ -797,47 +792,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.module2.getShape().setShapeIndex((int) this.sidebarCP5.getController("shapeSelect").getValue());
 		}
 		
-		if(controlEvent.getName() == "a")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("a"), this.module2.getShape().getShapeIndex(), 0);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
 		
-		if(controlEvent.getName() == "b")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("b"), this.module2.getShape().getShapeIndex(), 1);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
-		
-		if(controlEvent.getName() == "m1")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("m1"), this.module2.getShape().getShapeIndex(), 2);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
-		
-		if(controlEvent.getName() == "m2")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("m2"), this.module2.getShape().getShapeIndex(), 3);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
-		
-		if(controlEvent.getName() == "n1")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("n1"), this.module2.getShape().getShapeIndex(), 4);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
-		
-		if(controlEvent.getName() == "n2")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("n2"), this.module2.getShape().getShapeIndex(), 5);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
-		
-		if(controlEvent.getName() == "n3")
-		{
-			this.module2.setSuperShape( this.sidebarCP5.getValue("n3"), this.module2.getShape().getShapeIndex(), 6);
-			this.module2.getShape().setCurrentShape("supershape", this.module2.getCurrentSuperShape() );
-		}
 
 	} // controlEvent
 
