@@ -27,6 +27,10 @@ public class ShapeEditor implements ControlListener{
 	private float		seYPos = 0;
 	private float 		menuWidth;
 	
+	private float 		scale = -1;
+	private float 		shapeXPos;
+	private float 		shapeYPos;
+	
 	/*
 	 * The scaledWindowBoolean is set true if the first constructor is used, ensuring that the
 	 * 		shape editor window is scaled with the module window that it is running inside of.
@@ -98,6 +102,8 @@ public class ShapeEditor implements ControlListener{
 			menuWidth = fullAppletWidth - scaledWidth;
 		}
 		
+		this.scale = scaleFactor;
+		
 		if(menuWidth > 300) menuWidth = 300;
 		
 		this.seWidth = scaledWidth;
@@ -106,6 +112,9 @@ public class ShapeEditor implements ControlListener{
 		
 		this.seXPos = 0;
 		this.seYPos = (fullAppletHeight - scaledHeight)/2;
+		
+		this.shapeXPos = (this.seXPos + this.menuWidth + (this.seWidth/2));
+		this.shapeYPos = (this.seYPos + (this.seHeight/2));
 		
 		this.cp5.addBackground("b1")
 		.setPosition(0, 0)
@@ -207,8 +216,9 @@ public class ShapeEditor implements ControlListener{
 		ps.beginShape();
 		ps.stroke(255);
 		ps.fill(255);
+		if(this.scale != -1) ps.scale(this.scale); 
 		ps.endShape();
-		this.parent.shape(ps, (this.seXPos + this.menuWidth + (this.seWidth/2)), (this.seYPos + (this.seHeight/2)));
+		this.parent.shape(ps, this.shapeXPos, this.shapeYPos);
 
 		this.parent.rect(this.seXPos, this.seYPos, this.menuWidth, this.seHeight);
 		
@@ -238,14 +248,14 @@ public class ShapeEditor implements ControlListener{
 	
 	private void addMenuControls()
 	{	
-		int  		numControllers = 6;  
+		int  		numControllers = 8;  
 		float[] 	yVals = new float[(int)numControllers];
 		
-		float spacing = (this.seHeight / numControllers) + 2;
+		float spacing = ((this.seHeight - 30) / numControllers) + 2;
 		
 		for(int i = 0; i < numControllers; i++)
 		{
-			yVals[i] = spacing*(1+i);
+			yVals[i] = this.seYPos + spacing*(i) + 15;
 		}
 		
 		this.cp5.addScrollableList("shapeSelect")
@@ -276,25 +286,41 @@ public class ShapeEditor implements ControlListener{
 		.getCaptionLabel()
 		.hide();
 		
+		((Slider) this.cp5.addSlider("xPos", -500, 1500, this.shapeXPos, (int)(this.seXPos + this.menuWidth/8), (int)yVals[6], (int)(this.menuWidth /4 * 3), 28))
+		.getCaptionLabel()
+		.hide();
+		
+		((Slider) this.cp5.addSlider("yPos", -500, 1000, this.shapeYPos, (int)(this.seXPos + this.menuWidth/8), (int)yVals[7], (int)(this.menuWidth /4 * 3), 28))
+		.getCaptionLabel()
+		.hide();
+		
 		this.cp5.addLabel("sizeLabel")
-		.setPosition(15, yVals[1] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[1] - (spacing/3.5)))
 		.setValue("Shape Size");
 		
 		this.cp5.addLabel("numPointsLabel")
-		.setPosition(15, yVals[2] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[2] - (spacing/3.5)))
 		.setValue("Number of Points");
 		
 		this.cp5.addLabel("n1Label")
-		.setPosition(15, yVals[3] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[3] - (spacing/3.5)))
 		.setValue("N1");
 		
 		this.cp5.addLabel("n2Label")
-		.setPosition(15, yVals[4] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[4] - (spacing/3.5)))
 		.setValue("N2");
 		
 		this.cp5.addLabel("n3Label")
-		.setPosition(15, yVals[5] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[5] - (spacing/3.5)))
 		.setValue("N3");
+		
+		this.cp5.addLabel("xPosLabel")
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[6] - (spacing/3.5)))
+		.setValue("X Position");
+		
+		this.cp5.addLabel("yPosLabel")
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[7] - (spacing/3.5)))
+		.setValue("Y Position");
 		
 		this.cp5.getController("shapeSelect")
 		.bringToFront();
@@ -352,6 +378,14 @@ public class ShapeEditor implements ControlListener{
 			
 		case "n3":
 			this.shape.setCurrentShape("supershape", new float[] { -1,-1,-1, -1, -1, -1, theEvent.getValue() });
+			break;
+			
+		case "xPos":
+			this.shapeXPos = theEvent.getValue();
+			break;
+			
+		case "yPos":
+			this.shapeYPos = theEvent.getValue();
 			break;
 		
 		case "exitButton":
