@@ -82,7 +82,6 @@ public class Module_02_AmplitudeHSB extends PApplet {
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
 
-		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
 		{
@@ -95,6 +94,8 @@ public class Module_02_AmplitudeHSB extends PApplet {
 
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
+		// Now this threshold application happens in fade:
+//		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 		this.moduleTemplate.fade(goalHuePos);
 
 		// draw the shape
