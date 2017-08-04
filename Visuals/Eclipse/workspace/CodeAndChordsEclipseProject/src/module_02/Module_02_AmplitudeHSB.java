@@ -127,22 +127,30 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
-		if(this.shapeEditor.getIsRunning())
-		{
-			//this.drawShapeMenu();
-		}
-		else
+		/**
+		 * need:
+		 * 	drawShape()  		- draws the main shape
+		 * 	runSE()     		- should be run every cycle, draws shape editor
+		 * 	legend(goalHuePos)	- draws legend
+		 * 
+		 * 	if(this.moduleTemplate.isShowScale()
+		 */
+		
+		
+		
+		if(!this.shapeEditor.getIsRunning())
 		{
 			this.drawShape();
 		}
-		
-		this.shapeEditor.runSE();
 		
 		if(this.moduleTemplate.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
+			
 		} // if showScale
+		
+		this.shapeEditor.runSE();
 		
 	} // draw
 
@@ -160,6 +168,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		PShape pShape = this.shape.getPShape();
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
+		pShape.stroke(curHue[0], curHue[1], curHue[2]);
 		pShape.endShape();
 		this.shape(pShape, this.x, this.y);
 		//this.shapeMode(CENTER);
