@@ -123,7 +123,7 @@ public class Module_02_AmplitudeHSB extends PApplet {
 	private void drawShape()
 	{	
 
-		float[]	curHue	= this.moduleTemplate.getCurHue();
+		int[]	curHue	= this.moduleTemplate.getCurHue();
 		this.fill(curHue[0], curHue[1], curHue[2]);
 
 		float	shapeX		= ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();

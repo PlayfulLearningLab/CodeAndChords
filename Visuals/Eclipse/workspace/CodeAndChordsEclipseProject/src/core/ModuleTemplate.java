@@ -118,6 +118,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 	//	protected	float[][]	colors;
 
 	protected	ColorWheel[]	colorSelect;
+	
+	protected	int				curNumColors;
+	protected	int				totalNumColors;
 
 	/**	
 	 * The colors used to draw the legend along the bottom of the module;
@@ -127,28 +130,28 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected	int[][]	legendColors;
 
 	/**	Current hue (as opposed to the goal hue, which may not have been reached)	 */
-	private	float[]			curHue;
+	private	int[]			curHue;
 
 	/**	Hue that corresponds to the current sound, but to which curHue may not yet have faded	*/
-	private	float[]			goalHue;
+	private	int[]			goalHue;
 
 	/**	The color when sound is below the threshold	*/
-	protected	float[]		canvasColor;
+	protected	int[]		canvasColor;
 
 	/**	The color of the background	(only applicable for modules with a shape)	*/
 	//	protected	float[]		backgroundColor;
 
 	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
-	private	float[]			colorAdd;
+	private	int[]			colorAdd;
 
 	/**	The difference between the R, G, and B values of 2 colors that are being faded between	*/
-	private	float[]			colorRange;
+	private	int[]			colorRange;
 
 	/**	The current colors which hsb sliders are altering; must be initiated by child class.	*/
-	protected float[][]   hsbColors; //the current colors at which hsb is altering
+	protected int[][]   hsbColors; //the current colors at which hsb is altering
 
 	/**	Filled in the Custom color style to allow RGB modifications to colors;	must be initiated by child class.	*/
-	protected	float[][]	originalColors;
+	protected	int[][]	originalColors;
 
 	/**	Flags whether the curHue R, G, and B values have come within an acceptable range of the goalHue	*/
 	private boolean[]	colorReachedArray;
@@ -288,7 +291,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * @param input		Input for all audio input; will instantiate this.input
 	 * @param sidebarTitle	String designating the title of the module to which this template corresponds
 	 */
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int numColorItems)
+	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int totalNumColorItems)
 	{
 		this.parent			= parent;
 		this.input			= input;
@@ -305,13 +308,15 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sliderHeight	= 20;
 
 		// TODO: this might run into problems when we adjust for 5-8:
-		this.colorSelect		= new ColorWheel[numColorItems];
+		this.curNumColors		= totalNumColorItems;
+		this.totalNumColors		= totalNumColorItems;
+		this.colorSelect		= new ColorWheel[this.curNumColors];
 		this.legendColors		= new int[this.colorSelect.length][3];
-		this.curHue				= new float[3];
-		this.goalHue			= new float[3];
-		this.canvasColor		= new float[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
-		this.colorAdd			= new float[3];
-		this.colorRange			= new float[3];
+		this.curHue				= new int[3];
+		this.goalHue			= new int[3];
+		this.canvasColor		= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
+		this.colorAdd			= new int[3];
+		this.colorRange			= new int[3];
 
 		this.colorReachedArray	= new boolean[] { false, false, false };
 		this.colorReached		= false;
@@ -1304,7 +1309,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 				// divide the attack/release/transition value by 50
 				// and divide colorRange by that value to find the amount to add each 50 millis.
-				this.colorAdd[i]	= this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50);
+				this.colorAdd[i]	= (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
 			} // for
 		} // if
 
@@ -1322,7 +1327,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 					"must be between 0 and " + this.colorSelect.length);
 		} // error checking
 
-		this.curHue	= new float[] { 255, 255, 255 };
+		this.curHue	= new int[] { 255, 255, 255 };
 		// The following line caused problems!
 		// (That is, it made that position in colors follow curHue as the latter changed.)
 		// Never use it.
@@ -1334,7 +1339,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 			// divide the attack/release/transition value by 50
 			// and divide colorRange by that value to find the amount to add each 50 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50);
+			this.colorAdd[i]	= (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
 		}
 	} // setCurHue
 
@@ -1342,7 +1347,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders and 
 	 * calls applyHSBModulate() to apply the values of the Hue/Saturation/Brightness Modulate sliders.
 	 */
-	protected void applyColorModulate(float[][] originalColors)
+	protected void applyColorModulate(int[][] originalColors)
 	{
 		System.out.println("applyColorModulate: I'll implement this soon.");
 
@@ -1369,11 +1374,57 @@ public abstract class ModuleTemplate implements ControlListener  {
 	} // applyColorModulate
 
 	/**
+	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
+	 */
+	protected void applyRGBModulate()
+	{
+		int[]	originalColor;
+		int[]	modColor	= new int[3];
+		
+		int[]	color	= new int[3];
+		
+		for(int i = 0; i < this.totalNumColors; i++)
+		{
+			color	= this.getColor(i);
+			
+			for(int j = 0; j < color.length; j++)
+			{
+				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
+				color[j]	= /*Math.min(Math.max(*/color[j] + (int)this.redGreenBlueMod[j];/*, 0), 255);*/
+			} // for - j
+			
+			
+			this.setColor(i, new Color(color[0], color[1], color[2]).getRGB());
+		} // for - i
+
+		/*		if(colors == null || originalColors == null) {
+			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
+		} // error checking
+
+		for(int i = 0; i < colors.length; i++)
+		{
+			for(int j = 0; j < colors[i].length; j++)
+			{
+				((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(a.getRGB());
+				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
+				colors[i][j]	= originalColors[i][j] + this.redGreenBlueMod[j];
+
+			} // for - j
+		} // for - i
+		/*
+		// TODO: this might cause problems.... 
+		// applyHSBModulate will be called on this.colors twice and this.legendColors only once.
+		this.fillHSBColors();
+		 */
+		//		this.applyHSBModulate(this.colors, this.hsbColors);
+	} // applyRGBModulate
+
+	/**
 	 * Applies the values from this.hueSatBrightnessMod to the contents of the colors array parameter.
 	 * @param colors	this.colors or this.legendColors
 	 * @param hsbColors	this.hsbColors
 	 */
-	protected void applyHSBModulate(float[][] hsbColors)
+	protected void applyHSBModulate(int[][] hsbColors)
 	{
 		// TODO: also need to implement it for legendColors!  So can't just get rid of the two parameters entirely.
 
@@ -1421,7 +1472,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * @param colorPos	the position in this.colorSelect to which the sat/brightness should be applied
 	 * @return			the color with saturation and brightness adjustments
 	 */
-	public float[] applyThresholdSBModulate(float curAmp, int colorPos)
+	private int[] applyThresholdSBModulate(float curAmp, int colorPos)
 	{
 		// Error checking:
 		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
@@ -1493,7 +1544,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		 */
 //	} // for
 	
-	return a.getColorComponents(null);
+	return new int[] { a.getRed(), a.getGreen(), a.getBlue() };
 } // applyThresholdSBModulate
 
 	/**
@@ -1510,7 +1561,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		 */
 
 		if(this.hsbColors == null) {
-			this.hsbColors = new float[this.colorSelect.length][3];
+			this.hsbColors = new int[this.colorSelect.length][3];
 		}
 
 		for(int i = 0; i < this.hsbColors.length; i++)
@@ -1537,7 +1588,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		 */
 
 		if(this.originalColors == null) {
-			this.originalColors = new float[this.colorSelect.length][3];
+			this.originalColors = new int[this.colorSelect.length][3];
 		}
 
 		for(int i = 0; i < this.originalColors.length; i++)
@@ -1708,7 +1759,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 					{
 						this.fillHSBColors();
 					}
-					this.applyHSBModulate(this.hsbColors);
+//					this.applyHSBModulate(this.hsbColors);
 					this.applyHSBModulate(this.hsbColors);
 				}//hsb mod
 
@@ -1720,7 +1771,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 					int	pos	= id - this.firstRGBSliderId;	// red = 0, green = 1, blue = 2
 
 					this.redGreenBlueMod[pos]	= sliderValFloat;
-					this.applyColorModulate(this.originalColors);
+					this.applyRGBModulate();
 					// TODO!!!
 					//					this.applyColorModulate(this.legendColors, this.originalColors);
 				} // red/green/blue mod
@@ -2495,7 +2546,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * @param colorPos	Position of color; must be from 0 to (this.colorSelect.length - 1)
 	 * @return	the current color of the ColorWheel in the given position in this.colorSelect as an int
 	 */
-	public float[] getColor(int colorPos)
+	public int[] getColor(int colorPos)
 	{
 		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
 			throw new IllegalArgumentException("ModuleTemplate.getColor: in parameter " + colorPos + 
@@ -2503,7 +2554,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // error checking
 
 		Color	curColor	= new Color(this.colorSelect[colorPos].getRGB());
-		return	curColor.getColorComponents(null);
+		
+		// Making a new array rather than using getComponents so that we will have ints, not floats:
+		return	new int[] { curColor.getRed(), curColor.getGreen(), curColor.getBlue() };
 	} // getColor
 
 	/**
@@ -2541,10 +2594,16 @@ public abstract class ModuleTemplate implements ControlListener  {
 					" is out of bounds; must be between 0 and " + (this.colorSelect.length - 1));
 		}
 		if(this.firstColorSelectCWId == -1) {
-			throw new IllegalArgumentException("ModuleTemplate.setColor: firstColorSelectCWId == 1; did not attempt to set the ColorWheel.");
+//			throw new IllegalArgumentException("ModuleTemplate.setColor: firstColorSelectCWId == -1; did not attempt to set the ColorWheel.");
 		}
+		
+		if(this.firstColorSelectCWId != -1)
+		{
+			((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos))).setRGB(color);
+		} else {
+			System.out.println("ModuleTemplate.setColor: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
+		} // if - CWs not yet initialized
 
-		((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos))).setRGB(color);
 	} // setColor
 
 	public int getCheckpoint()				{	return this.checkpoint;		}
@@ -2555,7 +2614,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	public void setThreshold(float newVal)	{	this.threshold	= newVal;	}
 
-	public float[] getCurHue()				{	return this.curHue;	}
+	public int[] getCurHue()				{	return this.curHue;	}
 
 	public float getAttRelTranVal(int attRelTranPos)
 	{
@@ -2589,7 +2648,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.showScale = showScale;
 	}
 
-	public float[] getCanvasColor() {
+	public int[] getCanvasColor() {
 		return this.canvasColor;
 	}
 
