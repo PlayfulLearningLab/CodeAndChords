@@ -100,6 +100,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		 */
 
 		// already called addHideButtons in superclass with y-val of 26.
+		
+		// Have to addColorSelect() first so that everything else can access the colors:
+		String[]	buttonLabels	= new String[] {
+				"1", "2", "3", "4"
+		};
+		this.addColorSelect(new int[] { this.yVals[7] }, buttonLabels, "Color Select");
+		this.fillHSBColors();
 
 		this.addSliders(this.yVals[1], this.yVals[3], this.yVals[4], this.yVals[5]);
 
@@ -107,10 +114,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		this.addRangeSegments(this.yVals[6], 4, 4, "Dynamic\nSegments");
 
-		String[]	buttonLabels	= new String[] {
-				"1", "2", "3", "4"
-		};
-		this.addColorSelect(new int[] { this.yVals[7] }, buttonLabels);
+		
 //		this.addColorSelectButtons(this.yVals[7]);
 
 		this.addHSBSliders(new int[] { this.yVals[8], this.yVals[9], this.yVals[10], });
@@ -202,7 +206,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 								this.legendColors[i][1] + "; this.legendColors[" + i + "][2] = " + this.legendColors[i][2]);
 			 */
 			//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
-			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
+//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
+			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
 
 
 			if (i == goalHuePos) {
