@@ -123,8 +123,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.input	= input;
 
 //		this.colors 		= new float[12][3];
-		this.legendColors	= new int[12][3];
-		this.originalColors	= new int[12][3];
+//		this.legendColors	= new int[12][3];
+//		this.originalColors	= new int[12][3];
 		this.hsbColors      = new int[12][3];
 
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
@@ -257,7 +257,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
 		
-		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames);
+		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select");
 		
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
@@ -272,8 +272,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// before the ColorWheels are created and the ColorWheels can be set to the colors in this.colors.
 		// If the call comes at the end, the ColorWheels start black and end grayscale.
 		this.rainbow();
-		this.fillOriginalColors();
-		this.fillHSBColors();
+//		this.fillOriginalColors();
+		// addColorSelect() will fillHSBColors
+//		this.fillHSBColors();
 		//		this.updateColors(this.curColorStyle);
 
 //		this.addCustomPitchColor(textYVals[15], noteYVals);
@@ -1478,10 +1479,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			// These calls have to come after all the colors have been set,
 			// so that originalColors and hsbColors can be filled with the latest:
-			this.fillOriginalColors();
-			this.fillHSBColors();
+//			this.fillOriginalColors();
+//			this.fillHSBColors();
 			this.resetModulateSlidersTextfields();
-			this.applyColorModulate(this.originalColors);
+//			this.applyColorModulate(this.originalColors);
 
 			// TODO: this shouldn't be necessary anymore.
 //			this.updateColorSelectCWs();
