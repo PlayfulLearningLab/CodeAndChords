@@ -28,6 +28,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	
 	private float  				x;
 	private float				y;
+	private float 				rotation;
 
 	public static void main(String[] args) 
 	{
@@ -70,6 +71,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		
 		this.x = ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
 		this.y = this.height/2;
+		this.rotation = 0;
 		
 
 		// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
@@ -127,7 +129,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
-		/**
+		/*
 		 * need:
 		 * 	drawShape()  		- draws the main shape
 		 * 	runSE()     		- should be run every cycle, draws shape editor
@@ -150,7 +152,11 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 			
 		} // if showScale
 		
-		this.shapeEditor.runSE();
+		float[] param = this.shapeEditor.runSE(this.x, this.y, this.rotation);
+		
+		this.x = param[0];
+		this.y = param[1];
+		this.rotation = param[2];
 		
 	} // draw
 
@@ -169,6 +175,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
 		pShape.stroke(curHue[0], curHue[1], curHue[2]);
+		pShape.rotate(this.rotation);
 		pShape.endShape();
 		this.shape(pShape, this.x, this.y);
 		//this.shapeMode(CENTER);
