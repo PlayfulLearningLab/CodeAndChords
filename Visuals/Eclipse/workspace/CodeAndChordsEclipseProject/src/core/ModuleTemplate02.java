@@ -101,9 +101,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		// Have to addColorSelect() first so that everything else can access the colors:
 		String[]	buttonLabels	= new String[] {
-				"1", "2", "3", "4"
+				"Canvas", "1", "2", "3", "4"
 		};
-		this.addColorSelect(new int[] { this.yVals[7] }, buttonLabels, "Color Select");
+		this.addColorSelect(new int[] { this.yVals[7] }, buttonLabels, "Color Select", true);
 		this.fillHSBColors();
 
 		this.addSliders(this.yVals[1], this.yVals[3], this.yVals[4], this.yVals[5]);

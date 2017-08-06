@@ -131,7 +131,7 @@ public class PortAudioAudioIO extends AudioIO {
 	@Override
 	public boolean stop()
 	{
-//		this.isRunning	= false;
+		this.isRunning	= false;
 		try {
 			// Give it a little time to get out of the loop in runRealTime()
 			Thread.sleep(25);
@@ -161,8 +161,8 @@ public class PortAudioAudioIO extends AudioIO {
 
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
-		while (context.isRunning())
-//		while(this.isRunning)
+//		while (context.isRunning())
+		while(this.isRunning)
 		{
 			update(); // this propagates update call to context
 			for (int i = 0, counter = 0; i < bufferSizeInFrames; ++i) {
