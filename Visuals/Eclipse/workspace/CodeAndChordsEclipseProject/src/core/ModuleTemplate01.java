@@ -257,7 +257,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
 		
-		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select");
+		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
 		
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
