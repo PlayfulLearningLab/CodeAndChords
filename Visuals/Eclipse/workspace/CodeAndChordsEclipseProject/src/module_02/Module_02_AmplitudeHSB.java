@@ -141,7 +141,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
 
-
+		this.shape.setShapeScale(this.moduleTemplate.getShapeSize());
 
 		if(!this.shapeEditor.getIsRunning())
 		{
