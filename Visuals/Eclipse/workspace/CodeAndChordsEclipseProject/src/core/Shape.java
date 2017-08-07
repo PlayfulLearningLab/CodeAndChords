@@ -31,7 +31,7 @@ public class Shape {
 	private float 		xStretch;
 	private float 		yStretch;
 	private float 		rotation;
-	private float 		scale = 1;
+	private float 		shapeScale = 1;
 
 	//constructors	
 	public Shape(PApplet p)
@@ -139,8 +139,8 @@ public class Shape {
 			x = PApplet.map(x, 0, 1, 0, this.xStretch);
 			y = PApplet.map(y, 0, 1, 0, this.yStretch);
 			
-			x *= this.scale;
-			y *= this.scale;
+			x *= this.shapeScale;
+			y *= this.shapeScale;
 			
 			shape.vertex(x, y);
 			i++;
@@ -173,8 +173,8 @@ public class Shape {
 			x = PApplet.map(x, 0, 1, 0, this.xStretch);
 			y = PApplet.map(y, 0, 1, 0, this.yStretch);
 			
-			x *= this.scale;
-			y *= this.scale;
+			x *= this.shapeScale;
+			y *= this.shapeScale;
 			
 			x = PApplet.map(x, 0, scale[0], 0, scale[1]);
 			y = PApplet.map(y, 0, scale[2], 0, scale[3]);
@@ -302,6 +302,10 @@ public class Shape {
 		this.nextShape = shape;
 	}
 
+	public void setShapeScale(float scale)
+	{
+		this.shapeScale = scale;
+	}
 	
 	
 }//Shapes
