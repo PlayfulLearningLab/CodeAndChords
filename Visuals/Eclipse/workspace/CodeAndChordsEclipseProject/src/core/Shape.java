@@ -1,5 +1,14 @@
 package core;
 
+/**
+ * This class is meant to act as a shape object for shapes that are built off of polar coordinates.
+ *		To use, call the setCurrentShape() function to add shapes and then call the getCurrentShape()
+ *		function to have your PShape returned to you.  The language of current shape and next shape 
+ *		are used so that the Shape object offers a solid building block for shape morphing, though it 
+ *		has not yet been implemented as of 8/7/17.
+ */
+
+
 import processing.core.PApplet;
 import processing.core.PShape;
 
