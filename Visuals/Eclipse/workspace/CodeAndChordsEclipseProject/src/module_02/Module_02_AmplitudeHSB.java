@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
+import controlP5.ControlP5;
 import core.Input;
 import core.ModuleTemplate02;
 import core.PortAudioAudioIO;
@@ -18,14 +19,14 @@ import net.beadsproject.beads.core.AudioContext;
 public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterface {
 
 	private	DisposeHandler		disposeHandler;
-	
+
 	private Input				input;
 	private ModuleTemplate02	moduleTemplate;
-	
+
 	private Shape     			shape;
-	
+
 	private ShapeEditor			shapeEditor;
-	
+
 	private float  				x;
 	private float				y;
 	private float 				rotation;
@@ -43,52 +44,54 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	public void setup()
 	{
 		this.disposeHandler	= new DisposeHandler(this);
-		
+
 		// This uses the PortAudioAudioIO by default...
 		//this.input	= new Input();
 		this.input    = new Input(2, new AudioContext());
-		
+
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
 				{
-					new float[] { 1, 1, 0, 0, 1, 1, 1 },
-					new float[] { 1, 1, 5, 5, 1, 1, 1 },
-					new float[] { 2, 2, 3, 3, 1, 1, 1 },
-					new float[] { .7f, .7f, 8, 8, 1, 1, 1},
-					new float[] { 1.4f, 1.4f, 4, 4, .3f, .5f, .7f }
+			new float[] { 1, 1, 0, 0, 1, 1, 1 },
+			new float[] { 1, 1, 5, 5, 1, 1, 1 },
+			new float[] { 2, 2, 3, 3, 1, 1, 1 },
+			new float[] { .7f, .7f, 8, 8, 1, 1, 1},
+			new float[] { 1.4f, 1.4f, 4, 4, .3f, .5f, .7f }
 				};
-		
-		for(int i = 0; i < 5; i++)
-		{
-			this.shape.setShapeIndex(i);
-			shape.setCurrentShape("supershape", superShapes[i]);
-		}
-		
-		this.shapeEditor = new ShapeEditor(this, this.shape, 925, 520);
-		this.shapeEditor.setIsRunning(false);
-		
-		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
-		
-		this.x = ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
-		this.y = this.height/2;
-		this.rotation = 0;
-		
 
-		// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
-		//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
+				for(int i = 0; i < 5; i++)
+				{
+					this.shape.setShapeIndex(i);
+					shape.setCurrentShape("supershape", superShapes[i]);
+				}
 
-		this.textSize(32);				
-		
-		
-		//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
-		//Color fadedBlack = new Color(0, 0, 0, .5f);
-		//this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
+				this.shapeEditor = new ShapeEditor(this, this.shape, 925, 520);
+				this.shapeEditor.setIsRunning(false);
 
-		// create the shape
+				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 
-		//this.shapeMode(CENTER);
-		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
-		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
+				this.x = ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
+				this.y = this.height/2;
+				this.rotation = 0;
+				
+				System.out.println("x val = " + this.x  + " and y val = " + this.y);
+
+
+				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
+				//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
+
+				this.textSize(32);				
+
+
+				//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
+				//Color fadedBlack = new Color(0, 0, 0, .5f);
+				//this.shapeMenuFadedBackground.setFill(fadedBlack.getRGB());
+
+				// create the shape
+
+				//this.shapeMode(CENTER);
+				//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
+				//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
 
 	} // setup
 
@@ -137,27 +140,31 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		 * 
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
-		
-		
-		
+
+
+
 		if(!this.shapeEditor.getIsRunning())
 		{
 			this.drawShape();
 		}
-		
+
 		if(this.moduleTemplate.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
-			
+
 		} // if showScale
 		
-		float[] param = this.shapeEditor.runSE(this.x, this.y, this.rotation);
-		
-		this.x = param[0];
-		this.y = param[1];
-		this.rotation = param[2];
-		
+			float[] param = this.shapeEditor.runSE(this.x, this.y, this.rotation);
+
+			if(param != null)
+			{
+				this.x = param[0];
+				this.y = param[1];
+				this.rotation = param[2];
+			}
+
+
 	} // draw
 
 	private void drawShape()
@@ -171,13 +178,20 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
 
 		//this.shapeMode(CORNER);
-		PShape pShape = this.shape.getPShape();
+		PShape pShape;
+		if(this.moduleTemplate.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
+		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.moduleTemplate.getLeftEdgeX()), 1, 1});
+
+
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
 		pShape.stroke(curHue[0], curHue[1], curHue[2]);
 		pShape.rotate(this.rotation);
 		pShape.endShape();
-		this.shape(pShape, this.x, this.y);
+
+		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.x, this.y);
+		else this.shape(pShape, PApplet.map(this.x, 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.y);
+
 		//this.shapeMode(CENTER);
 
 
@@ -205,57 +219,55 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		 */
 
 	} // drawShape
-	
+
 	public Shape getShape()
 	{
 		return this.shape;
 	}
-	
 
-	private void drawShapeMenu()
-	{
-		this.stroke(0);
-		this.strokeWeight(1);
-		this.rect(175, 52, 740, 416);
-		
-		PShape ps = this.shape.getScaledPShape(new float[] {-1, 1, -.8f, .8f});
-		
-		ps.beginShape();
-		ps.stroke(255);
-		ps.fill(255);
-		ps.endShape();
-		
-		float xMod = PApplet.map(this.x, 0, 925, 175, 915);
-		float yMod = PApplet.map(this.y, 0, 520, 52, 468);
-		
-		this.shapeMode(CORNER);
-		this.shape(ps, xMod, yMod);
-		this.shapeMode(CENTER);
-		
-		//For space testing
-/*
-		this.strokeWeight(.5f);
-		this.line(175, 52, 915, 468);
-		
-		this.stroke(Color.RED.getRGB());
-		this.strokeWeight(7);
-		this.point(xMod, yMod);
-*/
-		
-		//set stroke back to normal
-		this.stroke(0);
-		this.strokeWeight(1);
-		
-		
-	}
-	
 	public void setShapeEditorRunning(boolean isRunning)
 	{
 		this.shapeEditor.setIsRunning(isRunning);
 	}
-	
-	
-	
+
+	public void mouseClicked()
+	{
+		float[] 	fArray;
+		float		scale;
+		ControlP5	seControlP5;
+
+		if(this.shapeEditor.getIsRunning() && this.shapeEditor.getCP5().isVisible())
+		{
+			System.out.println("Mouse clicked!!!!  X = " + this.mouseX + " Y = " + this.mouseY);
+			
+			fArray = this.shapeEditor.getSEWindowSizeAndPlace();
+			seControlP5 = this.shapeEditor.getCP5();
+			scale = this.shapeEditor.getScale();
+			
+			this.x = PApplet.map(this.mouseX - (fArray[0]), 0, fArray[2], 0, 925);
+			this.y = PApplet.map(this.mouseY - fArray[1], 0, fArray[3], 0, 520);
+			seControlP5.getController("xPos").setValue(this.x);
+			seControlP5.getController("yPos").setValue(this.y);
+			
+			System.out.println(fArray[0]);
+			System.out.println(fArray[1]);
+			System.out.println(fArray[2]);
+			System.out.println(fArray[3]);
+		}
+		else if(this.moduleTemplate.getLeftEdgeX() == 0)
+		{
+			this.x = this.mouseX;
+			this.y = this.mouseY;
+		}
+		else if(this.mouseX > this.moduleTemplate.getLeftEdgeX())
+		{
+			this.x = PApplet.map(this.mouseX, this.moduleTemplate.getLeftEdgeX(), 925, 0, 925);
+			this.y = this.mouseY;
+		}
+	}
+
+
+
 	/**
 	 * 08/01/2017
 	 * Emily Meuer
@@ -270,8 +282,8 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	 */
 	public class DisposeHandler {
 
-//		PApplet	pa;
-		
+		//		PApplet	pa;
+
 		Module_02_AmplitudeHSB	module;
 
 		DisposeHandler(PApplet pa)

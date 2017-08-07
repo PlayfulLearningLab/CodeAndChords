@@ -173,8 +173,11 @@ public class Shape {
 			x = PApplet.map(x, 0, 1, 0, this.xStretch);
 			y = PApplet.map(y, 0, 1, 0, this.yStretch);
 			
-			x = PApplet.map(x, scale[0], scale[1], scale[2], scale[3]);
-			y = PApplet.map(y, scale[0], scale[1], scale[2], scale[3]);
+			x *= this.scale;
+			y *= this.scale;
+			
+			x = PApplet.map(x, 0, scale[0], 0, scale[1]);
+			y = PApplet.map(y, 0, scale[2], 0, scale[3]);
 			
 			
 			shape.vertex(x, y);
