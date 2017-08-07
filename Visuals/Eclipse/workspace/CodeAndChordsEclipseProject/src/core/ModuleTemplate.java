@@ -10,6 +10,7 @@ import controlP5.ControlEvent;
 import controlP5.ControlFont;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import controlP5.Controller;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
@@ -26,6 +27,11 @@ import processing.core.PImage;
  *
  */
 public abstract class ModuleTemplate implements ControlListener  {
+	
+	// TODO - get rid of this after trichromatic works:
+	private	int	trichromCounts	= 0;
+	// TODO: get rid of this (use local variable) after major/minor trichromatic bug is solved:
+	public int[][] trichromColors	= new int[12][3];
 
 
 	/**
@@ -93,6 +99,19 @@ public abstract class ModuleTemplate implements ControlListener  {
 			{ 255, 0, 127 }
 		} // chromatic
 	}; // rainbowColors
+	
+	/**
+	 * Each int signifies the position in dichromColors/trichromColors/rainbowColors that is used to fill
+	 * this.colors at the corresponding position in scaleDegreeColors[this.majMinChrom]:
+	 */
+	protected	final	int[][]	scaleDegreeColors	= new int[][] {
+		// major:
+		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 4, 5, 6, 6 },
+		// minor:
+		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6 },
+		// chromatic:
+		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+	}; // scaleDegreeColors
 
 	protected	PApplet	parent;
 	protected	ControlP5	sidebarCP5;
@@ -110,6 +129,20 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected	int			textfieldWidth;
 	protected	int			sliderWidth;
 	protected	int			sliderHeight;
+	
+	protected	static	int	CS_RAINBOW	= 1;
+	protected	static	int	CS_DICHROM	= 2;
+	// TODO: make private after fixing trichrom error
+	public static	int	CS_TRICHROM	= 3;
+	protected	static	int	CS_CUSTOM	= 4;
+	protected	int	curColorStyle;
+	
+	/**	false before dichromatic has been called for the first time; true following that.	*/
+	private	boolean	dichromFlag;
+
+	/**	false before trichromatic has been called for the first time; true following that.	*/
+	private	boolean	trichromFlag;
+
 
 	/**
 	 * float[][] representing the colors that will be used by this sketch;
@@ -331,6 +364,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.colorReached		= false;
 		this.nowBelow			= false;
 
+		this.dichromFlag	= false;
+		this.trichromFlag	= false;
+
 		this.attRelTranPos	= 0;	// 0 = attack, 1 = release, 2 = transition
 		this.attRelTranVals	= new float[] {		200, 200, 200	};	// attack, release, transition all begin at 200 millis
 		this.hueSatBrightnessMod        = new float[3];
@@ -443,103 +479,120 @@ public abstract class ModuleTemplate implements ControlListener  {
 		{
 			System.err.println("ModuleTemplate.addColorSelect: colorSelect Button with label text '" + buttonLabels[0] + "' will control the canvas color.");
 		}
-		
+
 		// Position in rainbowColors:
-		int	pos	= 0;
+//		int	pos	= 0;
+		int	buttonLabelPos	= 0;
+		int	colorSelectPos	= 0;
+		
 
 		if(canvas)
 		{
 
 			this.canvasColorSelectId	= this.nextColorWheelId;
 			this.firstColorSelectCWId	= this.nextColorWheelId + 1;
-			
-//			pos	= -1;
-			
+
+			//			pos	= -1;
+
 		} else {
 			this.firstColorSelectCWId	= this.nextColorWheelId;
-			
-//			pos	= 0;
+
+			//			pos	= 0;
 		}
-		
-			int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
-			// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
-			int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonsPerRow) - this.spacer - (10 / buttonsPerRow);
-			int[]	xVals	= new int[buttonsPerRow];
-			for(int i = 0; i < xVals.length; i++)
+
+		int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
+		// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
+		int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonsPerRow) - this.spacer - (10 / buttonsPerRow);
+		int[]	xVals	= new int[buttonsPerRow];
+		for(int i = 0; i < xVals.length; i++)
+		{
+			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+		}
+
+		this.sidebarCP5.addTextlabel("colorSelectLabel")
+		.setPosition(labelX, yVals[0] + 4)
+		.setGroup("sidebarGroup")
+		.setValue(labelText);
+
+		//			this.canvasColorSelectId	= this.nextColorWheelId;
+		//			this.firstColorSelectCWId	= this.nextColorWheelId + 1;
+
+		//			int	pos	= -1;
+
+		// Loop through all
+		for(int i = 0; i < yVals.length; i++)
+		{
+			// Loop through each row
+			for(int j = 0; j < xVals.length; j++)
 			{
-				xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
-			}
-
-			this.sidebarCP5.addTextlabel("colorSelectLabel")
-			.setPosition(labelX, yVals[0] + 4)
-			.setGroup("sidebarGroup")
-			.setValue(labelText);
-
-//			this.canvasColorSelectId	= this.nextColorWheelId;
-//			this.firstColorSelectCWId	= this.nextColorWheelId + 1;
-
-//			int	pos	= -1;
-
-			// Loop through all
-			for(int i = 0; i < yVals.length; i++)
-			{
-				// Loop through each row
-				for(int j = 0; j < xVals.length; j++)
+				if(i == 0 && j == 0 && canvas)
 				{
-					this.sidebarCP5.addButton("button" + this.nextButtonId)
-					.setPosition(xVals[j], yVals[i])
-					.setWidth(buttonWidth)
-					.setLabel(buttonLabels[(i * yVals.length) + j])
-					.setId(this.nextButtonId)
-					.setGroup("sidebarGroup")
-					.getCaptionLabel().toUpperCase(false);
+					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor);
+//					pos	= pos - 1;
+				} else {
+					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.rainbowColors[this.majMinChrom][colorSelectPos]))[1];
+					colorSelectPos	= colorSelectPos + 1;
+				}
+				
+//				pos	= pos + 1;
+				buttonLabelPos	= buttonLabelPos + 1;
+				
+				/*
+				this.sidebarCP5.addButton("button" + this.nextButtonId)
+				.setPosition(xVals[j], yVals[i])
+				.setWidth(buttonWidth)
+				.setLabel(buttonLabels[(i * yVals.length) + j])
+				.setId(this.nextButtonId)
+				.setGroup("sidebarGroup")
+				.getCaptionLabel().toUpperCase(false);
 
-					this.nextButtonId = this.nextButtonId + 1;
+				this.nextButtonId = this.nextButtonId + 1;
 
-					// Just add the canvas ColorWheel without putting it into the colorSelect array:
-					if(i == 0 && j == 0 && canvas)
-					{
-						this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
-						.setPosition(xVals[j], yVals[i] - 200)
-						.setRGB(new Color(this.canvasColor[0], this.canvasColor[1], this.canvasColor[2]).getRGB())
-						.setLabelVisible(false)
-						.setVisible(false)
-						.setGroup("sidebarGroup")
-						.setId(this.nextColorWheelId);
-						
-						pos	= pos - 1;
-
-					} else {
-						this.colorSelect[pos]	= this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
-								.setPosition(xVals[j], yVals[i] - 200)
-								.setRGB(new Color(this.rainbowColors[this.majMinChrom][pos][0], this.rainbowColors[this.majMinChrom][pos][1], this.rainbowColors[this.majMinChrom][pos][2]).getRGB())
-								.setLabelVisible(false)
-								.setVisible(false)
-								.setGroup("sidebarGroup")
-								.setId(this.nextColorWheelId);
-					}
-
-					// Can't just use rainbowColors because we want to make sure to set the canvas CW correctly, too:
-					Color	curColor	= new Color(((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.nextColorWheelId))).getRGB());
-					this.nextColorWheelId = this.nextColorWheelId + 1;					
-
-					this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
-					.setPosition(xVals[j] + buttonWidth + this.spacer, yVals[i])
-					//				.setWidth(textfieldWidth)
-					.setAutoClear(false)
+				// Just add the canvas ColorWheel without putting it into the colorSelect array:
+				if(i == 0 && j == 0 && canvas)
+				{
+					this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+					.setPosition(xVals[j], yVals[i] - 200)
+					.setRGB(new Color(this.canvasColor[0], this.canvasColor[1], this.canvasColor[2]).getRGB())
+					.setLabelVisible(false)
 					.setVisible(false)
-					.setText("rgb(" + curColor.getRed() + ", " + curColor.getGreen() + ", " + curColor.getBlue() + ")")
 					.setGroup("sidebarGroup")
-					.setId(this.nextCWTextfieldId)
-					.getCaptionLabel().setVisible(false);
+					.setId(this.nextColorWheelId);
 
-					this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
+					pos	= pos - 1;
 
-					pos	= pos + 1;
-				} // for - j
-			} // for - i
+				} else {
+					this.colorSelect[pos]	= this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+							.setPosition(xVals[j], yVals[i] - 200)
+							.setRGB(new Color(this.rainbowColors[this.majMinChrom][pos][0], this.rainbowColors[this.majMinChrom][pos][1], this.rainbowColors[this.majMinChrom][pos][2]).getRGB())
+							.setLabelVisible(false)
+							.setVisible(false)
+							.setGroup("sidebarGroup")
+							.setId(this.nextColorWheelId);
+				}
 
-			this.fillHSBColors();
+				// Can't just use rainbowColors because we want to make sure to set the canvas CW correctly, too:
+				Color	curColor	= new Color(((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.nextColorWheelId))).getRGB());
+				this.nextColorWheelId = this.nextColorWheelId + 1;					
+
+				this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+				.setPosition(xVals[j] + buttonWidth + this.spacer, yVals[i])
+				//				.setWidth(textfieldWidth)
+				.setAutoClear(false)
+				.setVisible(false)
+				.setText("rgb(" + curColor.getRed() + ", " + curColor.getGreen() + ", " + curColor.getBlue() + ")")
+				.setGroup("sidebarGroup")
+				.setId(this.nextCWTextfieldId)
+				.getCaptionLabel().setVisible(false);
+
+				this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
+				pos	= pos + 1;
+				*/
+
+			} // for - j
+		} // for - i
+
+		this.fillHSBColors();
 	} // addColorSelect
 
 	/**
@@ -1117,7 +1170,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.shapeSizeSliderId	= this.nextSliderId;
 
-		this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+		this.sidebarCP5.addSlider("slider" + this.shapeSizeSliderId)
 		.setPosition(this.leftAlign, yVal)
 		.setSize(this.sliderWidth, this.sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
@@ -1132,7 +1185,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 		.setPosition(this.leftAlign + sliderWidth + this.spacer, yVal)
 		.setSize(this.textfieldWidth, this.sliderHeight)
-		.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+		.setText(this.sidebarCP5.getController("slider" + this.shapeSizeSliderId).getValue() + "")
 		.setAutoClear(false)
 		.setGroup("sidebarGroup")
 		.setId(this.nextSTextfieldId)
@@ -1209,7 +1262,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.nextToggleId	= this.nextToggleId + 1;
 		} // for - adding Toggles
 	} // addRangeSegments
-	
+
 	protected void addSpecialColors(int yVal, String[] buttonLabels, String labelText, boolean canvas)
 	{
 		// error checking
@@ -1225,93 +1278,181 @@ public abstract class ModuleTemplate implements ControlListener  {
 			System.err.println("ModuleTemplate.addSpecialColors: colorSelect Button with label text '" + buttonLabels[0] + "' will control the canvas color.");
 		}
 		
+		this.specialColorsCounts	= new int[buttonLabels.length];
+		this.specialColorsPos		= new int[buttonLabels.length];
+
 		// Position in colorSelect:
 		int	pos	= 0;
 
 		if(canvas)
 		{
-
 			this.canvasColorSelectId	= this.nextColorWheelId;
-			this.firstColorSelectCWId	= this.nextColorWheelId + 1;
+			this.firstSpecialColorsCWId	= this.nextColorWheelId + 1;
 			
+			System.out.println("canvasColorSelectId = " + this.canvasColorSelectId + "; firstSpecialColorsCWId = " + this.firstSpecialColorsCWId);
+
 		} else {
-			this.firstColorSelectCWId	= this.nextColorWheelId;
-			
-		}
-			// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
-			int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonLabels.length) - this.spacer - (10 / buttonsPerRow);
-			int[]	xVals	= new int[buttonLabels.length];
-			for(int i = 0; i < xVals.length; i++)
-			{
-				xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
-			}
-
-			this.sidebarCP5.addTextlabel("specialColorsLabel")
-			.setPosition(labelX, yVal + 4)
-			.setGroup("sidebarGroup")
-			.setValue(labelText);
-
 			this.firstSpecialColorsCWId	= this.nextColorWheelId;
 
-//			int	pos	= -1;
+		}
+		// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
+		int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonLabels.length) - this.spacer - (10 / buttonLabels.length);
+		int[]	xVals	= new int[buttonLabels.length];
+		for(int i = 0; i < xVals.length; i++)
+		{
+			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+		}
 
-			// Loop through all
-			for(int i = 0; i < xVals.length; i++)
+		this.sidebarCP5.addTextlabel("specialColorsLabel")
+		.setPosition(labelX, yVal + 4)
+		.setGroup("sidebarGroup")
+		.setValue(labelText);
+
+		//			int	pos	= -1;
+
+		// Loop through all
+		for(int i = 0; i < xVals.length; i++)
+		{
+			if(canvas && i == 0)
 			{
-					this.sidebarCP5.addButton("button" + this.nextButtonId)
-					.setPosition(xVals[i], yVal)
-					.setWidth(buttonWidth)
-					.setLabel(buttonLabels[i])
-					.setId(this.nextButtonId)
-					.setGroup("sidebarGroup")
-					.getCaptionLabel().toUpperCase(false);
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], this.canvasColor);
+			} else {
+				int	thisColorPos	= this.specialColorsPos[i - 1];
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], new Color(this.colorSelect[thisColorPos].getRGB()));
+			}
+		/*	
+			this.sidebarCP5.addButton("button" + this.nextButtonId)
+			.setPosition(xVals[i], yVal)
+			.setWidth(buttonWidth)
+			.setLabel(buttonLabels[i])
+			.setId(this.nextButtonId)
+			.setGroup("sidebarGroup")
+			.getCaptionLabel().toUpperCase(false);
 
-					this.nextButtonId = this.nextButtonId + 1;
+			this.nextButtonId = this.nextButtonId + 1;
 
-					// Just add the canvas ColorWheel without putting it into the colorSelect array:
-					if(i == 0 && j == 0 && canvas)
-					{
-						this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+			// Just add the canvas ColorWheel without putting it into the colorSelect array:
+			if(i == 0 && canvas)
+			{
+				this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+				.setPosition(xVals[i], yVal - 200)
+				.setRGB(new Color(this.canvasColor[0], this.canvasColor[1], this.canvasColor[2]).getRGB())
+				.setLabelVisible(false)
+				.setVisible(false)
+				.setGroup("sidebarGroup")
+				.setId(this.nextColorWheelId);
+
+				pos	= pos - 1;
+
+			} else {
+				this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
 						.setPosition(xVals[i], yVal - 200)
-						.setRGB(new Color(this.canvasColor[0], this.canvasColor[1], this.canvasColor[2]).getRGB())
+						.setRGB(new Color(this.rainbowColors[this.majMinChrom][pos][0], this.rainbowColors[this.majMinChrom][pos][1], this.rainbowColors[this.majMinChrom][pos][2]).getRGB())
 						.setLabelVisible(false)
 						.setVisible(false)
 						.setGroup("sidebarGroup")
 						.setId(this.nextColorWheelId);
-						
-						pos	= pos - 1;
+			}
 
-					} else {
-						this.colorSelect[pos]	= this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
-								.setPosition(xVals[i], yVal - 200)
-								.setRGB(new Color(this.rainbowColors[this.majMinChrom][pos][0], this.rainbowColors[this.majMinChrom][pos][1], this.rainbowColors[this.majMinChrom][pos][2]).getRGB())
-								.setLabelVisible(false)
-								.setVisible(false)
-								.setGroup("sidebarGroup")
-								.setId(this.nextColorWheelId);
-					}
+			// Can't just use rainbowColors because we want to make sure to set the canvas CW correctly, too:
+			Color	curColor	= new Color(((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.nextColorWheelId))).getRGB());
+			this.nextColorWheelId = this.nextColorWheelId + 1;					
 
-					// Can't just use rainbowColors because we want to make sure to set the canvas CW correctly, too:
-					Color	curColor	= new Color(((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.nextColorWheelId))).getRGB());
-					this.nextColorWheelId = this.nextColorWheelId + 1;					
+			this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+			.setPosition(xVals[i] + buttonWidth + this.spacer, yVal)
+			//				.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setVisible(false)
+			.setText("rgb(" + curColor.getRed() + ", " + curColor.getGreen() + ", " + curColor.getBlue() + ")")
+			.setGroup("sidebarGroup")
+			.setId(this.nextCWTextfieldId)
+			.getCaptionLabel().setVisible(false);
 
-					this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
-					.setPosition(xVals[i] + buttonWidth + this.spacer, yVal)
-					//				.setWidth(textfieldWidth)
-					.setAutoClear(false)
-					.setVisible(false)
-					.setText("rgb(" + curColor.getRed() + ", " + curColor.getGreen() + ", " + curColor.getBlue() + ")")
-					.setGroup("sidebarGroup")
-					.setId(this.nextCWTextfieldId)
-					.getCaptionLabel().setVisible(false);
+			this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
 
-					this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
+			pos	= pos + 1;
+*/
+		} // for - i
 
-					pos	= pos + 1;
-			} // for - i
-
-			this.fillHSBColors();
+		this.fillHSBColors();
 	} // addColorSelect
+	
+	/**
+	 * Adds a connected Button, ColorWheel, and Textfield to this.sidebarCP5, in group "sidebarGroup",
+	 * by making a color form the int[] and calling addColorWheelGroup(int, int, int, String, Color)
+	 * 
+	 * @param x	x value of Button and ColorWheel
+	 * @param y	y value of Button
+	 * @param buttonWidth	width of Button
+	 * @param buttonLabel	text to put on the Button
+	 * @param colo	int[] with the red, green, blue values for the desired Color
+	 */
+	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, int[] rgbColor)
+	{
+		if(rgbColor == null) {
+			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter is null.");
+		}
+		if(rgbColor.length != 3) {
+			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter has length " + rgbColor.length + 
+					"; must be length 3.");
+		} // error checking
+		
+		return this.addColorWheelGroup(x, y, buttonWidth, buttonLabel, new Color(rgbColor[0], rgbColor[1], rgbColor[2]));
+	}
+
+	/**
+	 * Adds a connected Button, ColorWheel, and Textfield to this.sidebarCP5, in group "sidebarGroup"
+	 * 
+	 * @param x	x value of Button and ColorWheel
+	 * @param y	y value of Button
+	 * @param buttonWidth	width of Button
+	 * @param buttonLabel	text to put on the Button
+	 * @param color	Color to set the ColorWheel and Textfield ("rgb([red], [green], [blue])")
+	 */
+	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color)
+	{
+		Button		button;
+		ColorWheel	colorWheel;
+		Textfield	textfield;
+		
+		if(buttonLabel == null) {
+			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: String parameter is null.");
+		}
+		// Add Button:
+		button	= this.sidebarCP5.addButton("button" + this.nextButtonId)
+		.setPosition(x, y)
+		.setWidth(buttonWidth)
+		.setLabel(buttonLabel)
+		.setId(this.nextButtonId)
+		.setGroup("sidebarGroup");
+		button.getCaptionLabel().toUpperCase(false);
+
+		this.nextButtonId = this.nextButtonId + 1;
+
+		colorWheel	= this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+		.setPosition(x, y - 200)
+		.setRGB(color.getRGB())
+		.setLabelVisible(false)
+		.setVisible(false)
+		.setGroup("sidebarGroup")
+		.setId(this.nextColorWheelId);
+
+		this.nextColorWheelId = this.nextColorWheelId + 1;					
+
+		textfield	= this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+		.setPosition(x + buttonWidth + this.spacer, y)
+		//				.setWidth(textfieldWidth)
+		.setAutoClear(false)
+		.setVisible(false)
+		.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")")
+		.setGroup("sidebarGroup")
+		.setId(this.nextCWTextfieldId);
+		textfield.getCaptionLabel().setVisible(false);
+
+		this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
+		
+		return new Controller[] { button, colorWheel, textfield };
+	} // addColorWheelGroup
 
 	/**
 	 * Sets this.goalHue to the value of the given position in this.colors
@@ -1504,6 +1645,83 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.colorAdd[i]	= (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
 		}
 	} // setCurHue
+	
+	protected void applySpecialColors()
+	{
+		// Rainbow:
+		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		{
+			this.rainbow();
+		} // if - rainbow
+
+		// Dichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		{
+
+			// First time to dichromatic, dichromFlag will be false, 
+			// and the two colors will be set to contrast.			
+			if(!this.dichromFlag)
+			{
+				this.dichromatic_OneRGB(this.getColor(0));
+
+				this.dichromFlag	= true;
+			} // first time
+			// After the first time, use current color values
+			// (allows selection of 2nd color):
+			else
+			{
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+			}
+
+		} // Dichromatic
+
+		// Trichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		{
+			int	colorPos2	= 4;	// initializing for the first call
+			int	colorPos3	= 8;
+			
+			// first time trichromatic has been called:
+			if(!this.trichromFlag)
+			{
+				this.trichromatic_OneRGB(this.getColor(0));
+
+				this.trichromFlag	= true;
+			}
+
+			// every other time:
+			else
+			{
+				
+			if(this.majMinChrom == 2)
+				{
+					colorPos2	= 4;
+					colorPos3	= 8;
+				} else {
+					//				colorPos2	= 3;
+					//				colorPos3	= 4;
+
+					// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+					// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+
+					colorPos2	= 5;
+					colorPos3	= 7;
+				}
+			} // else
+/*
+				System.out.println("updateColors: about to call trichrom_3RGB with rgb(" + 
+						this.colors[0][0] + ", " + this.colors[0][1] + ", " + this.colors[0][2] + "), rgb(" +
+						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
+						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
+*/
+			this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+				//				this.updateCustomPitchCWs();
+//			} // else
+
+
+
+		} // Trichromatic
+	} // applySpecialColors
 
 	/**
 	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders and 
@@ -1534,6 +1752,314 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	//		this.applyHSBModulate(this.colors, this.hsbColors);
 	//	} // applyColorModulate
+	
+
+	/**
+	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
+	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
+	 * 
+	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
+	 */
+	public void dichromatic_OneRGB(int[] rgbVals)
+	{
+		if(rgbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
+		}
+
+		float[]	hsbVals	= new float[3];
+		Color.RGBtoHSB((int)rgbVals[0], (int)rgbVals[1], (int)rgbVals[2], hsbVals);
+
+		this.dichromatic_OneHSB(hsbVals);
+	} // dichromatic_OneRGB
+
+	/**
+	 * Uses the given HSB color to find the color across it on the HSB wheel,
+	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 * 
+	 * @param hue	float[] of HSB values defining the color at the tonic of the current scale.
+	 */
+	private void dichromatic_OneHSB(float[] hsbVals)
+	{
+		if(hsbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
+		} // error checking
+
+		// find the complement:
+		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
+
+		// convert them both to RGB;
+		int[]	rgbVals1	= new int[3];
+		int[]	rgbVals2	= new int[3];
+
+		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
+		Color	rgbColor1	=  new Color(rgb1);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals1[0]	= rgbColor1.getRed();
+		rgbVals1[1]	= rgbColor1.getGreen();
+		rgbVals1[2]	= rgbColor1.getBlue();	
+
+		int	rgb2	= Color.HSBtoRGB(hsbComplement[0], hsbComplement[1], hsbComplement[2]);
+		Color	rgbColor2	=  new Color(rgb2);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals2[0]	= rgbColor2.getRed();
+		rgbVals2[1]	= rgbColor2.getGreen();
+		rgbVals2[2]	= rgbColor2.getBlue();	
+
+		this.dichromatic_TwoRGB(rgbVals1, rgbVals2, true);
+	} // dichromatic_OneHSB(int)
+
+	/**
+	 * This method fills colors with the spectrum of colors between the given rgb colors.
+	 * 
+	 * @param rgbVals1	float[] of rgb values defining tonicColor.
+	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
+	 */
+	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
+	{
+		if(rgbVals1 == null || rgbVals2 == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
+		} // error checking
+
+		// Percent should be the percent of the difference between the first and second colors,
+		// but the math doesn't work if we divide by 100 here, so that will happen later.
+		//		float	percent		= 100 / this.scaleLength;
+
+		// For a minor scale, divide by 11 so that the last note of the scale will be 2ndColor
+		// (rather than the leading tone, which doesn't show up in the minor scale - we just display natural minor)
+		// Everything else gets 12.
+		float	percent;
+		if(this.majMinChrom == 1)
+		{
+			percent	= 100 / 11;
+		} else 
+		{
+			percent		= 100 / 12;
+		}
+
+		// There will be a difference for red, green, and blue.
+//		float	difference;
+		float	rDif	= rgbVals1[0] - rgbVals2[0];
+		float	gDif	= rgbVals1[1] - rgbVals2[1];
+		float	bDif	= rgbVals1[2] - rgbVals2[2];
+		
+		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
+		
+		int[]	curColor	= this.getColor(0);
+		int[]	newColor	= new int[3];
+
+		// Loop through red, then green, then blue
+		// (could do it like normal, but then would have to calculate difference each time;
+		// those who save processor cycles store up treasure in Heaven):
+/*		for(int i = 0; i < 3; i++)
+		{
+			difference	= rgbVals1[i] - rgbVals2[i];
+*/
+			for(int i = 0; i < this.colorSelect.length - 1; i++)
+			{
+				// Take the percent of the difference multiplied by the position in the array,
+				// subtracting it from the first color to deal with negatives correctly
+				// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
+//				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
+
+				newColor[0]	= (int)(curColor[0] - (rDif * i * percent / 100));
+				newColor[1]	= (int)(curColor[1] - (gDif * i * percent / 100));
+				newColor[2]	= (int)(curColor[2] - (bDif * i * percent / 100));
+				
+				System.out.println("newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
+				
+				this.setColor(i, newColor);
+			} // for - i
+//		} // for - i
+
+		// Fill the last color manually, because if we don't,
+		// it can't seem to calculate correctly when the tonic color is changed:
+		this.setColor(this.colorSelect.length - 1, rgbVals2);
+		
+/*		for(int i = 0; i < rgbVals2.length; i++)
+		{
+			this.colors[this.colors.length - 1][i]	= rgbVals2[i];
+		}
+		*/
+	} // dichromatic_TwoRGB
+
+	/**
+	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
+	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
+	 * 
+	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
+	 */
+	public void trichromatic_OneRGB(int[] rgbVals)
+	{
+		if(rgbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
+		}
+
+		float[]	hsbVals	= new float[3];
+		Color.RGBtoHSB((int)rgbVals[0], (int)rgbVals[1], (int)rgbVals[2], hsbVals);
+
+		this.trichromatic_OneHSB(hsbVals);
+	} // trichromatic_OneRGB
+
+	/**
+	 * Uses the given HSB color to find the color across it on the HSB wheel,
+	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 *
+	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
+	 */
+	private void trichromatic_OneHSB(float[] hsbVals)
+	{
+		if(hsbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
+		} // error checking
+
+		// find the triad:
+		float[]	hsbTriad1	= new float[] { (float) ((hsbVals[0] + 0.33) % 1), 1, 1 };
+		float[]	hsbTriad2	= new float[] { (float) ((hsbVals[0] + 0.67) % 1), 1, 1 };
+
+		// convert them both to RGB;
+		int[]	rgbVals1	= new int[3];
+		int[]	rgbVals2	= new int[3];
+		int[]	rgbVals3	= new int[3];
+
+		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
+		Color	rgbColor1	=  new Color(rgb1);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals1[0]	= rgbColor1.getRed();
+		rgbVals1[1]	= rgbColor1.getGreen();
+		rgbVals1[2]	= rgbColor1.getBlue();	
+
+		int	rgb2	= Color.HSBtoRGB(hsbTriad1[0], hsbTriad1[1], hsbTriad1[2]);
+		Color	rgbColor2	=  new Color(rgb2);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals2[0]	= rgbColor2.getRed();
+		rgbVals2[1]	= rgbColor2.getGreen();
+		rgbVals2[2]	= rgbColor2.getBlue();	
+
+		int	rgb3	= Color.HSBtoRGB(hsbTriad2[0], hsbTriad2[1], hsbTriad2[2]);
+		Color	rgbColor3	=  new Color(rgb3);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals3[0]	= rgbColor3.getRed();
+		rgbVals3[1]	= rgbColor3.getGreen();
+		rgbVals3[2]	= rgbColor3.getBlue();	
+
+		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
+	} // trichromatic_OneHSB
+
+	/**
+	 * Calculates the colors between the 3 sets of given vals
+	 * and fills colors with a spectrum fading between them.
+	 * 
+	 * @param rgbVals1	rgb vals for the tonic color
+	 * @param rgbVals2	rgb vals for the sub-dominant for major/minor scales or "5th scale degree" (counting by half steps) for chromatic scales
+	 * @param rgbVals3	rgb vals for the dominant for major/minor scales or the "9th scale degree" (counting by half steps) for chromatic scales
+	 */
+	public void trichromatic_ThreeRGB(int[] rgbVals1, int[] rgbVals2, int[] rgbVals3)
+	{
+		if(rgbVals1 == null || rgbVals2 == null || rgbVals3 == null) {
+			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
+		} // error checking
+
+		this.trichromCounts++;
+		System.out.println("	this.trichromCounts = " + this.trichromCounts + "----------------------------------------------------------------------------------------------------------");
+		
+		int	color1pos	= 0;
+		int	color2pos;
+		int	color3pos;
+
+		if(this.majMinChrom == 2)
+		{
+			// if chromatic scale, put the colors equally throughout:
+			color2pos	= this.scaleLength / 3;
+			color3pos	= (this.scaleLength / 3) * 2;
+		} else {
+			color2pos	= 3;	// subdominant
+			color3pos	= 4;	// dominant
+		}
+
+		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / (color2pos - color1pos));
+		int	greenDelta1	= (int)((rgbVals1[1] - rgbVals2[1]) / (color2pos - color1pos));
+		int	blueDelta1	= (int)((rgbVals1[2] - rgbVals2[2]) / (color2pos - color1pos));
+
+		int	redDelta2	= (int)((rgbVals2[0] - rgbVals3[0]) / (color3pos - color2pos));
+		int	greenDelta2	= (int)((rgbVals2[1] - rgbVals3[1]) / (color3pos - color2pos));
+		int	blueDelta2	= (int)((rgbVals2[2] - rgbVals3[2]) / (color3pos - color2pos));
+
+		int	redDelta3	= (int)((rgbVals3[0] - rgbVals1[0]) / (this.scaleLength - color3pos));
+		int	greenDelta3	= (int)((rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos));
+		int	blueDelta3	= (int)((rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos));
+		/*		
+		System.out.println("redDelta1 = " + redDelta1 + "; greenDelta1 = " + greenDelta1 + "; blueDelta1 = " + blueDelta1);
+		System.out.println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta1 + "; blueDelta2 = " + blueDelta2);
+		System.out.println("redDelta3 = " + redDelta3 + "; greenDelta3 = " + greenDelta1 + "; blueDelta3 = " + blueDelta3);
+		 */
+		// This array has the trichromatic spectrum:
+//		int[][]	trichromColors	= new int[this.scaleLength][3];
+		this.trichromColors	= new int[this.scaleLength][3];
+
+		// fill first position with first color:
+		for(int i = 0; i < rgbVals1.length; i++)
+		{
+			trichromColors[0][i]	= rgbVals1[i];
+		}
+
+		// fill from first color to second color:
+		for(int i = 1; i < color2pos + 1; i++)
+		{
+//			for(int j = 0; j < trichromColors[i].length; j++)
+//			{
+				trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta1;
+				trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta1;
+				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta1;
+//			} // for - j
+		} // for - first color to second color
+
+
+		// fill from second color to third color:
+		for(int i = color2pos + 1; i < color3pos + 1; i++)
+		{
+//			for(int j = 0; j < trichromColors[i].length; j++)
+//			{
+				trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta2;
+				trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta2;
+				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta2;
+//			} // for - j
+		} // for - first color to second color
+
+		// fill from third color back to first color:
+		for(int i = color3pos + 1; i < this.scaleLength; i++)
+		{
+//			for(int j = 0; j < trichromColors[i].length; j++)
+//			{
+				trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta3;
+				trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta3;
+				trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
+//			} // for - j
+		} // for - third color to first color
+
+		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
+		int	trichromColorPos	= 0;
+		for(int i = 0; i < this.colorSelect.length && trichromColorPos < trichromColors.length; i++)
+		{
+			// TODO: I don't think that these positions are being set correctly :/
+			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+			System.out.println("	trichromColors[" + trichromColorPos + "] = rgb(" + trichromColors[trichromColorPos][0] + ", " + trichromColors[trichromColorPos][1] + ", " + trichromColors[trichromColorPos][2] + ")");
+			this.setColor(i, trichromColors[trichromColorPos]);
+
+/*			this.colors[i][0]	= trichromColors[trichromColorPos][0];
+			this.colors[i][1]	= trichromColors[trichromColorPos][1];
+			this.colors[i][2]	= trichromColors[trichromColorPos][2];
+			*/
+		} // for
+		
+		this.fillHSBColors();
+
+//		this.updateCustomPitchCWs();
+	} //trichromatic_ThreeRGB
 
 	/**
 	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
@@ -2059,6 +2585,54 @@ public abstract class ModuleTemplate implements ControlListener  {
 					this.curHue[2]	= color.getBlue();
 				}
 			} // if - canvas
+			
+			// If there are special colors,
+			// check to see if this color corresponds to one or is one:
+			if(this.firstSpecialColorsCWId != -1)
+			{
+				// Position in colorSelect (if this CW is in colorSelect):
+				int	colorPos	= id - this.firstColorSelectCWId;
+				if(colorPos >= 0 && colorPos < this.colorSelect.length)
+				{
+					// Check to see if this position corresponds to a special color:
+					int	specialColorsPos	= this.arrayContains(this.specialColorsPos, colorPos);
+					if(specialColorsPos > -1)
+					{
+						// Increment the counter for this color:
+						this.specialColorsCounts[specialColorsPos]++;
+						System.out.println("colorSelectCW: specialColorsCounts[" + specialColorsPos + "] = " + this.specialColorsCounts[specialColorsPos]);
+						
+						// Make sure that they don't just keep calling back and forth:
+						if(this.specialColorsCounts[specialColorsPos] % 2 == 1)
+						{
+							((ColorWheel)this.sidebarCP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
+							
+						} // if - only make one call per pair
+					} // if - this CW connects to a specialColor							
+				} // if - this CW is in colorSelect
+				else
+				{
+					// Check to see if this CW is a specialColors CW:
+					colorPos	= id - this.firstSpecialColorsCWId;
+					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+					{
+						// Increment the counter for this color:
+						this.specialColorsCounts[colorPos]++;
+						System.out.println("specialColorCW: specialColorsCounts[" + specialColorsPos + "] = " + this.specialColorsCounts[colorPos]);
+						
+						// Make sure that they don't just keep calling back and forth:
+						if(this.specialColorsCounts[colorPos] % 2 == 1)
+						{
+							int	colorSelectPos	= this.specialColorsPos[colorPos];
+							((ColorWheel)this.sidebarCP5.getController("colorWheel" + (colorSelectPos + this.firstColorSelectCWId))).setRGB(color.getRGB());
+							
+							this.applySpecialColors();
+						} // if - only make one call per pair
+					} // if
+				} // else - for CWs not in colorSelect
+				
+			} // if - specialColors
+			
 			/*			else if( ( this.backgroundColorSelectId != -1 ) && 
 					( ( id % 100 ) == ( this.backgroundColorSelectId % 100 ) ) )
 			{
@@ -2526,7 +3100,33 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for
 
 		return -1;
-	}
+	} // arrayContains
+	
+	/**
+	 * Used in controlEvent for determining whether a given color is in specialColors;
+	 * returns the position of the element if it exists in the array,
+	 * or -1 if the element is not in the array.
+	 * 
+	 * @param array		String[] to be searched for the given element
+	 * @param element	String whose position in the given array is to be returned.
+	 * @return		position of the given element in the given array, or -1 
+	 * 				if the element does not exist in the array.
+	 */
+	private int arrayContains(int[] array, int element) {
+		if(array == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): array parameter is null.");
+		}
+
+		for (int i = 0; i < array.length; i++)
+		{
+			//    println("array[i] = " + array[i]);
+			if (array[i] == element) {
+				return i;
+			} // if
+		} // for
+
+		return -1;
+	} // arrayContains
 
 	/**
 	 * Updates the ColorWheel with the given id to the color at colorPos in this.colors
@@ -2648,6 +3248,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 			Color	rgbColor	= new Color(this.rainbowColors[this.majMinChrom][i][0], this.rainbowColors[this.majMinChrom][i][1], this.rainbowColors[this.majMinChrom][i][2]);
 			((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 100))).setRGB(rgbColor.getRGB());
 			 */
+			System.out.println("rainbow: i = " + i);
 			this.setColor(i, this.rainbowColors[this.majMinChrom][i]);
 
 			id	= id + 1;
@@ -2693,7 +3294,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	{
 		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
 			throw new IllegalArgumentException("ModuleTemplate.getColor: in parameter " + colorPos + 
-					" is out of bounds; must be withing 0 to " + (this.colorSelect.length - 1));
+					" is out of bounds; must be within 0 to " + (this.colorSelect.length - 1));
 		} // error checking
 
 		Color	curColor	= new Color(this.colorSelect[colorPos].getRGB());
@@ -2739,12 +3340,123 @@ public abstract class ModuleTemplate implements ControlListener  {
 			int	colorInt	= (new Color(color[0], color[1], color[2])).getRGB();
 
 			((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos))).setRGB(colorInt);
+			
+			System.out.println("Just set " + this.sidebarCP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos)) + 
+					" to color rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ");"
+							+ "\n\tgetColor(" + colorPos + " = rgb(" + this.getColor(colorPos)[0] + ", " + this.getColor(colorPos)[1] + ", " + this.getColor(colorPos)[2] + ")");
 			//		this.setColor(colorPos, colorInt);
 		} else {
 			System.out.println("ModuleTemplate.setColor: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
 		} // if/else
 	} // setColor
+	
+/*	protected void setColorStyle(int newColorStyle)
+	{
+		this.curColorStyle	= newColorStyle;
+		
+		// Rainbow:
+		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		{
+			//			// if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(true);
+			}
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
+			}
 
+		} // if - rainbow
+
+		// Dichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		{
+			// First time to dichromatic, dichromFlag will be false, 
+			// and the two colors will be set to contrast.
+			if(!this.dichromFlag)
+			{
+				this.dichromatic_OneRGB(this.getColor(0));
+
+				this.dichromFlag	= true;
+			} // first time
+			// After the first time, use current color values
+			// (allows selection of 2nd color):
+			else
+			{
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+			}
+
+			// Unlock 2nd Color Button, but keep 3rd Color locked:
+			// if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(false);
+			}
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
+			}
+
+		} // Dichromatic
+
+		// Trichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		{
+			int	colorPos2	= 4;	// initializing for the first call
+			int	colorPos3	= 8;
+			// first time trichromatic has been called:
+			if(!this.trichromFlag)
+			{
+				this.trichromatic_OneRGB(this.getColor(0));
+
+				this.trichromFlag	= true;
+			}
+
+			// every other time:
+			else
+			{
+				if(this.majMinChrom == 2)
+				{
+					colorPos2	= 4;
+					colorPos3	= 8;
+				} else {
+					//				colorPos2	= 3;
+					//				colorPos3	= 4;
+
+					// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+					// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+
+					colorPos2	= 5;
+					colorPos3	= 7;
+				}
+/*
+				System.out.println("updateColors: about to call trichrom_3RGB with rgb(" + 
+						this.colors[0][0] + ", " + this.colors[0][1] + ", " + this.colors[0][2] + "), rgb(" +
+						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
+						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
+*/
+//				this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+				//				this.updateCustomPitchCWs();
+/*			} // else
+
+
+			// Unlock all for Trichromatic:
+			// if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(false);
+			}
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(false);
+			}
+
+		} // Trichromatic
+
+	} // setColorStyle
+*/
+	
 	/**
 	 * Sets the ColorWheel at colorPos to the given color
 	 * 
