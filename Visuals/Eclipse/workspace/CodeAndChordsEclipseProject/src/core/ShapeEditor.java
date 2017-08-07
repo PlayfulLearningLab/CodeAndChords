@@ -1,5 +1,12 @@
 package core;
 
+/**
+ * This class is meant to be a plugin of sorts into a module.  To use a ShapeEditor object to
+ * 		edit your shapes, create a shape editor object and then call runSE() in draw().
+ * 		The ShapeEditor is then opened and closed by manipulating the isRunning varibale, 
+ * 		through the use of the setIsRunning() function.
+*/
+
 import java.awt.Color;
 
 import controlP5.CColor;
@@ -57,6 +64,8 @@ public class ShapeEditor implements ControlListener{
 	 * This constructor should be used to create a scaled version of the shaper editor 
 	 * 		that is scaled based off of the window that the shape is displayed in
 	 * 
+	 * THIS IS THE PREFERED CONSTRUCOR
+	 * 
 	 * @param parent
 	 * @param fullAppletWidth 		width of the window that this shape will be displayed in
 	 * @param fullAppletHeight 		height of the window that this shape will be displayed in
@@ -67,9 +76,11 @@ public class ShapeEditor implements ControlListener{
 		if(parent == null) throw new IllegalArgumentException("PApplet parameter parent is null");
 		else this.parent = parent;
 		
+		//make sure the shape object isn't null and then initialize
 		if(shape == null) throw new IllegalArgumentException("Shape parameter is null");
 		else this.shape = shape;
 				
+		//create a new ControlP5 object to use
 		this.cp5 = new ControlP5(parent);
 		this.cp5.addListener(this);
 		
@@ -86,6 +97,9 @@ public class ShapeEditor implements ControlListener{
 		 * 		same in both the module and the shape editor, ensuring that it is easy to create 
 		 * 		the shape you want to create without having to guess what it will look like after 
 		 * 		it is put into the module
+		 * 
+		 * This code attempts to find the highest scale factor that can be used to fit both the 
+		 * 		scaled down screen and the side menu bar onto the screen
 		 */
 		float scaleFactor = .8f;
 		float scaledWidth = fullAppletWidth * scaleFactor;
@@ -106,19 +120,23 @@ public class ShapeEditor implements ControlListener{
 		
 		this.scale = scaleFactor;
 		
+		//Initialize all of the instance variables using the scaleFactor that was found above
+		
 		if(menuWidth > 300) menuWidth = 300;
 		
 		this.seWidth = scaledWidth;
 		this.seHeight = scaledHeight;
 		this.menuWidth = menuWidth;
 		
-		this.seXPos = 0;
+		this.seXPos = (fullAppletWidth - (this.seWidth + this.menuWidth))/2;
 		this.seYPos = (fullAppletHeight - scaledHeight)/2;
 		
 		this.shapeXPos = (fullAppletWidth/2)*this.scale;
 		this.shapeYPos = (fullAppletHeight/2)*this.scale;
 		this.shapeRotation = 0;
 		
+		//add background objects around the shape editor pop out in order to blur the images that
+		//		can be seen behind
 		this.cp5.addBackground("b1")
 		.setPosition(0, 0)
 		.setSize((int)fullAppletWidth, (int)((fullAppletHeight - this.seHeight)/2) + 1)
@@ -142,9 +160,11 @@ public class ShapeEditor implements ControlListener{
 			.setBackgroundColor( (new Color((int)0,(int)0,(int)0, (int)200)).getRGB());
 		}
 		
+		//shape mode options (unimplemented as of 8/7/17)
 		this.scaledWindow = true;
 		this.trueShapeMode = false;
 		
+		//calls function to create all of the cp5 controls needed
 		this.addMenuControls();
 		
 	}//constructor
@@ -190,21 +210,31 @@ public class ShapeEditor implements ControlListener{
 	
 	/**
 	 * 
-	 * @param param		This float array is used to pass in and out all of the values that have to do with
-	 * 						the position and orientation of the shape. 
-	 * @return			Returns a float[] with all the same parameters that were passed in, but they have been
-	 * 						updated to represent the changes that the shape editor has made
+	 * @param xPos x position of the shape in the main window
+	 * @param yPos y position of the shape in the main window
+	 * @param rotation rotation of the shape in the main window
+	 * @return returns a float[] with the three parameters passed in, accounting for any changes that
+	 * 				were made to the position and rotation of the shape
 	 */
 	public float[] runSE(float xPos, float yPos, float rotation)
 	{		
 		if(this.isRunning)
 		{
+			//if the ShapeEditor isRunning, it updates the x and y position variables based on
+			//		the values displayed by the x and y position sliders
 			this.cp5.getController("xPos").update();
 			this.cp5.getController("yPos").update();
+			this.cp5.getController("rotation").update();
 			
+			//draws the menu
 			this.drawSE();
 			if(!this.cp5.isVisible())
 			{
+				//if the menu is running but cp5 controls are not visible, it will show the cp5 controls
+				//		and then update the x and y positions based on the parameters passed in because
+				//		it knows this is the first call that the parent has made to display the shape 
+				//		window, so it should check if the parent has changed the position values itself
+				
 				this.cp5.show();
 				this.shapeXPos = xPos;
 				this.shapeYPos = yPos;
@@ -213,14 +243,21 @@ public class ShapeEditor implements ControlListener{
 		}
 		else if(this.cp5.isVisible())
 		{
+			//if cp5 is visible but the ShapeEditor is not running, hide cp5
 			this.cp5.hide();
 		}
 		
+		//return the position and rotation variables so that the parent can update itself
 		return new float[] { 	PApplet.map(this.shapeXPos, 0, this.scale, 0, 1), 
 								PApplet.map(this.shapeYPos, 0, this.scale, 0, 1), 
 								this.shapeRotation};
 	}
 	
+	
+	/**
+	 * This function is called repeatedly when the ShapeEditor isRunning to draw all of the menu 
+	 * 		features that are drawn with processing tools
+	 */
 	private void drawSE()
 	{
 		System.out.println("drawSE() is running");
@@ -267,6 +304,9 @@ public class ShapeEditor implements ControlListener{
 
 	}//drawSE
 	
+	/**
+	 * This method is called in the constructor to create all of the controls in the side menu
+	 */
 	private void addMenuControls()
 	{	
 		int  		numControllers = 8;  
@@ -345,8 +385,8 @@ public class ShapeEditor implements ControlListener{
 		
 		this.cp5.addScrollableList("shapeSelect")
 		.setPosition((this.menuWidth + this.seWidth)/2 + this.seXPos - 25 - 150, 5)
-		.setSize(150, 100)
-		.setBarHeight(30)
+		.setSize(150, 250)
+		.setBarHeight(40)
 		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
 		.setValue(0)
 		.close();
@@ -365,6 +405,7 @@ public class ShapeEditor implements ControlListener{
 		{
 			this.cp5.get("b1").bringToFront();
 			this.cp5.get("exitButton").bringToFront();
+			this.cp5.get("shapeSelect").bringToFront();
 		}
 	}
 	
