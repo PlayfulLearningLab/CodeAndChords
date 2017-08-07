@@ -10,6 +10,7 @@ import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
+import controlP5.Controller;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
@@ -67,18 +68,17 @@ import processing.core.PImage;
  */
 public class ModuleTemplate01 extends ModuleTemplate {
 	
-	private	int	trichromCounts	= 0;
-
+//	private	int	trichromCounts	= 0;
+/*
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
 	// TODO: make private after fixing trichrom error
 	public static	float	CS_TRICHROM	= 3;
 	private	static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
+	*/
 	//	private boolean menuVis = false;
 
-	// TODO: get rid of this (use local variable) after major/minor trichromatic bug is solved:
-	public int[][] trichromColors;
 
 	private	PApplet		parent;
 
@@ -96,7 +96,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	// Each int signifies the position in dichromColors/trichromColors/rainbowColors that is used to fill 
 	// this.colors at the corresponding position in scaleDegreeColors[this.majMinChrom]:
-	private	final	int[][]	scaleDegreeColors	= new int[][] {
+/*	private	final	int[][]	scaleDegreeColors	= new int[][] {
 		// major:
 		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 4, 5, 6, 6 },
 		// minor:
@@ -104,16 +104,16 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// chromatic:
 		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
 	}; // scaleDegreeColors
-
+*/
 	int[]				textYVals;
 	int[]				noteYVals;
 	int[]				modulateYVals;
 	int[]               modulateHSBVals;
 	int					colorSelectY;
 
-	private	boolean	dichromFlag;
+/*	private	boolean	dichromFlag;
 	private	boolean	trichromFlag;
-
+*/
 	public ModuleTemplate01(PApplet parent, Input input, String sidebarTitle)
 	{
 		// TODO: how am I going to deal with minor scales??
@@ -128,11 +128,15 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.hsbColors      = new int[12][3];
 
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
+		
+		this.specialColorsPos	= new int[3];
+		this.setColorStyle(this.curColorStyle);
+		
 		// The following will happen in rainbow():
 		//		this.tonicColor	= new int[] { 255, 0, 0, };
-		this.dichromFlag	= false;
+/*		this.dichromFlag	= false;
 		this.trichromFlag	= false;
-
+*/
 		//		this.rainbow();
 
 		/*
@@ -263,7 +267,11 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
 		// to lock them.
-		this.addColorSelectButtons(textYVals[14]);
+//		this.addColorSelectButtons(textYVals[14]);
+		String[] buttonLabels	= new String[] {
+				"Canvas", "Tonic", "2nd Color", "3rd Color"
+		}; // buttonLabels
+		this.addSpecialColors(textYVals[14], buttonLabels, "Color Select", true);
 
 		addColorStyleButtons(textYVals[13]);
 
@@ -283,13 +291,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		addModulateSliders(modulateYVals);
 
-		this.updateColors(this.curColorStyle);
+//		this.updateColors(this.curColorStyle);
 
 		//		this.hideTextLabels();
 
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
-		this.dichromFlag	= false;
-		this.trichromFlag	= false;	
+//		this.dichromFlag	= false;
+//		this.trichromFlag	= false;	
 
 		this.sidebarCP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
@@ -661,7 +669,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param colorStyle	the desired colorStyle; this will be used to set the curColorStyle instance var
 	 */
-	private void updateColors(float colorStyle)
+/*	private void updateColors(int colorStyle)
 	{
 
 		if(colorStyle < 1 || colorStyle > 4) {
@@ -753,9 +761,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
 						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
 */
-				this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+//				this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
 				//				this.updateCustomPitchCWs();
-			} // else
+/*			} // else
 
 
 			// Unlock all for Trichromatic:
@@ -788,6 +796,136 @@ public class ModuleTemplate01 extends ModuleTemplate {
 //		this.updateCustomPitchCWs();
 
 	} // updateColors
+	*/
+				
+	protected void setColorStyle(int newColorStyle)
+	{
+		this.curColorStyle	= newColorStyle;
+		System.out.println("	--------------------------------setColorStyle: curColorStyle = " + this.curColorStyle);
+
+		// Rainbow:
+		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		{
+			//	if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)).lock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).lock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
+	
+		} // if - rainbow
+
+		// Dichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		{
+			this.specialColorsPos[0]	= 0;
+			
+			// For minor keys, choose the 2nd to last note; else choose the last note:
+			if(this.majMinChrom == 1)	{	this.specialColorsPos[1]	= this.colorSelect.length - 2;	}
+			else						{	this.specialColorsPos[1]	= this.colorSelect.length - 1;	}
+			
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
+			
+			// First time to dichromatic, dichromFlag will be false, 
+			// and the two colors will be set to contrast.			
+/*			if(!this.dichromFlag)
+			{
+				this.dichromatic_OneRGB(this.getColor(0));
+
+				this.dichromFlag	= true;
+			} // first time
+			// After the first time, use current color values
+			// (allows selection of 2nd color):
+			else
+			{
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+			}
+	*/		
+		
+
+			// Unlock 2nd Color Button, but keep 3rd Color locked:
+			// if avoids errors during instantiation:
+/*			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(false);
+			}
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
+			}
+*/
+		} // Dichromatic
+
+		// Trichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		{
+			int	colorPos2	= 4;	// initializing for the first call
+			int	colorPos3	= 8;
+			
+			// first time trichromatic has been called:
+/*			if(!this.trichromFlag)
+			{
+				this.trichromatic_OneRGB(this.getColor(0));
+
+				this.trichromFlag	= true;
+			}
+
+			// every other time:
+			else
+			{
+*/				
+			if(this.majMinChrom == 2)
+				{
+					colorPos2	= 4;
+					colorPos3	= 8;
+				} else {
+					//				colorPos2	= 3;
+					//				colorPos3	= 4;
+
+					// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+					// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+
+					colorPos2	= 5;
+					colorPos3	= 7;
+				}
+			
+			this.specialColorsPos[0]	= 0;
+			
+			// For minor keys, choose the 2nd to last note; else choose the last note:
+			this.specialColorsPos[1]	= colorPos2;
+			this.specialColorsPos[2]	= colorPos3;
+			
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).unlock();	}
+			
+/*
+				System.out.println("updateColors: about to call trichrom_3RGB with rgb(" + 
+						this.colors[0][0] + ", " + this.colors[0][1] + ", " + this.colors[0][2] + "), rgb(" +
+						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
+						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
+*/
+			this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+				//				this.updateCustomPitchCWs();
+//			} // else
+
+
+			// Unlock all for Trichromatic:
+			// if avoids errors during instantiation:
+/*			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 2)).setLock(false);
+			}
+			if(this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)) != null)
+			{
+				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(false);
+			}
+			*/
+
+		} // Trichromatic
+
+	} // setColorStyle
+
 
 	/**
 	 * Updates the colors of the colorSelect ColorWheels, which will then send an event to their connected Textfields.
@@ -934,7 +1072,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
 	 */
-	public void dichromatic_OneRGB(int[] rgbVals)
+/*	public void dichromatic_OneRGB(int[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
@@ -952,7 +1090,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param hue	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
-	private void dichromatic_OneHSB(float[] hsbVals)
+/*	private void dichromatic_OneHSB(float[] hsbVals)
 	{
 		if(hsbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
@@ -990,7 +1128,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @param rgbVals1	float[] of rgb values defining tonicColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
-	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
+/*	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
@@ -1030,7 +1168,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		{
 			difference	= rgbVals1[i] - rgbVals2[i];
 */
-			for(int i = 0; i < this.colorSelect.length - 1; i++)
+/*			for(int i = 0; i < this.colorSelect.length - 1; i++)
 			{
 				// Take the percent of the difference multiplied by the position in the array,
 				// subtracting it from the first color to deal with negatives correctly
@@ -1056,7 +1194,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.colors[this.colors.length - 1][i]	= rgbVals2[i];
 		}
 		*/
-	} // dichromatic_TwoRGB
+//	} // dichromatic_TwoRGB
 
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
@@ -1064,7 +1202,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
 	 */
-	public void trichromatic_OneRGB(int[] rgbVals)
+/*	public void trichromatic_OneRGB(int[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
@@ -1082,7 +1220,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 *
 	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
-	private void trichromatic_OneHSB(float[] hsbVals)
+/*	private void trichromatic_OneHSB(float[] hsbVals)
 	{
 		if(hsbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
@@ -1132,14 +1270,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @param rgbVals2	rgb vals for the sub-dominant for major/minor scales or "5th scale degree" (counting by half steps) for chromatic scales
 	 * @param rgbVals3	rgb vals for the dominant for major/minor scales or the "9th scale degree" (counting by half steps) for chromatic scales
 	 */
-	public void trichromatic_ThreeRGB(int[] rgbVals1, int[] rgbVals2, int[] rgbVals3)
+/*	public void trichromatic_ThreeRGB(int[] rgbVals1, int[] rgbVals2, int[] rgbVals3)
 	{
 		if(rgbVals1 == null || rgbVals2 == null || rgbVals3 == null) {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
 		} // error checking
 
 		this.trichromCounts++;
-		System.out.println("	this.trichromCounts = " + this.trichromCounts);
+		System.out.println("	this.trichromCounts = " + this.trichromCounts + "----------------------------------------------------------------------------------------------------------");
 		
 		int	color1pos	= 0;
 		int	color2pos;
@@ -1173,7 +1311,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		 */
 		// This array has the trichromatic spectrum:
 //		int[][]	trichromColors	= new int[this.scaleLength][3];
-		trichromColors	= new int[this.scaleLength][3];
+/*		trichromColors	= new int[this.scaleLength][3];
 
 		// fill first position with first color:
 		for(int i = 0; i < rgbVals1.length; i++)
@@ -1228,10 +1366,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.colors[i][1]	= trichromColors[trichromColorPos][1];
 			this.colors[i][2]	= trichromColors[trichromColorPos][2];
 			*/
-		} // for
+//		} // for
 
 //		this.updateCustomPitchCWs();
-	} //trichromatic_ThreeRGB
+//	} //trichromatic_ThreeRGB
 
 	/**
 	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
@@ -1438,7 +1576,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 			// Set tonic color/call correct function for the new colorStyle:
-			this.updateColors(curToggle.internalValue());
+//			this.updateColors((int)curToggle.internalValue());
+
+			this.setColorStyle((int)curToggle.internalValue());
+			
 
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
