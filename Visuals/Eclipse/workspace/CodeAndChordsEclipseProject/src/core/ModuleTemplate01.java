@@ -130,7 +130,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
 		
 		this.specialColorsPos	= new int[3];
-		this.setColorStyle(this.curColorStyle);
+//		this.setColorStyle(this.curColorStyle);
 		
 		// The following will happen in rainbow():
 		//		this.tonicColor	= new int[] { 255, 0, 0, };
@@ -273,13 +273,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		}; // buttonLabels
 		this.addSpecialColors(textYVals[14], buttonLabels, "Color Select", true);
 
-		addColorStyleButtons(textYVals[13]);
+		// addColorStyleButtons will set the colorStyle to rainbow() first:
+		this.addColorStyleButtons(textYVals[13]);
 
 		// This call to rainbow() used to be the last in initInput(),
 		// but has to be called before addCustomPitchColor() so that this.colors will be filled 
 		// before the ColorWheels are created and the ColorWheels can be set to the colors in this.colors.
 		// If the call comes at the end, the ColorWheels start black and end grayscale.
-		this.rainbow();
+//		this.rainbow();
 //		this.fillOriginalColors();
 		// addColorSelect() will fillHSBColors
 //		this.fillHSBColors();
@@ -358,9 +359,11 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
+//		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
+		this.setColorStyle(ModuleTemplate.CS_RAINBOW);
 	} // addColorStyleButtons
 
+	/*
 	private void addColorSelectButtons(int colorSelectY)
 	{
 		int	colorSelectWidth	= 49;
@@ -444,7 +447,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // for
 
 	} // addColorSelectButtons
-
+*/
+	
 	/**
 	 * Method called during instantiation to initialize note buttons and their corresponding ColorWheels;
 	 * make sure that rainbow() has already been called (or that this.colors has been filled some other way).
@@ -797,7 +801,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	} // updateColors
 	*/
-				
+
+	/*				
 	protected void setColorStyle(int newColorStyle)
 	{
 		this.curColorStyle	= newColorStyle;
@@ -811,6 +816,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).lock();	}
 			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
 	
+			this.rainbow();
 		} // if - rainbow
 
 		// Dichromatic:
@@ -828,8 +834,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			
 			// First time to dichromatic, dichromFlag will be false, 
 			// and the two colors will be set to contrast.			
-/*			if(!this.dichromFlag)
+			if(!this.dichromFlag)
 			{
+				System.out.println("We are calling dichrom, right?");
 				this.dichromatic_OneRGB(this.getColor(0));
 
 				this.dichromFlag	= true;
@@ -840,7 +847,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			{
 				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 			}
-	*/		
+		
 		
 
 			// Unlock 2nd Color Button, but keep 3rd Color locked:
@@ -854,7 +861,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				this.sidebarCP5.getController("button" + (this.canvasColorSelectId + 3)).setLock(true);
 			}
 */
-		} // Dichromatic
+/*		} // Dichromatic
 
 		// Trichromatic:
 		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
@@ -862,8 +869,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
 			
+			// Turned off the "first time/remaining times" because it's still pretty interesting
+			// and, I think, more intuitive, coming off of another color.  Dichromatic is boring coming off rainbow.
 			// first time trichromatic has been called:
-/*			if(!this.trichromFlag)
+/*		if(!this.trichromFlag)
 			{
 				this.trichromatic_OneRGB(this.getColor(0));
 
@@ -873,8 +882,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// every other time:
 			else
 			{
-*/				
-			if(this.majMinChrom == 2)
+			*/
+/*			if(this.majMinChrom == 2)
 				{
 					colorPos2	= 4;
 					colorPos3	= 8;
@@ -887,7 +896,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 					colorPos2	= 5;
 					colorPos3	= 7;
-				}
+				} // else - colorPos for different scales
+	//		}
 			
 			this.specialColorsPos[0]	= 0;
 			
@@ -905,7 +915,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
 						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
 */
-			this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+//			this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
 				//				this.updateCustomPitchCWs();
 //			} // else
 
@@ -922,10 +932,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			}
 			*/
 
-		} // Trichromatic
+/*		} // Trichromatic
 
 	} // setColorStyle
-
+*/
 
 	/**
 	 * Updates the colors of the colorSelect ColorWheels, which will then send an event to their connected Textfields.
