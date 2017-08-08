@@ -2,15 +2,21 @@ package core;
 
 import java.awt.Color;
 
+import controlP5.Background;
+import controlP5.CColor;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.Controller;
+import controlP5.ControllerGroup;
 import controlP5.ControllerInterface;
 import controlP5.Slider;
 import controlP5.Textfield;
+import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PShape;
 import core.Shape;
+import module_02.Module_02_AmplitudeHSB;
 
 /**
  * July 2017
@@ -32,18 +38,20 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	private	float	forteThreshold;
 
 	/**	The minimum value for threshold Sliders	*/
-//	private	float	minThreshold;
+	//	private	float	minThreshold;
 
 	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
-//	private	int	firstThresholdSliderId	= -1;
+	//	private	int	firstThresholdSliderId	= -1;
 
 	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
-//	private	float[] satBrightThresholdVals;
+	//	private	float[] satBrightThresholdVals;
+
+	private Module_02_AmplitudeHSB module2;
 
 	private boolean shapeMenuIsOpen;
 
 	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
-//	private	float[]	satBrightPercentVals;
+	//	private	float[]	satBrightPercentVals;
 
 
 	/**
@@ -56,6 +64,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
 		super(parent, input, sidebarTitle, 4);
+
+		this.module2 = (Module_02_AmplitudeHSB) parent;
 
 		this.shapeMenuIsOpen = false;
 
@@ -100,7 +110,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		 */
 
 		// already called addHideButtons in superclass with y-val of 26.
-		
+
 		// Have to addColorSelect() first so that everything else can access the colors:
 		String[]	buttonLabels	= new String[] {
 				"Canvas", "1", "2", "3", "4"
@@ -114,8 +124,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		this.addRangeSegments(this.yVals[6], 4, 4, "Dynamic\nSegments");
 
-		
-//		this.addColorSelectButtons(this.yVals[7]);
+
+		//		this.addColorSelectButtons(this.yVals[7]);
 
 		this.addHSBSliders(new int[] { this.yVals[8], this.yVals[9], this.yVals[10], });
 
@@ -206,7 +216,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 								this.legendColors[i][1] + "; this.legendColors[" + i + "][2] = " + this.legendColors[i][2]);
 			 */
 			//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
-//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
+			//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
 			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
 
 
@@ -440,6 +450,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	} // addColorSelectButtons
 	 */
 
+
 	protected void addShapeCustomizationControls(int yVal)
 	{
 		this.sidebarCP5.addButton("shapeMenuButton")
@@ -448,6 +459,64 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.setWidth(250)
 		.setLabel("Shape Menu")
 		.setGroup("sidebarGroup");
+
+		this.sidebarCP5.addGroup("shapeMenuGroup");
+
+
+		//Ask Emily if she knows how to make the alpha setting darker.  Nothing I do will change it
+		int fb = new Color((int)0,(int)0,(int)0, (int)250).getRGB();
+		CColor fadedBackground = new CColor();
+		//fadedBackground.setAlpha();
+
+		this.sidebarCP5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		((Slider) this.sidebarCP5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		((Slider) this.sidebarCP5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("n1", 0, 10, 1, 15, 320, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("n2", 0, 10, 1, 15, 370, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addSlider("n3", 0, 10, 1, 15, 420, 150, 28)
+		.setGroup("shapeMenuGroup")
+		.getCaptionLabel()
+		.hide();
+
+		this.sidebarCP5.addScrollableList("shapeSelect")
+		.setPosition(15,70)
+		.setSize(150, 100)
+		.setBarHeight(30)
+		.setGroup("shapeMenuGroup")
+		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
+		.close()
+		.setValue(this.module2.getShape().getShapeIndex());
+
+
+
+		this.sidebarCP5.getGroup("shapeMenuGroup")
+		.setVisible(false);
+
 	}
 
 	/**
@@ -503,7 +572,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * @param colorPos	the position in this.colorSelect to which the sat/brightness should be applied
 	 * @return			the color with saturation and brightness adjustments
 	 */
-/*	public float[] applyThresholdSBModulate(float curAmp, int colorPos)
+	/*	public float[] applyThresholdSBModulate(float curAmp, int colorPos)
 	{
 		// Error checking:
 		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
@@ -560,9 +629,9 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		/*			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
 			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
-		 */
-		// Converts the color back to RGB:
-/*		int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
+	 */
+	// Converts the color back to RGB:
+	/*		int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
 		Color a = new Color(oc);
 
 		// Don't want to set the ColorWheel to this;
@@ -572,161 +641,94 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		/*			this.colors[i][0] = (float)a.getRed();
 			this.colors[i][1] = (float)a.getGreen();
 			this.colors[i][2] = (float)a.getBlue();
-		 */
-//	} // for
-	
-/*	return a.getColorComponents(null);
+	 */
+	//	} // for
+
+	/*	return a.getColorComponents(null);
 } // applyThresholdSBModulate
-*/
+	 */
 
-/**
- * Used to catch ControlEvents from ControlP5 Controllers
- * 
- * @param controlEvent	the current ControlEvent
- */
-public void controlEvent(ControlEvent controlEvent)
-{
-	super.controlEvent(controlEvent);
+	/**
+	 * Used to catch ControlEvents from ControlP5 Controllers
+	 * 
+	 * @param controlEvent	the current ControlEvent
+	 */
+	public void controlEvent(ControlEvent controlEvent)
+	{
+		super.controlEvent(controlEvent);
 
-	//		System.out.println("ModuleTemplate02.controlEvent: controlEvent = " + controlEvent);
+		//		System.out.println("ModuleTemplate02.controlEvent: controlEvent = " + controlEvent);
 
-	int	id	= controlEvent.getId();
+		int	id	= controlEvent.getId();
 
-	/*
+		/*
 		if(id != this.canvasColorSelectId && id != this.backgroundColorSelectId && id > 299 && id < 400)
 		{
 			int	colorPos	= this.calculateNotePos(id);
 			System.out.println("colors[colorPos][0] = " + this.colors[colorPos][0]);
 		}
-	 */
-
-	// Re-calculate thresholds for dynamicSegment Buttons, lowThreshold and forteThreshold sliders:
-	if( ( (this.firstRangeSegmentsId > -1) && 
-			(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments) )
-			|| (this.firstThresholdSliderId > -1 && id == this.firstThresholdSliderId)
-			|| (this.thresholdSliderId > -1 && id == this.thresholdSliderId) 
-			)
-	{
-		if(id == this.firstThresholdSliderId) {
-			this.forteThreshold	= controlEvent.getValue();
-		}
-
-		this.resetThresholds();
-	} // dynamic segment buttons
-
-
-	// Saturation and Brightness Percent Sliders:
-	/*		if(controlEvent.getName().equals("saturationSlider") || 
-				controlEvent.getName().equals("brightnessSlider"))
-		{
-
-			// The Sliders automatically set their corresponding variables,
-			// so all we have to do is call applyHSBModulate():
-
-			if(this.hsbColors == null)	{	this.fillHSBColors();	}			
-			this.applyHSBModulate(this.colors, this.hsbColors);
-		} // if - sat/brightness percent Sliders
-	 */
-
-
-	// Saturation and Brightness Threshold and Percent Sliders:
-	if(this.firstThresholdSliderId != -1 &&
-			( ( id > this.firstThresholdSliderId ) && ( id < this.firstThresholdSliderId + 5 ) ) )
-	{
-		int		arrayPos	= (id - this.firstThresholdSliderId - 1) / 2;
-		/*			
-			float	mappingVal;
-			float	thresholdVal;
-			float	curAmp		= this.input.getAmplitude();
-
-			float	percentVal;
 		 */
 
-		// Percent Sliders
-/*		if((id - this.firstThresholdSliderId) % 2 == 1)
+		// Re-calculate thresholds for dynamicSegment Buttons, lowThreshold and forteThreshold sliders:
+		if( ( (this.firstRangeSegmentsId > -1) && 
+				(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments) )
+				|| (this.firstThresholdSliderId > -1 && id == this.firstThresholdSliderId)
+				|| (this.thresholdSliderId > -1 && id == this.thresholdSliderId) 
+				)
 		{
-			this.satBrightPercentVals[arrayPos]		= controlEvent.getValue();
-			this.satBrightThresholdVals[arrayPos]	= this.sidebarCP5.getValue("slider" + (id + 1));
-			//				percentVal		= controlEvent.getValue();
-		} else {
-			// Threshold Sliders
-			this.satBrightThresholdVals[arrayPos]	= controlEvent.getValue();
-			this.satBrightPercentVals[arrayPos]		= this.sidebarCP5.getValue("slider" + (id - 1));
+			if(id == this.firstThresholdSliderId) {
+				this.forteThreshold	= controlEvent.getValue();
+			}
+
+			this.resetThresholds();
+		} // dynamic segment buttons
+
+
+		if(controlEvent.getName() == "shapeMenuButton")
+		{
+			//open the menu
+			this.shapeMenuIsOpen = true;
+
+			//set the shape select list
+			System.out.println(this.module2.getShape().getShapeIndex());
+			this.sidebarCP5.getController("shapeSelect").setValue(this.module2.getShape().getShapeIndex());
+
+			//make the shape menu visible
+			this.sidebarCP5.getGroup("shapeMenuGroup")
+			.setVisible(false);
+
+			//hide the other controls
+			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+
+			this.sidebarCP5.getController("menuX").update();
+
+			this.module2.setShapeEditorRunning(true);
+
+
+		}//shapeMenuButton
+
+		if(controlEvent.getName() == "shapeSelect")
+		{
+			this.module2.getShape().setShapeIndex((int) this.sidebarCP5.getController("shapeSelect").getValue());
 		}
-*/
-		//			System.out.println("thresholdVal = " + thresholdVal);
-		//			System.out.println("percentVal = " + percentVal);
-		/*			mappingVal	= PApplet.map(curAmp, 0, Math.max(thresholdVal, this.minThreshold + 1), 0, 100);
-			System.out.println("mappingVal = " + mappingVal);
 
-			this.hueSatBrightPercentMod[arrayPos]	= (percentVal * mappingVal) / 100;
-		 */
 
-		//			if(this.hsbColors == null)	{	this.fillHSBColors();	}	
-		//			this.applyHSBModulate(this.colors, this.hsbColors);
-	} // if - sat/brightness threshold Sliders
 
-	// TODO:
-	//		this.legend(0);
+	} // controlEvent
 
-	/*
-	 * So what's going on?
+	/**
+	 * Getter for this.thresholds
 	 * 
-	 * When I draw the legend in controlEvent but outside of any ifs, it will get the color
-	 * that I'm currently changing correct.  But the other colors revert back to their
-	 * original states!
-	 * So: when I am actively moving a ColorWheel, it's updating,
-	 * but when I stop, it "goes back" - how does it go back?
-	 * 		I'll check ModuleTemplate.controlEvent...
-	 * 		Nothing there.
-	 * 
-	 * And - I know that it has something to do with setting the canvas color?
-	 * Not true; I just know that that defined that it couldn't show the last one;
-	 * this might be a completely different issue.
-	 * Actually... both canvasColor and backgroundColor work fine. :/
+	 * @return	this.thresholds instance variable
 	 */
-
-	// ColorWheels - now this all happens in ModuleTemplate (post 7/26):
-	/*		if( (id > 299) && id <= 400)
-		{
-			// get current color:
-			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
-
-			int	rgbColor	= curCW.getRGB();
-			Color	color	= new Color(rgbColor);
-
-			// Set corresponding Textfield with color value:
-			Textfield	curColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 100));
-			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-
-			//			int	colorPos	= id - this.firstColorSelectCWId - 1;
-			int colorPos	= this.calculateNotePos(id);
-			this.colors[colorPos][0]	= color.getRed();
-			this.colors[colorPos][1]	= color.getGreen();
-			this.colors[colorPos][2]	= color.getBlue();
-
-		} // ColorWheels*/
-
-	if(controlEvent.getName() == "shapeMenuButton")
+	public float[] getThresholds()
 	{
-		this.shapeMenuIsOpen = true;
+		return this.thresholds;
+	}
 
-	}//shapeMenuButton
-} // controlEvent
-
-/**
- * Getter for this.thresholds
- * 
- * @return	this.thresholds instance variable
- */
-public float[] getThresholds()
-{
-	return this.thresholds;
-}
-
-public boolean getShapeMenuIsOpen()
-{
-	return this.shapeMenuIsOpen;
-}
+	public boolean getShapeMenuIsOpen()
+	{
+		return this.shapeMenuIsOpen;
+	}
 
 } // ModuleTemplate02

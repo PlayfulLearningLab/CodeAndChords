@@ -1,5 +1,14 @@
 package core;
 
+/**
+ * This class is meant to act as a shape object for shapes that are built off of polar coordinates.
+ *		To use, call the setCurrentShape() function to add shapes and then call the getCurrentShape()
+ *		function to have your PShape returned to you.  The language of current shape and next shape 
+ *		are used so that the Shape object offers a solid building block for shape morphing, though it 
+ *		has not yet been implemented as of 8/7/17.
+ */
+
+
 import processing.core.PApplet;
 import processing.core.PShape;
 
@@ -13,12 +22,16 @@ public class Shape {
 	private int   		numShapes;
 	private int 		shapeIndex;
 
+	private float[][]	currentShapeParameters;	
+	//May need to add a string at some point to identify which type of shape the parameters make
+	
 	private float[][] 	currentShape;
 	private float[] 	nextShape;
 
 	private float 		xStretch;
 	private float 		yStretch;
 	private float 		rotation;
+	private float 		shapeScale = 1;
 
 	//constructors	
 	public Shape(PApplet p)
@@ -47,6 +60,8 @@ public class Shape {
 		
 		this.numShapes = 5;
 		this.shapeIndex = 0;
+		
+		this.currentShapeParameters = new float[numShapes][];
 		
 		this.currentShape = new float[this.numShapes][this.steps];
 		this.nextShape = new float[this.steps];
@@ -90,9 +105,57 @@ public class Shape {
 		this.rotation = rotationInRadians;
 	}
 
+	public void setShapeIndex(int index)
+	{
+		if(index < 0) throw new IllegalArgumentException("index can not be less than zero");
+		if(index >= this.numShapes) throw new IllegalArgumentException("index can not be greater than or equal to the number of shapes");
+		
+		this.shapeIndex = index;
+	}
+	
+	//Getter Methods
+	
+	public int getShapeIndex ()
+	{
+		return this.shapeIndex;
+	}
 
 	//Implemented Methods
 	public PShape getPShape()
+	{
+		PShape shape = this.pApp.createShape();
+		shape.beginShape();
+
+		float x;
+		float y;
+
+		int i = 0;
+
+		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		{
+			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
+			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
+			
+			x = PApplet.map(x, 0, 1, 0, this.xStretch);
+			y = PApplet.map(y, 0, 1, 0, this.yStretch);
+			
+			x *= this.shapeScale;
+			y *= this.shapeScale;
+			
+			shape.vertex(x, y);
+			i++;
+		}//for()
+
+		shape.rotate(this.rotation);
+		
+		shape.endShape();
+
+		return shape;
+
+
+	}//drawShape()
+
+	public PShape getScaledPShape(float[] scale)
 	{
 		PShape shape = this.pApp.createShape();
 		shape.beginShape();
@@ -110,6 +173,13 @@ public class Shape {
 			x = PApplet.map(x, 0, 1, 0, this.xStretch);
 			y = PApplet.map(y, 0, 1, 0, this.yStretch);
 			
+			x *= this.shapeScale;
+			y *= this.shapeScale;
+			
+			x = PApplet.map(x, 0, scale[0], 0, scale[1]);
+			y = PApplet.map(y, 0, scale[2], 0, scale[3]);
+			
+			
 			shape.vertex(x, y);
 			i++;
 		}//for()
@@ -119,12 +189,18 @@ public class Shape {
 		shape.endShape();
 
 		return shape;
-
-
-	}//drawShape()
-
+		
+	}
+	
 	public void setCurrentShape(String shapeType, float[] parameters)
 	{
+		for(int i = 0; i < parameters.length; i++)
+		{
+			if(parameters[i] == -1) parameters[i] = this.currentShapeParameters[this.shapeIndex][i];
+		}
+		
+		this.currentShapeParameters[this.shapeIndex] = parameters;
+		
 		float[] shape = new float[(int) this.steps];
 
 		int i = 0;
@@ -226,6 +302,10 @@ public class Shape {
 		this.nextShape = shape;
 	}
 
+	public void setShapeScale(float scale)
+	{
+		this.shapeScale = scale;
+	}
 	
 	
 }//Shapes
