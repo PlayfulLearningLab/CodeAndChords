@@ -28,9 +28,6 @@ import processing.core.PImage;
  */
 public abstract class ModuleTemplate implements ControlListener  {
 
-	// TODO: get rid of this (use local variable) after major/minor trichromatic bug is solved:
-//	public int[][] trichromColors	= new int[12][3];
-
 
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
@@ -131,8 +128,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	protected	static	int	CS_RAINBOW	= 1;
 	protected	static	int	CS_DICHROM	= 2;
-	// TODO: make private after fixing trichrom error
-	public static	int	CS_TRICHROM	= 3;
+	protected	static	int	CS_TRICHROM	= 3;
 	protected	static	int	CS_CUSTOM	= 4;
 	protected	int	curColorStyle;
 
@@ -1180,7 +1176,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			System.err.println("ModuleTemplate.addSpecialColors: colorSelect Button with label text '" + buttonLabels[0] + "' will control the canvas color.");
 		}
 
-		//		this.specialColorsCounts	= new int[buttonLabels.length];
 		this.fromColorSelect	= true;
 		this.fromSpecialColors	= false;
 		this.specialColorsPos	= new int[buttonLabels.length];
@@ -2896,12 +2891,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.scaleLength	= this.getScale(key, majMinChrom).length;
 
 		this.sidebarCP5.getController("keyDropdown").setValue(keyPos);
-
-		// The following happen in controlEvent - "keyDropdown"
-		/*
-		this.curKey			= key;
-		this.setKeyAddVal(modPosition);
-		 */
 
 	} // setCurKey
 
