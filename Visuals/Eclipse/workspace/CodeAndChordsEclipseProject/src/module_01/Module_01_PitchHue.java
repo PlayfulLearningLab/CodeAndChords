@@ -92,7 +92,7 @@ public class Module_01_PitchHue extends PApplet
 		
 
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		if(this.moduleTemplate.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+/*		if(this.moduleTemplate.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 		{
 			for(int i = 0; i < moduleTemplate.trichromColors.length; i++)
 			{
@@ -100,6 +100,7 @@ public class Module_01_PitchHue extends PApplet
 				this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
 			}
 		} // if		
+		*/
 
 	} // draw()
 	
