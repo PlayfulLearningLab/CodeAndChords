@@ -1,22 +1,10 @@
 package core;
 
-import java.awt.Color;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Map;
-
-import controlP5.Button;
-import controlP5.ColorWheel;
 import controlP5.ControlEvent;
-import controlP5.ControlFont;
 import controlP5.ControlP5;
-import controlP5.Controller;
 import controlP5.ScrollableList;
-import controlP5.Slider;
-import controlP5.Textfield;
 import controlP5.Toggle;
 import processing.core.PApplet;
-import processing.core.PImage;
 
 /**
  * (For more info on updates beyond this point, see Trello board Module_01 PitchHue 
@@ -89,37 +77,17 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	public ModuleTemplate01(PApplet parent, Input input, String sidebarTitle)
 	{
-		// TODO: how am I going to deal with minor scales??
 		super(parent, input, sidebarTitle, 12);
 
 		this.parent	= parent;
 		this.input	= input;
 
-//		this.colors 		= new float[12][3];
-//		this.legendColors	= new int[12][3];
-//		this.originalColors	= new int[12][3];
 		this.hsbColors      = new int[12][3];
 
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
 		
 		this.specialColorsPos	= new int[3];
-//		this.setColorStyle(this.curColorStyle);
 		
-		// The following will happen in rainbow():
-		//		this.tonicColor	= new int[] { 255, 0, 0, };
-/*		this.dichromFlag	= false;
-		this.trichromFlag	= false;
-*/
-		//		this.rainbow();
-
-		/*
-		this.curKey			= "A";
-		this.majMinChrom	= 2;
-		 */
-		// Can't call setCurKey just yet, because the dropdown list hasn't been initialized,
-		// and it is called as part of setCurKey.
-		//		this.setCurKey(this.curKey, this.majMinChrom);
-
 		// textYVals will be used for sliders and buttons, including hsb and 
 		// rgb modulate values.
 		this.textYVals		 = new int[18];
@@ -148,7 +116,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		if(yValDif < 25) {
 			yValDif	= 25;
 		}
-		//System.out.println("yValDif = " + yValDif);
+
 		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length; i++)
@@ -176,8 +144,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		modulateYVals[0]	= textYVals[9];
 		modulateYVals[1]	= textYVals[10];
 		modulateYVals[2]	= textYVals[11];
-
-		//		addTonicColorSelector(textYVals[12]);
 
 		// Adding ColorSelect first since everything to do with colors depends on that:
 		String[] noteNames = new String[] {
@@ -219,8 +185,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	{
 		int	colorStyleWidth	= 49;
 		int	colorStyleSpace	= 6;
-
-//		int	labelX			= 10;
 
 		int rainbowX     	= this.leftAlign;
 		int dichromaticX	= this.leftAlign + colorStyleWidth + colorStyleSpace;
@@ -264,7 +228,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-//		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
 		this.setColorStyle(ModuleTemplate.CS_RAINBOW);
 	} // addColorStyleButtons
 
@@ -279,16 +242,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		this.parent.textSize(24);
 
-		//		String[]	notes	= this.getScale(this.curKeyOffset, this.majMinChrom);
 		String[]	notes	= this.getScale(this.curKey, this.majMinChrom);
 
 		float  sideWidth1   = (this.parent.width - leftEdgeX) / notes.length;
 		float  sideHeight  = this.parent.width / 12;
 		float	addToLastRect	= (this.parent.width - this.getLeftEdgeX()) - (sideWidth1 * notes.length);
 		float	sideWidth2	= sideWidth1;
-		//  float  side = height / colors.length;
 
-		//	stroke(255);
 		this.parent.noStroke();
 
 		int	scaleDegree;
@@ -312,24 +272,13 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			if (i == goalHuePos) {
 				this.parent.rect(leftEdgeX + (sideWidth1 * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth2, (float) (sideHeight * 1.5));
-				//      rect(0, (side * i), side * 1.5, side);
 			} else {
 				this.parent.rect(leftEdgeX + (sideWidth1 * i), this.parent.height - sideHeight, sideWidth2, sideHeight);
-				//      rect(0, (side * i), side, side);
 			}
 			this.parent.fill(0);
 			this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.35)), this.parent.height - 20);
 		} // for
 
-
-		// TODO: remove after fixing trichrom-maj/minor bug:
-		// Testing to see what's really in colors:
-/*		for(int i = 0; i < this.colorSelect.length; i++)
-		{
-			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
-			this.parent.ellipse(this.parent.width / 3 * 2, i * 30 + 60, 30, 30);
-		} // for
-*/
 	} // legend
 
 	
