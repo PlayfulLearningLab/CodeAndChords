@@ -35,7 +35,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	private	float[]	thresholds;
 
 	/**	The highest amplitude threshold	*/
-	private	float	forteThreshold;
+//	private	float	forteThreshold;
 
 	/**	The minimum value for threshold Sliders	*/
 	//	private	float	minThreshold;
@@ -239,7 +239,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * @param yVal	y value of forte threshold
 	 * @param verticalSpacer	vertical space between sliders
 	 */
-	private void addThresholdSliders(int yVal, int verticalSpacer)
+/*	private void addThresholdSliders(int yVal, int verticalSpacer)
 	{
 		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
 
@@ -256,7 +256,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		}; // names
 
 		String[]	labels = new String[] {
-				"Color: Forte\nThreshold",
+				"Forte\nThreshold",
 				"Saturation",
 				"Sat: Forte\nThreshold",
 				"Brightness",
@@ -270,7 +270,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		}; // hsbSliderNames
 		 */
-		this.firstThresholdSliderId	= this.nextSliderId;
+/*		this.firstThresholdSliderId	= this.nextSliderId;
 
 		for(int i = 0; i < names.length; i++)
 		{			
@@ -328,7 +328,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 
 	} // addThresholdSliders
-
+*/
+	
 	/**
 	 * Adds the color select Buttons (allows selection of color for each threshold)
 	 * 
