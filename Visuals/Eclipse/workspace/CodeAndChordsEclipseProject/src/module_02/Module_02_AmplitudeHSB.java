@@ -213,6 +213,11 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		this.shapeEditor.setIsRunning(isRunning);
 	}
 
+	public void mouseDragged()
+	{
+		this.mousePressed();
+	}
+	
 	public void mousePressed()
 	{
 
