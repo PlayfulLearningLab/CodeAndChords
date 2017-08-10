@@ -113,7 +113,7 @@ public class ShapeEditor implements ControlListener {
 		float menuWidth = fullAppletWidth - scaledWidth;
 
 		// ensures that the width of the menu is at least 200 pixels wide
-		while (menuWidth < 200) {
+		while (menuWidth < 300) {
 			scaleFactor = scaleFactor - .01f;
 
 			scaledWidth = fullAppletWidth * scaleFactor;
@@ -245,9 +245,9 @@ public class ShapeEditor implements ControlListener {
 				// itself
 
 				this.cp5.show();
-				//this.shapeXPos = xPos;
-				//this.shapeYPos = yPos;
-				//this.shapeRotation = rotation;
+				this.shapeXPos = xPos;
+				this.shapeYPos = yPos;
+				this.shapeRotation = rotation;
 			}
 		} else if (this.cp5.isVisible()) {
 			// if cp5 is visible but the ShapeEditor is not running, hide cp5
@@ -469,8 +469,8 @@ public class ShapeEditor implements ControlListener {
 		
 		return new float[] { 	this.seXPos + this.menuWidth, 
 								this.seYPos, 
-								this.seXPos + this.menuWidth + this.seWidth,
-								this.seYPos + this.seHeight };
+								this.seWidth,
+								this.seHeight };
 	}
 
 	public ControlP5 getCP5()
