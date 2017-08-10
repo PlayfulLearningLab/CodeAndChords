@@ -716,6 +716,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	} // addSliders
 	
+	/**
+	 * Adds the attack, release, and transition Sliders.
+	 * 
+	 * @param attackY	y value for attack Slider
+	 * @param releaseY	y value for release Slider
+	 * @param transitionY	y value for transition Slider
+	 */
 	protected void addARTSliders(int attackY, int releaseY, int transitionY)
 	{
 		String[]	labels	= new String[] {
@@ -738,6 +745,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 		}
 	} // addARTSliders
 	
+	/**
+	 * Adds the piano (minimum) threshold Slider.
+	 * 
+	 * @param yVal	y value of Slider
+	 */
 	protected void addPianoThresholdSlider(int yVal)
 	{
 		this.addSliderGroup(yVal, "Piano Threshold", 2, 100, 10);
@@ -848,7 +860,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		int		height			= 18;
 
 		int		listSliderX		= (popoutSpacer * 2) + labelWidth;
-		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
+//		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
 
 		int		rangeY			= popoutSpacer;
 		int		adsrY			= (popoutSpacer * 2) + height;
@@ -878,35 +890,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		for(int i = 0; i < labels.length; i++)
 		{
-			// BPM Textlabel:
-			this.sidebarCP5.addLabel(labels[i])
-			.setPosition(popoutSpacer, yVals[i] + 4)
-			.setGroup("guideToneBackground")
-			.setValue(labelVals[i]);
-
-			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-			.setPosition(listSliderX, yVals[i])
-			.setSize(sliderWidth, height)
-			.setSliderMode(Slider.FLEXIBLE)
-			.setRange(ranges[i][0], ranges[i][1])
-			.setValue(startingVals[i])
-			.setLabelVisible(false)
-			.setGroup("guideToneBackground")
-			.setId(this.nextSliderId);
-
-			this.nextSliderId	= this.nextSliderId + 1;
-
-			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-			.setPosition(textfieldX, yVals[i])
-			.setSize(textfieldWidth, height)
-			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
-			.setLabelVisible(false)
-			.setAutoClear(false)
-			.setGroup("guideToneBackground")
-			.setId(this.nextSTextfieldId)
-			.getCaptionLabel().setVisible(false);
-
-			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+			this.addSliderGroup(yVals[i], labelVals[i], listSliderX, sliderWidth, ranges[i][0], ranges[i][1], startingVals[i], textfieldWidth, "guideToneBackground");
 		} // for
 
 		// "ADSR Presets" Textlabel
@@ -986,38 +970,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		for(int i = 0; i < hsb.length; i++)
 		{
-			// - Textlabel:
-			this.sidebarCP5.addLabel(names[i])
-			.setPosition(labelX, hsb[i] + 4)
-			.setWidth(labelWidth)
-			.setGroup("sidebarGroup")
-			.setValue(values[i]);
-
-			//	- Slider:
-			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-			.setPosition(this.leftAlign, hsb[i])
-			.setSize(sliderWidth, this.sliderHeight)
-			.setSliderMode(Slider.FLEXIBLE)
-			.setRange(-1, 1)
-			.setValue(0)
-			.setGroup("sidebarGroup")
-			.setId(this.nextSliderId);
-
-			this.nextSliderId	= this.nextSliderId + 1;
-
-			// - Textfield:
-			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-			.setPosition(this.leftAlign + sliderWidth + spacer, hsb[i])
-			.setSize(tfWidth, this.sliderHeight)
-			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId-100)).getValue() + "")
-			.setAutoClear(false)
-			.setGroup("sidebarGroup")
-			.setId(this.nextSTextfieldId)
-			.getCaptionLabel().setVisible(false);
-
-			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+			this.addSliderGroup(hsb[i], values[i], -1, 1, 0);
 		} // for   
-	}//the HSB Sliders Heavily Adapted from modSlider Method
+	} // addHSBSliders
 
 	
 	/**
@@ -1027,49 +982,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	protected void addModulateSliders(int[] modulateYVals)
 	{
-		int	labelX			= 10;
-		int	labelWidth		= 70;
-
-		int	sliderWidth		= 170;
-
-		int	spacer			= 5;	// distance between slider and corresponding textfield
-		int	tfWidth			= 40;	// width of Textfields
-
-		String[]	names	= new String[] { "redModLabel", "greenModLabel", "blueModLabel" };
 		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
 		this.firstRGBSliderId	= this.nextSliderId;
 		for(int i = 0; i < modulateYVals.length; i++)
 		{
-			// - Textlabel:
-			this.sidebarCP5.addLabel(names[i])
-			.setPosition(labelX, modulateYVals[i] + 4)
-			.setWidth(labelWidth)
-			.setGroup("sidebarGroup")
-			.setValue(values[i]);
-
-			//	- Slider:
-			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-			.setPosition(this.leftAlign, modulateYVals[i])
-			.setSize(sliderWidth, this.sliderHeight)
-			.setSliderMode(Slider.FLEXIBLE)
-			.setRange(-255, 255)
-			.setGroup("sidebarGroup")
-			.setId(this.nextSliderId);
-
-			this.nextSliderId	= this.nextSliderId + 1;
-
-			//	- Textlabel:
-			this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-			.setPosition(this.leftAlign + sliderWidth + spacer, modulateYVals[i])
-			.setSize(tfWidth, this.sliderHeight)
-			.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId-100)).getValue() + "")
-			.setAutoClear(false)
-			.setGroup("sidebarGroup")
-			.setId(this.nextSTextfieldId)
-			.getCaptionLabel().setVisible(false);
-
-			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+			this.addSliderGroup(modulateYVals[i], values[i], -255, 255, 0);
 		} // for
 	} // addModulateSliders
 
@@ -1081,38 +999,10 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	protected void addShapeSizeSlider(int yVal)
 	{
-		this.shapeSize	= 1;
-
-		// first add label:
-		this.sidebarCP5.addLabel("shapeSize")
-		.setPosition(this.labelX, yVal)
-		.setValue("Shape Size")
-		.setGroup("sidebarGroup");
-
+		this.shapeSize			= 1;
 		this.shapeSizeSliderId	= this.nextSliderId;
-
-		this.sidebarCP5.addSlider("slider" + this.shapeSizeSliderId)
-		.setPosition(this.leftAlign, yVal)
-		.setSize(this.sliderWidth, this.sliderHeight)
-		.setSliderMode(Slider.FLEXIBLE)
-		.setRange(.01f, 10)
-		.setValue(this.shapeSize)
-		.setLabelVisible(false)
-		.setGroup("sidebarGroup")
-		.setId(this.nextSliderId);
-
-		this.nextSliderId	= this.nextSliderId + 1;
-
-		this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-		.setPosition(this.leftAlign + sliderWidth + this.spacer, yVal)
-		.setSize(this.textfieldWidth, this.sliderHeight)
-		.setText(this.sidebarCP5.getController("slider" + this.shapeSizeSliderId).getValue() + "")
-		.setAutoClear(false)
-		.setGroup("sidebarGroup")
-		.setId(this.nextSTextfieldId)
-		.getCaptionLabel().setVisible(false);
-
-		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+		
+		this.addSliderGroup(yVal, "Shape Size", 0.01f, 10, this.shapeSize);
 	} // addShapeSizeSlider
 
 	
@@ -1227,50 +1117,28 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.firstThresholdSliderId	= this.nextSliderId;
 
 		for(int i = 0; i < names.length; i++)
-		{			
-			this.sidebarCP5.addLabel(names[i])
-			.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)))
-			.setValue(labels[i])
-			.setGroup("sidebarGroup");
-
+		{
 			// Forte Thresholds
 			if(i % 2 == 0)
 			{
-				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-				.setPosition(this.leftAlign, yVal + (i * (verticalSpacer + this.sliderHeight)))
-				.setSize(this.sliderWidth, this.sliderHeight)
-				.setSliderMode(Slider.FLEXIBLE)
-				.setRange(this.minThreshold, 7000)
-				.setValue(this.forteThreshold)
-				.setLabelVisible(false)
-				.setId(this.nextSliderId)
-				.setGroup("sidebarGroup");
-
-				this.nextSliderId	= this.nextSliderId + 1;
-
-				this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-				.setPosition(textfieldX, yVal + (i * (verticalSpacer + this.sliderHeight)))
-				.setWidth(this.textfieldWidth)
-				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
-				.setAutoClear(false)
-				.setGroup("sidebarGroup")
-				.setId(this.nextSTextfieldId)
-				.getCaptionLabel().setVisible(false);
-
-				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+				this.addSliderGroup(yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], this.minThreshold, 7000, this.forteThreshold);
 
 			} // if - Forte Thresholds
 
 			// percent sliders
 			if(i % 2 == 1)
 			{
+				this.sidebarCP5.addLabel(names[i])
+				.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
+				.setValue(labels[i])
+				.setGroup("sidebarGroup");
+				
 				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
 				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
 				.setRange(-1, 1)
 				.setValue(0)
 				.setGroup("sidebarGroup")
-				//				.plugTo(this)
 				.setId(this.nextSliderId)
 				.getCaptionLabel().setVisible(false);
 
@@ -1348,37 +1216,66 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.fillHSBColors();
 	} // addColorSelect
 	
-	protected void addSliderGroup(int yVal, String labelText, int lowRange, int highRange, int startingVal)
+	/**
+	 * Adds a Label with given text, Slider of given lowest value, highest value, and starting value, with default 
+	 * width and x value at this.leftAlign, and Textfield with default width to "sidebarGroup" at given y value.
+	 * 
+	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
+	 * @param labelText	text for the Label
+	 * @param lowRange	Slider lowest value
+	 * @param highRange	Slider highest value
+	 * @param startingVals	Slider default/starting value
+	 */
+	protected void addSliderGroup(int yVal, String labelText, float lowRange, float highRange, float startingVals)
+	{
+		this.addSliderGroup(yVal, labelText, this.leftAlign, this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "sidebarGroup");
+	} // addSliderGroup - use default width
+	
+	/**
+	 * Adds a Label with given text, Slider with given x value, width, lowest value, 
+	 * highest value, and starting value, and Textfield with given width to given group at the given y value.
+	 * 
+	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
+	 * @param labelText	text for the Label
+	 * @param sliderX	x value for the Slider
+	 * @param sliderWidth	Slider width
+	 * @param lowRange	Slider lowest value
+	 * @param highRange	Slider highest value
+	 * @param startingVals	Slider default/starting value
+	 * @param textfieldWidth	Textfield width
+	 * @param group	String indicating to which group these Sliders and Textfields should belong
+	 */
+	protected void addSliderGroup(int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String group)
 	{
 		this.sidebarCP5.addLabel("label" + this.nextSliderId)
 		.setPosition(labelX, yVal + 4)
 		.setWidth(labelWidth)
-		.setGroup("sidebarGroup")
+		.setGroup(group)
 		.setValue(labelText);
 
 		this.sidebarCP5.addSlider("slider" + this.nextSliderId)
-		.setPosition(this.leftAlign, yVal)
-		.setSize(this.sliderWidth, this.sliderHeight)
+		.setPosition(sliderX, yVal)
+		.setSize(sliderWidth, this.sliderHeight)
 		.setRange(lowRange, highRange)
-		.setValue(startingVal)
+		.setValue(startingVals)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setLabelVisible(false)
-		.setGroup("sidebarGroup")
+		.setGroup(group)
 		.setId(this.nextSliderId);
 
 		this.nextSliderId	= this.nextSliderId + 1;
 
 		this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
-		.setPosition(this.leftAlign + sliderWidth + spacer, yVal)
+		.setPosition(sliderX + sliderWidth + spacer, yVal)
 		.setSize(this.textfieldWidth, this.sliderHeight)
 		.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 		.setAutoClear(false)
-		.setGroup("sidebarGroup")
+		.setGroup(group)
 		.setId(this.nextSTextfieldId)
 		.getCaptionLabel().setVisible(false);
 
 		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
-	} // addSliderGroup
+	} // addSliderGroup - define width
 
 	/**
 	 * Adds a connected Button, ColorWheel, and Textfield to this.sidebarCP5, in group "sidebarGroup",
