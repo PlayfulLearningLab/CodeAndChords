@@ -274,6 +274,11 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		this.mousePressed();
 	}
 
+	public void mouseDragged()
+	{
+		this.mousePressed();
+	}
+	
 	public void mousePressed()
 	{
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
