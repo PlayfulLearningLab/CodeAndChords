@@ -155,13 +155,8 @@ public abstract class MenuTemplate {
 	
 	public float mapAdjustedMenuXPos(float fullAppletXPos)
 	{
-		System.out.println(fullAppletXPos);
 		float adjustedX = PApplet.map(fullAppletXPos, 0, 1, 0, this.scale);
-		System.out.println(adjustedX);
 		adjustedX += (this.appletWidth * (1 - this.scale));
-		System.out.println(adjustedX);
-		
-		System.out.println("DONE---------------------");
 
 		return adjustedX;
 	}
