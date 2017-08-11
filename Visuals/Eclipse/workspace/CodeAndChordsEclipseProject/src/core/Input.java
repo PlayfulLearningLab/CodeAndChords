@@ -387,7 +387,7 @@ public class Input {
 	/**
 	 *  Fills the fundamentalArray and adjustedFundArray with the current pitches of each input line:
 	 */
-	private void setFund()
+	public void setFund()
 	{ 
 		// catching a NullPointer because I'm not sure why it happens and fear a crash during a concert.
 		try
@@ -665,6 +665,7 @@ public class Input {
 	{
 //		float  amp  = this.frequencyArray[0].getAmplitude();
 //		return amp;
+
 		this.setFund();
 		return this.amplitudeArray[0];
 	}
