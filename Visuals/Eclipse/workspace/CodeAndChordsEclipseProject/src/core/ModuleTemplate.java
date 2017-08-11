@@ -10,6 +10,7 @@ import controlP5.ControlEvent;
 import controlP5.ControlFont;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import controlP5.Controller;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
@@ -49,6 +50,64 @@ public abstract class ModuleTemplate implements ControlListener  {
 			0, 1, 1, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11
 	}; // enharmonicPos
 
+	private int[][][] rainbowColors	= new int[][][] { 
+		new int[][] {
+			{ 255, 0, 0 }, 
+			{ 255, 0, 0 },
+			{ 255, 127, 0 }, 
+			{ 255, 255, 0 }, 
+			{ 255, 255, 0 }, 
+			{ 127, 255, 0 },
+			{ 0, 255, 255 },
+			{ 0, 255, 255 },
+			{ 0, 255, 255 },  
+			{ 0, 0, 255 },
+			{ 127, 0, 255 },
+			{ 127, 0, 255 }
+		}, // major
+		new int[][] {
+			{ 255, 0, 0 }, 
+			{ 255, 0, 0 },
+			{ 255, 127, 0 }, 
+			{ 255, 255, 0 }, 
+			{ 255, 255, 0 }, 
+			{ 127, 255, 0 },
+			{ 0, 255, 255 },
+			{ 0, 255, 255 },
+			{ 0, 0, 255 },
+			{ 0, 0, 255 },
+			{ 127, 0, 255 },
+			{ 127, 0, 255 }
+		}, // minor
+		new int[][] {
+			{ 255, 0, 0 }, 
+			{ 255, 127, 0 }, 
+			{ 255, 255, 0 }, 
+			{ 127, 255, 0 }, 
+			{ 0, 255, 0 }, 
+			{ 0, 255, 127 }, 
+			{ 0, 255, 255 }, 
+			{ 0, 127, 255 }, 
+			{ 0, 0, 255 }, 
+			{ 127, 0, 255 }, 
+			{ 255, 0, 255 }, 
+			{ 255, 0, 127 }
+		} // chromatic
+	}; // rainbowColors
+
+	/**
+	 * Each int signifies the position in dichromColors/trichromColors/rainbowColors that is used to fill
+	 * this.colors at the corresponding position in scaleDegreeColors[this.majMinChrom]:
+	 */
+	protected	final	int[][]	scaleDegreeColors	= new int[][] {
+		// major:
+		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 4, 5, 6, 6 },
+		// minor:
+		new int[] { 0, 0, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6 },
+		// chromatic:
+		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+	}; // scaleDegreeColors
+
 	protected	PApplet	parent;
 	protected	ControlP5	sidebarCP5;
 	private		String		sidebarTitle;
@@ -66,42 +125,41 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected	int			sliderWidth;
 	protected	int			sliderHeight;
 
-	/**
-	 * float[][] representing the colors that will be used by this sketch;
-	 * must be initiated by child class.
-	 */
-	protected	float[][]	colors;
+	protected	static	int	CS_RAINBOW	= 1;
+	protected	static	int	CS_DICHROM	= 2;
+	protected	static	int	CS_TRICHROM	= 3;
+	protected	static	int	CS_CUSTOM	= 4;
+	protected	int	curColorStyle;
 
-	/**	
-	 * The colors used to draw the legend along the bottom of the module;
-	 * will not be affected by threshold saturation or brightness sliders
-	 * and must be initiated by the child class.
-	 */
-	protected	float[][]	legendColors;
+	/**	false before dichromatic has been called for the first time; true following that.	*/
+	protected	boolean	dichromFlag;
+
+	/**	false before trichromatic has been called for the first time; true following that.	*/
+	protected	boolean	trichromFlag;
+
+	/**	ColorWheels that hold all the colors for the Module; replaces int[][] this.colors	*/
+	protected	ColorWheel[]	colorSelect;
 
 	/**	Current hue (as opposed to the goal hue, which may not have been reached)	 */
-	private	float[]			curHue;
+	private	int[]			curHue;
 
 	/**	Hue that corresponds to the current sound, but to which curHue may not yet have faded	*/
-	private	float[]			goalHue;
+	private	int[]			goalHue;
 
 	/**	The color when sound is below the threshold	*/
-	protected	float[]		canvasColor;
-
-	/**	The color of the background	(only applicable for modules with a shape)	*/
-	//	protected	float[]		backgroundColor;
+	protected	int[]		canvasColor;
 
 	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
-	private	float[]			colorAdd;
+	private	int[]			colorAdd;
+	
+	// TODO initialize elsewhere:
+//	private float[]			colorAddDecimals	= new float[3];
 
 	/**	The difference between the R, G, and B values of 2 colors that are being faded between	*/
-	private	float[]			colorRange;
+	private	int[]			colorRange;
 
-	/**	The current colors which hsb sliders are altering; must be initiated by child class.	*/
-	protected float[][]   hsbColors; //the current colors at which hsb is altering
-
-	/**	Filled in the Custom color style to allow RGB modifications to colors;	must be initiated by child class.	*/
-	protected	float[][]	originalColors;
+	/**	The current colors which hsb sliders are altering.	*/
+	protected int[][]   hsbColors;
 
 	/**	Flags whether the curHue R, G, and B values have come within an acceptable range of the goalHue	*/
 	private boolean[]	colorReachedArray;
@@ -114,6 +172,18 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	/**	Volume below which input will be ignored	*/
 	protected float	threshold;
+
+	/**	The minimum value for threshold Sliders	*/
+	protected	float	minThreshold;
+	
+	/**	The highest amplitude threshold	*/
+	protected	float	forteThreshold;
+
+	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
+	protected	float[] satBrightThresholdVals;
+
+	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
+	protected	float[]	satBrightPercentVals;
 
 	/**	Flag denoting whether or not the current volume is below the threshold	*/
 	private boolean	nowBelow;
@@ -185,25 +255,36 @@ public abstract class ModuleTemplate implements ControlListener  {
 	/**	The total number of range segments available to this instance	*/
 	protected	int		totalRangeSegments;
 
+	/**	Which position in colorSelect each specialColor controls.	*/
+	protected	int[]	specialColorsPos;
+
+	/**	True when a ColorWheel Button is a colorSelect Button; false if specialColors	*/
+	protected	boolean	fromColorSelect;
+
+	/**	True when a ColorWheel Button is a specialColors Button; false if colorSelect	*/
+	protected	boolean	fromSpecialColors;
+
 	/**	
 	 * All of the following are id's that have the potential to be used in controlEvent;
 	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
-	protected	int	canvasColorSelectId	= -1;
-	//	protected	int	backgroundColorSelectId	= -1;
+	protected	int	canvasColorSelectId		= -1;
 	protected	int	firstColorModSliderId	= -1;
-	protected	int	firstColorSelectId	= -1;
-	protected	int	lastColorSelectId	= -1;
-	protected	int	firstCustomColorId	= -1;
-	protected	int	thresholdSliderId	= -1;
-	protected	int	firstARTSliderId	= -1;
-	protected	int	firstHSBSliderId	= -1;
-	protected	int	firstRGBSliderId	= -1;
-	protected	int	bpmSliderId			= -1;
-	protected	int	volumeSliderId		= -1;
-	protected	int	shapeSizeSliderId	= -1;
+	protected	int	firstColorSelectCWId	= -1;
+	protected	int	firstSpecialColorsCWId	= -1;
+	protected	int	lastColorSelectId		= -1;
+	protected	int	thresholdSliderId		= -1;
+	protected	int	firstARTSliderId		= -1;
+	protected	int	firstHSBSliderId		= -1;
+	protected	int	firstRGBSliderId		= -1;
+	protected	int	bpmSliderId				= -1;
+	protected	int	volumeSliderId			= -1;
+	protected	int	shapeSizeSliderId		= -1;
 	protected	int	firstRangeSegmentsId	= -1;
+
+	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
+	protected	int	firstThresholdSliderId	= -1;
 
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
@@ -227,7 +308,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * @param input		Input for all audio input; will instantiate this.input
 	 * @param sidebarTitle	String designating the title of the module to which this template corresponds
 	 */
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int totalNumColorItems)
 	{
 		this.parent			= parent;
 		this.input			= input;
@@ -243,20 +324,28 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sliderWidth	= 170;
 		this.sliderHeight	= 20;
 
-		this.curHue				= new float[3];
-		this.goalHue			= new float[3];
-		this.canvasColor		= new float[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
-		this.colorAdd			= new float[3];
-		this.colorRange			= new float[3];
+		// TODO: this might run into problems when we adjust for 5-8:
+		this.colorSelect		= new ColorWheel[totalNumColorItems];
+		this.curHue				= new int[3];
+		this.goalHue			= new int[3];
+		this.canvasColor		= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
+		this.colorAdd			= new int[3];
+		this.colorRange			= new int[3];
 
 		this.colorReachedArray	= new boolean[] { false, false, false };
 		this.colorReached		= false;
 		this.nowBelow			= false;
 
+		this.dichromFlag	= false;
+		this.trichromFlag	= false;
+
 		this.attRelTranPos	= 0;	// 0 = attack, 1 = release, 2 = transition
 		this.attRelTranVals	= new float[] {		200, 200, 200	};	// attack, release, transition all begin at 200 millis
 		this.hueSatBrightnessMod        = new float[3];
 		this.hueSatBrightPercentMod		= new float[3];
+
+		this.satBrightThresholdVals	= new float[2];
+		this.satBrightPercentVals	= new float[2];
 
 		this.checkpoint		= this.parent.millis() + 100;
 
@@ -293,7 +382,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sidebarCP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
-		//		.setPosition(this.originalLeftEdgeX, 0)
 		.setPosition(0, 0)
 		.setVisible(false);
 
@@ -334,6 +422,86 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	} // initModuleTemplate
 
+	/**
+	 * Adds the Buttons, ColorWheels and Textfields for selecting custom colors.
+	 * 
+	 * @param yVals	yValue(s) for the row or rows of Buttons
+	 * @param buttonLabels	String[] of labels for the color select Buttons; 
+	 * 						length of this array determines the number of colorSelect Buttons;
+	 * 						if including canvas in this row, the first element of this array must be "Canvas"
+	 */
+	protected void addColorSelect(int[] yVals, String[] buttonLabels, String labelText, boolean canvas)
+	{
+		// error checking
+		if(yVals == null)	{
+			throw new IllegalArgumentException("ModuleTemplate.addColorSelect: int[] parameter is null.");
+		}
+		if(yVals.length == 0)	{
+			throw new IllegalArgumentException("ModuleTemplate.addColorSelect: int[] parameter " + yVals + " is empty.");
+		}
+		if(buttonLabels == null)	{
+			throw new IllegalArgumentException("ModuleTemplate.addColorSelect: String[] parameter is null.");
+		}
+		if(labelText == null)	{
+			throw new IllegalArgumentException("ModuleTemplate.addColorSelect: String parameter (labelText) is null.");
+		}
+		// Warn the use that the first String in buttonLabels will be canvas color (but only if the didn't title it "canvas"):
+		if(canvas && !buttonLabels[0].equalsIgnoreCase("canvas"))
+		{
+			System.err.println("ModuleTemplate.addColorSelect: colorSelect Button with label text '" + buttonLabels[0] + "' will control the canvas color.");
+		}
+
+		// Position in rainbowColors:
+		int	buttonLabelPos	= 0;
+		int	colorSelectPos	= 0;
+
+
+		if(canvas)
+		{
+			this.canvasColorSelectId	= this.nextColorWheelId;
+			this.firstColorSelectCWId	= this.nextColorWheelId + 1;
+
+		} else {
+			this.firstColorSelectCWId	= this.nextColorWheelId;
+		}
+
+		int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
+		// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
+		int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonsPerRow) - this.spacer - (10 / buttonsPerRow);
+		int[]	xVals	= new int[buttonsPerRow];
+		for(int i = 0; i < xVals.length; i++)
+		{
+			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+		}
+
+		this.sidebarCP5.addTextlabel("colorSelectLabel")
+		.setPosition(labelX, yVals[0] + 4)
+		.setGroup("sidebarGroup")
+		.setValue(labelText);
+
+		// Loop through all
+		for(int i = 0; i < yVals.length; i++)
+		{
+			// Loop through each row
+			for(int j = 0; j < xVals.length; j++)
+			{
+				if(i == 0 && j == 0 && canvas)
+				{
+					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor);
+				} else {
+					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.rainbowColors[this.majMinChrom][colorSelectPos]))[1];
+					colorSelectPos	= colorSelectPos + 1;
+				}
+
+				buttonLabelPos	= buttonLabelPos + 1;
+
+			} // for - j
+		} // for - i
+
+		this.fillHSBColors();
+	} // addColorSelect
+
+	
 	/**
 	 * Adds "outside buttons": hamburger and play/pause/stop Buttons
 	 */
@@ -393,9 +561,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 		.bringToFront();
 
 		this.menuWidth = this.sidebarCP5.getController("menuX").getWidth();
-
 	} // addOutsideButtons
 
+	
 	/**
 	 * Adds "hide buttons" - hide Menu, hide Play Button, and hide Scale
 	 * 
@@ -519,7 +687,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 				highRange		= 3000;
 				startingValue	= 200;
 
-				//				this.attackReleaseTransition[i - 1]	= startingValue;
 			}
 
 			this.sidebarCP5.addSlider("slider" + this.nextSliderId)
@@ -548,6 +715,33 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for
 
 	} // addSliders
+	
+	protected void addARTSliders(int attackY, int releaseY, int transitionY)
+	{
+		String[]	labels	= new String[] {
+				"Attack",
+				"Release",
+				"Transition"
+		}; // labels
+
+		int[]		yVals	= new int[] {
+				attackY,
+				releaseY,
+				transitionY
+		}; // yVals
+		
+		this.firstARTSliderId	= this.nextSliderId;
+		
+		for(int i = 0; i < labels.length; i++)
+		{
+			this.addSliderGroup(yVals[i], labels[i], 100, 3000, 200);
+		}
+	} // addARTSliders
+	
+	protected void addPianoThresholdSlider(int yVal)
+	{
+		this.addSliderGroup(yVal, "Piano Threshold", 2, 100, 10);
+	} // addPianoThresholdSlider
 
 
 	/**
@@ -571,11 +765,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
 		int	guideToneX		= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 3);
 
-		/*
-		String[] keyOptions	= new String[] {
-				"A", "A#", "Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"
-		};
-		 */
 
 		// "Key" Textlabel
 		this.sidebarCP5.addTextlabel("key")
@@ -643,7 +832,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	protected void addGuideTonePopout(int guideToneY)
 	{
-		// "Pop-out with range drop-down and envelope preset Buttons" and BPM.
 
 		Color	transparentBlack	= new Color(0, 0, 0, 240);
 		int		transBlackInt		= transparentBlack.getRGB();
@@ -670,7 +858,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sidebarCP5.addGroup("guideToneBackground")
 		.setPosition(this.leftAlign, guideToneY + 20)
 		.setSize(boxWidth, boxHeight)
-		//		.setBackgroundColor(this.parent.color(150, 50, 150))	// <-- testing purposes
 		.setBackgroundColor(transBlackInt)
 		.setVisible(false)
 		.hideBar();
@@ -686,8 +873,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		};
 		float[]		startingVals	= new float[]	{ 120, 1	};
 
-		//		int	id	= 20;
-
 		this.bpmSliderId	= this.nextSliderId;
 		this.volumeSliderId	= this.nextSliderId + 1;
 
@@ -696,7 +881,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			// BPM Textlabel:
 			this.sidebarCP5.addLabel(labels[i])
 			.setPosition(popoutSpacer, yVals[i] + 4)
-			//		.setWidth(labelWidth)
 			.setGroup("guideToneBackground")
 			.setValue(labelVals[i]);
 
@@ -778,6 +962,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	} // addGuideTonePopout
 
+	
 	/**
 	 * Adds the hue, saturation, and brightness modulate sliders
 	 * 
@@ -796,7 +981,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		String[]	names	= new String[] { "hueModLabel", "satModLabel", "brightModLabel" };
 		String[]	values	= new String[] { "Hue", "Saturation", "Brightness" };
 
-		//		int	id	= 14;		// this id picks up where the modulate sliders leave off
 
 		this.firstHSBSliderId	= this.nextSliderId;
 
@@ -835,6 +1019,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for   
 	}//the HSB Sliders Heavily Adapted from modSlider Method
 
+	
 	/**
 	 * Method called during instantiation, to initialize the RGB color modulate sliders.
 	 * 
@@ -853,8 +1038,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		String[]	names	= new String[] { "redModLabel", "greenModLabel", "blueModLabel" };
 		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
-		//		int	id	= 8;		// this id picks up where the transition textfield - "textfield7" - left off.
-
 		this.firstRGBSliderId	= this.nextSliderId;
 		for(int i = 0; i < modulateYVals.length; i++)
 		{
@@ -871,8 +1054,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			.setSize(sliderWidth, this.sliderHeight)
 			.setSliderMode(Slider.FLEXIBLE)
 			.setRange(-255, 255)
-			//			.setValue(0)
-			//.setLabelVisible(false)
 			.setGroup("sidebarGroup")
 			.setId(this.nextSliderId);
 
@@ -892,6 +1073,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for
 	} // addModulateSliders
 
+	
 	/**
 	 * Adds the slider for adjusting shape size
 	 * 
@@ -909,7 +1091,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.shapeSizeSliderId	= this.nextSliderId;
 
-		this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+		this.sidebarCP5.addSlider("slider" + this.shapeSizeSliderId)
 		.setPosition(this.leftAlign, yVal)
 		.setSize(this.sliderWidth, this.sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
@@ -924,7 +1106,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
 		.setPosition(this.leftAlign + sliderWidth + this.spacer, yVal)
 		.setSize(this.textfieldWidth, this.sliderHeight)
-		.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+		.setText(this.sidebarCP5.getController("slider" + this.shapeSizeSliderId).getValue() + "")
 		.setAutoClear(false)
 		.setGroup("sidebarGroup")
 		.setId(this.nextSTextfieldId)
@@ -933,6 +1115,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 	} // addShapeSizeSlider
 
+	
 	/**
 	 * Adds the Buttons for selecting the number of range segments.
 	 * 
@@ -945,6 +1128,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.addRangeSegments(yVal, numSegments, numSegments, label);
 	}  // addRangeSegments(int, int, String)
 
+	
 	/**
 	 * Adds the Buttons for selecting the number of range segments.
 	 * 
@@ -974,7 +1158,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.sidebarCP5.addLabel("rangeSegments")
 		.setPosition(this.labelX, yVal)
-		//		.setWidth(this.labelWidth)
 		.setValue(label)
 		.setGroup("sidebarGroup");
 
@@ -1001,7 +1184,279 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.nextToggleId	= this.nextToggleId + 1;
 		} // for - adding Toggles
 	} // addRangeSegments
+	
 
+	/**
+	 * Adds the "Color: Forte Threshold", "Saturation", "Saturation: Forte Threshold", 
+	 * "Brightness", and "Brightness: Forte Threshold" group of Sliders/Textfields
+	 * 
+	 * @param yVal	y value of forte threshold
+	 * @param verticalSpacer	vertical space between sliders
+	 */
+	protected void addThresholdSliders(int yVal, int verticalSpacer)
+	{
+		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
+
+		// Since some i's will add a couple rows of labels and sliders,
+		// this variable keeps track of which "level" of y the next thing should be added to.
+		//		float	yPos		= 0;
+
+		String[]	names	= new String[] {
+				"forteThresh",
+				"saturation",
+				"saturationForteThresh",
+				"brightness",
+				"brightnessForteThresh"
+		}; // names
+
+		String[]	labels = new String[] {
+				"Forte\nThreshold",
+				"Saturation",
+				"Sat: Forte\nThreshold",
+				"Brightness",
+				"Bright: Forte\nThreshold"
+		}; // labels
+		/*	
+		String[]	hsbSliderNames	= new String[] {
+				"hueSlider",
+				"saturationSlider",
+				"brightnessSlider"
+
+		}; // hsbSliderNames
+		 */
+		this.firstThresholdSliderId	= this.nextSliderId;
+
+		for(int i = 0; i < names.length; i++)
+		{			
+			this.sidebarCP5.addLabel(names[i])
+			.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)))
+			.setValue(labels[i])
+			.setGroup("sidebarGroup");
+
+			// Forte Thresholds
+			if(i % 2 == 0)
+			{
+				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				.setPosition(this.leftAlign, yVal + (i * (verticalSpacer + this.sliderHeight)))
+				.setSize(this.sliderWidth, this.sliderHeight)
+				.setSliderMode(Slider.FLEXIBLE)
+				.setRange(this.minThreshold, 7000)
+				.setValue(this.forteThreshold)
+				.setLabelVisible(false)
+				.setId(this.nextSliderId)
+				.setGroup("sidebarGroup");
+
+				this.nextSliderId	= this.nextSliderId + 1;
+
+				this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
+				.setPosition(textfieldX, yVal + (i * (verticalSpacer + this.sliderHeight)))
+				.setWidth(this.textfieldWidth)
+				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+				.setAutoClear(false)
+				.setGroup("sidebarGroup")
+				.setId(this.nextSTextfieldId)
+				.getCaptionLabel().setVisible(false);
+
+				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+
+			} // if - Forte Thresholds
+
+			// percent sliders
+			if(i % 2 == 1)
+			{
+				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
+				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
+				.setRange(-1, 1)
+				.setValue(0)
+				.setGroup("sidebarGroup")
+				//				.plugTo(this)
+				.setId(this.nextSliderId)
+				.getCaptionLabel().setVisible(false);
+
+				this.nextSliderId	= this.nextSliderId + 1;
+				// Also need to increment nextSTextfieldId so that they don't get out of sync
+				// (since this slider had no connected Textfield).
+				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+			} // if - percent sliders
+		} // for
+
+	} // addThresholdSliders
+
+	/**
+	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
+	 * e.g., "Tonic", "2nd Color", and "3rd Color" in Module_01.
+	 * 
+	 * @param yVal	the y value for the row
+	 * @param buttonLabels	String[] of text for the buttons; if canvas color in this row of Buttons, first item should be "Canvas"
+	 * @param labelText	text of the Label on the far left of the row
+	 * @param canvas	boolean indicating whether or not the Canvas color Button is included in this row
+	 */
+	protected void addSpecialColors(int yVal, String[] buttonLabels, String labelText, boolean canvas)
+	{
+		// error checking
+		if(buttonLabels == null)	{
+			throw new IllegalArgumentException("ModuleTemplate.addSpecialColors: String[] parameter is null.");
+		}
+		if(labelText == null)	{
+			throw new IllegalArgumentException("ModuleTemplate.addSpecialColors: String parameter (labelText) is null.");
+		}
+		// Warn the use that the first String in buttonLabels will be canvas color (but only if the didn't title it "canvas"):
+		if(canvas && !buttonLabels[0].equalsIgnoreCase("canvas"))
+		{
+			System.err.println("ModuleTemplate.addSpecialColors: colorSelect Button with label text '" + buttonLabels[0] + "' will control the canvas color.");
+		}
+
+		this.fromColorSelect	= true;
+		this.fromSpecialColors	= false;
+		this.specialColorsPos	= new int[buttonLabels.length];
+
+		if(canvas)
+		{
+			this.canvasColorSelectId	= this.nextColorWheelId;
+			this.firstSpecialColorsCWId	= this.nextColorWheelId + 1;
+
+		} else {
+			this.firstSpecialColorsCWId	= this.nextColorWheelId;
+
+		}
+		// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
+		int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonLabels.length) - this.spacer - (10 / buttonLabels.length);
+		int[]	xVals	= new int[buttonLabels.length];
+		for(int i = 0; i < xVals.length; i++)
+		{
+			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+		}
+
+		this.sidebarCP5.addTextlabel("specialColorsLabel")
+		.setPosition(labelX, yVal + 4)
+		.setGroup("sidebarGroup")
+		.setValue(labelText);
+
+		// Loop through all
+		for(int i = 0; i < xVals.length; i++)
+		{
+			if(canvas && i == 0)
+			{
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], this.canvasColor);
+			} else {
+				int	thisColorPos	= this.specialColorsPos[i - 1];
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], new Color(this.colorSelect[thisColorPos].getRGB()));
+			}
+		} // for - i
+
+		this.fillHSBColors();
+	} // addColorSelect
+	
+	protected void addSliderGroup(int yVal, String labelText, int lowRange, int highRange, int startingVal)
+	{
+		this.sidebarCP5.addLabel("label" + this.nextSliderId)
+		.setPosition(labelX, yVal + 4)
+		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
+		.setValue(labelText);
+
+		this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+		.setPosition(this.leftAlign, yVal)
+		.setSize(this.sliderWidth, this.sliderHeight)
+		.setRange(lowRange, highRange)
+		.setValue(startingVal)
+		.setSliderMode(Slider.FLEXIBLE)
+		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
+		.setId(this.nextSliderId);
+
+		this.nextSliderId	= this.nextSliderId + 1;
+
+		this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
+		.setPosition(this.leftAlign + sliderWidth + spacer, yVal)
+		.setSize(this.textfieldWidth, this.sliderHeight)
+		.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+		.setAutoClear(false)
+		.setGroup("sidebarGroup")
+		.setId(this.nextSTextfieldId)
+		.getCaptionLabel().setVisible(false);
+
+		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+	} // addSliderGroup
+
+	/**
+	 * Adds a connected Button, ColorWheel, and Textfield to this.sidebarCP5, in group "sidebarGroup",
+	 * by making a color from the int[] and calling addColorWheelGroup(int, int, int, String, Color)
+	 * 
+	 * @param x	x value of Button and ColorWheel
+	 * @param y	y value of Button
+	 * @param buttonWidth	width of Button
+	 * @param buttonLabel	text to put on the Button
+	 * @param colo	int[] with the red, green, blue values for the desired Color
+	 */
+	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, int[] rgbColor)
+	{
+		if(rgbColor == null) {
+			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter is null.");
+		}
+		if(rgbColor.length != 3) {
+			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter has length " + rgbColor.length + 
+					"; must be length 3.");
+		} // error checking
+
+		return this.addColorWheelGroup(x, y, buttonWidth, buttonLabel, new Color(rgbColor[0], rgbColor[1], rgbColor[2]));
+	} // addColorWheelGroup
+
+	/**
+	 * Adds a connected Button, ColorWheel, and Textfield to this.sidebarCP5, in group "sidebarGroup"
+	 * 
+	 * @param x	x value of Button and ColorWheel
+	 * @param y	y value of Button
+	 * @param buttonWidth	width of Button
+	 * @param buttonLabel	text to put on the Button
+	 * @param color	Color to set the ColorWheel and Textfield ("rgb([red], [green], [blue])")
+	 */
+	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color)
+	{
+		Button		button;
+		ColorWheel	colorWheel;
+		Textfield	textfield;
+
+		if(buttonLabel == null) {
+			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: String parameter is null.");
+		}
+		// Add Button:
+		button	= this.sidebarCP5.addButton("button" + this.nextButtonId)
+				.setPosition(x, y)
+				.setWidth(buttonWidth)
+				.setLabel(buttonLabel)
+				.setId(this.nextButtonId)
+				.setGroup("sidebarGroup");
+		button.getCaptionLabel().toUpperCase(false);
+
+		this.nextButtonId = this.nextButtonId + 1;
+
+		colorWheel	= this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+				.setPosition(x, y - 200)
+				.setRGB(color.getRGB())
+				.setLabelVisible(false)
+				.setVisible(false)
+				.setGroup("sidebarGroup")
+				.setId(this.nextColorWheelId);
+
+		this.nextColorWheelId = this.nextColorWheelId + 1;					
+
+		textfield	= this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+				.setPosition(x + buttonWidth + this.spacer, y)
+				.setAutoClear(false)
+				.setVisible(false)
+				.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")")
+				.setGroup("sidebarGroup")
+				.setId(this.nextCWTextfieldId);
+		textfield.getCaptionLabel().setVisible(false);
+
+		this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
+
+		return new Controller[] { button, colorWheel, textfield };
+	} // addColorWheelGroup
+
+	
 	/**
 	 * Sets this.goalHue to the value of the given position in this.colors
 	 * (important that it sets this in colors and not legendColors, since colors
@@ -1011,27 +1466,24 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	public void setGoalHue(int position)
 	{
-		if(position > this.getColors().length || position < -1) {
+		if(position > this.colorSelect.length || position < -1) {
 			throw new IllegalArgumentException("ModuleTemplate.getGoalHue: position " + position + 
-					" is out of bounds; must be between -1 (signifying canvas color) or " + (getColors().length - 1));
+					" is out of bounds; must be between -1 (signifying canvas color) or " + (this.colorSelect.length - 1));
 		} // error checking
 
 		if(position == -1)	
 		{	
 			for(int i = 0; i < this.goalHue.length; i++)
 			{
-				System.out.println("setGoalHue: canvasColor[" + i + "] " + this.canvasColor[i]);
 				this.goalHue[i]	= this.canvasColor[i];
 			} // for - canvas
-		} else {	
-			for(int i = 0; i < this.goalHue.length; i++)
-			{
-				this.goalHue[i]	= this.colors[position][i];	
-			} // for - colors
+		} else {
+			this.goalHue	= this.getColor(position);
 		} // else
 
 	} // setGoalHue
 
+	
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
 	 * over the time that is designated by the attack, release, and transition sliders
@@ -1040,30 +1492,26 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	public void fade(int position)
 	{
-		if(position > this.getColors().length || position < -1) {
+		if(position > this.colorSelect.length || position < -1) {
 			throw new IllegalArgumentException("ModuleTemplate.getGoalHue: position " + position + 
-					" is out of bounds; must be between -1 (signifying canvas color) or " + (getColors().length - 1));
+					" is out of bounds; must be between -1 (signifying canvas color) or " + (this.colorSelect.length - 1));
 		} // error checking
 
-		if(this.input.getAmplitude() < this.threshold)	
+		float	curAmp	= this.input.getAmplitude();
+
+		if(curAmp < this.threshold)	
 		{
 			this.nowBelow	= true;
 
 			for(int i = 0; i < this.goalHue.length; i++)
 			{
 				this.goalHue[i]	= this.canvasColor[i];
-				//				System.out.println("this.canvasColor[" + i + "] = " + this.canvasColor[i] + 
-				//						"; this.goalHue[" + i + "] = " + this.goalHue[i]);
 			} // for - canvas
 
 		} else {
 			this.nowBelow	= false;
 
-			for(int i = 0; i < this.goalHue.length; i++)
-			{
-				this.goalHue[i]	= this.colors[position][i];	
-			} // for - colors
-
+			this.goalHue	= this.applyThresholdSBModulate(curAmp, position);
 		} // else
 
 		if(this.checkpoint < this.parent.millis())
@@ -1080,28 +1528,25 @@ public abstract class ModuleTemplate implements ControlListener  {
 					{
 						this.curHue[i]	=	this.curHue[i] - this.colorAdd[i];
 					}
-					else
-					{
-						//					System.out.println("It thinks that curHue[" + i + "] is set; curHue[" + i + "] = " + this.curHue[i] + "; goalHue[" + i + "] = " + this.goalHue[i]);
-					}
 			} // for - i
 
 			this.checkpoint = (this.parent.millis() + 50);
 		} // if - adding every 50 millis
 
-		/*		
+/*	
 		System.out.println("curHue: " + this.curHue[0] + ", " + 
 				+ this.curHue[1] + ", "
 				+ this.curHue[2]);
 		System.out.println("goalHue: " + this.goalHue[0] + ", " + 
 						+ this.goalHue[1] + ", "
 						+ this.goalHue[2]);
+
 		System.out.println("input.getAmplitude() = " + input.getAmplitude());
 
 		System.out.println("colorAdd: " + this.colorAdd[0] + ", " + 
 				+ this.colorAdd[1] + ", "
 				+ this.colorAdd[2]);
-		 */		 
+	*/ 
 
 		float	lowBound;
 		float	highBound;
@@ -1125,39 +1570,53 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		int	oldARTpos	= this.attRelTranPos;
 
-		//		System.out.print("amplitude = " + this.input.getAmplitude() + ": ");
-
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
 		if(!this.nowBelow && !colorReached) 
 		{	
 			this.attRelTranPos	= 0;
-			//			System.out.println("attack!!!!");
+//			System.out.println("	attack!!!!");
 		} else if(!this.nowBelow && colorReached) {
 			// Or, if coming from one super-threshold note to another, use the transition value:
 			this.attRelTranPos	= 2;
-			//			System.out.println("transition.... transition [doooooo do dooo do do ] - transition!");
+//			System.out.println("	transition.... transition [doooooo do dooo do do ] - transition!");
 		} else if(this.nowBelow) {
 			// Or, if volume fell below the threshold, switch to release value:
 			this.attRelTranPos	= 1;
-			//			System.out.println("re....lent! re...coil! re...verse!");
+//			System.out.println("	re....lent! re...coil! re...verse!");
 		}
 
-		if(this.attRelTranPos != oldARTpos)
-		{			
+//		if(this.attRelTranPos != oldARTpos)
+//		{			
 			// Calculate color ranges:
 			for(int i = 0; i < this.curHue.length; i++)
 			{
 				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
-
+				
+//				System.out.println("colorAddDecimals[" + i + "] = " + colorAddDecimals[i]);
+				
+				// if colorAdd reached 1, add 1 to colorAdd:
+/*				if(this.colorAddDecimals[i] > 1)	
+				{	
+					this.colorAdd[i]++;	
+//					this.colorAddDecimals[i]	= this.colorAddDecimals[i] % 1;
+				}
+*/
 				// divide the attack/release/transition value by 50
 				// and divide colorRange by that value to find the amount to add each 50 millis.
-				this.colorAdd[i]	= this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50);
+				float addThis = (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
+/*				if(addThis < 1)	
+				{	
+					this.colorAddDecimals[i]	= this.colorAddDecimals[i] + addThis;	
+				} else {	 */
+					this.colorAdd[i]	= (int)addThis;	
+//				}
 			} // for
-		} // if
+//		} // if
 
 	} // fade
 
+	
 	/**
 	 * Classes using ModuleTemplate should call this method in setup() with a position in colors.
 	 * 
@@ -1165,12 +1624,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	public void setCurHueColorRangeColorAdd(int curHuePos)
 	{
-		if(curHuePos < 0 || curHuePos > this.colors.length) {
+		if(curHuePos < 0 || curHuePos > this.colorSelect.length) {
 			throw new IllegalArgumentException("Module_01_02.setup(): curHuePos " + curHuePos + " is out of the bounds of the colors; " + 
-					"must be between 0 and " + this.colors.length);
+					"must be between 0 and " + this.colorSelect.length);
 		} // error checking
 
-		this.curHue	= new float[] { 255, 255, 255 };
+		this.curHue	= new int[] { 255, 255, 255 };
 		// The following line caused problems!
 		// (That is, it made that position in colors follow curHue as the latter changed.)
 		// Never use it.
@@ -1182,122 +1641,654 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 			// divide the attack/release/transition value by 50
 			// and divide colorRange by that value to find the amount to add each 50 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50);
+			this.colorAdd[i]	= (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
 		}
 	} // setCurHue
 
 	/**
-	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders and 
-	 * calls applyHSBModulate() to apply the values of the Hue/Saturation/Brightness Modulate sliders.
+	 * Uses the values of the specialColors CWs to apply the current colorStyle.
 	 */
-	protected void applyColorModulate(float[][] colors, float[][] originalColors)
+	protected void applySpecialColors()
 	{
-		if(colors == null || originalColors == null) {
-			throw new IllegalArgumentException("ModuleTemplate.applyColorModulate: one of the float[] parameters is null (colors = " + colors + "; originalColors = " + originalColors);
+		// Rainbow:
+		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		{
+			this.rainbow();
+		} // if - rainbow
+
+		// Dichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		{
+
+			// First time to dichromatic, dichromFlag will be false, 
+			// and the two colors will be set to contrast.			
+			if(!this.dichromFlag)
+			{
+				this.dichromatic_OneRGB(this.getColor(0));
+
+				this.dichromFlag	= true;
+			} // first time
+			// After the first time, use current color values
+			// (allows selection of 2nd color):
+			else
+			{
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+			}
+
+		} // Dichromatic
+
+		// Trichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		{			
+			int	colorPos2	= 4;	// initializing for the first call
+			int	colorPos3	= 8;
+
+			if(this.majMinChrom == 2)
+			{
+				colorPos2	= 4;
+				colorPos3	= 8;
+			} else {
+
+				colorPos2	= 5;
+				colorPos3	= 7;
+			}
+
+			this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+
+		} // Trichromatic
+	} // applySpecialColors
+
+	
+	/**
+	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
+	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
+	 * 
+	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
+	 */
+	public void dichromatic_OneRGB(int[] rgbVals)
+	{
+		if(rgbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
+		}
+
+		float[]	hsbVals	= new float[3];
+		Color.RGBtoHSB((int)rgbVals[0], (int)rgbVals[1], (int)rgbVals[2], hsbVals);
+
+		this.dichromatic_OneHSB(hsbVals);
+	} // dichromatic_OneRGB
+
+	/**
+	 * Uses the given HSB color to find the color across it on the HSB wheel,
+	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 * 
+	 * @param hue	float[] of HSB values defining the color at the tonic of the current scale.
+	 */
+	private void dichromatic_OneHSB(float[] hsbVals)
+	{
+		if(hsbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
 		} // error checking
 
-		for(int i = 0; i < colors.length; i++)
+		// find the complement:
+		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
+
+		// convert them both to RGB;
+		int[]	rgbVals1	= new int[3];
+		int[]	rgbVals2	= new int[3];
+
+		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
+		Color	rgbColor1	=  new Color(rgb1);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals1[0]	= rgbColor1.getRed();
+		rgbVals1[1]	= rgbColor1.getGreen();
+		rgbVals1[2]	= rgbColor1.getBlue();	
+
+		int	rgb2	= Color.HSBtoRGB(hsbComplement[0], hsbComplement[1], hsbComplement[2]);
+		Color	rgbColor2	=  new Color(rgb2);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals2[0]	= rgbColor2.getRed();
+		rgbVals2[1]	= rgbColor2.getGreen();
+		rgbVals2[2]	= rgbColor2.getBlue();	
+
+		this.dichromatic_TwoRGB(rgbVals1, rgbVals2, true);
+	} // dichromatic_OneHSB(int)
+
+	
+	/**
+	 * This method fills colors with the spectrum of colors between the given rgb colors.
+	 * 
+	 * @param rgbVals1	float[] of rgb values defining tonicColor.
+	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
+	 */
+	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
+	{
+		if(rgbVals1 == null || rgbVals2 == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
+		} // error checking
+
+		// Percent should be the percent of the difference between the first and second colors,
+		// but the math doesn't work if we divide by 100 here, so that will happen later.
+		//		float	percent		= 100 / this.scaleLength;
+
+		// For a minor scale, divide by 11 so that the last note of the scale will be 2ndColor
+		// (rather than the leading tone, which doesn't show up in the minor scale - we just display natural minor)
+		// Everything else gets 12.
+		float	percent;
+		if(this.majMinChrom == 1)
 		{
-			for(int j = 0; j < colors[i].length; j++)
+			percent	= 100 / 11;
+		} else 
+		{
+			percent		= 100 / 12;
+		}
+
+		// There will be a difference for red, green, and blue.
+		//		float	difference;
+		float	rDif	= rgbVals1[0] - rgbVals2[0];
+		float	gDif	= rgbVals1[1] - rgbVals2[1];
+		float	bDif	= rgbVals1[2] - rgbVals2[2];
+
+		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
+
+		int[]	curColor	= this.getColor(0);
+		int[]	newColor	= new int[3];
+
+		// Loop through red, then green, then blue
+		// (could do it like normal, but then would have to calculate difference each time;
+		// those who save processor cycles store up treasure in Heaven):
+		/*		for(int i = 0; i < 3; i++)
+		{
+			difference	= rgbVals1[i] - rgbVals2[i];
+		 */
+		for(int i = 0; i < this.colorSelect.length - 1; i++)
+		{
+			// Take the percent of the difference multiplied by the position in the array,
+			// subtracting it from the first color to deal with negatives correctly
+			// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
+			//				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
+
+			newColor[0]	= (int)(curColor[0] - (rDif * i * percent / 100));
+			newColor[1]	= (int)(curColor[1] - (gDif * i * percent / 100));
+			newColor[2]	= (int)(curColor[2] - (bDif * i * percent / 100));
+
+			System.out.println("newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
+
+			this.setColor(i, newColor);
+		} // for - i
+		//		} // for - i
+
+		// Fill the last color manually, because if we don't,
+		// it can't seem to calculate correctly when the tonic color is changed:
+		this.setColor(this.colorSelect.length - 1, rgbVals2);
+
+		this.fillHSBColors();
+
+		/*		for(int i = 0; i < rgbVals2.length; i++)
+		{
+			this.colors[this.colors.length - 1][i]	= rgbVals2[i];
+		}
+		 */
+	} // dichromatic_TwoRGB
+
+	/**
+	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
+	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
+	 * 
+	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
+	 */
+	public void trichromatic_OneRGB(int[] rgbVals)
+	{
+		if(rgbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
+		}
+
+		float[]	hsbVals	= new float[3];
+		Color.RGBtoHSB((int)rgbVals[0], (int)rgbVals[1], (int)rgbVals[2], hsbVals);
+
+		this.trichromatic_OneHSB(hsbVals);
+	} // trichromatic_OneRGB
+
+	/**
+	 * Uses the given HSB color to find the color across it on the HSB wheel,
+	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 *
+	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
+	 */
+	private void trichromatic_OneHSB(float[] hsbVals)
+	{
+		if(hsbVals == null) {
+			throw new IllegalArgumentException("Module_01_02.dichromatic_OneHSB: float[] parameter hsbVals is null.");
+		} // error checking
+
+		// find the triad:
+		float[]	hsbTriad1	= new float[] { (float) ((hsbVals[0] + 0.33) % 1), 1, 1 };
+		float[]	hsbTriad2	= new float[] { (float) ((hsbVals[0] + 0.67) % 1), 1, 1 };
+
+		// convert them both to RGB;
+		int[]	rgbVals1	= new int[3];
+		int[]	rgbVals2	= new int[3];
+		int[]	rgbVals3	= new int[3];
+
+		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
+		Color	rgbColor1	=  new Color(rgb1);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals1[0]	= rgbColor1.getRed();
+		rgbVals1[1]	= rgbColor1.getGreen();
+		rgbVals1[2]	= rgbColor1.getBlue();	
+
+		int	rgb2	= Color.HSBtoRGB(hsbTriad1[0], hsbTriad1[1], hsbTriad1[2]);
+		Color	rgbColor2	=  new Color(rgb2);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals2[0]	= rgbColor2.getRed();
+		rgbVals2[1]	= rgbColor2.getGreen();
+		rgbVals2[2]	= rgbColor2.getBlue();	
+
+		int	rgb3	= Color.HSBtoRGB(hsbTriad2[0], hsbTriad2[1], hsbTriad2[2]);
+		Color	rgbColor3	=  new Color(rgb3);
+
+		// Using individual get[Color]() functions b/c getComponents() uses a 0-1 range.
+		rgbVals3[0]	= rgbColor3.getRed();
+		rgbVals3[1]	= rgbColor3.getGreen();
+		rgbVals3[2]	= rgbColor3.getBlue();	
+
+		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
+	} // trichromatic_OneHSB
+
+	/**
+	 * Calculates the colors between the 3 sets of given vals
+	 * and fills colors with a spectrum fading between them.
+	 * 
+	 * @param rgbVals1	rgb vals for the tonic color
+	 * @param rgbVals2	rgb vals for the sub-dominant for major/minor scales or "5th scale degree" (counting by half steps) for chromatic scales
+	 * @param rgbVals3	rgb vals for the dominant for major/minor scales or the "9th scale degree" (counting by half steps) for chromatic scales
+	 */
+	public void trichromatic_ThreeRGB(int[] rgbVals1, int[] rgbVals2, int[] rgbVals3)
+	{
+		if(rgbVals1 == null || rgbVals2 == null || rgbVals3 == null) {
+			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
+		} // error checking
+
+		int	color1pos	= 0;
+		int	color2pos;
+		int	color3pos;
+
+		int	divideBy1;
+		int	divideBy2;
+		int	divideBy3;
+
+		if(this.majMinChrom == 2)
+		{
+			// if chromatic scale, put the colors equally throughout:
+			color2pos	= this.scaleLength / 3;
+			color3pos	= (this.scaleLength / 3) * 2;
+
+			divideBy1	= color2pos - color1pos;
+			divideBy2	= color3pos - color2pos;
+			divideBy3	= this.scaleLength - color3pos;
+		} else {
+			// These are their positions in trichromColors:
+			color2pos	= 3;	// subdominant
+			color3pos	= 4;	// dominant
+
+			// (5 and 7 are the positions in colorSelect):
+			//			color2pos	= 5;	// subdominant
+			//			color3pos	= 7;	// dominant
+
+			divideBy1	= 4;
+			divideBy2	= 1;
+			divideBy3	= 3;
+		}
+
+		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / divideBy1);
+		int	greenDelta1	= (int)((rgbVals1[1] - rgbVals2[1]) / divideBy1);
+		int	blueDelta1	= (int)((rgbVals1[2] - rgbVals2[2]) / divideBy1);
+
+		int	redDelta2	= (int)((rgbVals2[0] - rgbVals3[0]) / divideBy2);
+		int	greenDelta2	= (int)((rgbVals2[1] - rgbVals3[1]) / divideBy2);
+		int	blueDelta2	= (int)((rgbVals2[2] - rgbVals3[2]) / divideBy2);
+
+		int	redDelta3	= (int)((rgbVals3[0] - rgbVals1[0]) / divideBy3);
+		int	greenDelta3	= (int)((rgbVals3[1] - rgbVals1[1]) / divideBy3);
+		int	blueDelta3	= (int)((rgbVals3[2] - rgbVals1[2]) / divideBy3);
+
+		/*		
+		System.out.println("redDelta1 = " + redDelta1 + "; greenDelta1 = " + greenDelta1 + "; blueDelta1 = " + blueDelta1);
+		System.out.println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta1 + "; blueDelta2 = " + blueDelta2);
+		System.out.println("redDelta3 = " + redDelta3 + "; greenDelta3 = " + greenDelta1 + "; blueDelta3 = " + blueDelta3);
+		 */
+		// This array has the trichromatic spectrum:
+		int[][]	trichromColors	= new int[this.scaleLength][3];
+		trichromColors	= new int[this.scaleLength][3];
+
+		// fill first position with first color:
+		for(int i = 0; i < rgbVals1.length; i++)
+		{
+			trichromColors[0][i]	= rgbVals1[i];
+		}
+
+		// fill from first color to second color:
+		for(int i = 1; i < color2pos; i++)
+		{
+			//			for(int j = 0; j < trichromColors[i].length; j++)
+			//			{
+			trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta1;
+			trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta1;
+			trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta1;
+			//			} // for - j
+		} // for - first color to second color
+
+		// Fill second color (in case the math is a little off, since we are rounding to ints, and it doesn't quite make it back):
+		trichromColors[color2pos][0]	= rgbVals2[0];
+		trichromColors[color2pos][1]	= rgbVals2[1];
+		trichromColors[color2pos][2]	= rgbVals2[2];
+
+		// fill from second color to third color:
+		for(int i = color2pos + 1; i < color3pos; i++)
+		{
+			//			for(int j = 0; j < trichromColors[i].length; j++)
+			//			{
+			trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta2;
+			trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta2;
+			trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta2;
+			//			} // for - j
+		} // for - first color to second color
+
+		// Fill third color (in case the math is a little off, since we are rounding to ints, and it doesn't quite make it back):
+		trichromColors[color3pos][0]	= rgbVals3[0];
+		trichromColors[color3pos][1]	= rgbVals3[1];
+		trichromColors[color3pos][2]	= rgbVals3[2];
+
+		// fill from third color back to first color:
+		for(int i = color3pos + 1; i < this.scaleLength; i++)
+		{
+			//			for(int j = 0; j < trichromColors[i].length; j++)
+			//			{
+			trichromColors[i][0]	= trichromColors[i - 1][0] - redDelta3;
+			trichromColors[i][1]	= trichromColors[i - 1][1] - greenDelta3;
+			trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
+			//			} // for - j
+		} // for - third color to first color
+
+		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
+		int	trichromColorPos	= 0;
+		for(int i = 0; i < this.colorSelect.length && trichromColorPos < trichromColors.length; i++)
+		{
+			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+			this.setColor(i, trichromColors[trichromColorPos]);
+
+		} // for
+
+		this.fillHSBColors();
+	} //trichromatic_ThreeRGB
+
+
+	/**
+	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
+	 */
+	protected void rainbow()
+	{
+		for(int i = 0; i < this.colorSelect.length && i < this.rainbowColors[this.majMinChrom].length; i++)
+		{
+			this.setColor(i, this.rainbowColors[this.majMinChrom][i]);
+		} // for - i (going through colors)
+
+		this.fillHSBColors();
+	} // rainbow
+
+	protected void setColorStyle(int newColorStyle)
+	{
+		this.curColorStyle	= newColorStyle;
+
+		// Rainbow:
+		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		{
+			//	if avoids errors during instantiation:
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)).lock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).lock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
+
+			this.rainbow();
+		} // if - rainbow
+
+		// Dichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		{
+			this.specialColorsPos[0]	= 0;
+
+			// For minor keys, choose the 2nd to last note; else choose the last note:
+			if(this.majMinChrom == 1)	{	this.specialColorsPos[1]	= this.colorSelect.length - 2;	}
+			else						{	this.specialColorsPos[1]	= this.colorSelect.length - 1;	}
+
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
+
+			// First time to dichromatic, dichromFlag will be false, 
+			// and the two colors will be set to contrast.			
+			if(!this.dichromFlag)
+			{
+				System.out.println("We are calling dichrom, right?");
+				this.dichromatic_OneRGB(this.getColor(0));
+
+				this.dichromFlag	= true;
+			} // first time
+			// After the first time, use current color values
+			// (allows selection of 2nd color):
+			else
+			{
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+			}
+
+		} // Dichromatic
+
+		// Trichromatic:
+		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		{
+			int	colorPos2	= 4;	// initializing for the first call
+			int	colorPos3	= 8;
+
+			// Turned off the "first time/remaining times" because it's still pretty interesting
+			// and, I think, more intuitive, coming off of another color.  Dichromatic is boring coming off rainbow.
+			// first time trichromatic has been called:
+			if(!this.trichromFlag)
+			{
+				//				this.trichromatic_OneRGB(this.getColor(0));
+				this.trichromFlag	= true;
+			}
+			// every other time:
+			else
+			{
+				// This makes sure that, even if the positions of the specialColors change,
+				// the colors themselves will remain constant from one style/scale to the next:
+				this.setColor(colorPos2, this.getColor(this.specialColorsPos[1]));
+				this.setColor(colorPos3, this.getColor(this.specialColorsPos[2]));
+				if(this.majMinChrom == 2)
+				{
+					colorPos2	= 4;
+					colorPos3	= 8;
+				} else {
+			// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+					// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+
+					colorPos2	= 5;
+					colorPos3	= 7;
+				} // else - colorPos for different scales
+			} // else - all but the first time
+
+
+			this.specialColorsPos[0]	= 0;
+			this.specialColorsPos[1]	= colorPos2;
+			this.specialColorsPos[2]	= colorPos3;
+
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
+			if(this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.sidebarCP5.getController("button" + (this.firstSpecialColorsCWId - 98)).unlock();	}
+
+			this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+		} // Trichromatic
+
+	} // setColorStyle
+
+	/**
+	 * Applies the values of the Red Modulate/Green Modulate/Blue Modulate sliders.
+	 */
+	protected void applyRGBModulate()
+	{
+		int[]	color; //	= new int[3];
+
+		for(int i = 0; i < this.colorSelect.length; i++)
+		{
+			color	= this.getColor(i);
+
+			for(int j = 0; j < color.length; j++)
 			{
 				// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
-				colors[i][j]	= originalColors[i][j] + this.redGreenBlueMod[j];
-
+				color[j]	= Math.min(Math.max(color[j] + (int)this.redGreenBlueMod[j], 0), 255);
 			} // for - j
+
+
+			this.setColor(i, color);
 		} // for - i
-		/*
-		// TODO: this might cause problems.... 
-		// applyHSBModulate will be called on this.colors twice and this.legendColors only once.
-		this.fillHSBColors();
-		 */
-		this.applyHSBModulate(this.colors, this.hsbColors);
-	} // applyColorModulate
+
+	} // applyRGBModulate
 
 	/**
 	 * Applies the values from this.hueSatBrightnessMod to the contents of the colors array parameter.
 	 * @param colors	this.colors or this.legendColors
 	 * @param hsbColors	this.hsbColors
 	 */
-	protected void applyHSBModulate(float[][] colors, float[][] hsbColors)
+	protected void applyHSBModulate()
 	{
-		if(colors == null || hsbColors == null) {
-			throw new IllegalArgumentException("ModuleTemplate.applyHSBModulate: one of the float[] parameters is null (colors = " + colors + "; hsbColors = " + hsbColors);
-		} // error checking
+		// TODO: also need to implement it for legendColors!  So can't just get rid of the two parameters entirely.
+
+		if(this.firstColorSelectCWId != -1)
+		{
+			if(this.hsbColors == null)	{	this.fillHSBColors();	}
+
+			float[] hsb 			= new float[3];
+
+			for (int i = 0; i < this.colorSelect.length; i++)
+			{
+				// Converts this position of hsbColors from RGB to HSB:
+				Color.RGBtoHSB(this.hsbColors[i][0], this.hsbColors[i][1], this.hsbColors[i][2], hsb);
+
+				// Applies the status of the sliders to the newly-converted color:
+				hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
+				hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
+				hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
+
+				// Converts the color back to RGB:
+				int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
+				Color a = new Color(oc);
+
+				// Sets the ColorWheels to the newly modded color:
+				this.setColor(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
+				//			((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(a.getRGB());
+			} // for 
+		} else {
+			System.out.println("ModuleTemplate.applyHSBModulate: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set ColorWheels.");
+		} // else - let the user know that CWs not there and we didn't set them
+
+	} // applyHSBModulate
+
+	
+	/**
+	 * Applies the values of the threshold saturation and brightness Sliders 
+	 * to the color of the ColorWheel at the given position and returns the affected color.
+	 * 
+	 * @param curAmp	the current amplitude
+	 * @param colorPos	the position in this.colorSelect to which the sat/brightness should be applied
+	 * @return			the color with saturation and brightness adjustments
+	 */
+	protected int[] applyThresholdSBModulate(float curAmp, int colorPos)
+	{
+		// Error checking:
+		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
+			throw new IllegalArgumentException("ModuleTemplate.applyThresholdSBModulate: int parameter colorPos is " + colorPos + 
+					", which is out of bounds; must be between 0 and " + (this.colorSelect.length - 1));
+		}
+
+		// Converts the current amplitude into a number between 0 and 100,
+		// depending on where curAmp is in relation to the saturation or brightness forte threshold:
+		float	satMappingVal		= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100), 100), 0);
+		float	brightMappingVal	= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[1], this.minThreshold + 1), 0, 100), 100), 0);
+
+		// Notice how hueSatBrightPercentMod is accessed at 1 and 2, since hue is also a part of it,
+		// but satBrightPercentVals is accessed at 0 and 1, since it is only for saturation and brightness.
+		this.hueSatBrightPercentMod[1]	= (this.satBrightPercentVals[0] * satMappingVal) / 100;
+		this.hueSatBrightPercentMod[2]	= (this.satBrightPercentVals[1] * brightMappingVal) / 100;
 
 		float[] hsb = new float[3];
 
-		for (int i = 0; i < colors.length; i++)
+		// Converts this position of hsbColors from RGB to HSB:
+		Color.RGBtoHSB(this.hsbColors[colorPos][0], this.hsbColors[colorPos][1], this.hsbColors[colorPos][2], hsb);
+
+		for(int j = 0; j < this.hueSatBrightPercentMod.length; j++)
 		{
-			// Converts this position of hsbColors from RGB to HSB:
-			Color.RGBtoHSB((int)hsbColors[i][0], (int)hsbColors[i][1], (int)hsbColors[i][2], hsb);
+			if(this.hueSatBrightPercentMod[j] <= 0)
+			{
+				if(j == 0) {
+					hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
+				} else {
 
-			// Applies the status of the sliders to the newly-converted color:
-			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
-			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
-			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
+					hsb[j] = Math.max(Math.min(hsb[j] + this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j], 1), 0);
+				}  // if/else - == 0
+			} // if percent greater than 0
+			else
+			{
+				if(j == 0) {
+					hsb[j] = (hsb[j] + this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j] + 1) % 1;
+				} else {
+					hsb[j] = Math.max(Math.min(this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j], 1), 0);
+				}  // if/else - == 0
 
-			// Converts the color back to RGB:
-			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
-			Color a = new Color(oc);
+			} // else - percent less than 0
+		} // for - hueSatBrightPercentMod
 
-			// Fills colors with the new color:
-			colors[i][0] = (float)a.getRed();
-			colors[i][1] = (float)a.getGreen();
-			colors[i][2] = (float)a.getBlue();
-		} // for
-	} // applyHSBModulate
+		// Converts the color back to RGB:
+		int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
+		Color a = new Color(oc);
 
+		return new int[] { a.getRed(), a.getGreen(), a.getBlue() };
+	} // applyThresholdSBModulate
+
+	
 	/**
-	 * Puts the contents of this.colors into this.hsbColors;
-	 * must be called when colors is initialized.
+	 * Puts the contents of this.colors into this.hsbColors so that HSB sliders will have a base to go off of
+	 * (else they won't know how much to add to the colors each time).
+	 * It is important to call this method whenever there has been a change of colors, e.g., at the end of
+	 * rainbow() or trichromatic_ThreeRGB.
 	 */
 	protected	void fillHSBColors()
 	{
-		if(this.colors == null)
-		{
-			throw new IllegalArgumentException("ModuleTemplate.fillHSBColors: this.colors is null.");
-		}
-
 		if(this.hsbColors == null) {
-			this.hsbColors = new float[this.colors.length][3];
+			this.hsbColors = new int[this.colorSelect.length][3];
 		}
 
-		for(int i = 0; i < this.hsbColors.length; i++)
+		// Only do this after the colors have been initialized:
+		if(this.firstColorSelectCWId != -1)
 		{
-			for(int j = 0; j < this.hsbColors[i].length; j++)
+			for(int i = 0; i < this.hsbColors.length; i++)
 			{
-				this.hsbColors[i][j]	= this.colors[i][j];
-			}
-		} // for
+				this.hsbColors[i]	= this.getColor(i);
+			} // for
+		} else {
+			// Let the user know what we skipped this:
+			System.err.println("ModuleTemplate.fillHSBColors: firstColorSelectCWId == " + this.firstColorSelectCWId + 
+					"; did not fill hsbColors.");
+		} // else
 	} // fillhsbColors
 
-	/**
-	 * Puts the contents of colors into originalColors.
-	 */
-	protected void fillOriginalColors()
-	{
-		if(this.colors == null) {
-			throw new IllegalArgumentException("ModuleTemplate.fillOriginalColors: this.colors is null.");
-		}
-
-		if(this.originalColors == null) {
-			this.originalColors = new float[this.colors.length][3];
-		}
-
-		for(int i = 0; i < this.originalColors.length; i++)
-		{
-			for(int j = 0; j < this.originalColors[i].length; j++)
-			{
-				this.originalColors[i][j]	= this.colors[i][j];
-			}
-		} // for
-	} // fillOriginalColors
-
+	
 	/**
 	 * Calls playMelody(key, bpm, scale, rangeOctave) with the curKey, bpm, rangeOctave instance vars
 	 * and the string corresponding to the majMinChrom instance var ("major", "minor", or "chromatic").
 	 */
-	private void playMelody()
+	protected void playMelody()
 	{
 
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
@@ -1328,8 +2319,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-		System.out.println("ModuleTemplate.controlEvent: controlEvent = " + controlEvent);
-		
+//		System.out.println("ModuleTemplate.controlEvent: controlEvent = " + controlEvent);
+
 		int	id	= controlEvent.getController().getId();
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
@@ -1443,13 +2434,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 					this.setHueSatBrightnessMod(pos, sliderValFloat);
 
-					// Only fill hsbColors the first time (to avoid over modulating):
-					if(this.hsbColors == null)
-					{
-						this.fillHSBColors();
-					}
-					this.applyHSBModulate(this.colors, this.hsbColors);
-					this.applyHSBModulate(this.legendColors, this.hsbColors);
+					//					this.applyHSBModulate(this.hsbColors);
+					this.applyHSBModulate();
 				}//hsb mod
 
 				// Red Modulate/Green Modulate/Blue Modulate:
@@ -1460,8 +2446,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 					int	pos	= id - this.firstRGBSliderId;	// red = 0, green = 1, blue = 2
 
 					this.redGreenBlueMod[pos]	= sliderValFloat;
-					this.applyColorModulate(this.colors, this.originalColors);
-					this.applyColorModulate(this.legendColors, this.originalColors);
+					this.applyRGBModulate();
+					// TODO!!!
+					//					this.applyColorModulate(this.legendColors, this.originalColors);
 				} // red/green/blue mod
 
 				if(this.bpmSliderId != -1 && id == this.bpmSliderId)
@@ -1478,6 +2465,24 @@ public abstract class ModuleTemplate implements ControlListener  {
 				{
 					this.shapeSize	= sliderValFloat;
 				}
+
+				// Saturation and Brightness Threshold and Percent Sliders:
+				if(this.firstThresholdSliderId != -1 &&
+						( ( id > this.firstThresholdSliderId ) && ( id < this.firstThresholdSliderId + 5 ) ) )
+				{
+					int		arrayPos	= (id - this.firstThresholdSliderId - 1) / 2;
+					// Percent Sliders
+					if((id - this.firstThresholdSliderId) % 2 == 1)
+					{
+						this.satBrightPercentVals[arrayPos]		= controlEvent.getValue();
+						this.satBrightThresholdVals[arrayPos]	= this.sidebarCP5.getValue("slider" + (id + 1));
+						//				percentVal		= controlEvent.getValue();
+					} else {
+						// Threshold Sliders
+						this.satBrightThresholdVals[arrayPos]	= controlEvent.getValue();
+						this.satBrightPercentVals[arrayPos]		= this.sidebarCP5.getValue("slider" + (id - 1));
+					}
+				} // Saturation and Brightness Threshold and Percent Sliders
 
 			} catch (NullPointerException npe) {
 				System.out.println("ModuleTemplate.controlEvent - sliders: caught NullPointer; curTextfield = " + (Textfield)this.sidebarCP5.getController("textfield" + (id + 100)));
@@ -1518,7 +2523,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 				this.sidebarCP5.setAutoDraw(true);
 				this.sidebarCP5.getGroup("background").setVisible(false);
-//				this.displaySidebar(false);
+				//				this.displaySidebar(false);
 			}
 
 			this.sidebarCP5.getController("button" + (controlEvent.getId())).bringToFront();
@@ -1529,37 +2534,63 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 200)).setVisible(curButton.getBooleanValue());
 
 			//			this.fillOriginalColors();
-			//			this.fillHSBColors();
+			this.fillHSBColors();
 
 			// Reset whichever of the sliders is applicable:
 			if(this.firstRGBSliderId > -1)
 			{
 				this.resetRGBSlidersTextfields();
+				this.applyRGBModulate();
 			}
 			if(this.firstHSBSliderId > -1)
 			{
 				this.resetHSBSlidersTextfields();
+				this.applyHSBModulate();
 			}
 
-			// Apply the colorModuleate
-			if(this.firstRGBSliderId > -1 && this.firstHSBSliderId > -1)
+			// If there are special colors, check to see if this color corresponds to one of them
+			// in order to correctly set the boolean flags:
+			if(this.firstSpecialColorsCWId != -1)
 			{
-				this.applyColorModulate(this.colors, this.originalColors);
-				this.applyColorModulate(this.legendColors, this.originalColors);
-			} else {
-				if(this.firstHSBSliderId > -1)
+				// Position in colorSelect (if this CW is in colorSelect):
+				int	colorPos	= (id % 100) - (this.firstColorSelectCWId % 100);
+				if(colorPos >= 0 && colorPos < this.colorSelect.length /*&& 
+						(this.arrayContains(this.specialColorsPos, colorPos) > -1) */)
 				{
-					this.applyHSBModulate(this.colors, this.hsbColors);
-					this.applyHSBModulate(this.legendColors, this.hsbColors);
-				}
-			} // if - RGBSliderId > -1
+					this.fromColorSelect	= true;
+					this.fromSpecialColors	= false;
+					// Check to see if this position corresponds to a special color:
+					/*				int	specialColorsPos	= this.arrayContains(this.specialColorsPos, colorPos);
+					if(specialColorsPos > -1)
+					{
+						// Increment the counter for this color:
+						this.specialColorsCounts[specialColorsPos]++;
+						System.out.println("colorSelectCW: specialColorsCounts[" + specialColorsPos + "] = " + this.specialColorsCounts[specialColorsPos]);
 
+					} // if - this CW connects to a specialColor	
+					 */						
+				} // if - this CW is in colorSelect
+				else
+				{
+					// Check to see if this CW is a specialColors CW:
+					colorPos	= (id % 100) - (this.firstSpecialColorsCWId % 100);
+					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+					{
+						this.fromSpecialColors	= true;
+						this.fromColorSelect	= false;
+						// Increment the counter for this color:
+						/*						this.specialColorsCounts[colorPos]++;
+						System.out.println("specialColorCW: specialColorsCounts[" + specialColorsPos + "] = " + this.specialColorsCounts[colorPos]);
+						 */
+					} // if
+				} // else - for CWs not in colorSelect
+
+			} // if - specialColors
 		} // Color Select Buttons
 
 		// ColorWheels
 		if(id > 299 && id < 400)
 		{
-			System.out.println("ColorWheel event from id " + id);
 			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
@@ -1578,6 +2609,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
 
+				// Ensures that the shape doesn't have to fade to this color if the amp is below the threshold:
 				if(this.nowBelow)
 				{
 					this.curHue[0]	= color.getRed();
@@ -1585,33 +2617,57 @@ public abstract class ModuleTemplate implements ControlListener  {
 					this.curHue[2]	= color.getBlue();
 				}
 			} // if - canvas
-			/*			else if( ( this.backgroundColorSelectId != -1 ) && 
-					( ( id % 100 ) == ( this.backgroundColorSelectId % 100 ) ) )
+
+			// If there are special colors,
+			// check to see if this color corresponds to one or is one:
+			if(this.firstSpecialColorsCWId != -1)
 			{
-				this.backgroundColor[0]	= color.getRed();
-				this.backgroundColor[1]	= color.getGreen();
-				this.backgroundColor[2]	= color.getBlue();
-			} // if - background
-			 */
-			else
-			{
-				int	colorPos	= this.calculateNotePos(id);
+				// Position in colorSelect (if this CW is in colorSelect):
+				int	colorPos	= id - this.firstColorSelectCWId;
+				if(colorPos >= 0 && colorPos < this.colorSelect.length)
+				{
+					// Check to see if this position corresponds to a special color:
+					int	specialColorsPos	= this.arrayContains(this.specialColorsPos, colorPos);
+					if(specialColorsPos > -1)
+					{
+						// Increment the counter for this color:
+						//						this.specialColorsCounts[specialColorsPos]++;
+						//						System.out.println("colorSelectCW: specialColorsCounts[" + specialColorsPos + "] = " + this.specialColorsCounts[specialColorsPos]);
 
-				System.out.println("colorPos = " + colorPos);
+						// Make sure that they don't just keep calling back and forth:
+						//						if(this.specialColorsCounts[specialColorsPos] % 2 == 1)
+						if(this.fromColorSelect)
+						{
+							((ColorWheel)this.sidebarCP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
 
-				this.colors[colorPos][0]	= color.getRed();
-				this.colors[colorPos][1]	= color.getGreen();
-				this.colors[colorPos][2]	= color.getBlue();
+						} // if - only make one call per pair
+					} // if - this CW connects to a specialColor							
+				} // if - this CW is in colorSelect
+				else
+				{
+					// Check to see if this CW is a specialColors CW:
+					colorPos	= id - this.firstSpecialColorsCWId;
+					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+					{
+						// Increment the counter for this color:
+						//						this.specialColorsCounts[colorPos]++;
+						//						System.out.println("specialColorCW: specialColorsCounts[" + specialColorsPos + "] = " + this.specialColorsCounts[colorPos]);
 
-				this.legendColors[colorPos][0]	= color.getRed();
-				this.legendColors[colorPos][1]	= color.getGreen();
-				this.legendColors[colorPos][2]	= color.getBlue();
+						// Make sure that they don't just keep calling back and forth:
+						//						if(this.specialColorsCounts[colorPos] % 2 == 1)
+						if(this.fromSpecialColors)
+						{
+							int	colorSelectPos	= this.specialColorsPos[colorPos];
+							((ColorWheel)this.sidebarCP5.getController("colorWheel" + (colorSelectPos + this.firstColorSelectCWId))).setRGB(color.getRGB());
 
-			} // else - not canvas
+							//							this.applySpecialColors();
+							this.setColorStyle(this.curColorStyle);
 
-			// Fill HSB colors so that it's always up to date
-			// (tried filling it in the Button part of controlEvent, but that wasn't enough).
-			this.fillHSBColors();
+						} // if - only make one call per pair
+					} // if
+				} // else - for CWs not in colorSelect
+
+			} // if - specialColors
 
 		} // ColorWheels
 
@@ -1694,13 +2750,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 				// Make Buttons corresponding to non-existent thresholds unclickable:
 				// (but don't do so before the Buttons have been initialized)
-				if(this.firstColorSelectId > -1)
+				if(this.firstColorSelectCWId > -1)
 				{
 					int	curButtonId;
 					boolean	state;
 					for(int i = 0; i < this.totalRangeSegments; i++)
 					{
-						curButtonId	= this.firstColorSelectId + i;
+						curButtonId	= this.firstColorSelectCWId - 100 + i;
 
 						if(i < this.curRangeSegments)	{	state	= false;		} 
 						else 							{	state	= true;	}
@@ -1737,7 +2793,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.melody.setRangeList();
 			try
 			{
-				System.out.println("this.sidebarCP5.getController('rangeDropdown') = " + this.sidebarCP5.getController("rangeDropdown"));
 				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
 				.setItems(this.melody.getRangeList())
 				.setValue(0f);
@@ -1760,7 +2815,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			} else {
 
 				//				this.sidebarCP5.setAutoDraw(true);
-				System.out.println("this.sidebarCP5.getGroup('background') = " + this.sidebarCP5.getGroup("background"));
 				this.sidebarCP5.getGroup("background").setVisible(false);
 			}
 
@@ -1814,7 +2868,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected abstract int calculateNotePos(int id);
 
 	/**
-	 * Sets the Sliders and Textfields for RGB and HSB color modulate to 0.
+	 * Sets the Sliders and Textfields for RGB and HSB color modulate to 0
+	 * and calls this.fillHSBColors().
 	 */
 	protected void resetModulateSlidersTextfields()
 	{
@@ -1831,6 +2886,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 				hsbId	= hsbId + 1;
 				rgbId	= rgbId + 1;
 			} // for
+
+			this.fillHSBColors();
 		} else {
 			System.out.println("ModuleTemplate.resetModulateSlidersTextfields: either HSB or RGB sliders have not yet been initialized " +
 					"(firstHSBSliderId = " + this.firstHSBSliderId + " and firstRGBSliderId = " + this.firstRGBSliderId + ")");
@@ -2013,12 +3070,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.sidebarCP5.getController("keyDropdown").setValue(keyPos);
 
-		// The following happen in controlEvent - "keyDropdown"
-		/*
-		this.curKey			= key;
-		this.setKeyAddVal(modPosition);
-		 */
-
 	} // setCurKey
 
 	/**
@@ -2049,65 +3100,98 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for
 
 		return -1;
-	}
+	} // arrayContains
 
 	/**
-	 * Updates the ColorWheel with the given id to the color at colorPos in this.colors
+	 * Used in controlEvent for determining whether a given color is in specialColors;
+	 * returns the position of the element if it exists in the array,
+	 * or -1 if the element is not in the array.
 	 * 
-	 * @param id	int indicating the ColorWheel to be updated
-	 * @param colorPos	int indicating the position in colors that will be used to set the ColorWheel
+	 * @param array		String[] to be searched for the given element
+	 * @param element	String whose position in the given array is to be returned.
+	 * @return		position of the given element in the given array, or -1 
+	 * 				if the element does not exist in the array.
 	 */
-	protected void updateColorWheelFromColors(int id, int colorPos)
-	{
-		if(colorPos < 0 || colorPos >= this.colors.length)	{
-			throw new IllegalArgumentException("ModuleTemplate01.updateColorWheel: colorPos parameter " + colorPos + " is out of bounds; must be within 0 and " + (this.colors.length - 1));
-		} // error checking
+	private int arrayContains(int[] array, int element) {
+		if(array == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): array parameter is null.");
+		}
 
-		int	red		= (int)this.colors[colorPos][0];
-		int	green	= (int)this.colors[colorPos][1];
-		int	blue	= (int)this.colors[colorPos][2];
+		for (int i = 0; i < array.length; i++)
+		{
+			//    println("array[i] = " + array[i]);
+			if (array[i] == element) {
+				return i;
+			} // if
+		} // for
 
-		// Constrain to 0-255:
-		red		= Math.min(255, Math.max(0, red));
-		green	= Math.min(255, Math.max(0, green));
-		blue	= Math.min(255, Math.max(0, blue));
+		return -1;
+	} // arrayContains
 
-		// Set corresponding ColorWheel:
-		//					Color	rgbColor	= new Color(this.tonicColor[0], this.tonicColor[1], this.tonicColor[2]);
-		Color	rgbColor	= new Color(red, green, blue);
-		int		rgbInt		= rgbColor.getRGB();
-		System.out.println("this.sidebarCP5.getController(colorWheel" + id + ") = " + this.sidebarCP5.getController("colorWheel" + id));
-		((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(rgbInt);
-	} // updateColorWheel
 
 	/**
-	 * Updates the ColorWheel with the given id to the color at colorPos in this.legendColors
+	 * TODO: might want this color as a float[] rather than as an int?
 	 * 
-	 * @param id	int indicating the ColorWheel to be updated
-	 * @param colorPos	int indicating the position in colors that will be used to set the ColorWheel
+	 * Returns the current color of the ColorWheel in the given position in this.colorSelect as an int.
+	 * 
+	 * @param colorPos	Position of color; must be from 0 to (this.colorSelect.length - 1)
+	 * @return	the current color of the ColorWheel in the given position in this.colorSelect as an int
 	 */
-	protected void updateColorWheelFromLegendColors(int id, int colorPos)
+	public int[] getColor(int colorPos)
 	{
-		if(colorPos < 0 || colorPos >= this.colors.length)	{
-			throw new IllegalArgumentException("ModuleTemplate01.updateColorWheel: colorPos parameter " + colorPos + " is out of bounds; must be within 0 and " + (this.colors.length - 1));
+		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
+			throw new IllegalArgumentException("ModuleTemplate.getColor: in parameter " + colorPos + 
+					" is out of bounds; must be within 0 to " + (this.colorSelect.length - 1));
 		} // error checking
 
-		int	red		= (int)this.legendColors[colorPos][0];
-		int	green	= (int)this.legendColors[colorPos][1];
-		int	blue	= (int)this.legendColors[colorPos][2];
+		Color	curColor	= new Color(this.colorSelect[colorPos].getRGB());
 
-		// Constrain to 0-255:
-		red		= Math.min(255, Math.max(0, red));
-		green	= Math.min(255, Math.max(0, green));
-		blue	= Math.min(255, Math.max(0, blue));
+		// Making a new array rather than using getComponents so that we will have ints, not floats:
+		return	new int[] { curColor.getRed(), curColor.getGreen(), curColor.getBlue() };
+	} // getColor
 
-		// Set corresponding ColorWheel:
-		//					Color	rgbColor	= new Color(this.tonicColor[0], this.tonicColor[1], this.tonicColor[2]);
-		Color	rgbColor	= new Color(red, green, blue);
-		int		rgbInt		= rgbColor.getRGB();
-		System.out.println("this.sidebarCP5.getController(colorWheel" + id + ") = " + this.sidebarCP5.getController("colorWheel" + id));
-		((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(rgbInt);
-	} // updateColorWheel
+	/**
+	 * Sets the ColorWheel at colorPos to the given color
+	 * 
+	 * @param colorPos	position of ColorWheel in this.colorSelect
+	 * @param color	rgb color
+	 */
+	public void setColor(int colorPos, int[] color)
+	{
+		// Error checking:
+		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
+			throw new IllegalArgumentException("ModuleTemplate.setColor: int parameter " + colorPos + 
+					" is out of bounds; must be between 0 and " + (this.colorSelect.length - 1));
+		}
+		if(color == null) {
+			throw new IllegalArgumentException("ModuleTemplate.setColor: float[] parameter is null.");
+		}
+
+		// Only do this if colorSelect CWs have actually been initialized:
+		if(this.firstColorSelectCWId != -1) {
+			//			throw new IllegalArgumentException("ModuleTemplate.setColor: firstColorSelectCWId == -1; did not attempt to set the ColorWheel.");
+
+
+			// Adjust for out-of-range parameters
+			for(int i = 0; i < color.length; i++)
+			{
+				int	originalColor	= color[i];
+				color[i]	= Math.min(Math.max(color[i], 0), 255);
+
+				// Let the user know if you made an adjustment:
+				if(originalColor != color[i]) {
+					System.out.println("ModuleTemplate.setColor: adjusted position " + i + " of color " + colorPos + " from " + originalColor + " to " + color[i] + ".");
+				}
+			} // for - color adjust
+
+			int	colorInt	= (new Color(color[0], color[1], color[2])).getRGB();
+
+			((ColorWheel)this.sidebarCP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos))).setRGB(colorInt);
+
+		} else {
+			System.err.println("ModuleTemplate.setColor: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
+		} // if/else
+	} // setColor
 
 	public int getCheckpoint()				{	return this.checkpoint;		}
 
@@ -2117,11 +3201,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	public void setThreshold(float newVal)	{	this.threshold	= newVal;	}
 
-	public float[][] getColors() {
-		return colors;
-	}
-
-	public float[] getCurHue()				{	return this.curHue;	}
+	public int[] getCurHue()				{	return this.curHue;	}
 
 	public float getAttRelTranVal(int attRelTranPos)
 	{
@@ -2155,7 +3235,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.showScale = showScale;
 	}
 
-	public float[] getCanvasColor() {
+	public int[] getCanvasColor() {
 		return this.canvasColor;
 	}
 
@@ -2171,19 +3251,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		return this.redGreenBlueMod[2];
 	}
 
-	/*
-	public float getHueModulate() {
-		return this.hueSatBrightnessMod[0];
-	}
-
-	public float getSaturationModulate() {
-		return this.hueSatBrightnessMod[1];
-	}
-
-	public float getBrightnessModulate() {
-		return this.hueSatBrightnessMod[3];
-	}
-	 */
 
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
@@ -2224,9 +3291,4 @@ public abstract class ModuleTemplate implements ControlListener  {
 		return this.sidebarCP5;
 	}
 
-	/*	public float[] getBackgroundColor()
-	{
-		return this.backgroundColor;
-	}
-	 */
 } // ModuleTemplate

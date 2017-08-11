@@ -138,7 +138,12 @@ public class PortAudioAudioIO extends AudioIO {
 			e.printStackTrace();
 		}
 
-		return destroy();
+		if(!destroy())	{
+			throw new IllegalArgumentException("PortAudioAudioIO: destroy() returned false.");
+		}
+
+//		return destroy();
+		return true;
 	} // stop
 	
 	/** Update loop called from within audio thread (created in start() method). */
@@ -154,7 +159,7 @@ public class PortAudioAudioIO extends AudioIO {
 		// TODO: might need to use audioFormat.getChannels() instead of ioAudioFormat.outputs
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
-//		while (context.isRunning()) {
+//		while (context.isRunning())
 		while(this.isRunning)
 		{
 			update(); // this propagates update call to context

@@ -35,23 +35,23 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	private	float[]	thresholds;
 
 	/**	The highest amplitude threshold	*/
-	private	float	forteThreshold;
+//	private	float	forteThreshold;
 
 	/**	The minimum value for threshold Sliders	*/
-	private	float	minThreshold;
+	//	private	float	minThreshold;
 
 	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
-	private	int	firstThresholdSliderId	= -1;
+	//	private	int	firstThresholdSliderId	= -1;
 
 	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
-	private	float[] satBrightThresholdVals;
-	
-	private Module_02_AmplitudeHSB module2;;
-	
+	//	private	float[] satBrightThresholdVals;
+
+	private Module_02_AmplitudeHSB module2;
+
 	private boolean shapeMenuIsOpen;
 
 	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
-	private	float[]	satBrightPercentVals;
+	//	private	float[]	satBrightPercentVals;
 
 
 	/**
@@ -63,12 +63,12 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 */
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
-		super(parent, input, sidebarTitle);
-		
+		super(parent, input, sidebarTitle, 4);
+
 		this.module2 = (Module_02_AmplitudeHSB) parent;
-		
+
 		this.shapeMenuIsOpen = false;
-		
+
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
 		this.yVals[0]	= 26;
@@ -88,10 +88,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		this.forteThreshold	= this.thresholds[this.thresholds.length - 1];
 		this.minThreshold	= 101;
 
-		this.satBrightThresholdVals	= new float[2];
-		this.satBrightPercentVals	= new float[2];
-		 
 
+		/*
 		this.colors	= new float[][] {
 			new float[] { 255, 0, 0 },
 			new float[] { 0, 255, 0 },
@@ -99,7 +97,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			new float[]	{ 255, 255, 0 }
 //			new float[] { 150, 50, 150 },
 		};
-		
+
+
 		this.legendColors	= new float[this.colors.length][3];
 		for(int i = 0; i < this.colors.length; i++)
 		{
@@ -108,8 +107,16 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				this.legendColors[i][j]	= this.colors[i][j];
 			} // for - j
 		} // for - i
+		 */
 
 		// already called addHideButtons in superclass with y-val of 26.
+
+		// Have to addColorSelect() first so that everything else can access the colors:
+		String[]	buttonLabels	= new String[] {
+				"Canvas", "1", "2", "3", "4"
+		};
+		this.addColorSelect(new int[] { this.yVals[7] }, buttonLabels, "Color Select", true);
+		this.fillHSBColors();
 
 		this.addSliders(this.yVals[1], this.yVals[3], this.yVals[4], this.yVals[5]);
 
@@ -117,13 +124,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		this.addRangeSegments(this.yVals[6], 4, 4, "Dynamic\nSegments");
 
-		this.addColorSelectButtons(this.yVals[7]);
+
+		//		this.addColorSelectButtons(this.yVals[7]);
 
 		this.addHSBSliders(new int[] { this.yVals[8], this.yVals[9], this.yVals[10], });
 
 		int	verticalSpacer	= distance - this.sliderHeight;
 		this.addThresholdSliders(yVals[11], verticalSpacer);
-		
+
 		this.addShapeCustomizationControls(this.yVals[16]);
 		//		this.initInput();
 	} // constructor
@@ -202,13 +210,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
 
-/*						System.out.println("this.colors[" + i + "][0] = " + this.colors[i][0] + "; this.colors[" + i + "][1] = " +
+			/*						System.out.println("this.colors[" + i + "][0] = " + this.colors[i][0] + "; this.colors[" + i + "][1] = " +
 								this.colors[i][1] + "; this.colors[" + i + "][2] = " + this.colors[i][2]);
 						System.out.println("this.legendColors[" + i + "][0] = " + this.legendColors[i][0] + "; this.legendColors[" + i + "][1] = " +
 								this.legendColors[i][1] + "; this.legendColors[" + i + "][2] = " + this.legendColors[i][2]);
-*/
-//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
-			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
+			 */
+			//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
+			//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
+			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
 
 
 			if (i == goalHuePos) {
@@ -230,7 +239,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * @param yVal	y value of forte threshold
 	 * @param verticalSpacer	vertical space between sliders
 	 */
-	private void addThresholdSliders(int yVal, int verticalSpacer)
+/*	private void addThresholdSliders(int yVal, int verticalSpacer)
 	{
 		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
 
@@ -247,7 +256,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		}; // names
 
 		String[]	labels = new String[] {
-				"Color: Forte\nThreshold",
+				"Forte\nThreshold",
 				"Saturation",
 				"Sat: Forte\nThreshold",
 				"Brightness",
@@ -261,7 +270,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		}; // hsbSliderNames
 		 */
-		this.firstThresholdSliderId	= this.nextSliderId;
+/*		this.firstThresholdSliderId	= this.nextSliderId;
 
 		for(int i = 0; i < names.length; i++)
 		{			
@@ -319,13 +328,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 
 	} // addThresholdSliders
-
+*/
+	
 	/**
 	 * Adds the color select Buttons (allows selection of color for each threshold)
 	 * 
 	 * @param yVal	y value for this row of Buttons
 	 */
-	private	void addColorSelectButtons(int yVal)
+	/*	private	void addColorSelectButtons(int yVal)
 	{
 		int	colorSelectSpace	= 5;
 		int	colorSelectWidth	= (((this.parent.width / 3) - this.leftAlign - 10) / (this.totalRangeSegments + 1)) - colorSelectSpace;
@@ -363,7 +373,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.setValue("Color Select");
 
 		this.canvasColorSelectId		= this.nextButtonId;
-		this.firstColorSelectId			= this.nextButtonId + 1;
+//		this.firstColorSelectId			= this.nextButtonId + 1;
 
 		float[]	curColor	= new float[3];
 
@@ -376,14 +386,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				/*				curColor[0] = this.backgroundColor[0];
 				curColor[1] = this.backgroundColor[1];
 				curColor[2] = this.backgroundColor[2];
-				 */
-/*				curColor	= new float[] { 255, 0, 0 };
+	 */
+	/*				curColor	= new float[] { 255, 0, 0 };
 //				this.backgroundColorSelectId	= this.nextButtonId;
 
 				yVal		= yVal2;
 				buttonWidth	= colorSelectWidth * 2;
 			} else */
-			if(i == 0) {
+	/*			if(i == 0) {
 				curColor[0] = this.canvasColor[0];
 				curColor[1] = this.canvasColor[1];
 				curColor[2] = this.canvasColor[2];
@@ -439,6 +449,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.nextCWTextfieldId	= this.nextCWTextfieldId + 1;
 		} // for
 	} // addColorSelectButtons
+	 */
 
 
 	protected void addShapeCustomizationControls(int yVal)
@@ -449,10 +460,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.setWidth(250)
 		.setLabel("Shape Menu")
 		.setGroup("sidebarGroup");
-		
+
 		this.sidebarCP5.addGroup("shapeMenuGroup");
-		
-		
+
+
 		//Ask Emily if she knows how to make the alpha setting darker.  Nothing I do will change it
 		int fb = new Color((int)0,(int)0,(int)0, (int)250).getRGB();
 		CColor fadedBackground = new CColor();
@@ -492,7 +503,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
-		
+
 		this.sidebarCP5.addScrollableList("shapeSelect")
 		.setPosition(15,70)
 		.setSize(150, 100)
@@ -501,12 +512,12 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
 		.close()
 		.setValue(this.module2.getShape().getShapeIndex());
-		
-		
-		
+
+
+
 		this.sidebarCP5.getGroup("shapeMenuGroup")
 		.setVisible(false);
-		
+
 	}
 
 	/**
@@ -520,13 +531,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			throw new IllegalArgumentException("ModuleTemplate.calculateNotePos: int parameter is canvasColorSelectId (" + this.canvasColorSelectId +
 					"), which should not be sent to this method, since it does not designate a position in this.colors.");
 		}
-/*		if((id % 100) == (this.backgroundColorSelectId % 100))
+		/*		if((id % 100) == (this.backgroundColorSelectId % 100))
 		{
 			throw new IllegalArgumentException("ModuleTemplate.calculateNotePos: int parameter is backgroundColorSelectId (" + this.backgroundColorSelectId +
 					"), which should not be sent to this method, since it does not designate a position in this.colors.");
 		}
-*/
-		return (id % 100) - (this.firstColorSelectId % 100);
+		 */
+		// TODO - correct?
+		return (id % 100) - (this.firstColorSelectCWId % 100);
 	} // calculateNotePos
 
 	/**
@@ -553,19 +565,28 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 	} // resetThresholds
 
-	public void applyThresholdSBModulate(float curAmp)
+	/**
+	 * Applies the values of the threshold saturation and brightness Sliders 
+	 * to the color of the ColorWheel at the given position and returns the affected color.
+	 * 
+	 * @param curAmp	the current amplitude
+	 * @param colorPos	the position in this.colorSelect to which the sat/brightness should be applied
+	 * @return			the color with saturation and brightness adjustments
+	 */
+	/*	public float[] applyThresholdSBModulate(float curAmp, int colorPos)
 	{
-		if(this.colors == null) {
-			throw new IllegalArgumentException("ModuleTemplate02.applyThresholdSBModulate: this.colors is null.");
-		} // error checking
-		
+		// Error checking:
+		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
+			throw new IllegalArgumentException("ModuleTemplate.applyThresholdSBModulate: int parameter colorPos is " + colorPos + 
+					", which is out of bounds; must be between 0 and " + (this.colorSelect.length - 1));
+		}
 		// TODO: fill it every time?
 		// No, that causes errors; but not filling it was the huge color mystery error.
-//		this.fillHSBColors();
-		
+		//		this.fillHSBColors();
+
 		if(this.hsbColors == null)	{	this.fillHSBColors();	}
-//		this.applyHSBModulate(this.colors, this.hsbColors);
-		
+		//		this.applyHSBModulate(this.colors, this.hsbColors);
+
 		// Converts the current amplitude into a number between 0 and 100,
 		// depending on where curAmp is in relation to the saturation or brightness forte threshold:
 		float	satMappingVal		= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100), 100), 0);
@@ -578,63 +599,55 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		float[] hsb = new float[3];
 
-		for (int i = 0; i < this.colors.length; i++)
+		//		for (int i = 0; i < this.colorSelect.length; i++)
+		//		{
+		// Converts this position of hsbColors from RGB to HSB:
+		Color.RGBtoHSB((int)this.hsbColors[colorPos][0], (int)this.hsbColors[colorPos][1], (int)this.hsbColors[colorPos][2], hsb);
+
+		for(int j = 0; j < this.hueSatBrightPercentMod.length; j++)
 		{
-			// Converts this position of hsbColors from RGB to HSB:
-			Color.RGBtoHSB((int)this.hsbColors[i][0], (int)this.hsbColors[i][1], (int)this.hsbColors[i][2], hsb);
-
-			// Applies the status of the sliders to the newly-converted color:
-			
-//			System.out.println("this.hueSatBrightnessMod[1] = " + this.hueSatBrightnessMod[1]);
-			
-			for(int j = 0; j < this.hueSatBrightPercentMod.length; j++)
+			if(this.hueSatBrightPercentMod[j] <= 0)
 			{
-				if(this.hueSatBrightPercentMod[j] <= 0)
-				{
-					if(j == 0) {
-						hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
-					} else {
+				if(j == 0) {
+					hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
+				} else {
 
-						hsb[j] = Math.max(Math.min(hsb[j] + this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j], 1), 0);
-					}  // if/else - == 0
-				} // if percent greater than 0
-				else
-				{
-					if(j == 0) {
-						hsb[j] = (hsb[j] + this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j] + 1) % 1;
-					} else {
-						hsb[j] = Math.max(Math.min(this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j], 1), 0);
-					}  // if/else - == 0
+					hsb[j] = Math.max(Math.min(hsb[j] + this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j], 1), 0);
+				}  // if/else - == 0
+			} // if percent greater than 0
+			else
+			{
+				if(j == 0) {
+					hsb[j] = (hsb[j] + this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j] + 1) % 1;
+				} else {
+					hsb[j] = Math.max(Math.min(this.hueSatBrightnessMod[j] + this.hueSatBrightPercentMod[j], 1), 0);
+				}  // if/else - == 0
 
-				} // else - percent less than 0
-				
-			} // for - hueSatBrightPercentMod
-/*			if(this.hueSatBrightPercentMod[0] >= 0) {
-				hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
-			}
-			if(this.hueSatBrightPercentMod[1] >= 0) {
-				hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
-			}
-			if(this.hueSatBrightPercentMod[2] >= 0) {
-				
-			}
-*/			
-/*			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
+			} // else - percent less than 0
+
+		} // for - hueSatBrightPercentMod
+
+		/*			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
 			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
-*/
-			// Converts the color back to RGB:
-			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
-			Color a = new Color(oc);
+	 */
+	// Converts the color back to RGB:
+	/*		int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
+		Color a = new Color(oc);
 
-			// Fills colors with the new color:
-			this.colors[i][0] = (float)a.getRed();
+		// Don't want to set the ColorWheel to this;
+		// just want to use it in fade().....
+
+		// Fills colors with the new color:
+		/*			this.colors[i][0] = (float)a.getRed();
 			this.colors[i][1] = (float)a.getGreen();
 			this.colors[i][2] = (float)a.getBlue();
+	 */
+	//	} // for
 
-		} // for
-	} // applyThresholdSBModulate
-
+	/*	return a.getColorComponents(null);
+} // applyThresholdSBModulate
+	 */
 
 	/**
 	 * Used to catch ControlEvents from ControlP5 Controllers
@@ -649,14 +662,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		int	id	= controlEvent.getId();
 
-/*
+		/*
 		if(id != this.canvasColorSelectId && id != this.backgroundColorSelectId && id > 299 && id < 400)
 		{
 			int	colorPos	= this.calculateNotePos(id);
 			System.out.println("colors[colorPos][0] = " + this.colors[colorPos][0]);
 		}
-*/
-		
+		 */
+
 		// Re-calculate thresholds for dynamicSegment Buttons, lowThreshold and forteThreshold sliders:
 		if( ( (this.firstRangeSegmentsId > -1) && 
 				(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments) )
@@ -667,132 +680,40 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			if(id == this.firstThresholdSliderId) {
 				this.forteThreshold	= controlEvent.getValue();
 			}
-			
+
 			this.resetThresholds();
 		} // dynamic segment buttons
-		
-
-		// Saturation and Brightness Percent Sliders:
-		/*		if(controlEvent.getName().equals("saturationSlider") || 
-				controlEvent.getName().equals("brightnessSlider"))
-		{
-
-			// The Sliders automatically set their corresponding variables,
-			// so all we have to do is call applyHSBModulate():
-
-			if(this.hsbColors == null)	{	this.fillHSBColors();	}			
-			this.applyHSBModulate(this.colors, this.hsbColors);
-		} // if - sat/brightness percent Sliders
-		 */
 
 
-		// Saturation and Brightness Threshold and Percent Sliders:
-		if(this.firstThresholdSliderId != -1 &&
-				( ( id > this.firstThresholdSliderId ) && ( id < this.firstThresholdSliderId + 5 ) ) )
-		{
-			int		arrayPos	= (id - this.firstThresholdSliderId - 1) / 2;
-			/*			
-			float	mappingVal;
-			float	thresholdVal;
-			float	curAmp		= this.input.getAmplitude();
-
-			float	percentVal;
-			 */
-
-			// Percent Sliders
-			if((id - this.firstThresholdSliderId) % 2 == 1)
-			{
-				this.satBrightPercentVals[arrayPos]		= controlEvent.getValue();
-				this.satBrightThresholdVals[arrayPos]	= this.sidebarCP5.getValue("slider" + (id + 1));
-				//				percentVal		= controlEvent.getValue();
-			} else {
-				// Threshold Sliders
-				this.satBrightThresholdVals[arrayPos]	= controlEvent.getValue();
-				this.satBrightPercentVals[arrayPos]		= this.sidebarCP5.getValue("slider" + (id - 1));
-			}
-
-			//			System.out.println("thresholdVal = " + thresholdVal);
-			//			System.out.println("percentVal = " + percentVal);
-			/*			mappingVal	= PApplet.map(curAmp, 0, Math.max(thresholdVal, this.minThreshold + 1), 0, 100);
-			System.out.println("mappingVal = " + mappingVal);
-
-			this.hueSatBrightPercentMod[arrayPos]	= (percentVal * mappingVal) / 100;
-			 */
-
-			//			if(this.hsbColors == null)	{	this.fillHSBColors();	}	
-			//			this.applyHSBModulate(this.colors, this.hsbColors);
-		} // if - sat/brightness threshold Sliders
-
-// TODO:
-//		this.legend(0);
-		
-		/*
-		 * So what's going on?
-		 * 
-		 * When I draw the legend in controlEvent but outside of any ifs, it will get the color
-		 * that I'm currently changing correct.  But the other colors revert back to their
-		 * original states!
-		 * So: when I am actively moving a ColorWheel, it's updating,
-		 * but when I stop, it "goes back" - how does it go back?
-		 * 		I'll check ModuleTemplate.controlEvent...
-		 * 		Nothing there.
-		 * 
-		 * And - I know that it has something to do with setting the canvas color?
-		 * Not true; I just know that that defined that it couldn't show the last one;
-		 * this might be a completely different issue.
-		 * Actually... both canvasColor and backgroundColor work fine. :/
-		 */
-		
-		// ColorWheels - now this all happens in ModuleTemplate (post 7/26):
-/*		if( (id > 299) && id <= 400)
-		{
-			// get current color:
-			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
-
-			int	rgbColor	= curCW.getRGB();
-			Color	color	= new Color(rgbColor);
-
-			// Set corresponding Textfield with color value:
-			Textfield	curColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 100));
-			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-
-			//			int	colorPos	= id - this.firstColorSelectCWId - 1;
-			int colorPos	= this.calculateNotePos(id);
-			this.colors[colorPos][0]	= color.getRed();
-			this.colors[colorPos][1]	= color.getGreen();
-			this.colors[colorPos][2]	= color.getBlue();
-
-		} // ColorWheels*/
-		
 		if(controlEvent.getName() == "shapeMenuButton")
 		{
 			//open the menu
 			this.shapeMenuIsOpen = true;
-			
+
 			//set the shape select list
 			System.out.println(this.module2.getShape().getShapeIndex());
 			this.sidebarCP5.getController("shapeSelect").setValue(this.module2.getShape().getShapeIndex());
-			
+
 			//make the shape menu visible
 			this.sidebarCP5.getGroup("shapeMenuGroup")
 			.setVisible(false);
-			
+
 			//hide the other controls
 			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
-			
+
 			this.sidebarCP5.getController("menuX").update();
-			
+
 			this.module2.setShapeEditorRunning(true);
-						
-			
+
+
 		}//shapeMenuButton
-		
+
 		if(controlEvent.getName() == "shapeSelect")
 		{
 			this.module2.getShape().setShapeIndex((int) this.sidebarCP5.getController("shapeSelect").getValue());
 		}
-		
-		
+
+
 
 	} // controlEvent
 
@@ -810,6 +731,5 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		return this.shapeMenuIsOpen;
 	}
-	
 
 } // ModuleTemplate02

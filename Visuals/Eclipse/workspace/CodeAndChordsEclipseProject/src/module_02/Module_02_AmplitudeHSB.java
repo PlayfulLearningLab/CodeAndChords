@@ -87,7 +87,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 	public void draw()
 	{
-		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
@@ -101,7 +101,6 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
 
-		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
 		{
@@ -114,6 +113,8 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
+		// Now this threshold application happens in fade:
+//		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 		this.moduleTemplate.fade(goalHuePos);
 
 
@@ -151,11 +152,10 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	} // draw
 
 	private void drawShape()
-	{	
-
-		float[]	curHue	= this.moduleTemplate.getCurHue();
-		//this.fill(curHue[0], curHue[1], curHue[2]);
-		this.fill(255);
+	{
+		int[]	curHue	= this.moduleTemplate.getCurHue();
+		this.fill(curHue[0], curHue[1], curHue[2]);
+//		this.fill(255);
 
 		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
 		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
@@ -174,32 +174,6 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
 		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
-
-		//this.shapeMode(CENTER);
-
-
-		//this.stroke(Color.red.getRGB());
-		//this.strokeWeight(10);
-		//this.point(shapeX, this.height/2);
-
-
-
-		// Began with PShape, but decided that that is not worth it at the moment:
-		/*		this.shape.beginShape(ELLIPSE);
-
-		// adjust any shape parameters
-/*		this.shape.width	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
-		this.shape.height	= this.height * (this.moduleTemplate.getShapeSize() / 100);
-		 */		
-		/*		this.shape.scale((this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
-
-		float[]	curHue	= this.moduleTemplate.getCurHue();
-		this.shape.fill(curHue[0], curHue[1], curHue[2]);
-
-		this.shape.endShape();
-
-		shape(this.shape);
-		 */
 
 	} // drawShape
 
@@ -246,7 +220,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
 			}
 		}
-	}
+	} // mouseClicked
 
 
 
