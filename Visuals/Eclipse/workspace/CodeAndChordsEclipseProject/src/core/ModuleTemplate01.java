@@ -54,7 +54,7 @@ import processing.core.PApplet;
  * info on conversion of colors
  *
  */
-public class ModuleTemplate01 extends ModuleTemplate {
+public class ModuleTemplate01 extends ModuleMenu {
 	
 	private	PApplet		parent;
 
@@ -77,7 +77,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	public ModuleTemplate01(PApplet parent, Input input, String sidebarTitle)
 	{
-		super(parent, input, sidebarTitle, 12);
+		super(parent, null, input, sidebarTitle, 12);
 
 		this.parent	= parent;
 		this.input	= input;
@@ -171,7 +171,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
 
-		this.sidebarCP5.getController("keyDropdown").bringToFront();
+		this.controlP5.getController("keyDropdown").bringToFront();
 	} // initModuleTemplate
 
 
@@ -191,44 +191,44 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		int trichromaticX	= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 2;
 		int customX			= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 3;
 
-		this.sidebarCP5.addTextlabel("colorStyle")
+		this.controlP5.addTextlabel("colorStyle")
 		.setPosition(labelX, colorStyleY + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Color Style");
 
-		this.sidebarCP5.addToggle("rainbow")
+		this.controlP5.addToggle("rainbow")
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
 		.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_RAINBOW);
-		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		this.controlP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.sidebarCP5.addToggle("dichrom")
+		this.controlP5.addToggle("dichrom")
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
 		.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_DICHROM);
-		this.sidebarCP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		this.controlP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.sidebarCP5.addToggle("trichrom")
+		this.controlP5.addToggle("trichrom")
 		.setPosition(trichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
 		.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_TRICHROM);
-		this.sidebarCP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		this.controlP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.sidebarCP5.addToggle("custom")
+		this.controlP5.addToggle("custom")
 		.setPosition(customX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
 		.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
-		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.setColorStyle(ModuleTemplate.CS_RAINBOW);
+		this.setColorStyle(ModuleMenu.CS_RAINBOW);
 	} // addColorStyleButtons
 
 	
@@ -309,9 +309,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 			// Turn off the other two:
 			Toggle[] toggleArray	= new Toggle[] {
-					(Toggle)this.sidebarCP5.getController("major"),
-					(Toggle)this.sidebarCP5.getController("minor"),
-					(Toggle)this.sidebarCP5.getController("chrom"),
+					(Toggle)this.controlP5.getController("major"),
+					(Toggle)this.controlP5.getController("minor"),
+					(Toggle)this.controlP5.getController("chrom"),
 			};
 			boolean[]	broadcastState	= new boolean[toggleArray.length];
 			for(int i = 0; i < toggleArray.length; i++)
@@ -338,7 +338,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.melody.setRangeList();
 			try
 			{
-				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
+				((ScrollableList)this.controlP5.getController("rangeDropdown"))
 				.setItems(this.melody.getRangeList())
 				.setValue(0f);
 			} catch(ClassCastException cce) {
@@ -360,10 +360,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
-					(Toggle)this.sidebarCP5.getController("rainbow"),
-					(Toggle)this.sidebarCP5.getController("dichrom"),
-					(Toggle)this.sidebarCP5.getController("trichrom"),
-					(Toggle)this.sidebarCP5.getController("custom")
+					(Toggle)this.controlP5.getController("rainbow"),
+					(Toggle)this.controlP5.getController("dichrom"),
+					(Toggle)this.controlP5.getController("trichrom"),
+					(Toggle)this.controlP5.getController("custom")
 			};
 
 			boolean[]	broadcastState	= new boolean[toggleArray.length];
@@ -403,7 +403,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @param id	int denoting the id of the current Event
 	 * @return	the position in colors that is to be changed
 	 */
-	protected	int	calculateNotePos(int id)
+/*	protected	int	calculateNotePos(int id)
 	{		
 		int	notePos;
 		/*
@@ -424,7 +424,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// subtracting curKeyEnharmonicOffset adjusts for the particular key;
 		// adding 12 and modding by 12 avoids negative numbers.
 
-		id	= id % 100;
+/*		id	= id % 100;
 		notePos	= ( id - (this.firstColorSelectCWId % 100) - this.curKeyEnharmonicOffset + 12) % 12;
 
 
@@ -486,7 +486,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		return	notePos;
 	} // calculateNotePos
-
+*/
 	/**
 	 * Getter for curColorStyle instance var
 	 * @return	float instance var this.curColorStyle
@@ -494,5 +494,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	public float getCurColorStyle() {
 		return this.curColorStyle;
 	} // get CurColorStyle
+	
+	public void runMenu()
+	{
+		
+	} // runMenu
 	
 } // ModuleTemplate01 class

@@ -6,6 +6,8 @@ import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
 import core.Input;
+import core.Module;
+import core.ModuleMenu;
 import core.ModuleTemplate02;
 import core.PortAudioAudioIO;
 import processing.core.PApplet;
@@ -16,16 +18,21 @@ import core.ShapeEditor;
 import core.ShapeEditorInterface;
 import net.beadsproject.beads.core.AudioContext;
 
-public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterface {
+public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterface {
 
-	private	DisposeHandler		disposeHandler;
+//	private	DisposeHandler		disposeHandler;
 
 	private Input				input;
-	private ModuleTemplate02	moduleTemplate;
+//	private ModuleTemplate02	moduleTemplate;
+	
+	private	ModuleMenu			menu;
 
-	private Shape     			shape;
+//	private Shape     			shape;
 
-	private ShapeEditor			shapeEditor;
+//	private ShapeEditor			shapeEditor;
+	
+	/**	holds the y values for all Controllers	*/
+	private	int[]	yVals;
 
 	public static void main(String[] args) 
 	{
@@ -39,12 +46,13 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 	public void setup()
 	{
-		this.disposeHandler	= new DisposeHandler(this);
+		super.setup();
+//		this.disposeHandler	= new DisposeHandler(this);
 
-		// This uses the PortAudioAudioIO by default...
-		//this.input	= new Input();
-		this.input    = new Input(2, new AudioContext());
-
+		// Not specifying an AudioContext will use the PortAudioAudioIO:
+//		this.input	= new Input(this);
+		this.input    = new Input(2, new AudioContext(), this);
+		
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
 				{
@@ -61,10 +69,49 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 					shape.setCurrentShape("supershape", superShapes[i]);
 				}
 
+		
 				this.shapeEditor = new ShapeEditor(this, this.shape, 925, 520);
 				this.shapeEditor.setIsRunning(false);
 
-				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
+//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
+				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 4);
+				
+				this.yVals		= new int[18];
+				// Seemed like a good starting position, related to the text - but pretty arbitrary:
+				this.yVals[0]	= 26;
+				int	distance	= (this.height - this.yVals[0]) / this.yVals.length;
+				for(int i = 1; i < this.yVals.length; i++)
+				{
+					this.yVals[i]	= this.yVals[i - 1] + distance;
+				} // fill yVals
+				
+				// From ModuleTemplate02:
+				// Have to addColorSelect() first so that everything else can access the colors:
+				String[]	buttonLabels	= new String[] {
+						"Canvas", "1", "2", "3", "4"
+				};
+				//addColorSelect must be called first
+				this.menu.addColorSelect(new int[] { this.yVals[8] }, buttonLabels, "Color Select", true);
+//				this.menu.fillHSBColors();
+
+				this.menu.addARTSliders(this.yVals[1], this.yVals[2], this.yVals[3]);
+
+				this.menu.addShapeSizeSlider(this.yVals[15]);
+
+				this.menu.addRangeSegments(this.yVals[7], 4, 4, "Dynamic\nSegments");
+
+
+				//		this.addColorSelectButtons(this.yVals[7]);
+
+				this.menu.addHSBSliders(new int[] { this.yVals[4], this.yVals[5], this.yVals[6], });
+
+				this.menu.addPianoThresholdSlider(this.yVals[9]);
+				
+				int	verticalSpacer	= distance - this.menu.getSliderHeight();
+				this.menu.addThresholdSliders(yVals[10], verticalSpacer);
+
+				// TODO: may not need this call anymore:
+				this.menu.addShapeCustomizationControls(this.yVals[16]);
 
 
 				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
@@ -92,19 +139,19 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{
-			this.moduleTemplate.setMenuVal();
+			this.menu.setMenuVal();
 		}
 
-		background(this.moduleTemplate.getCanvasColor()[0], this.moduleTemplate.getCanvasColor()[1], this.moduleTemplate.getCanvasColor()[2]);
+		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
 
 
-		for(int i = 0; i < this.moduleTemplate.getThresholds().length; i++)
+		for(int i = 0; i < this.menu.getThresholds().length; i++)
 		{
-			if(curAmp > this.moduleTemplate.getThresholds()[i]) {
+			if(curAmp > this.menu.getThresholds()[i]) {
 				goalHuePos	= i;
 			} // if
 
@@ -115,7 +162,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 		// Now this threshold application happens in fade:
 //		this.moduleTemplate.applyThresholdSBModulate(curAmp);
-		this.moduleTemplate.fade(goalHuePos);
+		this.menu.fade(goalHuePos);
 
 
 		//		this.fill(255);
@@ -132,17 +179,17 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
 
-		this.shape.setShapeScale(this.moduleTemplate.getShapeSize());
+		this.shape.setShapeScale(this.menu.getShapeSize());
 
 		if(!this.shapeEditor.getIsRunning())
 		{
 			this.drawShape();
 		}
 
-		if(this.moduleTemplate.isShowScale() && !this.shapeEditor.getIsRunning())
+		if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
 		{
 			// draws the legend along the bottom of the screen:
-			this.moduleTemplate.legend(goalHuePos);
+			this.menu.legend(goalHuePos);
 
 		} // if showScale
 
@@ -152,17 +199,17 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 	private void drawShape()
 	{
-		int[]	curHue	= this.moduleTemplate.getCurHue();
+		int[]	curHue	= this.menu.getCurHue();
 		this.fill(curHue[0], curHue[1], curHue[2]);
 //		this.fill(255);
 
-		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
-		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
+		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
+		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
 
 		//this.shapeMode(CORNER);
 		PShape pShape;
-		if(this.moduleTemplate.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
-		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.moduleTemplate.getLeftEdgeX()), 1, 1});
+		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
+		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
 
 
 		pShape.beginShape();
@@ -171,8 +218,8 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		pShape.rotate(this.shapeEditor.getRotation());
 		pShape.endShape();
 
-		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
-		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
+		if(this.menu.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
+		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
 
 	} // drawShape
 
@@ -180,12 +227,12 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	{
 		return this.shape;
 	}
-
+/*
 	public void setShapeEditorRunning(boolean isRunning)
 	{
 		this.shapeEditor.setIsRunning(isRunning);
 	}
-
+*/
 	public void mouseDragged()
 	{
 		this.mousePressed();
@@ -194,7 +241,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	public void mousePressed()
 	{
 
-		if(!this.shapeEditor.getCP5().isMouseOver() && !this.moduleTemplate.getCP5().isMouseOver())
+		if(!this.shapeEditor.getCP5().isMouseOver() && !this.menu.getCP5().isMouseOver())
 		{
 			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getCP5().isVisible() && this.mouseX > this.shapeEditor.getAppletWidth() * (1 - this.shapeEditor.getScale()) && this.mouseY > this.shapeEditor.getAppletHeight() * (1 - this.shapeEditor.getScale()))
 			{			
@@ -204,14 +251,14 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
 
 			}
-			else if(this.moduleTemplate.getLeftEdgeX() == 0 && !this.shapeEditor.getCP5().isVisible())
+			else if(this.menu.getLeftEdgeX() == 0 && !this.shapeEditor.getCP5().isVisible())
 			{
 				this.shapeEditor.setXPos(this.mouseX);
 				this.shapeEditor.setYPos(this.mouseY);
 				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
 				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
 			}
-			else if(this.mouseX > this.moduleTemplate.getLeftEdgeX() && !this.shapeEditor.getCP5().isVisible())
+			else if(this.mouseX > this.menu.getLeftEdgeX() && !this.shapeEditor.getCP5().isVisible())
 			{
 				this.shapeEditor.setXPos(PApplet.map(this.mouseX - (this.width/3), 0, 2, 0, 3));
 				this.shapeEditor.setYPos(this.mouseY);
@@ -235,7 +282,7 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 	 * Taken from https://forum.processing.org/two/discussion/579/run-code-on-exit-follow-up
 	 *
 	 */
-	public class DisposeHandler {
+/*	public class DisposeHandler {
 
 		//		PApplet	pa;
 
@@ -252,5 +299,6 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 			this.module.input.stop();
 		}
 	} // DisposeHandler
+	*/
 
 } // Module_03_AmplitudeHSB

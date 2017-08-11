@@ -3,7 +3,7 @@ package module_01_02;
 import processing.core.*;
 
 import core.Input;
-import core.ModuleTemplate;
+import core.ModuleMenu;
 import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
 import net.beadsproject.beads.core.AudioContext;
@@ -60,7 +60,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	private int[]  goalHuePos;
 	private int[]  curHuePos;
 
-	private ModuleTemplate[]	moduleTemplate;
+	private ModuleMenu[]	moduleTemplate;
 
 	private boolean[]		nowBelow;
 	private boolean[][]		colorReachedArray;
@@ -135,7 +135,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		this.goalHuePos		= new int[this.numInputs];
 		this.curHuePos		= new int[this.numInputs];
 
-		this.moduleTemplate	= new ModuleTemplate[this.numInputs];
+		this.moduleTemplate	= new ModuleMenu[this.numInputs];
 
 		this.nowBelow			= new boolean[this.numInputs];
 		this.colorReachedArray	= new boolean[this.numInputs][3];
@@ -147,7 +147,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		//TODO: input will only initialize with the number of ins it can handle, and the numInputs here will not match that if it changes.
 		for(int i = 0; i < this.numInputs; i++)
 		{
-			this.moduleTemplate[i]	= new ModuleTemplate(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
+			this.moduleTemplate[i]	= new ModuleMenu(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
 			
 
 			// divide the attack/release/transition value by 50

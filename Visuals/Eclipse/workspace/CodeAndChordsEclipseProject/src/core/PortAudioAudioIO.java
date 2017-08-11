@@ -159,8 +159,8 @@ public class PortAudioAudioIO extends AudioIO {
 		// TODO: might need to use audioFormat.getChannels() instead of ioAudioFormat.outputs
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
-//		while (context.isRunning())
-		while(this.isRunning)
+		while (context.isRunning())
+//		while(this.isRunning)
 		{
 			update(); // this propagates update call to context
 			for (int i = 0, counter = 0; i < bufferSizeInFrames; ++i) {
