@@ -65,6 +65,9 @@ public class Input {
 	 *  - Input no longer extends PApplet
 	 *  - String[] filenames no longer accepted as constructor parameters
 	 */
+	
+	DisposeHandler		disposeHandler;
+	PApplet				pa;
 
 	AudioContext         	ac;
 	float[]                adjustedFundArray;    // holds the pitch, in hertz, of each input, adjusted to ignore pitches below a certain amplitude.
@@ -93,10 +96,10 @@ public class Input {
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
-	public Input(int numInputs)
+	public Input(int numInputs, PApplet pa)
 	{
 //		this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
-		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), pa);
 		
 	} // constructor - int, AudioContext
 	
@@ -107,10 +110,10 @@ public class Input {
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
-	public Input(int numInputs, boolean skip5thru8)
+	public Input(int numInputs, boolean skip5thru8, PApplet pa)
 	{
-		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8);
-		
+		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8, pa);
+
 	} // constructor - int, AudioContext
 
 	/**
@@ -119,9 +122,9 @@ public class Input {
 	 *  @param  numInputs     an int specifying the number of lines in the AudioFormat.
 	 *  @param  audioContext  an AudioContext whose input lines will be procurred as a UGen and used for the analysis calculations.
 	 */
-	public Input(int numInputs, AudioContext audioContext)
+	public Input(int numInputs, AudioContext audioContext, PApplet pa)
 	{
-		this(numInputs, audioContext, false);
+		this(numInputs, audioContext, false, pa);
 	} // int, AudioContext
 	
 	/**
@@ -132,7 +135,7 @@ public class Input {
 	 * @param audioContext
 	 * @param skip5thru8
 	 */
-	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8)
+	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
 	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
@@ -152,6 +155,9 @@ public class Input {
 		} else {
 			this.adjustedNumInputs	= this.numInputs;
 		} // 
+		
+		this.disposeHandler	= new DisposeHandler(pa, this);
+		System.out.println("just registered DisposeHandler for " + pa);
 
 		this.uGenArrayFromNumInputs(this.numInputs);
 	} // constructor(int, AudioContext, boolean)
@@ -213,9 +219,9 @@ public class Input {
 	 * from the machine's default audio input device;
 	 * does not require Jack.
 	 */
-	public Input()
+	public Input(PApplet pa)
 	{
-		this(2); //, new AudioContext());
+		this(2, pa); //, new AudioContext());
 	} // constructor()
 
 	public void uGenArrayFromNumInputs(int numInputs)
@@ -915,5 +921,33 @@ import beads.TimeStamp;
 	{
 		this.ac.stop();
 	} // stop
+	
+	/**
+	 * 08/01/2017
+	 * Emily Meuer
+	 * 
+	 * Class to stop the Input (which needs to stop the AudioContext,
+	 * because it needs to stop the AudioIO, esp. when it's using the PortAudioAudioIO,
+	 * which needs to call PortAudio.terminate to avoid a weird set of 
+	 * NoClassDefFoundError/ClassNotFoundException/BadFileDescriptor errors that will happen occasionally on start-up).
+	 * 
+	 * Taken from https://forum.processing.org/two/discussion/579/run-code-on-exit-follow-up
+	 *
+	 */
+	public class DisposeHandler {
+
+		Input	input;
+
+		DisposeHandler(PApplet pa, Input input)
+		{
+			pa.registerMethod("dispose", this);
+			this.input	= input;
+		}
+
+		public void dispose()
+		{
+			this.input.stop();
+		}
+	} // DisposeHandler
 	
 } // Input class

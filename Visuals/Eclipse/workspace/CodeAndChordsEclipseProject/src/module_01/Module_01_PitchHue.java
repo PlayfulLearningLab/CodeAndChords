@@ -50,7 +50,7 @@ public class Module_01_PitchHue extends PApplet
 	{
 		this.disposeHandler	= new DisposeHandler(this);
 		
-		this.input  = new Input();
+		this.input  = new Input(this);
 		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
 
 		noStroke();

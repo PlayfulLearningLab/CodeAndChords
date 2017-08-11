@@ -265,4 +265,34 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		return this.cp5;
 	}
 
+	@Override
+	public void sliderEvent(int id, float val) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sTextfieldEvent(int id, float val) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void buttonEvent(int id, String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void colorWheelEvent(int id, int[] color) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cwTextfieldEvent(int id, String val) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }// ShapeEditor
