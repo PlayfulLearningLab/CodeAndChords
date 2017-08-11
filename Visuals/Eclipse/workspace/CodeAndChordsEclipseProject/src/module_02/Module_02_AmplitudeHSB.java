@@ -27,10 +27,6 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 	private ShapeEditor			shapeEditor;
 
-	private float  				x;
-	private float				y;
-	private float 				rotation;
-
 	public static void main(String[] args) 
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
@@ -69,12 +65,6 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 				this.shapeEditor.setIsRunning(false);
 
 				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
-
-				this.x = ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
-				this.y = this.height/2;
-				this.rotation = 0;
-				
-				System.out.println("x val = " + this.x  + " and y val = " + this.y);
 
 
 				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
@@ -149,21 +139,14 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 			this.drawShape();
 		}
 
-		if(this.moduleTemplate.isShowScale())
+		if(this.moduleTemplate.isShowScale() && !this.shapeEditor.getIsRunning())
 		{
 			// draws the legend along the bottom of the screen:
 			this.moduleTemplate.legend(goalHuePos);
 
 		} // if showScale
-		
-			float[] param = this.shapeEditor.runSE(this.x, this.y, this.rotation);
 
-			if(param != null)
-			{
-				this.x = param[0];
-				this.y = param[1];
-				this.rotation = param[2];
-			}
+		this.shapeEditor.runMenu();
 
 
 	} // draw
@@ -186,11 +169,11 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
 		pShape.stroke(curHue[0], curHue[1], curHue[2]);
-		pShape.rotate(this.rotation);
+		pShape.rotate(this.shapeEditor.getRotation());
 		pShape.endShape();
 
-		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.x, this.y);
-		else this.shape(pShape, PApplet.map(this.x, 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.y);
+		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
+		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
 
 	} // drawShape
 
@@ -204,39 +187,38 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		this.shapeEditor.setIsRunning(isRunning);
 	}
 
-	public void mouseClicked()
+	public void mouseDragged()
 	{
-		float[] 	fArray;
-		float		scale;
-		ControlP5	seControlP5;
+		this.mousePressed();
+	}
+	
+	public void mousePressed()
+	{
 
-		if(this.shapeEditor.getIsRunning() && this.shapeEditor.getCP5().isVisible())
+		if(!this.shapeEditor.getCP5().isMouseOver() && !this.moduleTemplate.getCP5().isMouseOver())
 		{
-			System.out.println("Mouse clicked!!!!  X = " + this.mouseX + " Y = " + this.mouseY);
-			
-			fArray = this.shapeEditor.getSEWindowSizeAndPlace();
-			seControlP5 = this.shapeEditor.getCP5();
-			scale = this.shapeEditor.getScale();
-			
-			this.x = PApplet.map(this.mouseX - (fArray[0]), 0, fArray[2], 0, 925);
-			this.y = PApplet.map(this.mouseY - fArray[1], 0, fArray[3], 0, 520);
-			seControlP5.getController("xPos").setValue(this.x);
-			seControlP5.getController("yPos").setValue(this.y);
-			
-			System.out.println(fArray[0]);
-			System.out.println(fArray[1]);
-			System.out.println(fArray[2]);
-			System.out.println(fArray[3]);
-		}
-		else if(this.moduleTemplate.getLeftEdgeX() == 0)
-		{
-			this.x = this.mouseX;
-			this.y = this.mouseY;
-		}
-		else if(this.mouseX > this.moduleTemplate.getLeftEdgeX())
-		{
-			this.x = PApplet.map(this.mouseX, this.moduleTemplate.getLeftEdgeX(), 925, 0, 925);
-			this.y = this.mouseY;
+			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getCP5().isVisible() && this.mouseX > this.shapeEditor.getAppletWidth() * (1 - this.shapeEditor.getScale()) && this.mouseY > this.shapeEditor.getAppletHeight() * (1 - this.shapeEditor.getScale()))
+			{			
+				this.shapeEditor.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
+				this.shapeEditor.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));
+				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
+				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+
+			}
+			else if(this.moduleTemplate.getLeftEdgeX() == 0 && !this.shapeEditor.getCP5().isVisible())
+			{
+				this.shapeEditor.setXPos(this.mouseX);
+				this.shapeEditor.setYPos(this.mouseY);
+				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
+				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+			}
+			else if(this.mouseX > this.moduleTemplate.getLeftEdgeX() && !this.shapeEditor.getCP5().isVisible())
+			{
+				this.shapeEditor.setXPos(PApplet.map(this.mouseX - (this.width/3), 0, 2, 0, 3));
+				this.shapeEditor.setYPos(this.mouseY);
+				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
+				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+			}
 		}
 	} // mouseClicked
 

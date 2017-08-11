@@ -752,7 +752,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	protected void addPianoThresholdSlider(int yVal)
 	{
-		this.addSliderGroup(yVal, "Piano Threshold", 2, 100, 10);
+		this.addSliderGroup(yVal, "Piano \nThreshold", 2, 100, 10);
 	} // addPianoThresholdSlider
 
 
@@ -3181,6 +3181,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 	public boolean menuIsOpen()
 	{
 		return this.menuIsOpen;
+	}
+	
+	public ControlP5 getCP5()
+	{
+		return this.sidebarCP5;
 	}
 
 } // ModuleTemplate
