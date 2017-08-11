@@ -148,7 +148,6 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 
 		this.shapeEditor.runMenu();
 
-
 	} // draw
 
 	private void drawShape()
