@@ -1,4 +1,4 @@
-package core;
+package core.Archive_ModuleTemplate;
 
 import java.awt.Color;
 
@@ -15,6 +15,8 @@ import controlP5.Textfield;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PShape;
+import core.Input;
+import core.ModuleMenu;
 import core.Shape;
 import module_02.Module_02_AmplitudeHSB;
 
@@ -556,7 +558,7 @@ public class ModuleTemplate02 extends ModuleMenu {
 	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
 	 * to recalculate the length of and values within this.thresholds.
 	 */
-	private	void resetThresholds()
+/*	private	void resetThresholds()
 	{
 		float	segmentValue;
 		if(this.curRangeSegments == 1)
@@ -575,7 +577,8 @@ public class ModuleTemplate02 extends ModuleMenu {
 			this.thresholds[i]	= this.threshold + segmentValue * i;
 		} // for
 	} // resetThresholds
-
+*/
+	
 	/**
 	 * Applies the values of the threshold saturation and brightness Sliders 
 	 * to the color of the ColorWheel at the given position and returns the affected color.
@@ -680,7 +683,7 @@ public class ModuleTemplate02 extends ModuleMenu {
 			System.out.println("colors[colorPos][0] = " + this.colors[colorPos][0]);
 		}
 		 */
-
+/*
 		// Re-calculate thresholds for dynamicSegment Buttons, lowThreshold and forteThreshold sliders:
 		if( ( (this.firstRangeSegmentsId > -1) && 
 				(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments) )
@@ -694,7 +697,7 @@ public class ModuleTemplate02 extends ModuleMenu {
 
 			this.resetThresholds();
 		} // dynamic segment buttons
-
+*/
 /*
 		if(controlEvent.getName() == "shapeMenuButton")
 		{

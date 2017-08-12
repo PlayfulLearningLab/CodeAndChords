@@ -41,7 +41,7 @@ import processing.core.PImage;
  * info on conversion of colors
  *
  */
-public class ModuleTemplate_01 {
+public class ModuleTemplate_01_05 {
 
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
@@ -191,7 +191,7 @@ public class ModuleTemplate_01 {
 	private	boolean	dichromFlag;
 	private	boolean	trichromFlag;
 
-	public ModuleTemplate_01(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate_01_05(PApplet parent, Input input, String sidebarTitle)
 	{
 		this.parent	= parent;
 		this.input	= input;
@@ -224,7 +224,7 @@ public class ModuleTemplate_01 {
 		this.HSBColors      = new float[12][3];
 		this.canvasColor	= new float[] { 0, 0, 0 }; // canvas is black to begin with.
 
-		this.curColorStyle	= ModuleTemplate_01.CS_RAINBOW;
+		this.curColorStyle	= ModuleTemplate_01_05.CS_RAINBOW;
 		// The following will happen in rainbow():
 		//		this.rootColor	= new int[] { 255, 0, 0, };
 		this.dichromFlag	= false;
@@ -775,7 +775,7 @@ public class ModuleTemplate_01 {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate_01.CS_RAINBOW);
+		.setInternalValue(ModuleTemplate_01_05.CS_RAINBOW);
 		this.sidebarCP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("dichrom")
@@ -783,7 +783,7 @@ public class ModuleTemplate_01 {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate_01.CS_DICHROM);
+		.setInternalValue(ModuleTemplate_01_05.CS_DICHROM);
 		this.sidebarCP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("trichrom")
@@ -791,7 +791,7 @@ public class ModuleTemplate_01 {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate_01.CS_TRICHROM);
+		.setInternalValue(ModuleTemplate_01_05.CS_TRICHROM);
 		this.sidebarCP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.sidebarCP5.addToggle("custom")
@@ -799,7 +799,7 @@ public class ModuleTemplate_01 {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
 		.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate_01.CS_CUSTOM);
+		.setInternalValue(ModuleTemplate_01_05.CS_CUSTOM);
 		this.sidebarCP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		((Toggle) this.sidebarCP5.getController("rainbow")).setState(true);
@@ -1327,7 +1327,7 @@ public class ModuleTemplate_01 {
 		this.curColorStyle	= colorStyle;
 
 		// Rainbow:
-		if(this.curColorStyle == ModuleTemplate_01.CS_RAINBOW)
+		if(this.curColorStyle == ModuleTemplate_01_05.CS_RAINBOW)
 		{
 			this.rainbow();
 			System.out.print("     RAINBOW");
@@ -1336,7 +1336,7 @@ public class ModuleTemplate_01 {
 		}
 
 		// Dichromatic:
-		if(this.curColorStyle == ModuleTemplate_01.CS_DICHROM)
+		if(this.curColorStyle == ModuleTemplate_01_05.CS_DICHROM)
 		{
 			// First time to dichromatic, dichromFlag will be false, 
 			// and the two colors will be set to contrast.
@@ -1372,7 +1372,7 @@ public class ModuleTemplate_01 {
 		} // Dichromatic
 
 		// Trichromatic:
-		if(this.curColorStyle == ModuleTemplate_01.CS_TRICHROM)
+		if(this.curColorStyle == ModuleTemplate_01_05.CS_TRICHROM)
 		{
 			// first time trichromatic has been called:
 			if(!this.trichromFlag)
@@ -1407,7 +1407,7 @@ public class ModuleTemplate_01 {
 		}
 
 		// Custom:
-		if(this.curColorStyle == ModuleTemplate_01.CS_CUSTOM)
+		if(this.curColorStyle == ModuleTemplate_01_05.CS_CUSTOM)
 		{			
 			// First, set the key to chromatic:
 			this.setCurKey("A", 2);
@@ -2212,7 +2212,8 @@ public class ModuleTemplate_01 {
 
 			if(((Toggle)controlEvent.getController()).getBooleanValue())
 			{
-				this.input.uGenArrayFromSample(this.inputFile);
+//				this.input.uGenArrayFromSample(this.inputFile);
+				System.out.println("ModuleTemplate_01.controlEvent: playing from input file is no longer supported.");
 			} else {
 				this.input.uGenArrayFromNumInputs(1);
 			}
@@ -2290,7 +2291,7 @@ public class ModuleTemplate_01 {
 				int	pos	= (id / 2) - 4;		// red = 0, green = 1, blue = 2
 				this.redGreenBlueMod[pos]	= sliderValFloat;
 
-				if(this.curColorStyle == ModuleTemplate_01.CS_CUSTOM)
+				if(this.curColorStyle == ModuleTemplate_01_05.CS_CUSTOM)
 				{
 					this.applyColorModulate(this.colors, this.originalColors);
 				}
@@ -2777,7 +2778,7 @@ public class ModuleTemplate_01 {
 			} // for - switch off all Toggles:
 
 			// if Rainbow, lock 2nd and 3rd color buttons:
-			if(this.curColorStyle == ModuleTemplate_01.CS_RAINBOW)
+			if(this.curColorStyle == ModuleTemplate_01_05.CS_RAINBOW)
 			{
 				// if avoids errors during instantiation:
 				if(this.sidebarCP5.getController("button69") != null)
@@ -2791,7 +2792,7 @@ public class ModuleTemplate_01 {
 			}
 
 			// Unlock 2nd Color for Dichromatic, but keep 3rd Color locked:
-			if(this.curColorStyle == ModuleTemplate_01.CS_DICHROM)
+			if(this.curColorStyle == ModuleTemplate_01_05.CS_DICHROM)
 			{
 				// if avoids errors during instantiation:
 				if(this.sidebarCP5.getController("button69") != null)
@@ -2805,7 +2806,7 @@ public class ModuleTemplate_01 {
 			}
 
 			// Unlock all for Trichromatic:
-			if(this.curColorStyle == ModuleTemplate_01.CS_TRICHROM)
+			if(this.curColorStyle == ModuleTemplate_01_05.CS_TRICHROM)
 			{
 				// if avoids errors during instantiation:
 				if(this.sidebarCP5.getController("button69") != null)
@@ -2856,11 +2857,11 @@ public class ModuleTemplate_01 {
 			// 2nd Color:
 			if(id == 70)
 			{
-				if(this.curColorStyle == ModuleTemplate_01.CS_DICHROM)
+				if(this.curColorStyle == ModuleTemplate_01_05.CS_DICHROM)
 				{
 					// for Dichromatic, this is the last color:
 					notePos	= this.colors.length - 1;
-				} else if(this.curColorStyle == ModuleTemplate_01.CS_TRICHROM)
+				} else if(this.curColorStyle == ModuleTemplate_01_05.CS_TRICHROM)
 				{
 					// for tri, it's in the middle:
 					if(this.getMajMinChrom() == 2)
@@ -2878,7 +2879,7 @@ public class ModuleTemplate_01 {
 			if(id == 73)
 			{
 				// only applies to trichromatic:
-				if(this.curColorStyle == ModuleTemplate_01.CS_TRICHROM)
+				if(this.curColorStyle == ModuleTemplate_01_05.CS_TRICHROM)
 				{
 					if(this.getMajMinChrom() == 2)
 					{

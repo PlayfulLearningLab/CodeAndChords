@@ -8,7 +8,6 @@ import controlP5.ControlP5;
 import core.Input;
 import core.Module;
 import core.ModuleMenu;
-import core.ModuleTemplate02;
 import core.PortAudioAudioIO;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -16,13 +15,14 @@ import processing.core.PShape;
 import core.Shape;
 import core.ShapeEditor;
 import core.ShapeEditorInterface;
+import core.Archive_ModuleTemplate.ModuleTemplate02;
 import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterface {
 
 //	private	DisposeHandler		disposeHandler;
 
-	private Input				input;
+//	private Input				input;
 //	private ModuleTemplate02	moduleTemplate;
 	
 	private	ModuleMenu			menu;
@@ -38,15 +38,15 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
 	} // main
-
+/*
 	public void settings()
 	{
 		size(925, 520);
 	} // settings
-
+*/
 	public void setup()
 	{
-		super.setup();
+//		super.setup();
 //		this.disposeHandler	= new DisposeHandler(this);
 
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
@@ -100,15 +100,14 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				this.menu.addRangeSegments(this.yVals[7], 4, 4, "Dynamic\nSegments");
 
-
-				//		this.addColorSelectButtons(this.yVals[7]);
-
 				this.menu.addHSBSliders(new int[] { this.yVals[4], this.yVals[5], this.yVals[6], });
 
 				this.menu.addPianoThresholdSlider(this.yVals[9]);
 				
+				this.menu.addForteThresholdSlider(this.yVals[10]);
+				
 				int	verticalSpacer	= distance - this.menu.getSliderHeight();
-				this.menu.addThresholdSliders(yVals[10], verticalSpacer);
+				this.menu.addThresholdSliders(yVals[11], verticalSpacer);
 
 				// TODO: may not need this call anymore:
 				this.menu.addShapeCustomizationControls(this.yVals[16]);

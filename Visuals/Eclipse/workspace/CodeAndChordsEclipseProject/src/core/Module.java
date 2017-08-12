@@ -9,6 +9,10 @@ public abstract class Module extends PApplet {
 	protected	Shape			shape;
 	protected 	ShapeEditor		shapeEditor;
 
+	public void settings()
+	{
+		size(925, 520);
+	}
 	
 	public void setup()
 	{
