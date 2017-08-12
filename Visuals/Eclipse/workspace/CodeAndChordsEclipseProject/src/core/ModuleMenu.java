@@ -176,10 +176,13 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	float[]	thresholds;
 
 	/**	Volume below which input will be ignored	*/
-	protected float	threshold;
+//	protected float	threshold;
 
 	/**	The minimum value for threshold Sliders	*/
 	protected	float	minThreshold;
+	
+	/**	The lowest threshold; sounds below this will be ignored	*/
+	protected	float	pianoThreshold;
 
 	/**	The highest amplitude threshold	*/
 	protected	float	forteThreshold;
@@ -283,7 +286,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	firstColorSelectCWId	= -1;
 	protected	int	firstSpecialColorsCWId	= -1;
 	protected	int	lastColorSelectId		= -1;
-	protected	int	thresholdSliderId		= -1;
+//	protected	int	thresholdSliderId		= -1;
 	protected	int	firstARTSliderId		= -1;
 	protected	int	firstHSBSliderId		= -1;
 	protected	int	firstRGBSliderId		= -1;
@@ -291,9 +294,12 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	volumeSliderId			= -1;
 	protected	int	shapeSizeSliderId		= -1;
 	protected	int	firstRangeSegmentsId	= -1;
+	protected	int	pianoThresholdSliderId	= -1;
+	protected	int	forteThresholdSliderId	= -1;
+	protected	int	firstSatBrightThreshSliderId	= -1;
 
 	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
-	protected	int	firstThresholdSliderId	= -1;
+//	protected	int	firstThresholdSliderId	= -1;
 
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	//	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
@@ -362,7 +368,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.checkpoint		= this.parent.millis() + 100;
 
-		this.threshold		= 10;
+//		this.threshold		= 10;
+		this.pianoThreshold	= 10;
 
 		// set amplitude thresholds
 		this.thresholds	= new float[] {
@@ -691,7 +698,8 @@ public class ModuleMenu extends MenuTemplate  {
 		int	highRange;
 		int	startingValue;
 
-		this.thresholdSliderId	= this.nextSliderId;
+//		this.thresholdSliderId	= this.nextSliderId;
+		this.forteThresholdSliderId	= this.nextSliderId;
 		this.firstARTSliderId	= this.nextSliderId + 1;
 
 		for(int i = 0; i < 4; i++)
@@ -778,8 +786,16 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addPianoThresholdSlider(int yVal)
 	{
+		this.pianoThresholdSliderId	= this.nextSliderId;
 		this.addSliderGroup(yVal, "Piano \nThreshold", 2, 100, 10);
 	} // addPianoThresholdSlider
+	
+	public void addForteThresholdSlider(int yVal)
+	{
+		this.forteThresholdSliderId	= this.nextSliderId;
+		this.forteThreshold	= 500;
+		this.addSliderGroup(yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold);
+	} // addForteThresholdSlider
 
 
 	/**
@@ -1111,14 +1127,14 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addThresholdSliders(int yVal, int verticalSpacer)
 	{
-		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
+//		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
 
 		// Since some i's will add a couple rows of labels and sliders,
 		// this variable keeps track of which "level" of y the next thing should be added to.
 		//		float	yPos		= 0;
 
 		String[]	names	= new String[] {
-				"forteThresh",
+//				"forteThresh",
 				"saturation",
 				"saturationForteThresh",
 				"brightness",
@@ -1126,7 +1142,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}; // names
 
 		String[]	labels = new String[] {
-				"Forte\nThreshold",
+	//			"Forte\nThreshold",
 				"Saturation",
 				"Sat: Forte\nThreshold",
 				"Brightness",
@@ -1140,19 +1156,22 @@ public class ModuleMenu extends MenuTemplate  {
 
 		}; // hsbSliderNames
 		 */
-		this.firstThresholdSliderId	= this.nextSliderId;
+//		this.firstThresholdSliderId	= this.nextSliderId;
+		
+		this.firstSatBrightThreshSliderId	= this.nextSliderId;
+		System.out.println("firstSatBrightThreshSliderId = " + firstSatBrightThreshSliderId);
 
 		for(int i = 0; i < names.length; i++)
 		{
 			// Forte Thresholds
-			if(i % 2 == 0)
+			if(i % 2 == 1)
 			{
 				this.addSliderGroup(yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], this.minThreshold, 7000, this.forteThreshold);
 
 			} // if - Forte Thresholds
 
 			// percent sliders
-			if(i % 2 == 1)
+			if(i % 2 == 0)
 			{
 				this.controlP5.addLabel(names[i])
 				.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
@@ -1492,7 +1511,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		float	curAmp	= this.input.getAmplitude();
 
-		if(curAmp < this.threshold)	
+		if(curAmp < this.pianoThreshold)	
 		{
 			this.nowBelow	= true;
 
@@ -2363,7 +2382,7 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		super.controlEvent(controlEvent);
 		
-		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
+//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
 
 		int	id	= controlEvent.getController().getId();
 		// Play button:
@@ -2615,11 +2634,19 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		System.out.println("ModuleMenu: got sliderEvent with id " + id + " and val " + val);
 		
-		// Threshold:
-		if(this.thresholdSliderId != -1 && id == this.thresholdSliderId)
+		// Piano Threshold:
+		if(this.pianoThresholdSliderId != -1 && id == this.pianoThresholdSliderId)
 		{
-			this.setThreshold(val);
-		} // threshold slider
+			this.pianoThreshold	= val;
+			this.resetThresholds();
+		} // piano threshold Slider
+		
+		// Forte Threshold:
+		if(this.forteThresholdSliderId != -1 && id == this.forteThresholdSliderId)
+		{
+			this.forteThreshold	= val;
+			this.resetThresholds();
+		} // forte threshold Slider
 
 		// Attack, Release, and Transition:
 		if(this.firstARTSliderId != -1 &&
@@ -2673,17 +2700,20 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		// Saturation and Brightness Threshold and Percent Sliders:
-		if(this.firstThresholdSliderId != -1 &&
-				( ( id > this.firstThresholdSliderId ) && ( id < this.firstThresholdSliderId + 5 ) ) )
+		if(this.firstSatBrightThreshSliderId != -1 &&
+				( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) ) )
 		{
-			int		arrayPos	= (id - this.firstThresholdSliderId - 1) / 2;
+			System.out.println("did get into this event of Sliders");
+			int		arrayPos	= (id - this.firstSatBrightThreshSliderId /*- 1*/) / 2;
 			// Percent Sliders
-			if((id - this.firstThresholdSliderId) % 2 == 1)
+			if((id - this.firstSatBrightThreshSliderId) % 2 == 0)
 			{
+				System.out.println("percent Slider?");
 				this.satBrightPercentVals[arrayPos]		= val;
 				this.satBrightThresholdVals[arrayPos]	= this.controlP5.getValue("slider" + (id + 1));
 				//				percentVal		= controlEvent.getValue();
 			} else {
+				System.out.println("threshold Slider?");
 				// Threshold Sliders
 				this.satBrightThresholdVals[arrayPos]	= val;
 				this.satBrightPercentVals[arrayPos]		= this.controlP5.getValue("slider" + (id - 1));
@@ -2970,6 +3000,31 @@ public class ModuleMenu extends MenuTemplate  {
 					"(firstHSBSliderId = " + this.firstHSBSliderId + ")");
 		} // else - let the user know that we ignored this method call
 	} // resetHSBSlidersTextfields
+	
+	
+	/**
+	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
+	 * to recalculate the length of and values within this.thresholds.
+	 */
+	private	void resetThresholds()
+	{
+		float	segmentValue;
+		if(this.curRangeSegments == 1)
+		{
+			segmentValue	= this.pianoThreshold;
+		} else {
+			segmentValue	= (this.forteThreshold - this.pianoThreshold) / (this.curRangeSegments - 1);
+		}
+
+		//		System.out.println("dynamic segment buttons: forteThreshold = " + this.forteThreshold + 
+		//				"; segmentValue = " + segmentValue);
+
+//		this.thresholds	= new float[this.curRangeSegments];
+		for(int i = 0; i < this.curRangeSegments; i++)
+		{
+			this.thresholds[i]	= this.pianoThreshold + segmentValue * i;
+		} // for
+	} // resetThresholds
 
 	/**
 	 * Given the name of a key (e.g., "A#", "Bb") and the quality (0 for major, 1 for minor, 2 for chromatic), 
@@ -3233,9 +3288,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public void setCheckpoint(int newVal)	{	this.checkpoint	= newVal;	}
 
-	public float getThreshold()				{	return this.threshold;		}
+	public float getPianoThreshold()				{	return this.pianoThreshold;		}
 
-	public void setThreshold(float newVal)	{	this.threshold	= newVal;	}
+	public void setPianoThreshold(float newVal)	{	this.pianoThreshold	= newVal;	}
 
 	public int[] getCurHue()				{	return this.curHue;	}
 

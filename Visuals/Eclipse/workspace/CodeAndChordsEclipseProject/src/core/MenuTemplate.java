@@ -143,7 +143,7 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-		System.out.println("MenuTemplate.controlEvent: controlEvent = " + controlEvent);
+//		System.out.println("MenuTemplate.controlEvent: controlEvent = " + controlEvent);
 		
 		int	id	= controlEvent.getController().getId();
 		// Sliders
