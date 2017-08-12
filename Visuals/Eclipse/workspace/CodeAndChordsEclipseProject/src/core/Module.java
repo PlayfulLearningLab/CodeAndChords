@@ -30,5 +30,7 @@ public abstract class Module extends PApplet {
 	public Shape getShape() {
 		return this.shape;
 	} // getShape
+	
+	public abstract String[] getLegendText();
 
 } // Module
