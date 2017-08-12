@@ -369,15 +369,15 @@ public class ModuleMenu extends MenuTemplate  {
 		this.checkpoint		= this.parent.millis() + 100;
 
 //		this.threshold		= 10;
-		this.pianoThreshold	= 10;
 
 		// set amplitude thresholds
 		this.thresholds	= new float[] {
-				2,		// piano
+				10,		// piano
 				100,	// mezzo piano
 				200,	// mezzo forte
 				500	//forte
 		}; // thresholds
+		this.pianoThreshold	= this.thresholds[0];
 		this.forteThreshold	= this.thresholds[this.thresholds.length - 1];
 		this.minThreshold	= 101;
 
@@ -598,7 +598,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 
 	/**
-	 * Adds "hide buttons" - hide Menu, hide Play Button, and hide Scale
+	 * Adds "hide buttons" - hide Menu, hide Play Button, and hide Legend
 	 * 
 	 * @param hideY	y value at which the row will be displayed
 	 */
@@ -620,7 +620,7 @@ public class ModuleMenu extends MenuTemplate  {
 		String[]	labels	= new String[] {
 				"Play Button",
 				"Menu Button",
-				"Scale"
+				"Legend"
 		};
 		int[]	xVals	= new int[] {
 				playButtonX,
@@ -1024,6 +1024,8 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addModulateSliders(int[] modulateYVals)
 	{
+		this.redGreenBlueMod		 	= new float[3];
+		
 		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
 		this.firstRGBSliderId	= this.nextSliderId;
@@ -1329,6 +1331,62 @@ public class ModuleMenu extends MenuTemplate  {
 		.setVisible(false);
 
 	} // addShapeCustomizationControls
+	
+	/**
+	 * Method called during instantiation to initialize the color style Toggles
+	 * (Rainbow, Dichromatic, Trichromatic, and Custom).
+	 * 
+	 * @param colorStyleY	y value of the colorStyle Toggles
+	 */
+	public void addColorStyleButtons(int colorStyleY)
+	{
+		int	colorStyleWidth	= 49;
+		int	colorStyleSpace	= 6;
+
+		int rainbowX     	= this.leftAlign;
+		int dichromaticX	= this.leftAlign + colorStyleWidth + colorStyleSpace;
+		int trichromaticX	= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 2;
+		int customX			= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 3;
+
+		this.controlP5.addTextlabel("colorStyle")
+		.setPosition(labelX, colorStyleY + 4)
+		.setGroup("sidebarGroup")
+		.setValue("Color Style");
+
+		this.controlP5.addToggle("rainbow")
+		.setPosition(rainbowX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Rainbow")
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate01.CS_RAINBOW);
+		this.controlP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		this.controlP5.addToggle("dichrom")
+		.setPosition(dichromaticX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Dichrom.")
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate01.CS_DICHROM);
+		this.controlP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		this.controlP5.addToggle("trichrom")
+		.setPosition(trichromaticX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Trichrom.")
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate01.CS_TRICHROM);
+		this.controlP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		this.controlP5.addToggle("custom")
+		.setPosition(customX, colorStyleY)
+		.setWidth(colorStyleWidth)
+		.setCaptionLabel("Custom")
+		.setGroup("sidebarGroup")
+		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
+		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		this.setColorStyle(ModuleMenu.CS_RAINBOW);
+	} // addColorStyleButtons
 
 
 	/**
@@ -1666,19 +1724,21 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void legend(int goalHuePos)
 	{
-		this.parent.textSize(24);
+		this.parent.textSize(24);		
 
-		float	sideWidth1   = (this.parent.width - this.leftEdgeX) / this.curRangeSegments;
+		String[]	legendText	= this.module.getLegendText();
+
+		float	sideWidth1   = (this.parent.width - this.leftEdgeX) / legendText.length;
 		float	sideHeight  = this.parent.width / 12;	// pretty arbitrary
-		float	addToLastRect	= (this.parent.width - this.leftEdgeX) - (sideWidth1 * this.curRangeSegments);
+		float	addToLastRect	= (this.parent.width - this.leftEdgeX) - (sideWidth1 * legendText.length);
 		float	sideWidth2	= sideWidth1;
 
 		this.parent.noStroke();
 
 //		for (int i = 0; i < this.thresholds.length; i++)
-		for (int i = 0; i < this.curRangeSegments; i++)
+		for (int i = 0; i < legendText.length; i++)
 		{
-			if(i == this.curRangeSegments - 1)
+			if(i == legendText.length - 1)
 			{
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
@@ -1700,7 +1760,7 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 
 			this.parent.fill(0);
-			this.parent.text(this.thresholds[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.1)), this.parent.height - 20);
+			this.parent.text(legendText[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.1)), this.parent.height - 20);
 		} // for
 
 	} // legend
@@ -2100,7 +2160,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fillHSBColors();
 	} // rainbow
 
-	protected void setColorStyle(int newColorStyle)
+	public void setColorStyle(int newColorStyle)
 	{
 		this.curColorStyle	= newColorStyle;
 
@@ -2512,6 +2572,103 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			} // range segments
 		} // Toggles
+		
+		// Major/Minor/Chromatic buttons
+		if(controlEvent.getName().equals("major") ||
+				controlEvent.getName().equals("minor") ||
+				controlEvent.getName().equals("chrom"))
+		{
+			System.out.println("New scale quality: " + controlEvent.getName());
+			
+			Toggle	curToggle	= (Toggle) controlEvent.getController();
+			this.setCurKey(this.curKey, (int) curToggle.internalValue());
+			//			this.majMinChrom	= (int) curToggle.internalValue();
+			this.setColorStyle(this.curColorStyle);
+
+			// Turn off the other two:
+			Toggle[] toggleArray	= new Toggle[] {
+					(Toggle)this.controlP5.getController("major"),
+					(Toggle)this.controlP5.getController("minor"),
+					(Toggle)this.controlP5.getController("chrom"),
+			};
+			boolean[]	broadcastState	= new boolean[toggleArray.length];
+			for(int i = 0; i < toggleArray.length; i++)
+			{
+				// save the current broadcast state of the controller:
+				broadcastState[i]	= toggleArray[i].isBroadcast();
+
+				// turn off broadcasting to avoid endless looping in this method:
+				toggleArray[i].setBroadcast(false);
+
+				// only switch off the ones that weren't just clicked:
+				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
+				{
+					toggleArray[i].setState(false);
+				}
+
+				// set broadcasting back to original setting:
+				toggleArray[i].setBroadcast(broadcastState[i]);
+			} // for - switch off all Toggles:
+
+			// Update Melody's scale:
+			String[] scales	= new String[] { "major", "minor", "chromatic" };
+			this.melody.setScale(scales[this.majMinChrom]);
+			this.melody.setRangeList();
+			try
+			{
+				((ScrollableList)this.controlP5.getController("rangeDropdown"))
+				.setItems(this.melody.getRangeList())
+				.setValue(0f);
+			} catch(ClassCastException cce) {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+			} // catch
+
+		} // majMinChrom buttons
+
+		// Color Style:
+		if(controlEvent.getName().equals("rainbow") ||
+				controlEvent.getName().equals("dichrom") ||
+				controlEvent.getName().equals("trichrom") ||
+				controlEvent.getName().equals("custom"))
+		{
+			Toggle	curToggle	= (Toggle) controlEvent.getController();
+
+			this.setColorStyle((int)curToggle.internalValue());
+			
+			// Turn off the other Toggles:
+			Toggle[] toggleArray	= new Toggle[] {
+					(Toggle)this.controlP5.getController("rainbow"),
+					(Toggle)this.controlP5.getController("dichrom"),
+					(Toggle)this.controlP5.getController("trichrom"),
+					(Toggle)this.controlP5.getController("custom")
+			};
+
+			boolean[]	broadcastState	= new boolean[toggleArray.length];
+			for(int i = 0; i < toggleArray.length; i++)
+			{
+				// save the current broadcast state of the controller:
+				broadcastState[i]	= toggleArray[i].isBroadcast();
+
+				// turn off broadcasting to avoid endless looping in this method:
+				toggleArray[i].setBroadcast(false);
+
+				// switch off the ones that weren't just clicked, but keep the current one on:
+				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
+				{
+					System.out.println("setting " + toggleArray[i] + " to false");
+					toggleArray[i].setState(false);
+				} else {
+					System.out.println("setting " + toggleArray[i] + " to true");
+					toggleArray[i].setState(true);
+				}
+
+				// set broadcasting back to original setting:
+				toggleArray[i].setBroadcast(broadcastState[i]);
+			} // for - switch off all Toggles:
+			
+			this.resetModulateSlidersTextfields();
+		} // colorStyle buttons
+
 
 		// Key dropdown ScrollableList:
 		if(controlEvent.getName().equals("keyDropdown"))
@@ -2653,7 +2810,7 @@ public class ModuleMenu extends MenuTemplate  {
 				id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3))
 		{
 			//			int	pos	= (id / 2) - 1;
-			int	pos	= id;
+			int	pos	= id - this.firstARTSliderId;
 			//			this.attackReleaseTransition[pos]	= val;
 			this.setAttRelTranVal(pos, val);
 		} // attack/release/transition
@@ -3346,6 +3503,14 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
 	}
+	
+	public String getCurKey() {
+		return this.curKey;
+	}
+	
+	public int getMajMinChrom() {
+		return this.majMinChrom;
+	}
 
 	public float getShapeSize() {
 		return this.shapeSize;
@@ -3365,6 +3530,15 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
+	
+	/**
+	 * Getter for this.curRangeSegments
+	 * 
+	 * @return	this.curRangeSegments instance variable
+	 */
+	public int getCurRangeSegments() {
+		return this.curRangeSegments;
+	} // getCurRangeSegments
 
 	/**
 	 * communicates with keyPressed event in draw() of driver

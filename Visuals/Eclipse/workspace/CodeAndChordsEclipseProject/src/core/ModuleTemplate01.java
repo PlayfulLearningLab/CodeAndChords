@@ -181,7 +181,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 	 * 
 	 * @param colorStyleY	y value of the colorStyle Toggles
 	 */
-	private void addColorStyleButtons(int colorStyleY)
+/*	private void addColorStyleButtons(int colorStyleY)
 	{
 		int	colorStyleWidth	= 49;
 		int	colorStyleSpace	= 6;
@@ -230,7 +230,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 
 		this.setColorStyle(ModuleMenu.CS_RAINBOW);
 	} // addColorStyleButtons
-
+*/
 	
 	/**
 	 * Draws the scale legend at the bottom of the screen.
@@ -296,7 +296,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 		int	id	= controlEvent.getController().getId();
 
 		// Major/Minor/Chromatic buttons
-		if(controlEvent.getName().equals("major") ||
+/*		if(controlEvent.getName().equals("major") ||
 				controlEvent.getName().equals("minor") ||
 				controlEvent.getName().equals("chrom"))
 		{
@@ -347,7 +347,6 @@ public class ModuleTemplate01 extends ModuleMenu {
 
 		} // majMinChrom buttons
 
-
 		// Color Style:
 		if(controlEvent.getName().equals("rainbow") ||
 				controlEvent.getName().equals("dichrom") ||
@@ -391,6 +390,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 			
 			this.resetModulateSlidersTextfields();
 		} // colorStyle buttons
+		*/
 	} // controlEvent
 
 	

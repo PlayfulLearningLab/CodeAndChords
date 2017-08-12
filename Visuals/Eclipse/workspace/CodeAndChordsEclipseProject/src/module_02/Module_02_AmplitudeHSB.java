@@ -221,6 +221,18 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
 
 	} // drawShape
+	
+	@Override
+	public String[] getLegendText()
+	{
+		String[]	result	= new String[this.menu.getCurRangeSegments()];
+		for(int i = 0; i < result.length; i++)
+		{
+			result[i]	= this.menu.getThresholds()[i] + "";
+		} // for
+		
+		return result;
+	} // fillLegendText
 
 	public Shape getShape()
 	{
