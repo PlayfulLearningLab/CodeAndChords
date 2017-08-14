@@ -1,9 +1,11 @@
-package core;
+package core.Archive_ModuleTemplate;
 
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.ScrollableList;
 import controlP5.Toggle;
+import core.Input;
+import core.ModuleMenu;
 import processing.core.PApplet;
 
 /**
@@ -58,7 +60,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 	
 	private	PApplet		parent;
 
-	private	final	int[][] scaleDegrees = new int[][] {
+/*	private	final	int[][] scaleDegrees = new int[][] {
 		// major:
 		new int[]  { 0, 2, 4, 5, 7, 9, 11
 		},
@@ -69,7 +71,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 		}
 	}; // scaleDegrees
-
+*/
 	int[]				textYVals;
 	int[]				modulateYVals;
 	int[]               modulateHSBVals;
@@ -237,7 +239,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 	 * 
 	 * @param goalHuePos	current position in the scale; used to show the user their pitch
 	 */
-	public void legend(int goalHuePos)
+/*	public void legend(int goalHuePos)
 	{
 
 		this.parent.textSize(24);
@@ -280,7 +282,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 		} // for
 
 	} // legend
-
+*/
 	
 	/**
 	 * This method "catches" all ControlP5 ControlEvents, sends them to ModuleTemplate.controlEvent,
