@@ -18,7 +18,6 @@ import controlP5.Toggle;
 import core.Input;
 import core.Instrument;
 import core.Melody;
-import core.ModuleTemplate01;
 import processing.core.PApplet;
 import processing.core.PImage;
 

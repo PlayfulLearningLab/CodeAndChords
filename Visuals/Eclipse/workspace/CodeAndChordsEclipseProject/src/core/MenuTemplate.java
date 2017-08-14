@@ -23,6 +23,11 @@ import controlP5.Textfield;
 import processing.core.PApplet;
 import processing.core.PShape;
 
+/**
+ * 
+ * @author Dan Mahota, Emily Meuer
+ *
+ */
 public abstract class MenuTemplate implements ControlListener {
 
 	private PApplet 	parent;

@@ -4,8 +4,8 @@ import processing.core.*;
 
 import core.Input;
 import core.ModuleMenu;
-import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
+import core.Archive_ModuleTemplate.ModuleTemplate01;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 

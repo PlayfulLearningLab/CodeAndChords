@@ -5,8 +5,8 @@ import processing.core.*;
 import core.Input;
 import core.Module;
 import core.ModuleMenu;
-import core.ModuleTemplate01;
 import core.PortAudioAudioIO;
+import core.Archive_ModuleTemplate.ModuleTemplate01;
 import module_02.Module_02_AmplitudeHSB;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
@@ -41,7 +41,7 @@ public class Module_01_PitchHue extends Module
 	private Input  input;
 //	private ModuleTemplate01	moduleTemplate;
 	
-	private	ModuleMenu	menu;
+//	private	ModuleMenu	menu;
 
 /*	public void settings()
 	{
@@ -91,7 +91,10 @@ public class Module_01_PitchHue extends Module
 		textYVals[textYVals.length - 2]	= textYVals[textYVals.length - 3] + (int)(yValDif * 1);
 		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1);
 
-		// call add methods (addHideButtons already called in parent):
+		// call add methods:
+		
+		this.menu.addHideButtons(textYVals[0]);
+		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(textYVals[1]);
 		
@@ -171,7 +174,7 @@ public class Module_01_PitchHue extends Module
 		if(this.menu.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
-			this.menu.legend(scaleDegree);
+			this.legend(scaleDegree);
 		} // if showScale
 		
 

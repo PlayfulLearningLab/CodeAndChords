@@ -16,6 +16,7 @@ import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
+import core.Archive_ModuleTemplate.ModuleTemplate01;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -173,19 +174,19 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	Input	input;
 
 	/**	Amplitude thresholds	*/
-	protected	float[]	thresholds;
+	protected	int[]	thresholds;
 
 	/**	Volume below which input will be ignored	*/
 //	protected float	threshold;
 
 	/**	The minimum value for threshold Sliders	*/
-	protected	float	minThreshold;
+	protected	int	minThreshold;
 	
 	/**	The lowest threshold; sounds below this will be ignored	*/
-	protected	float	pianoThreshold;
+	protected	int	pianoThreshold;
 
 	/**	The highest amplitude threshold	*/
-	protected	float	forteThreshold;
+	protected	int	forteThreshold;
 
 	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
 	protected	float[] satBrightThresholdVals;
@@ -371,7 +372,7 @@ public class ModuleMenu extends MenuTemplate  {
 //		this.threshold		= 10;
 
 		// set amplitude thresholds
-		this.thresholds	= new float[] {
+		this.thresholds	= new int[] {
 				10,		// piano
 				100,	// mezzo piano
 				200,	// mezzo forte
@@ -383,35 +384,13 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.shapeMenuIsOpen	= false;
 
-				/*
-		this.controlP5		= new ControlP5(this.parent);
-		this.controlP5.addListener((ControlListener)this);
-				 */
-
 				this.melody			= new Melody(this.parent, this.input);
 				this.instrument		= new Instrument(this.parent);
-				this.curKey			= "A";
 				this.bpm			= 120;
-				this.majMinChrom	= 2;	// chromatic
 				this.rangeOctave	= 3;
-				/*
-		this.nextSliderId		= 0;
-		this.nextSTextfieldId	= 100;
-		this.nextButtonId		= 200;
-		this.nextColorWheelId	= 300;
-		this.nextCWTextfieldId	= 400;
-		this.nextToggleId		= 500;
-				 */
-				this.initModuleTemplate();
-	} // constructor
+				this.curKey			= "A";
+				this.majMinChrom	= 2;	// chromatic
 
-	/**
-	 * Called at the end of the constructor to add the sidebar title,
-	 * "outside buttons" (hamburger and play/pause/stop cluster)
-	 * and "hide buttons" (top row of sidebar, for hiding Scale, PlayButton, MenuButton).
-	 */
-	private void initModuleTemplate()	
-	{
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.parent.width / 3, this.parent.height + 1)
@@ -451,9 +430,9 @@ public class ModuleMenu extends MenuTemplate  {
 		.setGroup("sidebarGroup")
 		.setValue("Menu");
 
-		this.addHideButtons(26);
+//		this.addHideButtons(26);
 
-	} // initModuleTemplate
+	} // constructor
 
 	/**
 	 * Adds the Buttons, ColorWheels and Textfields for selecting custom colors.
@@ -834,7 +813,8 @@ public class ModuleMenu extends MenuTemplate  {
 		.setBarHeight(18)
 		.setItems(this.allNotes)
 		.setOpen(false)
-		.setLabel("Select a key:")
+//		.setLabel("Select a key:")
+		.setValue(0f)
 		.setGroup("sidebarGroup")
 		.getCaptionLabel().toUpperCase(false);
 
@@ -1722,7 +1702,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @param goalHuePos	current position in the threshold list; used to show the user their general amplitude level
 	 */
-	public void legend(int goalHuePos)
+/*	public void legend(int goalHuePos)
 	{
 		this.parent.textSize(24);		
 
@@ -1750,7 +1730,7 @@ public class ModuleMenu extends MenuTemplate  {
 			 */
 			//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
 			//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
-			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
+/*			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
 
 
 			if (i == goalHuePos) {
@@ -1764,7 +1744,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // for
 
 	} // legend
-
+*/
 
 	/**
 	 * Uses the values of the specialColors CWs to apply the current colorStyle.
@@ -2059,9 +2039,9 @@ public class ModuleMenu extends MenuTemplate  {
 			//			color2pos	= 5;	// subdominant
 			//			color3pos	= 7;	// dominant
 
-			divideBy1	= 4;
+			divideBy1	= 3;
 			divideBy2	= 1;
-			divideBy3	= 3;
+			divideBy3	= 2;
 		}
 
 		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / divideBy1);
@@ -2724,8 +2704,6 @@ public class ModuleMenu extends MenuTemplate  {
 		// ADSR Presets Scrollable List:
 		if(controlEvent.getName().equals("adsrPresetsDropdown"))
 		{
-			controlEvent.getController().bringToFront();
-
 			int	adsrPos	= (int)controlEvent.getValue();
 
 			System.out.println("adsrPos = " + adsrPos);
@@ -2741,8 +2719,6 @@ public class ModuleMenu extends MenuTemplate  {
 		// Range Octave Scrollable List:
 		if(controlEvent.getName().equals("rangeDropdown"))
 		{
-			//			controlEvent.getController().bringToFront();
-
 			int	rangeOctave	= (int)controlEvent.getValue() + 3;
 
 			if(rangeOctave >= 3 && rangeOctave <= 5)
@@ -2794,14 +2770,14 @@ public class ModuleMenu extends MenuTemplate  {
 		// Piano Threshold:
 		if(this.pianoThresholdSliderId != -1 && id == this.pianoThresholdSliderId)
 		{
-			this.pianoThreshold	= val;
+			this.pianoThreshold	= (int)val;
 			this.resetThresholds();
 		} // piano threshold Slider
 		
 		// Forte Threshold:
 		if(this.forteThresholdSliderId != -1 && id == this.forteThresholdSliderId)
 		{
-			this.forteThreshold	= val;
+			this.forteThreshold	= (int)val;
 			this.resetThresholds();
 		} // forte threshold Slider
 
@@ -3179,7 +3155,7 @@ public class ModuleMenu extends MenuTemplate  {
 //		this.thresholds	= new float[this.curRangeSegments];
 		for(int i = 0; i < this.curRangeSegments; i++)
 		{
-			this.thresholds[i]	= this.pianoThreshold + segmentValue * i;
+			this.thresholds[i]	= this.pianoThreshold + (int)segmentValue * i;
 		} // for
 	} // resetThresholds
 
@@ -3447,7 +3423,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public float getPianoThreshold()				{	return this.pianoThreshold;		}
 
-	public void setPianoThreshold(float newVal)	{	this.pianoThreshold	= newVal;	}
+	public void setPianoThreshold(int newVal)	{	this.pianoThreshold	= newVal;	}
 
 	public int[] getCurHue()				{	return this.curHue;	}
 
@@ -3526,7 +3502,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @return	this.thresholds instance variable
 	 */
-	public float[] getThresholds()
+	public int[] getThresholds()
 	{
 		return this.thresholds;
 	}

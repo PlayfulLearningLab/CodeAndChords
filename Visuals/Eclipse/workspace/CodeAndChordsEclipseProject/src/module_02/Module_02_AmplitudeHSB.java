@@ -25,7 +25,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 //	private Input				input;
 //	private ModuleTemplate02	moduleTemplate;
 	
-	private	ModuleMenu			menu;
+//	private	ModuleMenu			menu;
 
 //	private Shape     			shape;
 
@@ -84,15 +84,14 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				{
 					this.yVals[i]	= this.yVals[i - 1] + distance;
 				} // fill yVals
-				
-				// From ModuleTemplate02:
+
 				// Have to addColorSelect() first so that everything else can access the colors:
 				String[]	buttonLabels	= new String[] {
 						"Canvas", "1", "2", "3", "4"
 				};
-				//addColorSelect must be called first
 				this.menu.addColorSelect(new int[] { this.yVals[8] }, buttonLabels, "Color Select", true);
-//				this.menu.fillHSBColors();
+				
+				this.menu.addHideButtons(this.yVals[0]);
 
 				this.menu.addARTSliders(this.yVals[1], this.yVals[2], this.yVals[3]);
 
@@ -188,7 +187,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
 		{
 			// draws the legend along the bottom of the screen:
-			this.menu.legend(goalHuePos);
+			this.legend(goalHuePos);
 
 		} // if showScale
 
