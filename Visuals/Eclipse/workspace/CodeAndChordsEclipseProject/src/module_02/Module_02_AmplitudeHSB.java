@@ -70,7 +70,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				}
 
 		
-				this.shapeEditor = new ShapeEditor(this, this.shape, 925, 520);
+				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
 
 //				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
@@ -209,9 +209,10 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		//this.shapeMode(CORNER);
 		PShape pShape;
-		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
+/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
 		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
-
+*/
+		pShape = this.shape.getPShape();
 
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
@@ -219,9 +220,11 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		pShape.rotate(this.shapeEditor.getRotation());
 		pShape.endShape();
 
+		this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
+/*		
 		if(this.menu.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
 		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
-
+*/
 	} // drawShape
 	
 	@Override

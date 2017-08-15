@@ -85,6 +85,8 @@ public abstract class MenuTemplate implements ControlListener {
 		
 		this.controlP5		= new ControlP5(this.parent);
 		this.controlP5.addListener((ControlListener)this);
+		// This is the group that Sliders added w/out a specific group get added to:
+		this.controlP5.addGroup("groupPlaceholder").setVisible(true);
 		
 		this.appletWidth = appWidth;
 		this.appletHeight = appHeight;
@@ -319,7 +321,7 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**
 	 * Adds a Label with given text, Slider of given lowest value, highest value, and starting value, with default 
-	 * width and x value at this.leftAlign, and Textfield with default width to "sidebarGroup" at given y value.
+	 * width and x value at this.leftAlign, and Textfield with default width at given y value.
 	 * 
 	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
 	 * @param labelText	text for the Label
@@ -329,14 +331,32 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected void addSliderGroup(int yVal, String labelText, float lowRange, float highRange, float startingVals)
 	{
-		this.addSliderGroup(yVal, labelText, this.leftAlign, this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "sidebarGroup");
+		this.addSliderGroup(yVal, labelText, this.leftAlign, lowRange, highRange, startingVals);
 	} // addSliderGroup - use default width
+	
+	
+	/**
+	 * Adds a Label with given text, Slider of given x value, lowest value, highest value, and starting value, with default 
+	 * width, and Textfield with default width at given y value; group == null.
+	 * 
+	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
+	 * @param labelText	text for the Label
+	 * @param lowRange	Slider lowest value
+	 * @param highRange	Slider highest value
+	 * @param startingVals	Slider default/starting value
+	 */
+	protected void addSliderGroup(int yVal, String labelText, int sliderX, float lowRange, float highRange, float startingVals)
+	{
+		this.addSliderGroup(yVal, labelText, sliderX, this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "groupPlaceholder");
+	} // addSliderGroup - use default width
+	
+	
 	
 	/**
 	 * TODO - get rid of group here
 	 * 
 	 * Adds a Label with given text, Slider with given x value, width, lowest value, 
-	 * highest value, and starting value, and Textfield with given width to given group at the given y value.
+	 * highest value, and starting value, and Textfield with given width to the given group at the given y value.
 	 * 
 	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
 	 * @param labelText	text for the Label
@@ -353,7 +373,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.controlP5.addLabel("label" + this.nextSliderId)
 		.setPosition(labelX, yVal + 4)
 		.setWidth(labelWidth)
-//		.setGroup(group)
+		.setGroup(group)
 		.setValue(labelText);
 
 		this.controlP5.addSlider("slider" + this.nextSliderId)
@@ -363,7 +383,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setValue(startingVals)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setLabelVisible(false)
-//		.setGroup(group)
+		.setGroup(group)
 		.setId(this.nextSliderId);
 
 		this.nextSliderId	= this.nextSliderId + 1;
@@ -373,7 +393,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setSize(this.textfieldWidth, this.sliderHeight)
 		.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 		.setAutoClear(false)
-//		.setGroup(group)
+		.setGroup(group)
 		.setId(this.nextSTextfieldId)
 		.getCaptionLabel().setVisible(false);
 
@@ -569,16 +589,14 @@ public abstract class MenuTemplate implements ControlListener {
 		if (this.isRunning) {
 			if (!this.controlP5.isVisible()) {
 				this.controlP5.show();
-				System.out.println("MenuTemplate.runMenu: showing the menu.");
-				
 			}
+			
+			this.drawMenu();
+			
 		} else if (this.controlP5.isVisible()) {
 			// if cp5 is visible but the Menu is not running, hide cp5
 			this.controlP5.hide();
-			System.out.println("MenuTemplate.runMenu: hiding the menu.");
 		}
 	} // runMenu
 
-
-
-}
+} // MenuTemplate

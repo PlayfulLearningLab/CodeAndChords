@@ -117,6 +117,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 	private     float		menuWidth;
 	private     boolean  	menuIsOpen = false;
+	
+	/**	This is the parent.millis() when menuX is called, so that we don't call Hamburger when menuX is clicked	*/
+	private		int			lastMenuXMillis;
+	
 	/*
 	protected	int			leftAlign;
 	protected	int			leftEdgeX;
@@ -133,6 +137,13 @@ public class ModuleMenu extends MenuTemplate  {
 	public	static	int	CS_TRICHROM	= 3;
 	public	static	int	CS_CUSTOM	= 4;
 	protected	int	curColorStyle;
+	
+	/**	ControlP5 for the play/stop, pause, and hamburger Buttons	*/
+	protected	ControlP5	outsideButtonsCP5;
+	
+	protected	boolean		showPlayStop;
+	protected	boolean		showPause;
+	protected	boolean		showHamburger;
 
 	/**	false before dichromatic has been called for the first time; true following that.	*/
 	protected	boolean	dichromFlag;
@@ -333,6 +344,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.module			= module;
 		this.input			= input;
 		this.sidebarTitle	= sidebarTitle;
+
+		this.outsideButtonsCP5	= new ControlP5(this.parent);
+		this.outsideButtonsCP5.addListener((ControlListener)this);
+		
+		this.showPlayStop	= true;
+		this.showPause		= false;
+		this.showHamburger	= true;
 		
 		System.out.println("this.parent.height = " + (this.parent.height));
 
@@ -538,12 +556,12 @@ public class ModuleMenu extends MenuTemplate  {
 		images[1].resize(playWidth, playHeight);
 		pauseImage.resize(playWidth, playHeight);
 
-		this.controlP5.addToggle("play")
+		this.outsideButtonsCP5.addToggle("play")
 		.setPosition(playX, playY)
 		.setImages(images)
 		.updateSize();
 
-		this.controlP5.addToggle("pause")
+		this.outsideButtonsCP5.addToggle("pause")
 		.setPosition((playX - playWidth - 10), playY)
 		.setImages(pauseImage, images[0])
 		.updateSize()
@@ -556,7 +574,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
-		this.controlP5.addButton("hamburger")
+		this.outsideButtonsCP5.addButton("hamburger")
 		.setPosition(hamburgerX, hamburgerY)
 		.setImage(hamburger)
 		.setClickable(true)
@@ -2427,6 +2445,15 @@ public class ModuleMenu extends MenuTemplate  {
 			this.leftEdgeX	= 0;
 		}
 	} // runMenu
+	
+	public void showOutsideButtons()
+	{
+		this.outsideButtonsCP5.setVisible(true);
+		
+		this.outsideButtonsCP5.getController("play").setVisible(this.showPlayStop);
+		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
+		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
+	} // showOutsideButtons
 
 	/**
 	 * Since ModuleTemplate implements ControlListener, it needs to have this method
@@ -2447,7 +2474,8 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
 			this.input.pause(true);
-			this.controlP5.getController("pause").setVisible(val);
+			this.outsideButtonsCP5.getController("pause").setVisible(val);
+			this.showPause	= val;
 
 			if(val)
 			{
@@ -2455,7 +2483,8 @@ public class ModuleMenu extends MenuTemplate  {
 			} else {
 				// Unpauses the pause button so that it is ready to be paused when
 				// play is pressed again:
-				((Toggle)this.controlP5.getController("pause")).setState(false);
+				((Toggle)this.outsideButtonsCP5.getController("pause")).setState(false);
+//				this.showPause	= false;
 				this.melody.stop();
 			}
 
@@ -2470,32 +2499,44 @@ public class ModuleMenu extends MenuTemplate  {
 		// Hamburger button:
 		if(controlEvent.getController().getName().equals("hamburger"))
 		{
-			this.setIsRunning(true);
-			controlEvent.getController().setVisible(false);
+			// Make sure that we don't call this when we just mean to call menuX:
+			if(this.parent.millis() > (this.lastMenuXMillis + 10))
+			{
+				this.setIsRunning(true);
+				controlEvent.getController().setVisible(false);
+			}
+			this.showHamburger	= false;
 			
+/*			
+			this.controlP5.getWindow().resetMouseOver();
 			this.menuIsOpen = true;
 			this.displaySidebar(true);
-			this.controlP5.getWindow().resetMouseOver();
+			*/
 		} // if - hamburger
 
 		// MenuX button:
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
+			this.lastMenuXMillis	= this.parent.millis();
 			this.setIsRunning(false);
 			
-			this.displaySidebar(false);
+//			this.displaySidebar(false);
 			/*			this.leftEdgeX	= 0;
 			this.controlP5.getGroup("sidebarGroup").setVisible(false);
 			 */
-			this.controlP5.getController("hamburger").setVisible(true);
-			this.controlP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
+//			this.outsideButtonsCP5.getController("hamburger").setVisible(true);
+			this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
+			this.showHamburger	= false;
 		} // if - menuX
 
 		// Hide play button button:
 		if(controlEvent.getName().equals("playButton"))
 		{
 			// Set the actual play button to visible/invisible:
-			this.controlP5.getController("play").setVisible(!this.controlP5.getController("play").isVisible());
+			this.outsideButtonsCP5.getController("play").setVisible(!this.outsideButtonsCP5.getController("play").isVisible());
+			this.outsideButtonsCP5.getController("pause").setVisible(((Toggle)this.outsideButtonsCP5.getController("play")).getBooleanValue() && this.outsideButtonsCP5.getController("play").isVisible());
+			this.showPlayStop	= (this.outsideButtonsCP5.getController("play").isVisible());
+			this.showPause		= ((Toggle)this.outsideButtonsCP5.getController("play")).getBooleanValue() && this.outsideButtonsCP5.getController("play").isVisible();
 		} // if - hidePlayButton
 
 
@@ -2505,7 +2546,11 @@ public class ModuleMenu extends MenuTemplate  {
 			// Hamburger is still able to be clicked because of a boolean isClickable added to 
 			//Controller; automatically false, but able to be set to true.
 			// A Controller must be visible and/or clickable to respond to click.
-			this.controlP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
+			if(!this.getIsRunning())
+			{
+				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
+			}
+			this.showHamburger	= !((Toggle)this.controlP5.getController("menuButton")).getBooleanValue();
 		} // if - hidePlayButton
 
 		// Hide legend:
@@ -2765,7 +2810,9 @@ public class ModuleMenu extends MenuTemplate  {
 			.setVisible(false);
 
 			//hide the other controls
-			this.controlP5.getGroup("sidebarGroup").setVisible(false);
+//			this.controlP5.getGroup("sidebarGroup").setVisible(false);
+//			this.controlP5.setVisible(false);
+			this.outsideButtonsCP5.setVisible(false);
 
 			this.controlP5.getController("menuX").update();
 
@@ -3545,7 +3592,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public void setMenuVal() {
 		//this.menuVis = true;	
 		((Toggle)this.controlP5.getController("menuButton")).setState(false);
-		this.controlP5.getController("hamburger").setVisible(true);
+		this.outsideButtonsCP5.getController("hamburger").setVisible(true);
 	}//set menu val
 
 	public float getMenuWidth()
