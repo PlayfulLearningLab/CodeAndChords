@@ -75,6 +75,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 //				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 4);
+				this.menu.setIsRunning(false);
 				
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
@@ -108,7 +109,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				int	verticalSpacer	= distance - this.menu.getSliderHeight();
 				this.menu.addThresholdSliders(yVals[11], verticalSpacer);
 
-				// TODO: may not need this call anymore:
 				this.menu.addShapeCustomizationControls(this.yVals[16]);
 
 
@@ -138,6 +138,8 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if (keyPressed == true) 
 		{
 			this.menu.setMenuVal();
+			
+			this.menu.setIsRunning(true);
 		}
 
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
@@ -192,6 +194,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		} // if showScale
 
 		this.shapeEditor.runMenu();
+		this.menu.runMenu();
 
 	} // draw
 
@@ -251,29 +254,29 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	public void mousePressed()
 	{
 
-		if(!this.shapeEditor.getCP5().isMouseOver() && !this.menu.getCP5().isMouseOver())
+		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver())
 		{
-			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getCP5().isVisible() && this.mouseX > this.shapeEditor.getAppletWidth() * (1 - this.shapeEditor.getScale()) && this.mouseY > this.shapeEditor.getAppletHeight() * (1 - this.shapeEditor.getScale()))
+			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getControlP5().isVisible() && this.mouseX > this.shapeEditor.getAppletWidth() * (1 - this.shapeEditor.getScale()) && this.mouseY > this.shapeEditor.getAppletHeight() * (1 - this.shapeEditor.getScale()))
 			{			
 				this.shapeEditor.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
 				this.shapeEditor.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));
-				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
-				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shapeEditor.getXPos());
+				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shapeEditor.getYPos());
 
 			}
-			else if(this.menu.getLeftEdgeX() == 0 && !this.shapeEditor.getCP5().isVisible())
+			else if(this.menu.getLeftEdgeX() == 0 && !this.shapeEditor.getControlP5().isVisible())
 			{
 				this.shapeEditor.setXPos(this.mouseX);
 				this.shapeEditor.setYPos(this.mouseY);
-				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
-				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shapeEditor.getXPos());
+				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shapeEditor.getYPos());
 			}
-			else if(this.mouseX > this.menu.getLeftEdgeX() && !this.shapeEditor.getCP5().isVisible())
+			else if(this.mouseX > this.menu.getLeftEdgeX() && !this.shapeEditor.getControlP5().isVisible())
 			{
 				this.shapeEditor.setXPos(PApplet.map(this.mouseX - (this.width/3), 0, 2, 0, 3));
 				this.shapeEditor.setYPos(this.mouseY);
-				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
-				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shapeEditor.getXPos());
+				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shapeEditor.getYPos());
 			}
 		}
 	} // mouseClicked
