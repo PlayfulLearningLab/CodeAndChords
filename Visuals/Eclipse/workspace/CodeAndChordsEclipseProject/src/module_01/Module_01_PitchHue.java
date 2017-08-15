@@ -138,7 +138,7 @@ public class Module_01_PitchHue extends Module
 
 		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
-		this.menu.getCP5().getController("keyDropdown").bringToFront();
+		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
 		noStroke();
 		background(150);		

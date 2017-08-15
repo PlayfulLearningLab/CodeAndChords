@@ -22,7 +22,9 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	private PApplet parent;
 
-	private Shape shape;
+	private Shape	shape;
+	
+	private	Module	module;
 
 //	private ControlP5 cp5;
 
@@ -55,9 +57,11 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 * @param fullAppletHeight
 	 *            height of the window that this shape will be displayed in
 	 */
-	public ShapeEditor(PApplet parent, Shape shape, float fullAppletWidth, float fullAppletHeight) {
+	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) {
 
 		super(parent, fullAppletWidth, fullAppletHeight);
+		
+		this.module	= module;
 
 		// make sure the PApplet isn't null and then set the parent instance variable
 		if (parent == null)
@@ -264,6 +268,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		case "exitButton":
 			super.setIsRunning(false);
+			this.module.menu.setIsRunning(true);
+			this.module.menu.showOutsideButtons();
 			break;
 
 		}
