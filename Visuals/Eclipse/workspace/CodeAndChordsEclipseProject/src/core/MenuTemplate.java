@@ -49,12 +49,14 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	private PShape		menuBackground;
 	
+	protected	int			sidebarWidth;
 	protected	int			leftAlign;
 	protected	int			leftEdgeX;
 
 	protected	int			labelX;
 	protected	int			labelWidth;
 	protected	int			spacer;
+	protected	int			rightEdgeSpacer;
 	protected	int			textfieldWidth;
 	protected	int			sliderWidth;
 	protected	int			sliderHeight;
@@ -111,6 +113,19 @@ public abstract class MenuTemplate implements ControlListener {
 		
 		this.menuBackground.endShape();
 		
+		this.sidebarWidth	= (int)(this.parent.width - (this.parent.width * this.scale));
+		
+		this.leftAlign			= (int)(this.sidebarWidth / 4);
+		this.labelX				= 10;
+		this.labelWidth			= (int)(this.sidebarWidth / 4.4);
+		this.spacer				= (int)(this.sidebarWidth / 61.6);
+		this.rightEdgeSpacer	= this.labelX;
+		this.textfieldWidth		= (int)(this.sidebarWidth / 7.7);
+		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
+		this.sliderHeight		= this.parent.height / 26;
+//		System.out.println("sidebarWidth / 1.82 = " + (sidebarWidth / 1.6));
+
+		this.leftEdgeX	= 0;
 
 		this.nextSliderId		= 0;
 		this.nextSTextfieldId	= 100;
@@ -318,6 +333,8 @@ public abstract class MenuTemplate implements ControlListener {
 	} // addSliderGroup - use default width
 	
 	/**
+	 * TODO - get rid of group here
+	 * 
 	 * Adds a Label with given text, Slider with given x value, width, lowest value, 
 	 * highest value, and starting value, and Textfield with given width to given group at the given y value.
 	 * 
@@ -336,7 +353,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.controlP5.addLabel("label" + this.nextSliderId)
 		.setPosition(labelX, yVal + 4)
 		.setWidth(labelWidth)
-		.setGroup(group)
+//		.setGroup(group)
 		.setValue(labelText);
 
 		this.controlP5.addSlider("slider" + this.nextSliderId)
@@ -346,7 +363,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setValue(startingVals)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setLabelVisible(false)
-		.setGroup(group)
+//		.setGroup(group)
 		.setId(this.nextSliderId);
 
 		this.nextSliderId	= this.nextSliderId + 1;
@@ -356,7 +373,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setSize(this.textfieldWidth, this.sliderHeight)
 		.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 		.setAutoClear(false)
-		.setGroup(group)
+//		.setGroup(group)
 		.setId(this.nextSTextfieldId)
 		.getCaptionLabel().setVisible(false);
 
@@ -409,8 +426,8 @@ public abstract class MenuTemplate implements ControlListener {
 				.setPosition(x, y)
 				.setWidth(buttonWidth)
 				.setLabel(buttonLabel)
-				.setId(this.nextButtonId)
-				.setGroup("sidebarGroup");
+				.setId(this.nextButtonId);
+//				.setGroup("sidebarGroup");
 		button.getCaptionLabel().toUpperCase(false);
 
 		this.nextButtonId = this.nextButtonId + 1;
@@ -420,7 +437,7 @@ public abstract class MenuTemplate implements ControlListener {
 				.setRGB(color.getRGB())
 				.setLabelVisible(false)
 				.setVisible(false)
-				.setGroup("sidebarGroup")
+//				.setGroup("sidebarGroup")
 				.setId(this.nextColorWheelId);
 
 		this.nextColorWheelId = this.nextColorWheelId + 1;					
@@ -430,7 +447,7 @@ public abstract class MenuTemplate implements ControlListener {
 				.setAutoClear(false)
 				.setVisible(false)
 				.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")")
-				.setGroup("sidebarGroup")
+//				.setGroup("sidebarGroup")
 				.setId(this.nextCWTextfieldId);
 		textfield.getCaptionLabel().setVisible(false);
 
@@ -457,6 +474,11 @@ public abstract class MenuTemplate implements ControlListener {
 	public void setRotation(float rotation)
 	{
 		this.rotation = rotation;
+	}
+	
+	public ControlP5 getControlP5()
+	{
+		return this.controlP5;
 	}
 	
 	public boolean getIsRunning()
@@ -542,7 +564,20 @@ public abstract class MenuTemplate implements ControlListener {
 		return fullY;
 	}
 	
-	public abstract void runMenu();
+	public void runMenu()
+	{
+		if (this.isRunning) {
+			if (!this.controlP5.isVisible()) {
+				this.controlP5.show();
+				System.out.println("MenuTemplate.runMenu: showing the menu.");
+				
+			}
+		} else if (this.controlP5.isVisible()) {
+			// if cp5 is visible but the Menu is not running, hide cp5
+			this.controlP5.hide();
+			System.out.println("MenuTemplate.runMenu: hiding the menu.");
+		}
+	} // runMenu
 
 
 

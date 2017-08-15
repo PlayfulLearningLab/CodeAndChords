@@ -24,7 +24,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	private Shape shape;
 
-	private ControlP5 cp5;
+//	private ControlP5 cp5;
 
 	/*
 	 * The scaledWindowBoolean is set true if the first constructor is used,
@@ -72,9 +72,11 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.shape = shape;
 
 		// create a new ControlP5 object to use
-		this.cp5 = new ControlP5(parent);
+/*		this.cp5 = new ControlP5(parent);
 		this.cp5.addListener(this);
-
+		this.cp5.setVisible(false);
+*/
+		
 		// calls function to create all of the cp5 controls needed
 		this.addMenuControls();
 
@@ -91,8 +93,15 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 * @return returns a float[] with the three parameters passed in, accounting for
 	 *         any changes that were made to the position and rotation of the shape
 	 */
-	public void runMenu() {
-		if (super.getIsRunning()) {
+	public void runMenu() 
+	{
+		super.runMenu();
+		
+		if(super.getIsRunning()) {
+			this.drawSE();
+		}
+		
+/*		if (super.getIsRunning()) {
 			this.drawSE();
 			if (!this.cp5.isVisible()) {
 				this.cp5.show();		
@@ -102,8 +111,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			// if cp5 is visible but the ShapeEditor is not running, hide cp5
 			this.cp5.hide();
 		}
-
-	}
+*/
+	} // runMenu
 
 	/**
 	 * This function is called repeatedly when the ShapeEditor isRunning to draw all
@@ -137,70 +146,70 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			yVals[i] = spacing * (i) + 100;
 		}
 
-		this.cp5.addSlider("size", .01f, 3, 1, (int) 20, (int) yVals[0], 230, 28)
+		this.controlP5.addSlider("size", .01f, 3, 1, (int) 20, (int) yVals[0], 230, 28)
 				.getCaptionLabel()
 				.hide();
 
-		this.cp5.addSlider("numPoints", .01f, 15, 1, (int) 20, (int) yVals[1],
+		this.controlP5.addSlider("numPoints", .01f, 15, 1, (int) 20, (int) yVals[1],
 				(int) 230, 28).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("n1", .01f, 10, 1, (int) 20, (int) yVals[2],
+		((Slider) this.controlP5.addSlider("n1", .01f, 10, 1, (int) 20, (int) yVals[2],
 				(int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("n2", .01f, 10, 1, (int) 20, (int) yVals[3],
+		((Slider) this.controlP5.addSlider("n2", .01f, 10, 1, (int) 20, (int) yVals[3],
 				(int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("n3", .01f, 10, 1, (int) 20, (int) yVals[4],
+		((Slider) this.controlP5.addSlider("n3", .01f, 10, 1, (int) 20, (int) yVals[4],
 				(int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("xPos", -500, 1500, this.getXPos(), (int) 20,
+		((Slider) this.controlP5.addSlider("xPos", -500, 1500, this.getXPos(), (int) 20,
 				(int) yVals[5], (int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("yPos", -500, 1000, this.getYPos(), (int) 20,
+		((Slider) this.controlP5.addSlider("yPos", -500, 1000, this.getYPos(), (int) 20,
 				(int) yVals[6], (int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("rotation", -PConstants.PI * 2, PConstants.PI * 2, 0,
+		((Slider) this.controlP5.addSlider("rotation", -PConstants.PI * 2, PConstants.PI * 2, 0,
 				(int) 20, (int) yVals[7], (int) 230, 28))
 		.getCaptionLabel().hide();
 
-		this.cp5.addLabel("sizeLabel")
+		this.controlP5.addLabel("sizeLabel")
 		.setPosition((int) 20, (float) (yVals[0] - (spacing / 3.5)))
 		.setValue("Shape Size");
 
-		this.cp5.addLabel("numPointsLabel")
+		this.controlP5.addLabel("numPointsLabel")
 		.setPosition((int) 20, (float) (yVals[1] - (spacing / 3.5)))
 		.setValue("Number of Points");
 
-		this.cp5.addLabel("n1Label")
+		this.controlP5.addLabel("n1Label")
 		.setPosition(20, (float) (yVals[2] - (spacing / 3.5)))
 		.setValue("N1");
 
-		this.cp5.addLabel("n2Label")
+		this.controlP5.addLabel("n2Label")
 		.setPosition((int) 20, (float) (yVals[3] - (spacing / 3.5)))
 		.setValue("N2");
 
-		this.cp5.addLabel("n3Label")
+		this.controlP5.addLabel("n3Label")
 		.setPosition((int) 20, (float) (yVals[4] - (spacing / 3.5)))
 		.setValue("N3");
 
-		this.cp5.addLabel("xPosLabel")
+		this.controlP5.addLabel("xPosLabel")
 		.setPosition((int) 20, (float) (yVals[5] - (spacing / 3.5)))
 		.setValue("X Position");
 
-		this.cp5.addLabel("yPosLabel")
+		this.controlP5.addLabel("yPosLabel")
 		.setPosition((int) 20, (float) (yVals[6] - (spacing / 3.5)))
 		.setValue("Y Position");
 
-		this.cp5.addLabel("rotationLabel")
+		this.controlP5.addLabel("rotationLabel")
 		.setPosition((int) 20, (float) (yVals[7] - (spacing / 3.5)))
 		.setValue("Rotation");
 
-		this.cp5.addScrollableList("shapeSelect")
+		this.controlP5.addScrollableList("shapeSelect")
 		.setPosition(200, 5).setSize(150, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
 		.setValue(0).close();
 
-		this.cp5.addButton("exitButton").setLabel("Close Shape Editor")
+		this.controlP5.addButton("exitButton").setLabel("Close Shape Editor")
 		.setPosition(400, 5).setSize(150, 40);
 
 	}
@@ -260,11 +269,12 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		}
 
 	}
-
+/*
 	public ControlP5 getCP5() {
-		return this.cp5;
+		return this.controlP5;
 	}
-
+*/
+	
 	@Override
 	public void sliderEvent(int id, float val) {
 		// TODO Auto-generated method stub

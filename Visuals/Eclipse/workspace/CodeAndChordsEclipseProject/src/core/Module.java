@@ -57,8 +57,6 @@ public abstract class Module extends PApplet {
 		this.textSize(24);		
 
 		String[]	legendText	= this.getLegendText();
-
-		System.out.println("this.width = " + this.width + "; this.menu.getLeftEdgeX() = " + this.menu.getLeftEdgeX());
 		
 		float	sideWidth1   = (this.width - this.menu.getLeftEdgeX()) / legendText.length;
 		float	sideHeight  = this.width / 12;	// pretty arbitrary

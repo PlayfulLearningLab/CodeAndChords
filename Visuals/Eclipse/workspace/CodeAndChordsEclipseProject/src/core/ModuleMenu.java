@@ -333,7 +333,10 @@ public class ModuleMenu extends MenuTemplate  {
 		this.module			= module;
 		this.input			= input;
 		this.sidebarTitle	= sidebarTitle;
+		
+		System.out.println("this.parent.height = " + (this.parent.height));
 
+/*
 		this.leftAlign	= (this.parent.width / 3) / 4;
 		this.leftEdgeX	= 0;
 
@@ -343,7 +346,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.textfieldWidth	= 40;
 		this.sliderWidth	= 170;
 		this.sliderHeight	= 20;
-
+*/
 		// TODO: this might run into problems when we adjust for 5-8:
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
 		this.curHue				= new int[3];
@@ -393,7 +396,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
-		.setSize(this.parent.width / 3, this.parent.height + 1)
+		.setSize(this.sidebarWidth, this.parent.height + 1)
 		.setPosition(0, 0)
 		.setVisible(false);
 
@@ -403,9 +406,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addBackground("background")
 		.setPosition(0, 0)
-		.setSize(this.parent.width / 3, this.parent.height)
+		.setSize(this.sidebarWidth, this.parent.height)
 		.setBackgroundColor(transBlackInt)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setVisible(false);
 
 		// Add play button, hamburger and menu x:
@@ -415,7 +418,7 @@ public class ModuleMenu extends MenuTemplate  {
 		ControlFont	largerStandard	= new ControlFont(ControlP5.BitFontStandard58, 13);
 
 		this.controlP5.addTextlabel("title")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setPosition(this.leftAlign, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
@@ -427,11 +430,11 @@ public class ModuleMenu extends MenuTemplate  {
 		this.controlP5.addTextlabel("menu")
 		.setPosition(menuXX + menuWidth + 3, 10)
 		.setHeight(15)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setValue("Menu");
 
 //		this.addHideButtons(26);
-
+		
 	} // constructor
 
 	/**
@@ -478,8 +481,8 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
-		// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
-		int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonsPerRow) - this.spacer - (10 / buttonsPerRow);
+		// the "- (10 / buttonsPerRow)" adds [this.rightEdgeSpacer pixels] at the end of the row:
+		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign) / buttonsPerRow) - this.spacer - (this.rightEdgeSpacer / buttonsPerRow);
 		int[]	xVals	= new int[buttonsPerRow];
 		for(int i = 0; i < xVals.length; i++)
 		{
@@ -488,7 +491,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("colorSelectLabel")
 		.setPosition(labelX, yVals[0] + 4)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setValue(labelText);
 
 		// Loop through all
@@ -568,7 +571,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.controlP5.addButton("menuX")
 		.setPosition(menuXX, menuXY)
 		.setImage(menuX)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.updateSize()
 		.bringToFront();
 
@@ -583,13 +586,13 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addHideButtons(int	hideY)
 	{
-		int	hideWidth   = 69;
+		int	hideWidth   = ( ( this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / 3 ) - this.spacer;
 		int hideSpace	= 4;
 
 		int	labelX		= 10;
 		int	playButtonX	= this.leftAlign;
-		int	menuButtonX	= this.leftAlign + hideWidth + hideSpace;
-		int	scaleX		= this.leftAlign + (+ hideWidth + hideSpace) * 2;
+		int	menuButtonX	= this.leftAlign + hideWidth + this.spacer;
+		int	scaleX		= this.leftAlign + (+ hideWidth + this.spacer) * 2;
 
 		String[]	names	= new String[] { 
 				"playButton",
@@ -609,15 +612,15 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setValue("Hide");
 
 		for(int i = 0; i < names.length; i++)
 		{
 			this.controlP5.addToggle(names[i])
 			.setPosition(xVals[i], hideY)
-			.setWidth(hideWidth)
-			.setGroup("sidebarGroup");
+			.setWidth(hideWidth);
+			//.setGroup("sidebarGroup");
 			this.controlP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
 		}
 
@@ -641,7 +644,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param releaseY		y value of the Release slider group
 	 * @param transitionY	y value of the Transition slider group
 	 */
-	public void addSliders(int thresholdY, int attackY, int releaseY, int transitionY)
+/*	public void addSliders(int thresholdY, int attackY, int releaseY, int transitionY)
 	{
 		int	labelX			= 10;
 		int	labelWidth		= 70;
@@ -686,7 +689,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.controlP5.addLabel(names[i])
 			.setPosition(labelX, yVals[i] + 4)
 			.setWidth(labelWidth)
-			.setGroup("sidebarGroup")
+			//.setGroup("sidebarGroup")
 			.setValue(labels[i]);
 
 			// Threshold has its own range:
@@ -709,7 +712,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setValue(startingValue)
 			.setSliderMode(Slider.FLEXIBLE)
 			.setLabelVisible(false)
-			.setGroup("sidebarGroup")
+			//.setGroup("sidebarGroup")
 			.setId(this.nextSliderId);
 
 			this.nextSliderId	= this.nextSliderId + 1;
@@ -719,7 +722,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setSize(tfWidth, this.sliderHeight)
 			.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 			.setAutoClear(false)
-			.setGroup("sidebarGroup")
+			//.setGroup("sidebarGroup")
 			.setId(this.nextSTextfieldId)
 			.getCaptionLabel().setVisible(false);
 
@@ -728,7 +731,8 @@ public class ModuleMenu extends MenuTemplate  {
 		} // for
 
 	} // addSliders
-
+*/
+	
 	/**
 	 * Adds the attack, release, and transition Sliders.
 	 * 
@@ -802,7 +806,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// "Key" Textlabel
 		this.controlP5.addTextlabel("key")
 		.setPosition(labelX, keyY + 4)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setValue("Key");
 
 
@@ -815,7 +819,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setOpen(false)
 //		.setLabel("Select a key:")
 		.setValue(0f)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.getCaptionLabel().toUpperCase(false);
 
 		// Maj/Min/Chrom Toggles
@@ -825,7 +829,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(majorX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Major")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(0);
 		this.controlP5.getController("major").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -833,7 +837,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(minorX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Minor")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(1);
 		this.controlP5.getController("minor").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -841,7 +845,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(chromX, keyY)
 		.setWidth(toggleWidth)
 		.setCaptionLabel("Chrom.")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(2);
 		this.controlP5.getController("chrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -852,8 +856,8 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(guideToneX, keyY)
 		.setWidth(buttonWidth)
 		.setCaptionLabel("Guide Tones")
-		.setValue(false)
-		.setGroup("sidebarGroup");
+		.setValue(false);
+		//.setGroup("sidebarGroup");
 		this.controlP5.getController("guideToneButton").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 	} // addKeySelector
@@ -1061,7 +1065,7 @@ public class ModuleMenu extends MenuTemplate  {
 		System.out.println("just set totalRangeSegments to " + this.totalRangeSegments);
 		this.curRangeSegments	= defaultNumSegments;
 
-		float	toggleSpace	= (this.parent.width / 3) - (this.labelX) - this.labelWidth - this.spacer;
+		float	toggleSpace	= (this.sidebarWidth) - this.leftAlign - this.rightEdgeSpacer /*(this.labelX) - this.labelWidth - this.spacer */;
 		int		toggleWidth	= (int)(toggleSpace / numSegments) - this.spacer;
 
 		int[]	xVals	= new int[numSegments];
@@ -1072,8 +1076,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addLabel("rangeSegments")
 		.setPosition(this.labelX, yVal)
-		.setValue(label)
-		.setGroup("sidebarGroup");
+		.setValue(label);
+		//.setGroup("sidebarGroup");
 
 		this.firstRangeSegmentsId	= this.nextToggleId;
 		System.out.println("firstRangeSegmentsId = " + this.firstRangeSegmentsId);
@@ -1084,7 +1088,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setPosition(xVals[i], yVal)
 			.setWidth(toggleWidth)
 			.setLabel((i + 1) + "")
-			.setGroup("sidebarGroup")
+			//.setGroup("sidebarGroup")
 			.setId(this.nextToggleId)
 			.setInternalValue(i + 1);
 			this.controlP5.getController("toggle" + this.nextToggleId).getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
@@ -1157,15 +1161,15 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				this.controlP5.addLabel(names[i])
 				.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
-				.setValue(labels[i])
-				.setGroup("sidebarGroup");
+				.setValue(labels[i]);
+				//.setGroup("sidebarGroup");
 
 				this.controlP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
 				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
 				.setRange(-1, 1)
 				.setValue(0)
-				.setGroup("sidebarGroup")
+				//.setGroup("sidebarGroup")
 				.setId(this.nextSliderId)
 				.getCaptionLabel().setVisible(false);
 
@@ -1216,7 +1220,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		}
 		// the "- (10 / buttonsPerRow)" adds a 10 pixel space at the end of the row:
-		int		buttonWidth		= (((this.parent.width / 3) - this.leftAlign) / buttonLabels.length) - this.spacer - (10 / buttonLabels.length);
+		int		buttonWidth		= (((this.sidebarWidth) - this.leftAlign) / buttonLabels.length) - this.spacer - (10 / buttonLabels.length);
 		int[]	xVals	= new int[buttonLabels.length];
 		for(int i = 0; i < xVals.length; i++)
 		{
@@ -1225,7 +1229,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("specialColorsLabel")
 		.setPosition(labelX, yVal + 4)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setValue(labelText);
 
 		// Loop through all
@@ -1247,11 +1251,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public void addShapeCustomizationControls(int yVal)
 	{
 		this.controlP5.addButton("shapeMenuButton")
-		.setPosition(30, yVal)
-		.setHeight(30)
-		.setWidth(250)
-		.setLabel("Shape Menu")
-		.setGroup("sidebarGroup");
+		.setPosition(this.leftAlign, yVal)
+		.setHeight(this.sliderHeight)
+		.setWidth(this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer)
+		.setLabel("Shape Menu");
+		//.setGroup("sidebarGroup");
 
 		this.controlP5.addGroup("shapeMenuGroup");
 
@@ -1330,14 +1334,14 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("colorStyle")
 		.setPosition(labelX, colorStyleY + 4)
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setValue("Color Style");
 
 		this.controlP5.addToggle("rainbow")
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_RAINBOW);
 		this.controlP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1345,7 +1349,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_DICHROM);
 		this.controlP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1353,7 +1357,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(trichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_TRICHROM);
 		this.controlP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1361,7 +1365,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(customX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
-		.setGroup("sidebarGroup")
+		//.setGroup("sidebarGroup")
 		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
 		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -2401,15 +2405,28 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void displaySidebar(boolean show)
 	{	
-		this.controlP5.getGroup("sidebarGroup").setVisible(show);
+//		this.controlP5.getGroup("sidebarGroup").setVisible(show);
 		if(show)
 		{
-			this.leftEdgeX 	= this.parent.width / 3;
+			this.leftEdgeX 	= this.sidebarWidth;
 		} else {
 			this.leftEdgeX	= 0;
 		}
 
 	} // displaySidebar
+	
+	@Override
+	public void runMenu()
+	{
+		super.runMenu();
+		
+		if(this.getIsRunning())
+		{
+			this.leftEdgeX	= this.sidebarWidth;
+		} else {
+			this.leftEdgeX	= 0;
+		}
+	} // runMenu
 
 	/**
 	 * Since ModuleTemplate implements ControlListener, it needs to have this method
@@ -2453,15 +2470,19 @@ public class ModuleMenu extends MenuTemplate  {
 		// Hamburger button:
 		if(controlEvent.getController().getName().equals("hamburger"))
 		{
+			this.setIsRunning(true);
+			controlEvent.getController().setVisible(false);
+			
 			this.menuIsOpen = true;
 			this.displaySidebar(true);
-			controlEvent.getController().setVisible(false);
 			this.controlP5.getWindow().resetMouseOver();
 		} // if - hamburger
 
 		// MenuX button:
 		if(controlEvent.getController().getName().equals("menuX"))
 		{
+			this.setIsRunning(false);
+			
 			this.displaySidebar(false);
 			/*			this.leftEdgeX	= 0;
 			this.controlP5.getGroup("sidebarGroup").setVisible(false);
@@ -3536,16 +3557,12 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.menuIsOpen;
 	}
-
+/*
 	public ControlP5 getCP5()
 	{
 		return this.controlP5;
 	}
-
-	public void runMenu()
-	{
-		// TODO - this will have to do something....
-	} // runMenu
+*/
 
 	public int getSliderHeight() {
 		return this.sliderHeight;
