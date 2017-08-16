@@ -2,14 +2,27 @@ package core;
 
 import processing.core.PApplet;
 
+/**
+ * Aug. 16, 2017
+ * 
+ * Template for Modules
+ * 
+ * @author Dan Mahota, Emily Meuer
+ */
 public abstract class Module extends PApplet {
 	
-//	private		DisposeHandler	disposeHandler;
+	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
 	protected	Input			input;
+	
 	protected	Shape			shape;
+	
+	/**	For Modules with a Shape, this ShapeEditor provides Shape customization Controllers	*/
 	protected 	ShapeEditor		shapeEditor;
+	
+	/**	"Sidebar" Menu, where most basic Controllers will be - global HSB and RGB modulation, etc.	*/
 	protected	ModuleMenu		menu;
 	
+	/**	Used by legend() to determine which colors to select for the legend along the bottom	*/
 	private	final	int[][] scaleDegrees = new int[][] {
 		// major:
 		new int[]  { 0, 2, 4, 5, 7, 9, 11
@@ -22,35 +35,38 @@ public abstract class Module extends PApplet {
 		}
 	}; // scaleDegrees
 
+	/**
+	 * Sets the Module size.
+	 */
 	public void settings()
 	{
 		size(925, 520);
 	}
 	
-	public void setup()
-	{
-//		this.disposeHandler	= new DisposeHandler(this, this);
-		
-//		System.out.println("Module: hi! disposeHandler.module.input = " + this.disposeHandler.module.input);
-	} // setup
-	
 
+	/**
+	 * Setter for the shapeEditor.isRunning variable
+	 * 
+	 * @param isRunning	indicates whether or not the ShapeEditor should be open (i.e., running)
+	 */
 	public void setShapeEditorRunning(boolean isRunning)
 	{
 		this.shapeEditor.setIsRunning(isRunning);
 	} // setShapeEditorRunning
-	
+
+	/**
+	 * Getter for Shape instance variable
+	 * @return	this.shape
+	 */
 	public Shape getShape() {
 		return this.shape;
 	} // getShape
 	
 
 	/**
-	 * ** ModuleTemplate02's legend!!!
+	 * Draws the legend at the bottom of the screen.
 	 * 
-	 * Draws the thresholds legend at the bottom of the screen.
-	 * 
-	 * @param goalHuePos	current position in the threshold list; used to show the user their general amplitude level
+	 * @param goalHuePos	current position, be that note or threshold level, in this Module's menu.colorSelect
 	 */
 	public void legend(int goalHuePos)
 	{
@@ -94,6 +110,9 @@ public abstract class Module extends PApplet {
 
 	} // legend
 	
+	/**
+	 * @return	String[] of text to display in each position of the legend
+	 */
 	public abstract String[] getLegendText();
 
 } // Module

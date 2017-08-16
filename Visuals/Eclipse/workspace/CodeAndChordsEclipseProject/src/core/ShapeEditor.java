@@ -20,7 +20,7 @@ import processing.core.PShape;
 
 public class ShapeEditor extends MenuTemplate implements ControlListener {
 
-	private PApplet parent;
+//	private PApplet parent;
 
 	private Shape	shape;
 	
@@ -144,7 +144,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		int numControllers = 8;
 		float[] yVals = new float[(int) numControllers];
 
-		float spacing = ((super.getAppletHeight() - 100) / numControllers) + 2;
+		float spacing = ((this.parent.height - 100) / numControllers) + 2;
 
 		for (int i = 0; i < numControllers; i++) {
 			yVals[i] = spacing * (i) + 100;
