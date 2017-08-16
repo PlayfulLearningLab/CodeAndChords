@@ -12,39 +12,46 @@ import controlP5.Controller;
 import controlP5.Slider;
 import controlP5.Textfield;
 
-/*
- * All values are stored and set as relative to their position in the full canvas, 
- * not the scaled down version.  When you need these values relative to the scaled 
- * down screen, use the getAdjustedMenuXPos() and getAdjustedMenuYPos() functions. 
- */
-
-
-
 import processing.core.PApplet;
 import processing.core.PShape;
 
 /**
+ * Abstract class for a menu that maintains the correct aspect ratio for objects in the module
+ * while scaling them down to make room for the menus above and on the left side.
+ * 
+ * All values are stored and set as relative to their position in the full canvas, 
+ * not the scaled down version.  When you need these values relative to the scaled 
+ * down screen, use the getAdjustedMenuXPos() and getAdjustedMenuYPos() functions.
  * 
  * @author Dan Mahota, Emily Meuer
  *
  */
 public abstract class MenuTemplate implements ControlListener {
 
+	/**	The current PApplet, passed into the constructor	*/
 	private PApplet 	parent;
 	
+	/**	ControlP5 for this instance of MenuTemplate	*/
 	protected	ControlP5	controlP5;
 	
+	/**	Indicates whether or not the Menu is open	*/
 	private boolean 	isRunning;
 	
-	//these variables are stored relative to the size of the full applet,
-	//NOT RELATIVE TO THE SMALLER WINDOW USED WHEN THE MENU IS OPEN
+	/**
+	 * These variables are stored relative to the size of the full applet,
+	 * NOT RELATIVE TO THE SMALLER WINDOW USED WHEN THE MENU IS OPEN
+	 */
 	private float 		xPos;
 	private float 		yPos;
+	
+	/**	Rotation of the object in the Module - TODO is this in radians?	*/
 	private float 		rotation;
 
+	// TODO - couldn't we just access these with parent.width and parent.height?
 	private float 		appletWidth;
 	private float 		appletHeight;
 
+	/**	This is a float between 0 and 1 which indicates what percentage of the PApplet will be taken up by the smaller canvas	*/
 	private float 		scale;
 	
 	private PShape		menuBackground;
