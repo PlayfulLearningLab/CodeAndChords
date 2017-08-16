@@ -126,8 +126,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				//this.shapeMode(CENTER);
 				//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
-				//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
-
+				//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2);
 	} // setup
 
 	public void draw()
@@ -259,7 +258,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver())
 		{
-			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getControlP5().isVisible() && this.mouseX > this.shapeEditor.getAppletWidth() * (1 - this.shapeEditor.getScale()) && this.mouseY > this.shapeEditor.getAppletHeight() * (1 - this.shapeEditor.getScale()))
+			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getControlP5().isVisible() && this.mouseX > this.width * (1 - this.shapeEditor.getScale()) && this.mouseY > this.height * (1 - this.shapeEditor.getScale()))
 			{			
 				this.shapeEditor.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
 				this.shapeEditor.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));

@@ -23,7 +23,8 @@ import processing.core.PImage;
 /**
  * July 2017
  * 
- * Abstract class for all the ModuleTemplate (sidebar) components that are needed for more than one module.
+ * Class for creating a sidebar Menu for a Module;
+ * previously was ModuleTemplate.
  * 
  * @author Emily Meuer
  *
@@ -52,6 +53,9 @@ public class ModuleMenu extends MenuTemplate  {
 			0, 1, 1, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11
 	}; // enharmonicPos
 
+	/**
+	 * Colors roughly ROYGBIV; used for the rainbow() method.
+	 */
 	private int[][][] rainbowColors	= new int[][][] { 
 		new int[][] {
 			{ 255, 0, 0 }, 
@@ -111,29 +115,26 @@ public class ModuleMenu extends MenuTemplate  {
 	}; // scaleDegreeColors
 
 	protected	PApplet	parent;
+	
+	/**	Module to which this Menu belongs	*/
 	protected	Module	module;
-	//	protected	ControlP5	controlP5;
+	
+	/**	Name (typically name of the Module) to be displayed at the top of the Menu	*/
 	private		String		sidebarTitle;
 
-	private     float		menuWidth;
-	private     boolean  	menuIsOpen = false;
+//	private     float		menuWidth;
+//	private     boolean  	menuIsOpen = false;
 	
 	/**	This is the parent.millis() when menuX is called, so that we don't call Hamburger when menuX is clicked	*/
 	private		int			lastMenuXMillis;
 	
-	/*
-	protected	int			leftAlign;
-	protected	int			leftEdgeX;
-
-	protected	int			labelX;
-	protected	int			labelWidth;
-	protected	int			spacer;
-	protected	int			textfieldWidth;
-	protected	int			sliderWidth;
-	protected	int			sliderHeight;
+	/**
+	 * Color Styles: Rainbow, Dichromatic (fade from one color to another throughout the legend),
+	 * Trichromatic (fade from color1 to  color2 and then from color2 to color3 throughout the legend),
+	 * or Custom, which may be discontinued.
 	 */
 	public	static	int	CS_RAINBOW	= 1;
-	public static	int	CS_DICHROM	= 2;
+	public	static	int	CS_DICHROM	= 2;
 	public	static	int	CS_TRICHROM	= 3;
 	public	static	int	CS_CUSTOM	= 4;
 	protected	int	curColorStyle;
@@ -141,6 +142,10 @@ public class ModuleMenu extends MenuTemplate  {
 	/**	ControlP5 for the play/stop, pause, and hamburger Buttons	*/
 	protected	ControlP5	outsideButtonsCP5;
 	
+	/**
+	 * booleans indicating whether or not the play/stop, pause, and hamburger Buttons
+	 * should be visible; used when another Menu, such as ShapeEditor, is opened and then closed.
+	 */
 	protected	boolean		showPlayStop;
 	protected	boolean		showPause;
 	protected	boolean		showHamburger;
@@ -166,9 +171,6 @@ public class ModuleMenu extends MenuTemplate  {
 	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
 	private	int[]			colorAdd;
 
-	// TODO initialize elsewhere:
-	//	private float[]			colorAddDecimals	= new float[3];
-
 	/**	The difference between the R, G, and B values of 2 colors that are being faded between	*/
 	private	int[]			colorRange;
 
@@ -186,9 +188,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	Amplitude thresholds	*/
 	protected	int[]	thresholds;
-
-	/**	Volume below which input will be ignored	*/
-//	protected float	threshold;
 
 	/**	The minimum value for threshold Sliders	*/
 	protected	int	minThreshold;
@@ -266,7 +265,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	float	shapeSize;
 
 
-	private boolean shapeMenuIsOpen;
+//	private boolean shapeMenuIsOpen;
 
 	/**
 	 * The current number of range segements (i.e., sections into which the spectrum, be it of amplitude or frequency, is split).
@@ -298,7 +297,6 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	firstColorSelectCWId	= -1;
 	protected	int	firstSpecialColorsCWId	= -1;
 	protected	int	lastColorSelectId		= -1;
-//	protected	int	thresholdSliderId		= -1;
 	protected	int	firstARTSliderId		= -1;
 	protected	int	firstHSBSliderId		= -1;
 	protected	int	firstRGBSliderId		= -1;
@@ -309,25 +307,6 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	pianoThresholdSliderId	= -1;
 	protected	int	forteThresholdSliderId	= -1;
 	protected	int	firstSatBrightThreshSliderId	= -1;
-
-	/**	The id used to identify the Color/Brightness/Saturation threshold sliders	 */
-//	protected	int	firstThresholdSliderId	= -1;
-
-	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
-	//	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
-
-	/**
-	 * The following are id's that are used within the add____ methods to keep id numbering consistent.
-	 * They are initially set to 0 (nextSliderId), 100 (nextSTextfieldId), 200 (nextButtonId), 
-	 * 300 (nextColorWheelId), 400 (nextCWTextfieldId) and 500 (nextToggleId), and incremented as Controllers are added.
-	 */
-	/*	protected	int	nextSliderId;
-	protected	int	nextSTextfieldId;	// Textfield next to a slider
-	protected	int	nextButtonId;	// for Buttons that open a ColorWheel
-	protected	int	nextColorWheelId;		// ColorWheels
-	protected	int	nextCWTextfieldId;	// Textfield under a ColorWheels
-	protected	int	nextToggleId;
-	 */
 
 	/**
 	 * Constructor
@@ -403,7 +382,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.forteThreshold	= this.thresholds[this.thresholds.length - 1];
 		this.minThreshold	= 101;
 
-		this.shapeMenuIsOpen	= false;
+//		this.shapeMenuIsOpen	= false;
 
 				this.melody			= new Melody(this.parent, this.input);
 				this.instrument		= new Instrument(this.parent);
@@ -450,11 +429,10 @@ public class ModuleMenu extends MenuTemplate  {
 		.setHeight(15)
 		//.setGroup("sidebarGroup")
 		.setValue("Menu");
-
-//		this.addHideButtons(26);
 		
 	} // constructor
 
+	
 	/**
 	 * Adds the Buttons, ColorWheels and Textfields for selecting custom colors.
 	 * 
@@ -593,7 +571,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.updateSize()
 		.bringToFront();
 
-		this.menuWidth = this.controlP5.getController("menuX").getWidth();
+//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
 	} // addOutsideButtons
 
 
@@ -646,111 +624,6 @@ public class ModuleMenu extends MenuTemplate  {
 	} // addHideButtons
 
 
-	/**
-	 * Method called during initialization to instatiate the Threshold, Attack, Release,
-	 * and Transition sliders.
-	 * 
-	 * Slider id numbers are from 0-99, and their corresponding Textfields are (sliderId + 100) - all between 100 and 199.
-	 * Names are based on ids; format: "slider" OR "textfield + [id]
-	 *  - thresholdSlider	= "slider0", thresholdTF	= "textfield100"
-	 *  - attackSlider	= "slider1", attackTF	= "textfield101"
-	 *  - releaseSlider	= "slider2", releaseTF	= "textfield102"
-	 *  - transitionSlider	= "slider3", transitionTF	= "textfield103"
-	 * 
-	 * @param thresholdY	y value of the Threshold slider group
-	 * @param attackY	y value of the Attack slider group
-	 * @param releaseY		y value of the Release slider group
-	 * @param transitionY	y value of the Transition slider group
-	 */
-/*	public void addSliders(int thresholdY, int attackY, int releaseY, int transitionY)
-	{
-		int	labelX			= 10;
-		int	labelWidth		= 70;
-
-		int	sliderWidth		= 170;
-
-		int	spacer			= 5;
-		int	tfWidth			= 40;
-
-		String[]	names	= new String[] {
-				"thresholdLabel",
-				"attackLabel",
-				"releaseLabel",
-				"transitionLabel"
-		}; // names
-
-		String[]	labels	= new String[] {
-				"Threshold",
-				"Attack",
-				"Release",
-				"Transition"
-		}; // labels
-
-		int[]		yVals	= new int[] {
-				thresholdY,
-				attackY,
-				releaseY,
-				transitionY
-		}; // yVals
-
-		//		int	id	= 0;
-		int	lowRange;
-		int	highRange;
-		int	startingValue;
-
-//		this.thresholdSliderId	= this.nextSliderId;
-		this.forteThresholdSliderId	= this.nextSliderId;
-		this.firstARTSliderId	= this.nextSliderId + 1;
-
-		for(int i = 0; i < 4; i++)
-		{
-			this.controlP5.addLabel(names[i])
-			.setPosition(labelX, yVals[i] + 4)
-			.setWidth(labelWidth)
-			//.setGroup("sidebarGroup")
-			.setValue(labels[i]);
-
-			// Threshold has its own range:
-			if(i == 0)
-			{
-				lowRange		= 2;
-				highRange		= 100;
-				startingValue	= 10;
-			} else {
-				lowRange		= 100;
-				highRange		= 3000;
-				startingValue	= 200;
-
-			}
-
-			this.controlP5.addSlider("slider" + this.nextSliderId)
-			.setPosition(this.leftAlign, yVals[i])
-			.setSize(this.sliderWidth, this.sliderHeight)
-			.setRange(lowRange, highRange)
-			.setValue(startingValue)
-			.setSliderMode(Slider.FLEXIBLE)
-			.setLabelVisible(false)
-			//.setGroup("sidebarGroup")
-			.setId(this.nextSliderId);
-
-			this.nextSliderId	= this.nextSliderId + 1;
-
-			this.controlP5.addTextfield("textfield" + this.nextSTextfieldId)
-			.setPosition(this.leftAlign + sliderWidth + spacer, yVals[i])
-			.setSize(tfWidth, this.sliderHeight)
-			.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
-			.setAutoClear(false)
-			//.setGroup("sidebarGroup")
-			.setId(this.nextSTextfieldId)
-			.getCaptionLabel().setVisible(false);
-
-			this.nextSTextfieldId	= this.nextSTextfieldId + 1;
-
-		} // for
-
-	} // addSliders
-*/
-	
 	/**
 	 * Adds the attack, release, and transition Sliders.
 	 * 
@@ -880,6 +753,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addKeySelector
 
+	
 	/**
 	 * Adds the guide tone pop-out with range and envelope preset select dropdowns, bpm and volume sliders.
 	 * 
@@ -998,17 +872,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addHSBSliders(int[] hsb)
 	{
-		int	labelX			= 10;
-		int	labelWidth		= 70;
-
-		int	sliderWidth		= 170;
-
-		int	spacer			= 5;	// distance between slider and corresponding textfield
-		int	tfWidth			= 40;	// width of Textfields
-
-		String[]	names	= new String[] { "hueModLabel", "satModLabel", "brightModLabel" };
 		String[]	values	= new String[] { "Hue", "Saturation", "Brightness" };
-
 
 		this.firstHSBSliderId	= this.nextSliderId;
 
@@ -1131,14 +995,11 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addThresholdSliders(int yVal, int verticalSpacer)
 	{
-//		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
 
 		// Since some i's will add a couple rows of labels and sliders,
 		// this variable keeps track of which "level" of y the next thing should be added to.
-		//		float	yPos		= 0;
 
 		String[]	names	= new String[] {
-//				"forteThresh",
 				"saturation",
 				"saturationForteThresh",
 				"brightness",
@@ -1146,21 +1007,11 @@ public class ModuleMenu extends MenuTemplate  {
 		}; // names
 
 		String[]	labels = new String[] {
-	//			"Forte\nThreshold",
 				"Saturation",
 				"Sat: Forte\nThreshold",
 				"Brightness",
 				"Bright: Forte\nThreshold"
 		}; // labels
-		/*	
-		String[]	hsbSliderNames	= new String[] {
-				"hueSlider",
-				"saturationSlider",
-				"brightnessSlider"
-
-		}; // hsbSliderNames
-		 */
-//		this.firstThresholdSliderId	= this.nextSliderId;
 		
 		this.firstSatBrightThreshSliderId	= this.nextSliderId;
 		System.out.println("firstSatBrightThreshSliderId = " + firstSatBrightThreshSliderId);
@@ -1174,7 +1025,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			} // if - Forte Thresholds
 
-			// percent sliders
+			// Percent Sliders
 			if(i % 2 == 0)
 			{
 				this.controlP5.addLabel(names[i])
@@ -1200,6 +1051,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addThresholdSliders
 
+	
 	/**
 	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
 	 * e.g., "Tonic", "2nd Color", and "3rd Color" in Module_01.
@@ -1265,7 +1117,11 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fillHSBColors();
 	} // addSpecialColors
 
-
+	/**
+	 * TODO - needs commenting or can go.
+	 * 
+	 * @param yVal
+	 */
 	public void addShapeCustomizationControls(int yVal)
 	{
 		this.controlP5.addButton("shapeMenuButton")
@@ -1334,6 +1190,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addShapeCustomizationControls
 	
+	
 	/**
 	 * Method called during instantiation to initialize the color style Toggles
 	 * (Rainbow, Dichromatic, Trichromatic, and Custom).
@@ -1390,144 +1247,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.setColorStyle(ModuleMenu.CS_RAINBOW);
 	} // addColorStyleButtons
 
-
-	/**
-	 * Adds a Label with given text, Slider of given lowest value, highest value, and starting value, with default 
-	 * width and x value at this.leftAlign, and Textfield with default width to "sidebarGroup" at given y value.
-	 * 
-	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
-	 * @param labelText	text for the Label
-	 * @param lowRange	Slider lowest value
-	 * @param highRange	Slider highest value
-	 * @param startingVals	Slider default/starting value
-	 */
-	/*	protected void addSliderGroup(int yVal, String labelText, float lowRange, float highRange, float startingVals)
-	{
-		this.addSliderGroup(yVal, labelText, this.leftAlign, this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "sidebarGroup");
-	} // addSliderGroup - use default width
-
-	/**
-	 * Adds a Label with given text, Slider with given x value, width, lowest value, 
-	 * highest value, and starting value, and Textfield with given width to given group at the given y value.
-	 * 
-	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
-	 * @param labelText	text for the Label
-	 * @param sliderX	x value for the Slider
-	 * @param sliderWidth	Slider width
-	 * @param lowRange	Slider lowest value
-	 * @param highRange	Slider highest value
-	 * @param startingVals	Slider default/starting value
-	 * @param textfieldWidth	Textfield width
-	 * @param group	String indicating to which group these Sliders and Textfields should belong
-	 */
-	/*	protected void addSliderGroup(int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String group)
-	{
-		this.controlP5.addLabel("label" + this.nextSliderId)
-		.setPosition(labelX, yVal + 4)
-		.setWidth(labelWidth)
-		.setGroup(group)
-		.setValue(labelText);
-
-		this.controlP5.addSlider("slider" + this.nextSliderId)
-		.setPosition(sliderX, yVal)
-		.setSize(sliderWidth, this.sliderHeight)
-		.setRange(lowRange, highRange)
-		.setValue(startingVals)
-		.setSliderMode(Slider.FLEXIBLE)
-		.setLabelVisible(false)
-		.setGroup(group)
-		.setId(this.nextSliderId);
-
-		this.nextSliderId	= this.nextSliderId + 1;
-
-		this.controlP5.addTextfield("textfield" + this.nextSTextfieldId)
-		.setPosition(sliderX + sliderWidth + spacer, yVal)
-		.setSize(this.textfieldWidth, this.sliderHeight)
-		.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
-		.setAutoClear(false)
-		.setGroup(group)
-		.setId(this.nextSTextfieldId)
-		.getCaptionLabel().setVisible(false);
-
-		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
-	} // addSliderGroup - define width
-
-	/**
-	 * Adds a connected Button, ColorWheel, and Textfield to this.controlP5, in group "sidebarGroup",
-	 * by making a color from the int[] and calling addColorWheelGroup(int, int, int, String, Color)
-	 * 
-	 * @param x	x value of Button and ColorWheel
-	 * @param y	y value of Button
-	 * @param buttonWidth	width of Button
-	 * @param buttonLabel	text to put on the Button
-	 * @param colo	int[] with the red, green, blue values for the desired Color
-	 */
-	/*	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, int[] rgbColor)
-	{
-		if(rgbColor == null) {
-			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter is null.");
-		}
-		if(rgbColor.length != 3) {
-			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter has length " + rgbColor.length + 
-					"; must be length 3.");
-		} // error checking
-
-		return this.addColorWheelGroup(x, y, buttonWidth, buttonLabel, new Color(rgbColor[0], rgbColor[1], rgbColor[2]));
-	} // addColorWheelGroup
-
-	/**
-	 * Adds a connected Button, ColorWheel, and Textfield to this.controlP5, in group "sidebarGroup"
-	 * 
-	 * @param x	x value of Button and ColorWheel
-	 * @param y	y value of Button
-	 * @param buttonWidth	width of Button
-	 * @param buttonLabel	text to put on the Button
-	 * @param color	Color to set the ColorWheel and Textfield ("rgb([red], [green], [blue])")
-	 */
-	/*	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color)
-	{
-		Button		button;
-		ColorWheel	colorWheel;
-		Textfield	textfield;
-
-		if(buttonLabel == null) {
-			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: String parameter is null.");
-		}
-		// Add Button:
-		button	= this.controlP5.addButton("button" + this.nextButtonId)
-				.setPosition(x, y)
-				.setWidth(buttonWidth)
-				.setLabel(buttonLabel)
-				.setId(this.nextButtonId)
-				.setGroup("sidebarGroup");
-		button.getCaptionLabel().toUpperCase(false);
-
-		this.nextButtonId = this.nextButtonId + 1;
-
-		colorWheel	= this.controlP5.addColorWheel("colorWheel" + this.nextColorWheelId)
-				.setPosition(x, y - 200)
-				.setRGB(color.getRGB())
-				.setLabelVisible(false)
-				.setVisible(false)
-				.setGroup("sidebarGroup")
-				.setId(this.nextColorWheelId);
-
-		this.nextColorWheelId = this.nextColorWheelId + 1;					
-
-		textfield	= this.controlP5.addTextfield("textfield" + this.nextCWTextfieldId)
-				.setPosition(x + buttonWidth + this.spacer, y)
-				.setAutoClear(false)
-				.setVisible(false)
-				.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")")
-				.setGroup("sidebarGroup")
-				.setId(this.nextCWTextfieldId);
-		textfield.getCaptionLabel().setVisible(false);
-
-		this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
-
-		return new Controller[] { button, colorWheel, textfield };
-	} // addColorWheelGroup
-	 */
 
 	/**
 	 * Sets this.goalHue to the value of the given position in this.colors
@@ -1640,8 +1359,6 @@ public class ModuleMenu extends MenuTemplate  {
 		// If all elements of the color are in range, then the color has been reached:
 		this.colorReached	= this.colorReachedArray[0] && this.colorReachedArray[1] && this.colorReachedArray[2];
 
-		int	oldARTpos	= this.attRelTranPos;
-
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
 		if(!this.nowBelow && !colorReached) 
@@ -1657,34 +1374,18 @@ public class ModuleMenu extends MenuTemplate  {
 			this.attRelTranPos	= 1;
 			//			System.out.println("	re....lent! re...coil! re...verse!");
 		}
-
-		//		if(this.attRelTranPos != oldARTpos)
-		//		{			
+		
 		// Calculate color ranges:
 		for(int i = 0; i < this.curHue.length; i++)
 		{
 			this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
 
-			//				System.out.println("colorAddDecimals[" + i + "] = " + colorAddDecimals[i]);
-
-			// if colorAdd reached 1, add 1 to colorAdd:
-			/*				if(this.colorAddDecimals[i] > 1)	
-				{	
-					this.colorAdd[i]++;	
-//					this.colorAddDecimals[i]	= this.colorAddDecimals[i] % 1;
-				}
-			 */
 			// divide the attack/release/transition value by 50
 			// and divide colorRange by that value to find the amount to add each 50 millis.
 			float addThis = (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
-			/*				if(addThis < 1)	
-				{	
-					this.colorAddDecimals[i]	= this.colorAddDecimals[i] + addThis;	
-				} else {	 */
+
 			this.colorAdd[i]	= (int)addThis;	
-			//				}
 		} // for
-		//		} // if
 
 	} // fade
 
@@ -1717,57 +1418,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 	} // setCurHue
 
-	/**
-	 * ** ModuleTemplate02's legend!!!
-	 * 
-	 * Draws the thresholds legend at the bottom of the screen.
-	 * 
-	 * @param goalHuePos	current position in the threshold list; used to show the user their general amplitude level
-	 */
-/*	public void legend(int goalHuePos)
-	{
-		this.parent.textSize(24);		
-
-		String[]	legendText	= this.module.getLegendText();
-
-		float	sideWidth1   = (this.parent.width - this.leftEdgeX) / legendText.length;
-		float	sideHeight  = this.parent.width / 12;	// pretty arbitrary
-		float	addToLastRect	= (this.parent.width - this.leftEdgeX) - (sideWidth1 * legendText.length);
-		float	sideWidth2	= sideWidth1;
-
-		this.parent.noStroke();
-
-//		for (int i = 0; i < this.thresholds.length; i++)
-		for (int i = 0; i < legendText.length; i++)
-		{
-			if(i == legendText.length - 1)
-			{
-				sideWidth2	= sideWidth1 + addToLastRect;
-			}
-
-			/*						System.out.println("this.colors[" + i + "][0] = " + this.colors[i][0] + "; this.colors[" + i + "][1] = " +
-								this.colors[i][1] + "; this.colors[" + i + "][2] = " + this.colors[i][2]);
-						System.out.println("this.legendColors[" + i + "][0] = " + this.legendColors[i][0] + "; this.legendColors[" + i + "][1] = " +
-								this.legendColors[i][1] + "; this.legendColors[" + i + "][2] = " + this.legendColors[i][2]);
-			 */
-			//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
-			//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
-/*			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
-
-
-			if (i == goalHuePos) {
-				this.parent.rect(leftEdgeX + (sideWidth1 * i), (float)(this.parent.height - (sideHeight * 1.5)), sideWidth2, (float) (sideHeight * 1.5));
-			} else {
-				this.parent.rect(leftEdgeX + (sideWidth1 * i), this.parent.height - sideHeight, sideWidth2, sideHeight);
-			}
-
-			this.parent.fill(0);
-			this.parent.text(legendText[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.1)), this.parent.height - 20);
-		} // for
-
-	} // legend
-*/
-
+	
 	/**
 	 * Uses the values of the specialColors CWs to apply the current colorStyle.
 	 */
@@ -1948,13 +1599,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.fillHSBColors();
 
-		/*		for(int i = 0; i < rgbVals2.length; i++)
-		{
-			this.colors[this.colors.length - 1][i]	= rgbVals2[i];
-		}
-		 */
 	} // dichromatic_TwoRGB
 
+	
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
@@ -2021,6 +1668,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
 	} // trichromatic_OneHSB
 
+	
 	/**
 	 * Calculates the colors between the 3 sets of given vals
 	 * and fills colors with a spectrum fading between them.
@@ -2162,6 +1810,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fillHSBColors();
 	} // rainbow
 
+	/**
+	 * Sets the ColorStyle to the given ColorStyle
+	 * and locks or unlocks the appropriate Buttons (e.g., in Rainbow, Tonic, 2ndColor and 3rdColor
+	 * Buttons should all be unlocked, but for Dichromatic, only 3rdColor should be locked).
+	 * 
+	 * @param newColorStyle	int between 1 and 4 indicating the new ColorStyle
+	 */
 	public void setColorStyle(int newColorStyle)
 	{
 		this.curColorStyle	= newColorStyle;
@@ -2286,8 +1941,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void applyHSBModulate()
 	{
-		// TODO: also need to implement it for legendColors!  So can't just get rid of the two parameters entirely.
-
 		if(this.firstColorSelectCWId != -1)
 		{
 			if(this.hsbColors == null)	{	this.fillHSBColors();	}
@@ -2418,6 +2071,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 	} // playMelody
 
+	
 	/**
 	 * Displays the "sidebarGroup" of this.controlP5
 	 */
@@ -2433,6 +2087,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // displaySidebar
 	
+	/**
+	 * Calls super.runMenu to show or hide the Controllers,
+	 * but also sets leftEdgeX depending on whether or not the Menu is open.
+	 */
 	@Override
 	public void runMenu()
 	{
@@ -2446,6 +2104,10 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 	} // runMenu
 	
+	/**
+	 * Uses this.showPlayStop, this.showPause, and this.showHamburger to determine which of the 
+	 * outside Buttons should be set to visible.
+	 */
 	public void showOutsideButtons()
 	{
 		this.outsideButtonsCP5.setVisible(true);
@@ -2454,6 +2116,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
 		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
 	} // showOutsideButtons
+	
 
 	/**
 	 * Since ModuleTemplate implements ControlListener, it needs to have this method
@@ -2799,7 +2462,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(controlEvent.getName() == "shapeMenuButton")
 		{
 			//open the menu
-			this.shapeMenuIsOpen = true;
+//			this.shapeMenuIsOpen = true;
 
 			//set the shape select list
 			System.out.println(this.module.getShape().getShapeIndex());
@@ -2827,6 +2490,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // controlEvent
 
+	
 	/**
 	 * Called from MenuTemplate for Sliders that were added by the addSliderGroup() method
 	 * and are connected to a Textfield (MenuTemplate has already updated the Textfield value).
@@ -3338,6 +3002,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // getScale
 
+	
 	/**
 	 * Updates the keyDropdown ScrollableList and sets the current key and all 
 	 * connected variables: this.majMinChrom, this.scaleLength, this.curKey, this.keyAddVal.
@@ -3360,10 +3025,14 @@ public class ModuleMenu extends MenuTemplate  {
 		this.majMinChrom	= majMinChrom;
 		this.scaleLength	= this.getScale(key, majMinChrom).length;
 
-		this.controlP5.getController("keyDropdown").setValue(keyPos);
+		if(this.controlP5.getController("keyDropdown") != null)
+		{
+			this.controlP5.getController("keyDropdown").setValue(keyPos);
+		}
 
 	} // setCurKey
 
+	
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
 	 * major or minor scale;
@@ -3422,8 +3091,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 
 	/**
-	 * TODO: might want this color as a float[] rather than as an int?
-	 * 
 	 * Returns the current color of the ColorWheel in the given position in this.colorSelect as an int.
 	 * 
 	 * @param colorPos	Position of color; must be from 0 to (this.colorSelect.length - 1)
@@ -3495,11 +3162,24 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public int[] getCurHue()				{	return this.curHue;	}
 
+	/**
+	 * Returns the current attack, release, or transition value indicated by the parameter:
+	 * 0 for attack, 1 for release, and 2 for transition
+	 * 
+	 * @param attRelTranPos	int indicating attack (0), release (1), or transition (2)
+	 * @return	current attack, release, or transition value
+	 */
 	public float getAttRelTranVal(int attRelTranPos)
 	{
 		return this.attRelTranVals[attRelTranPos];
 	}
 
+	/**
+	 * Sets either attack, release, or transition to the given value
+	 * 
+	 * @param position 0 for attack, 1 for release, or 2 for transition
+	 * @param val	value to set either attack, release, or transition
+	 */
 	public void setAttRelTranVal(int position, float val) {
 		if(position < 0 || position > this.attRelTranVals.length) {
 			throw new IllegalArgumentException("ModuleTemplate.setAttRelTranVal: position " + position + " is out of range; must be 0, 1, or 2.");
@@ -3508,6 +3188,12 @@ public class ModuleMenu extends MenuTemplate  {
 		this.attRelTranVals[position]	= val;
 	}
 
+	/**
+	 * Sets either global hue, saturation, or brightness modulate to the given value
+	 * 
+	 * @param position 0 for hue, 1 for saturation, or 2 for brightness
+	 * @param val	value to set either hue, saturation, or brightness
+	 */
 	public void setHueSatBrightnessMod(int position, float val) {
 		if(position < 0 || position > this.hueSatBrightnessMod.length) {
 			throw new IllegalArgumentException("ModuleTemplate.setHueSatBrightnessMod: position " + position + " is out of range; must be 0, 1, or 2.");
@@ -3518,9 +3204,12 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public int getLeftEdgeX()				{	return this.leftEdgeX;	}
 
-
+	/**
+	 * Getter for showScale instance variable
+	 * @return	this.showScale
+	 */
 	public boolean isShowScale() {
-		return showScale;
+		return this.showScale;
 	}
 
 	public void setShowScale(boolean showScale) {
@@ -3559,12 +3248,12 @@ public class ModuleMenu extends MenuTemplate  {
 	public float getShapeSize() {
 		return this.shapeSize;
 	}
-
-	public ControlP5 getSidebarCP5()
+/*
+	public ControlP5 getControlP5()
 	{
 		return this.controlP5;
 	}
-
+*/
 	/**
 	 * Getter for this.thresholds
 	 * 
@@ -3595,11 +3284,14 @@ public class ModuleMenu extends MenuTemplate  {
 		this.outsideButtonsCP5.getController("hamburger").setVisible(true);
 	}//set menu val
 
+	/*
 	public float getMenuWidth()
 	{
 		return this.menuWidth;
 	}
-
+*/
+	
+/*
 	public boolean menuIsOpen()
 	{
 		return this.menuIsOpen;
