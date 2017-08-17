@@ -150,7 +150,9 @@ public class Module_01_PitchHue extends Module
 		
 		// Moved the % 12 from the above line out of round() so that we don't have to min() from 12 to 11:
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(1)) % 12;
-		this.menu.setCurHueColorRangeColorAdd(curHuePos);
+		
+		// TODO - can it run w/out this?
+//		this.menu.setCurHueColorRangeColorAdd(curHuePos);
 
 	} // setup()
 
@@ -165,9 +167,9 @@ public class Module_01_PitchHue extends Module
 		}
 
 		int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-		this.menu.fade(scaleDegree);
+		this.menu.fade(scaleDegree, 0);
 
-		fill(this.menu.getCurHue()[0], this.menu.getCurHue()[1], this.menu.getCurHue()[2]);
+		fill(this.menu.getCurHue()[0][0], this.menu.getCurHue()[0][1], this.menu.getCurHue()[0][2]);
 		rect(menu.getLeftEdgeX(), 0, width - menu.getLeftEdgeX(), height);
 		//		stroke(255);
 

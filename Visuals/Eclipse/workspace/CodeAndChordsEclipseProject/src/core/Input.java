@@ -684,11 +684,11 @@ public class Input {
 	 */
 	private void inputNumErrorCheck(int inputNum, String method) {
 		if (inputNum > this.adjustedNumInputs) {
-			IllegalArgumentException iae = new IllegalArgumentException("InputClass_Jack.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.adjustedNumInputs + ", the number of inputs.");
+			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.adjustedNumInputs + ", the number of inputs.");
 			iae.printStackTrace();
 		}
 		if (inputNum < 1) {
-			IllegalArgumentException iae = new IllegalArgumentException("InputClass_Jack.inputNumErrorCheck(int), from " + method + ": int parameter is " + inputNum + "; must be 1 or greater.");
+			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter is " + inputNum + "; must be 1 or greater.");
 			iae.printStackTrace();
 		}
 	} // inputNumErrorCheck
