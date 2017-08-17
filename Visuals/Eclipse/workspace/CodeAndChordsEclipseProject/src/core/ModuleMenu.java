@@ -478,11 +478,15 @@ public class ModuleMenu extends MenuTemplate  {
 
 		int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
 		// the "- (10 / buttonsPerRow)" adds [this.rightEdgeSpacer pixels] at the end of the row:
-		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign) / buttonsPerRow) - this.spacer - (this.rightEdgeSpacer / buttonsPerRow);
+		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
+
+		System.out.println("ColorSelect: buttonWidth = " + buttonWidth);
+		
 		int[]	xVals	= new int[buttonsPerRow];
 		for(int i = 0; i < xVals.length; i++)
 		{
 			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+			System.out.println("    xVals[" + i + "] = " + xVals[i]);
 		}
 
 		this.controlP5.addTextlabel("colorSelectLabel")
@@ -683,11 +687,11 @@ public class ModuleMenu extends MenuTemplate  {
 
 		int	labelX			= 10;
 
-		int	listWidth		= 30;
-		int	spacer			= 5;
+		int	listWidth		= 25;
+//		int	spacer			= 5;
 
-		int	toggleWidth		= 38;
-		int	buttonWidth		= 52;
+		int	buttonWidth		= 50;
+		int	toggleWidth		= ((this.sidebarWidth - this.leftAlign - listWidth - (this.spacer * 2) - this.rightEdgeSpacer - buttonWidth) / 3 ) - this.spacer;
 		int	majorX			= this.leftAlign + listWidth + spacer;
 		int	minorX			= this.leftAlign + listWidth + spacer + (toggleWidth + spacer);
 		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
@@ -746,6 +750,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.controlP5.addToggle("guideToneButton")
 		.setPosition(guideToneX, keyY)
 		.setWidth(buttonWidth)
+//		.setWidth(toggleWidth)
 		.setCaptionLabel("Guide Tones")
 		.setValue(false);
 		//.setGroup("sidebarGroup");
@@ -1199,13 +1204,19 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addColorStyleButtons(int colorStyleY)
 	{
-		int	colorStyleWidth	= 49;
-		int	colorStyleSpace	= 6;
+//		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
+		int	colorStyleWidth	= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / 4) - this.spacer;
+//		int	colorStyleSpace	= 6;
+
+		System.out.println("ColorStyle: colorStyleWidth = " + colorStyleWidth);
 
 		int rainbowX     	= this.leftAlign;
-		int dichromaticX	= this.leftAlign + colorStyleWidth + colorStyleSpace;
-		int trichromaticX	= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 2;
-		int customX			= this.leftAlign + (colorStyleWidth + colorStyleSpace) * 3;
+		int dichromaticX	= this.leftAlign + colorStyleWidth + this.spacer;
+		int trichromaticX	= this.leftAlign + (colorStyleWidth + this.spacer) * 2;
+		int customX			= this.leftAlign + (colorStyleWidth + this.spacer) * 3;
+		
+		System.out.println("    rainbowX = " + rainbowX + "\n    dichromaticX = " + dichromaticX
+				+ "\n    trichromaticX = " + trichromaticX + "\n    customX = " + customX);
 
 		this.controlP5.addTextlabel("colorStyle")
 		.setPosition(labelX, colorStyleY + 4)
