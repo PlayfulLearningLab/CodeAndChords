@@ -3,13 +3,14 @@ package module_01_02;
 import processing.core.*;
 
 import core.Input;
+import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
 import core.Archive_ModuleTemplate.ModuleTemplate01;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
-public class Module_01_02_PitchHue_MultipleInputs extends PApplet
+public class Module_01_02_PitchHue_MultipleInputs extends Module
 {
 	/**
 	 * 
@@ -87,11 +88,9 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 
 	public void setup() 
 	{
-//		this.input  = new Input();
-//		this.input	= new Input(16, new AudioContext(new PortAudioAudioIO()));
-		this.input	= new Input(2);
-		
-//		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_02_PitchHueBackground");
+		// TODO: test with more inputs than are supported
+		this.numInputs	= 4;
+		this.input	= new Input(this.numInputs, this);
 		
 		// Even number of inputs:
 		if((this.numInputs % 2) == 0 && (this.numInputs < 9))
@@ -147,19 +146,15 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 		//TODO: input will only initialize with the number of ins it can handle, and the numInputs here will not match that if it changes.
 		for(int i = 0; i < this.numInputs; i++)
 		{
-			this.moduleTemplate[i]	= new ModuleMenu(this, this.input, "Module_01_02_PitchHueBackground", this.xVals[i], this.yVals[i], this.rectWidth, this.rectHeight);
+
+			System.out.println("passing " + this.xVals[i] + ", " + this.yVals[i] + " as x and y to new ModuleTemplate");
+			this.moduleTemplate[i]	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 			
-
-			// divide the attack/release/transition value by 50
-			// and divide colorRange by that value to find the amount to add each 50 millis.
-			this.colorAdd[i]	= this.colorRange[i] / (this.moduleTemplate[i].getAttRelTranVal(this.attRelTran) / 50);
-
-		
-		if(this.moduleTemplate[i].getSidebarCP5() != null)
-		{
-			this.moduleTemplate[i].getSidebarCP5().setVisible(false);
-			this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
-		}
+			if(this.moduleTemplate[i].getControlP5() != null)
+			{
+//				this.moduleTemplate[i].getControlP5().setVisible(false);
+//				this.moduleTemplate[i].setLeftEdgeX(this.xVals[i]);
+			}
 
 			this.nowBelow[i]			= false;
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
@@ -207,9 +202,9 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 				this.moduleTemplate[i].setMenuVal();
 			} // if keyPressed
 
-			if (input.getAmplitude(i + 1) > this.moduleTemplate[i].getThresholdLevel())
-			{
-				this.nowBelow[i]	= false;
+//			if (input.getAmplitude(i + 1) > this.moduleTemplate[i].getPianoThreshold())
+//			{
+//				this.nowBelow[i]	= false;
 
 				// subtracting keyAddVal gets the number into the correct key 
 				// (simply doing % 12 finds the scale degree in C major).
@@ -217,16 +212,19 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 				int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.moduleTemplate[i].getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 				newHuePos[i]	= scaleDegree;
-
+/*
 				if(newHuePos[i] > this.moduleTemplate[i].getColors().length || newHuePos[i] < 0)	{
 					throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.draw: newHuePos " + newHuePos[i] + " is greater than colors.length (" + this.moduleTemplate[i].getColors().length + ") or less than 0.");
 				}
-
+*/
 				// set goalHue to the color indicated by the current pitch:
 				if (newHuePos[i] != goalHuePos[i]) {
 					goalHuePos[i]  = newHuePos[i];
 				} // if
+				
+				this.moduleTemplate[i].fade(goalHuePos[i]);
 
+				/*
 				for(int k = 0; k < this.goalHue[i].length; k++)
 				{
 					this.goalHue[i][k]	= this.moduleTemplate[i].getColors()[goalHuePos[i]][k];
@@ -272,6 +270,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 			System.out.println("input.getAmplitude() = " + input.getAmplitude());
 			 */
 
+				/*
 			float	lowBound;
 			float	highBound;
 
@@ -303,16 +302,16 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 
 			// If all elements of the color are in range, then the color has been reached:
 			this.colorReached[i]	= this.colorReachedArray[i][0] && this.colorReachedArray[i][1] && this.colorReachedArray[i][2];
-
+*/
 			//  background(this.curHue[0], this.curHue[1], this.curHue[2]);
-			fill(this.curHue[i][0], this.curHue[i][1], this.curHue[i][2]);		
+			fill(this.moduleTemplate[i].getCurHue()[0], this.moduleTemplate[i].getCurHue()[1], this.moduleTemplate[i].getCurHue()[2]);		
 			// Rectangle: "the first two parameters set the location of the upper-left corner, the third sets the width, and the fourth sets the height."
 //			rect(moduleTemplate[i].getLeftEdgeX(), this.yVals[i], rectWidth - (this.xVals[i] - moduleTemplate[i].getLeftEdgeX()), rectHeight);
 			//		stroke(255);
 			rect(this.xVals[i], this.yVals[i], rectWidth, rectHeight);
 
 
-
+/*
 			if(this.moduleTemplate[i].isShowScale())
 			{
 
@@ -350,9 +349,16 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 					this.colorAdd[i][n]	= this.colorRange[i][n] / (this.moduleTemplate[i].getART(this.attRelTran[i]) / 50);
 				}
 			} // if
+			*/
+			
 		} // for
 
 	} // draw()
+	
+	public String[] getLegendText()
+	{
+		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
+	} // getLegendText
 
 
 	/**
@@ -364,51 +370,19 @@ public class Module_01_02_PitchHue_MultipleInputs extends PApplet
 	{
 		try
 		{
+			System.out.println("got controlEvent " + theControlEvent);
+			float modTempNum	= theControlEvent.getGroup().getValue();
+			
 			for(int i = 0; i < this.moduleTemplate.length; i++)
 			{
-				// TODO: this might not be right:
-				if(theControlEvent.isAssignableFrom(this.moduleTemplate[i].getClass()));
-				{
-					this.moduleTemplate[i].controlEvent(theControlEvent);
-				}
-			} // for	
+				this.moduleTemplate[i].controlEvent(theControlEvent);
+			}
 		} catch(Exception e)
 		{
-			println("Module_01_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
+			// TODO: put the print back in
+//			println("Module_01_02_PitchHue.controlEvent: caught Exception " + e + " from controlEvent " + theControlEvent);
 			//			e.printStackTrace();
 		}
 	} // controlEvent
-
-
-
-
-	/**
-	 * Used in draw for determining whether a particular scale degree is in the 
-	 * major or minor scale;
-	 * returns the position of the element if it exists in the array,
-	 * or -1 if the element is not in the array.
-	 * 
-	 * @param array		int[] to be searched for the given element
-	 * @param element	int whose position in the given array is to be returned.
-	 * @return		position of the given element in the given array, or -1 
-	 * 				if the element does not exist in the array.
-	 */
-	private int  arrayContains(int[] array, int element)
-	{
-		if(array == null) {
-			throw new IllegalArgumentException("Module_01_02_PitchHue_MultipleInputs.arrayContains(int[], int): array parameter is null.");
-		}
-
-		//  println("array.length = " + array.length);
-		for (int i = 0; i < array.length; i++)
-		{
-			//    println("array[i] = " + array[i]);
-			if (array[i] == element) {
-				return i;
-			} // if
-		} // for
-
-		return -1;
-	} // arrayContains(int[], int)
 
 } // class

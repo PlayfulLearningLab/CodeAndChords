@@ -58,7 +58,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 		//		this.textSize(10);
 
 		// Always initialize for 12, even if we actually have fewer, just to be safe:
-		this.input	= new Input((12 + 4), true);
+		this.input	= new Input((12 + 4), true, this);
 		this.cp5	= new ControlP5(this);
 
 		this.setSquareValues();
@@ -329,6 +329,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setVisible(false)
 			.setId(i);
 
+			int	id	= (i + 12);
 			this.cp5.addScrollableList("list" + (i + 12))
 			.setPosition(this.xVals[i] + 3, this.yVals[i] + 3)
 			.setSize(50, this.rectHeights[i])
@@ -337,7 +338,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 			.setItems(this.listItems)
 			.setLabel("Line:")
 			.setGroup("controls" + i)
-			.setId(i + 12);
+			.setId(id);
 
 			// When the mics are pre-assigned, show the mic number in the lists:
 			if(this.assignAll)
@@ -345,29 +346,35 @@ public class FunctionSketch_02_MultiInput extends PApplet
 				this.cp5.getController("list" + (i + 12)).setValue(i);
 			}
 
+// TODO - think we need this id thing...
+			id	= (i + 24);
 			this.cp5.addSlider("lowSlider" + (i + 24))
 			.setPosition( ( this.xVals[i] + 3 ), ( this.yVals[i] + this.rectHeights[i] - 18 ) )
 			.setWidth(this.rectWidths[i] - 6)
 			.setHeight(15)
+			.setId(id)
 			.setGroup("controls" + i)
 			.setRange(2, 1000)
 			.setValue(this.lowThresholds[i])
 			.setSliderMode(Slider.FLEXIBLE)
-			.setId(i + 24)
 			.bringToFront()
 			.getCaptionLabel().setVisible(false);
+			this.cp5.getController("lowSlider" + (i + 24)).update();
 
+			id	= (i + 36);
 			this.cp5.addSlider("highSlider" + (i + 36))
 			.setPosition( ( this.xVals[i] + 3 ), ( this.yVals[i] + this.rectHeights[i] - 36 ) )
 			.setWidth(this.rectWidths[i] - 6)
 			.setHeight(15)
+			.setId(id)
 			.setGroup("controls" + i)
 			.setRange(100, 5000)
 			.setValue(this.maxSatThresholds[i])
 			.setSliderMode(Slider.FLEXIBLE)
-			.setId(i + 36)
 			.bringToFront()
 			.getCaptionLabel().setVisible(false);
+			
+//			while(this.cp5.getController("lowSlider" + (id + 24)) == null)	{ }
 		} // for
 	} // addcontrols
 
@@ -420,10 +427,18 @@ public class FunctionSketch_02_MultiInput extends PApplet
 				this.numInputs	= (int)theControlEvent.getValue() + 1;
 				this.setSquareValues();
 				this.addControls();
+			} // numInputsList
 
-				System.out.println("this.numInputs = " + this.numInputs);
-			}
-		} // else - left click
+		// Clicked in a square:
+		if(id < 12 && id > -1)
+		{
+//			this.cp5.getController("list" + (id + 12)).setVisible(!this.cp5.getController("list" + (id + 12)).isVisible());
+			//			this.cp5.getController("list" + (id + 12)).setVisible(true);
+			System.out.println("this.cp5 = " + this.cp5 + "; this.cp5.getGroup(controls" + id + ") = " + this.cp5.getGroup("controls" + id));
+			boolean	visible	= this.cp5.getGroup("controls" + id).isVisible();
+			this.cp5.getGroup("controls" + id).setVisible(!visible);
+		} // in square
+			} // leftClick
 
 	} // controlEvent
 
