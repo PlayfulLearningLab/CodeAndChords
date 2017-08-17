@@ -251,7 +251,6 @@ public class Input {
 		int	channelPos	= 0;
 		for (int i = 0; i < uGenArray.length; i++)
 		{
-			// getAudioInput needs an int[] with the number of the particular line.
 //			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
 			if(channelPos == 4 && this.skip5thru8)
 			{
