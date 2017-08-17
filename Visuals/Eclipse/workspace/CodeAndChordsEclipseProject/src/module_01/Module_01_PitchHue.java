@@ -177,6 +177,8 @@ public class Module_01_PitchHue extends Module
 			this.legend(scaleDegree);
 		} // if showScale
 		
+		this.menu.runMenu();
+		
 
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
 /*		if(this.moduleTemplate.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
