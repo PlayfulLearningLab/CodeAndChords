@@ -413,6 +413,9 @@ public class ModuleMenu extends MenuTemplate  {
 		this.satBrightThresholdVals	= new float[2];
 		this.satBrightPercentVals	= new float[2];
 
+		this.totalRangeSegments	= totalNumColorItems;
+		this.curRangeSegments	= totalNumColorItems;
+
 		this.thresholds		= new int[this.numInputs][totalNumColorItems];
 		this.pianoThreshold	= new int[this.numInputs];
 		this.forteThreshold	= new int[this.numInputs];
@@ -421,6 +424,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.pianoThreshold[i]	= 10;
 			this.forteThreshold[i]	= 500;
 			this.resetThresholds(i);
+
+			System.out.println("pianoThreshold[" + i + "] = " + this.pianoThreshold[i] +
+					"; forteThreshold[" + i + "] = " + this.forteThreshold[i]);
 		} // for - initialize Thresholds
 
 		// set amplitude thresholds
@@ -493,7 +499,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 						length of this array determines the number of colorSelect Buttons;
 	 * 						if including canvas in this row, the first element of this array must be "Canvas"
 	 */
-	public void addColorSelect(int[] yVals, String[] buttonLabels, String labelText, boolean canvas)
+	public void addColorSelect(int xVal, int[] yVals, String[] buttonLabels, String labelText, boolean canvas)
 	{
 		// error checking
 		if(yVals == null)	{
@@ -537,12 +543,12 @@ public class ModuleMenu extends MenuTemplate  {
 		int[]	xVals	= new int[buttonsPerRow];
 		for(int i = 0; i < xVals.length; i++)
 		{
-			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+			xVals[i]	= xVal + this.leftAlign + ((buttonWidth + this.spacer) * i);
 			System.out.println("    xVals[" + i + "] = " + xVals[i]);
 		}
 
 		this.controlP5.addTextlabel("colorSelectLabel")
-		.setPosition(labelX, yVals[0] + 4)
+		.setPosition(xVal + labelX, yVals[0] + 4)
 		//.setGroup("sidebarGroup")
 		.setValue(labelText);
 
@@ -636,15 +642,15 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @param hideY	y value at which the row will be displayed
 	 */
-	public void addHideButtons(int	hideY)
+	public void addHideButtons(int xVal, int	hideY)
 	{
 		int	hideWidth   = ( ( this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / 3 ) - this.spacer;
 		int hideSpace	= 4;
 
-		int	labelX		= 10;
-		int	playButtonX	= this.leftAlign;
-		int	menuButtonX	= this.leftAlign + hideWidth + this.spacer;
-		int	scaleX		= this.leftAlign + (+ hideWidth + this.spacer) * 2;
+		//		int	labelX		= 10;
+		int	playButtonX	= xVal + this.leftAlign;
+		int	menuButtonX	= xVal + this.leftAlign + hideWidth + this.spacer;
+		int	scaleX		= xVal + this.leftAlign + (+ hideWidth + this.spacer) * 2;
 
 		String[]	names	= new String[] { 
 				"playButton",
@@ -663,7 +669,7 @@ public class ModuleMenu extends MenuTemplate  {
 		};
 
 		this.controlP5.addTextlabel("hide")
-		.setPosition(labelX, hideY + 4)
+		.setPosition(this.labelX, hideY + 4)
 		//.setGroup("sidebarGroup")
 		.setValue("Hide");
 
@@ -683,11 +689,12 @@ public class ModuleMenu extends MenuTemplate  {
 	/**
 	 * Adds the attack, release, and transition Sliders.
 	 * 
+	 * @param xVal		x value for the leftmost edge of the whole group
 	 * @param attackY	y value for attack Slider
 	 * @param releaseY	y value for release Slider
 	 * @param transitionY	y value for transition Slider
 	 */
-	public void addARTSliders(int attackY, int releaseY, int transitionY)
+	public void addARTSliders(int xVal, int attackY, int releaseY, int transitionY)
 	{
 		String[]	labels	= new String[] {
 				"Attack",
@@ -705,25 +712,32 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for(int i = 0; i < labels.length; i++)
 		{
-			this.addSliderGroup(yVals[i], labels[i], 100, 3000, 200);
+			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 200);
 		}
 	} // addARTSliders
 
 	/**
 	 * Adds the piano (minimum) threshold Slider.
 	 * 
+	 * @param xVal	x value for leftmost edge of whole group
 	 * @param yVal	y value of Slider
 	 */
-	public void addPianoThresholdSlider(int yVal)
+	public void addPianoThresholdSlider(int xVal, int yVal)
 	{
 		this.pianoThresholdSliderId	= this.nextSliderId;
 		this.addSliderGroup(yVal, "Piano \nThreshold", 2, 100, 10);
 	} // addPianoThresholdSlider
 
-	public void addForteThresholdSlider(int yVal)
+	/**
+	 * Adds the forte (maximum) threshold Slider.
+	 * 
+	 * @param xVal	x value for leftmost edge of whole group
+	 * @param yVal	y value of Slider
+	 */
+	public void addForteThresholdSlider(int xVal, int yVal)
 	{
 		this.forteThresholdSliderId	= this.nextSliderId;
-		this.addSliderGroup(yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
+		this.addSliderGroup(xVal, yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
 	} // addForteThresholdSlider
 
 
@@ -733,32 +747,32 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @param keyY	y value of the menu and buttons.
 	 */
-	public void addKeySelector(int	keyY)
+	public void addKeySelector(int xVal, int keyY)
 	{
 
-		int	labelX			= 10;
+		//		int	labelX			= 10;
 
 		int	listWidth		= 25;
 		//		int	spacer			= 5;
 
 		int	buttonWidth		= 50;
 		int	toggleWidth		= ((this.sidebarWidth - this.leftAlign - listWidth - (this.spacer * 2) - this.rightEdgeSpacer - buttonWidth) / 3 ) - this.spacer;
-		int	majorX			= this.leftAlign + listWidth + spacer;
-		int	minorX			= this.leftAlign + listWidth + spacer + (toggleWidth + spacer);
-		int	chromX			= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
-		int	guideToneX		= this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 3);
+		int	majorX			= xVal + this.leftAlign + listWidth + spacer;
+		int	minorX			= xVal + this.leftAlign + listWidth + spacer + (toggleWidth + spacer);
+		int	chromX			= xVal + this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 2);
+		int	guideToneX		= xVal + this.leftAlign + listWidth + spacer + ((toggleWidth + spacer) * 3);
 
 
 		// "Key" Textlabel
 		this.controlP5.addTextlabel("key")
-		.setPosition(labelX, keyY + 4)
+		.setPosition(xVal + this.labelX, keyY + 4)
 		//.setGroup("sidebarGroup")
 		.setValue("Key");
 
 
 		// "Letter" drop-down menu (better name?)
 		this.controlP5.addScrollableList("keyDropdown")
-		.setPosition(this.leftAlign, keyY)
+		.setPosition(xVal + this.leftAlign, keyY)
 		.setWidth(listWidth)
 		.setBarHeight(18)
 		.setItems(this.allNotes)
@@ -816,7 +830,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param guideToneY	y value for the top of the pop-out; 
 	 * 						for ModuleTemplate_01, this is same as the value for addKeySelector
 	 */
-	public void addGuideTonePopout(int guideToneY)
+	public void addGuideTonePopout(int xVal, int guideToneY)
 	{
 
 		Color	transparentBlack	= new Color(0, 0, 0, 240);
@@ -833,7 +847,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		int		height			= 18;
 
-		int		listSliderX		= (popoutSpacer * 2) + labelWidth;
+		int		listSliderX		= xVal + (popoutSpacer * 2) + labelWidth;
 		//		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
 
 		int		rangeY			= popoutSpacer;
@@ -842,7 +856,7 @@ public class ModuleMenu extends MenuTemplate  {
 		int		volumeY			= (popoutSpacer * 4) + (height * 3);
 
 		this.controlP5.addGroup("guideToneBackground")
-		.setPosition(this.leftAlign, guideToneY + 20)
+		.setPosition(xVal + this.leftAlign, guideToneY + 20)
 		.setSize(boxWidth, boxHeight)
 		.setBackgroundColor(transBlackInt)
 		.setVisible(false)
@@ -864,12 +878,12 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for(int i = 0; i < labels.length; i++)
 		{
-			this.addSliderGroup(yVals[i], labelVals[i], listSliderX, sliderWidth, ranges[i][0], ranges[i][1], startingVals[i], textfieldWidth, "guideToneBackground");
+			this.addSliderGroup(xVal, yVals[i], labelVals[i], listSliderX, sliderWidth, ranges[i][0], ranges[i][1], startingVals[i], textfieldWidth, "guideToneBackground");
 		} // for
 
 		// "ADSR Presets" Textlabel
 		this.controlP5.addTextlabel("adsrPresets")
-		.setPosition(popoutSpacer, adsrY)
+		.setPosition(xVal + popoutSpacer, adsrY)
 		.setGroup("guideToneBackground")
 		.setValue("ADSR \nPresets");
 
@@ -897,7 +911,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		// "Range" Textlabel
 		this.controlP5.addTextlabel("range")
-		.setPosition(popoutSpacer, rangeY + 4)
+		.setPosition(xVal + popoutSpacer, rangeY + 4)
 		.setGroup("guideToneBackground")
 		.setValue("Range");
 
@@ -924,9 +938,10 @@ public class ModuleMenu extends MenuTemplate  {
 	/**
 	 * Adds the hue, saturation, and brightness modulate sliders
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param hsb	array of y values for each slider
 	 */
-	public void addHSBSliders(int[] hsb)
+	public void addHSBSliders(int xVal, int[] hsb)
 	{
 		String[]	values	= new String[] { "Hue", "Saturation", "Brightness" };
 
@@ -934,7 +949,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for(int i = 0; i < hsb.length; i++)
 		{
-			this.addSliderGroup(hsb[i], values[i], -1, 1, 0);
+			this.addSliderGroup(xVal, hsb[i], values[i], -1, 1, 0);
 		} // for   
 	} // addHSBSliders
 
@@ -942,9 +957,10 @@ public class ModuleMenu extends MenuTemplate  {
 	/**
 	 * Method called during instantiation, to initialize the RGB color modulate sliders.
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param modulateYVals	int[] of the y values of the red, green, and blue sliders, respectively.
 	 */
-	public void addModulateSliders(int[] modulateYVals)
+	public void addModulateSliders(int xVal, int[] modulateYVals)
 	{
 		this.redGreenBlueMod		 	= new float[3];
 
@@ -953,7 +969,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.firstRGBSliderId	= this.nextSliderId;
 		for(int i = 0; i < modulateYVals.length; i++)
 		{
-			this.addSliderGroup(modulateYVals[i], values[i], -255, 255, 0);
+			this.addSliderGroup(xVal, modulateYVals[i], values[i], -255, 255, 0);
 		} // for
 	} // addModulateSliders
 
@@ -961,27 +977,29 @@ public class ModuleMenu extends MenuTemplate  {
 	/**
 	 * Adds the slider for adjusting shape size
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param yVal	y value for this slider
 	 */
-	public void addShapeSizeSlider(int yVal)
+	public void addShapeSizeSlider(int xVal, int yVal)
 	{
 		this.shapeSize			= 1;
 		this.shapeSizeSliderId	= this.nextSliderId;
 
-		this.addSliderGroup(yVal, "Shape Size", 0.01f, 10, this.shapeSize);
+		this.addSliderGroup(xVal, yVal, "Shape Size", 0.01f, 10, this.shapeSize);
 	} // addShapeSizeSlider
 
 
 	/**
 	 * Adds the Buttons for selecting the number of range segments.
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param yVal	y value for the row of Buttons
 	 * @param numSegments	total number of segments (current number of segments will be set to this total)
 	 * @param label	text to display on the label at the beginning of the row
 	 */
-	public void addRangeSegments(int yVal, int numSegments, String label)
+	public void addRangeSegments(int xVal, int yVal, int numSegments, String label)
 	{
-		this.addRangeSegments(yVal, numSegments, numSegments, label);
+		this.addRangeSegments(xVal, yVal, numSegments, numSegments, label);
 	}  // addRangeSegments(int, int, String)
 
 
@@ -993,27 +1011,27 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param defaultNumSegments	number of segments that are set as current at the beginning
 	 * @param label	text to display on the label at the beginning of the row
 	 */
-	public void addRangeSegments(int yVal, int numSegments, int defaultNumSegments, String label)
+	public void addRangeSegments(int xVal, int yVal, int numSegments, int defaultNumSegments, String label)
 	{
 		if(defaultNumSegments > numSegments) {
 			throw new IllegalArgumentException("ModuleTemplate.addRangeSegments: defaultNumSegments " + defaultNumSegments + " is greater than total segments, " + numSegments);
 		}
-
+		/*
 		this.totalRangeSegments	= numSegments;
 		System.out.println("just set totalRangeSegments to " + this.totalRangeSegments);
 		this.curRangeSegments	= defaultNumSegments;
-
+		 */
 		float	toggleSpace	= (this.sidebarWidth) - this.leftAlign - this.rightEdgeSpacer /*(this.labelX) - this.labelWidth - this.spacer */;
 		int		toggleWidth	= (int)(toggleSpace / numSegments) - this.spacer;
 
 		int[]	xVals	= new int[numSegments];
 		for(int i = 0; i < xVals.length; i++)
 		{
-			xVals[i]	= (this.leftAlign + (i * (toggleWidth + spacer)));
+			xVals[i]	= xVal + (this.leftAlign + (i * (toggleWidth + spacer)));
 		}
 
 		this.controlP5.addLabel("rangeSegments")
-		.setPosition(this.labelX, yVal)
+		.setPosition(xVal + this.labelX, yVal)
 		.setValue(label);
 		//.setGroup("sidebarGroup");
 
@@ -1046,10 +1064,11 @@ public class ModuleMenu extends MenuTemplate  {
 	 * Adds the "Color: Forte Threshold", "Saturation", "Saturation: Forte Threshold", 
 	 * "Brightness", and "Brightness: Forte Threshold" group of Sliders/Textfields
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param yVal	y value of forte threshold
 	 * @param verticalSpacer	vertical space between sliders
 	 */
-	public void addThresholdSliders(int yVal, int verticalSpacer)
+	public void addThresholdSliders(int xVal, int yVal, int verticalSpacer)
 	{
 
 		// Since some i's will add a couple rows of labels and sliders,
@@ -1077,7 +1096,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// Forte Thresholds
 			if(i % 2 == 1)
 			{
-				this.addSliderGroup(yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], this.minThreshold, 7000, this.forteThreshold[0]);
+				this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], this.minThreshold, 7000, this.forteThreshold[0]);
 
 			} // if - Forte Thresholds
 
@@ -1085,12 +1104,12 @@ public class ModuleMenu extends MenuTemplate  {
 			if(i % 2 == 0)
 			{
 				this.controlP5.addLabel(names[i])
-				.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
+				.setPosition(xVal + this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
 				.setValue(labels[i]);
 				//.setGroup("sidebarGroup");
 
 				this.controlP5.addSlider("slider" + this.nextSliderId)
-				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
+				.setPosition(xVal + this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
 				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
 				.setRange(-1, 1)
 				.setValue(0)
@@ -1112,12 +1131,13 @@ public class ModuleMenu extends MenuTemplate  {
 	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
 	 * e.g., "Tonic", "2nd Color", and "3rd Color" in Module_01.
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param yVal	the y value for the row
 	 * @param buttonLabels	String[] of text for the buttons; if canvas color in this row of Buttons, first item should be "Canvas"
 	 * @param labelText	text of the Label on the far left of the row
 	 * @param canvas	boolean indicating whether or not the Canvas color Button is included in this row
 	 */
-	public void addSpecialColors(int yVal, String[] buttonLabels, String labelText, boolean canvas)
+	public void addSpecialColors(int xVal, int yVal, String[] buttonLabels, String labelText, boolean canvas)
 	{
 		// error checking
 		if(buttonLabels == null)	{
@@ -1146,11 +1166,11 @@ public class ModuleMenu extends MenuTemplate  {
 		int[]	xVals	= new int[buttonLabels.length];
 		for(int i = 0; i < xVals.length; i++)
 		{
-			xVals[i]	= this.leftAlign + ((buttonWidth + this.spacer) * i);
+			xVals[i]	= xVal + this.leftAlign + ((buttonWidth + this.spacer) * i);
 		}
 
 		this.controlP5.addTextlabel("specialColorsLabel")
-		.setPosition(labelX, yVal + 4)
+		.setPosition(xVal + this.labelX, yVal + 4)
 		//.setGroup("sidebarGroup")
 		.setValue(labelText);
 
@@ -1247,9 +1267,10 @@ public class ModuleMenu extends MenuTemplate  {
 	 * Method called during instantiation to initialize the color style Toggles
 	 * (Rainbow, Dichromatic, Trichromatic, and Custom).
 	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param colorStyleY	y value of the colorStyle Toggles
 	 */
-	public void addColorStyleButtons(int colorStyleY)
+	public void addColorStyleButtons(int xVal, int colorStyleY)
 	{
 		//		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
 		int	colorStyleWidth	= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / 4) - this.spacer;
@@ -1257,16 +1278,16 @@ public class ModuleMenu extends MenuTemplate  {
 
 		System.out.println("ColorStyle: colorStyleWidth = " + colorStyleWidth);
 
-		int rainbowX     	= this.leftAlign;
-		int dichromaticX	= this.leftAlign + colorStyleWidth + this.spacer;
-		int trichromaticX	= this.leftAlign + (colorStyleWidth + this.spacer) * 2;
-		int customX			= this.leftAlign + (colorStyleWidth + this.spacer) * 3;
+		int rainbowX     	= xVal + this.leftAlign;
+		int dichromaticX	= xVal + this.leftAlign + colorStyleWidth + this.spacer;
+		int trichromaticX	= xVal + this.leftAlign + (colorStyleWidth + this.spacer) * 2;
+		int customX			= xVal + this.leftAlign + (colorStyleWidth + this.spacer) * 3;
 
 		System.out.println("    rainbowX = " + rainbowX + "\n    dichromaticX = " + dichromaticX
 				+ "\n    trichromaticX = " + trichromaticX + "\n    customX = " + customX);
 
 		this.controlP5.addTextlabel("colorStyle")
-		.setPosition(labelX, colorStyleY + 4)
+		.setPosition(xVal + this.labelX, colorStyleY + 4)
 		//.setGroup("sidebarGroup")
 		.setValue("Color Style");
 
@@ -1305,6 +1326,42 @@ public class ModuleMenu extends MenuTemplate  {
 		this.setColorStyle(ModuleMenu.CS_RAINBOW);
 	} // addColorStyleButtons
 
+
+	public void addInputSelect(int xVal, int yVal)
+	{
+		int	toggleWidth	= 60;
+		int	listWidth	= this.sidebarWidth - this.leftAlign - toggleWidth - this.spacer - this.rightEdgeSpacer;
+
+		this.controlP5.addLabel("inputLabel")
+		.setPosition(xVal + this.labelX, yVal + 4)
+		.setStringValue("Input:");
+
+		String[]	listItems	= new String[this.numInputs];
+		for(int i = 0; i < listItems.length; i++)
+		{
+			listItems[i]	= (i + 1) + "";
+		} // for - fill listItems
+
+		// Global controls Button:
+		this.controlP5.addToggle("global")
+		.setPosition(this.leftAlign, yVal)
+		.setWidth(toggleWidth)
+		.setCaptionLabel("Global")
+		.setState(true)
+		.plugTo(this)
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		// Input num selector:
+		this.controlP5.addScrollableList("inputSelectDropdown")
+		.setPosition(xVal + this.leftAlign + toggleWidth + this.spacer, yVal)
+		.setWidth(listWidth)
+		.setBarHeight(18)
+		.setItems(listItems)
+		.setOpen(false)
+		.setCaptionLabel("Select an input")
+		//		.setValue(0f)
+		.getCaptionLabel().toUpperCase(false);
+	} // addInputSelect
 
 	/**
 	 * Sets this.goalHue to the value of the given position in this.colors
@@ -2045,34 +2102,34 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		for(int j = 0; j < this.numInputs; j++)
 		{
-		
-		if(this.firstColorSelectCWId != -1)
-		{
-			if(this.hsbColors == null)	{	this.fillHSBColors();	}
 
-			float[] hsb 			= new float[3];
-
-			for (int i = 0; i < this.colorSelect.length; i++)
+			if(this.firstColorSelectCWId != -1)
 			{
-				// Converts this position of hsbColors from RGB to HSB:
-				Color.RGBtoHSB(this.hsbColors[j][i][0], this.hsbColors[j][i][1], this.hsbColors[j][i][2], hsb);
+				if(this.hsbColors == null)	{	this.fillHSBColors();	}
 
-				// Applies the status of the sliders to the newly-converted color:
-				hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
-				hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
-				hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
+				float[] hsb 			= new float[3];
 
-				// Converts the color back to RGB:
-				int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
-				Color a = new Color(oc);
+				for (int i = 0; i < this.colorSelect.length; i++)
+				{
+					// Converts this position of hsbColors from RGB to HSB:
+					Color.RGBtoHSB(this.hsbColors[j][i][0], this.hsbColors[j][i][1], this.hsbColors[j][i][2], hsb);
 
-				// Sets the ColorWheels to the newly modded color:
-				this.setColor(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
-				//			((ColorWheel)this.controlP5.getController("colorWheel" + id)).setRGB(a.getRGB());
-			} // for 
-		} else {
-			System.out.println("ModuleTemplate.applyHSBModulate: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set ColorWheels.");
-		} // else - let the user know that CWs not there and we didn't set them
+					// Applies the status of the sliders to the newly-converted color:
+					hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
+					hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
+					hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
+
+					// Converts the color back to RGB:
+					int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
+					Color a = new Color(oc);
+
+					// Sets the ColorWheels to the newly modded color:
+					this.setColor(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
+					//			((ColorWheel)this.controlP5.getController("colorWheel" + id)).setRGB(a.getRGB());
+				} // for 
+			} else {
+				System.out.println("ModuleTemplate.applyHSBModulate: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set ColorWheels.");
+			} // else - let the user know that CWs not there and we didn't set them
 		} // for
 
 	} // applyHSBModulate
@@ -2099,7 +2156,7 @@ public class ModuleMenu extends MenuTemplate  {
 		float	satMappingVal		= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100), 100), 0);
 		float	brightMappingVal	= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[1], this.minThreshold + 1), 0, 100), 100), 0);
 
-		
+
 		// Notice how hueSatBrightPercentMod is accessed at 1 and 2, since hue is also a part of it,
 		// but satBrightPercentVals is accessed at 0 and 1, since it is only for saturation and brightness.
 		this.hueSatBrightPercentMod[1]	= (this.satBrightPercentVals[0] * satMappingVal) / 100;
@@ -2238,6 +2295,8 @@ public class ModuleMenu extends MenuTemplate  {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
+
+		System.out.println("global = " + this.global);
 
 		//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
 
@@ -2596,7 +2655,20 @@ public class ModuleMenu extends MenuTemplate  {
 		if(controlEvent.getName() == "shapeSelect")
 		{
 			this.module.getShape().setShapeIndex((int) this.controlP5.getController("shapeSelect").getValue());
-		}
+		} // shape select
+
+		// Input Select dropdown:
+		if(controlEvent.getName() == "inputSelectDropdown")
+		{
+			this.currentInput	= (int)controlEvent.getValue() + 1;
+
+			((Toggle)this.controlP5.getController("global")).setState(false);
+
+			for(int i = 0; i < this.colorSelect.length; i++)
+			{
+				this.setColor(i, this.colors[this.currentInput][i]);
+			} // for - set ColorWheels
+		} // input select dropdown
 
 	} // controlEvent
 
@@ -2636,7 +2708,7 @@ public class ModuleMenu extends MenuTemplate  {
 			//			int	pos	= (id / 2) - 1;
 			int	pos	= id - this.firstARTSliderId;
 			//			this.attackReleaseTransition[pos]	= val;
-			
+
 			if(global)
 			{
 				for(int i = 0; i < this.numInputs; i++)
@@ -2740,7 +2812,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// Either do everything once for the currenInput or do it for all inputs:
 			int	startHere;
 			int	endBeforeThis;
-			
+
 			if(global)	
 			{	
 				startHere		= 0;
@@ -2749,28 +2821,28 @@ public class ModuleMenu extends MenuTemplate  {
 				startHere		= this.currentInput;
 				endBeforeThis	= this.currentInput + 1;
 			}
-			
+
 			for(int i = startHere; i < endBeforeThis; i++)
 			{
-				
-			// Position in colorSelect (if this CW is in colorSelect):
-			int	colorPos	= (id % 100) - (this.firstColorSelectCWId % 100);
-			if(colorPos >= 0 && colorPos < this.colorSelect.length /*&& 
+
+				// Position in colorSelect (if this CW is in colorSelect):
+				int	colorPos	= (id % 100) - (this.firstColorSelectCWId % 100);
+				if(colorPos >= 0 && colorPos < this.colorSelect.length /*&& 
 					(this.arrayContains(this.specialColorsPos, colorPos) > -1) */)
-			{
-				this.fromColorSelect[i]	= true;
-				this.fromSpecialColors[i]	= false;					
-			} // if - this CW is in colorSelect
-			else
-			{
-				// Check to see if this CW is a specialColors CW:
-				colorPos	= (id % 100) - (this.firstSpecialColorsCWId % 100);
-				if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
 				{
-					this.fromSpecialColors[i]	= true;
-					this.fromColorSelect[i]	= false;
-				} // if
-			} // else - for CWs not in colorSelect
+					this.fromColorSelect[i]	= true;
+					this.fromSpecialColors[i]	= false;					
+				} // if - this CW is in colorSelect
+				else
+				{
+					// Check to see if this CW is a specialColors CW:
+					colorPos	= (id % 100) - (this.firstSpecialColorsCWId % 100);
+					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+					{
+						this.fromSpecialColors[i]	= true;
+						this.fromColorSelect[i]	= false;
+					} // if
+				} // else - for CWs not in colorSelect
 			} // for
 
 		} // if - specialColors
@@ -2785,78 +2857,78 @@ public class ModuleMenu extends MenuTemplate  {
 		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
 
 		// Either do everything once for the currenInput or do it for all inputs:
-					int	startHere;
-					int	endBeforeThis;
-					
-					if(global)	
-					{	
-						startHere		= 0;
-						endBeforeThis	= this.numInputs;
-					} else {
-						startHere		= this.currentInput;
-						endBeforeThis	= this.currentInput + 1;
-					}
-					
-					for(int i = startHere; i < endBeforeThis; i++)
-					{
-		
-		// canvas color (does not affect notes):
-		if( ( this.canvasColorSelectId != -1) && 
-				( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) ) )
+		int	startHere;
+		int	endBeforeThis;
+
+		if(global)	
+		{	
+			startHere		= 0;
+			endBeforeThis	= this.numInputs;
+		} else {
+			startHere		= this.currentInput;
+			endBeforeThis	= this.currentInput + 1;
+		}
+
+		for(int i = startHere; i < endBeforeThis; i++)
 		{
-			this.canvasColor[i][0]	= color.getRed();
-			this.canvasColor[i][1]	= color.getGreen();
-			this.canvasColor[i][2]	= color.getBlue();
 
-			// Ensures that the shape doesn't have to fade to this color if the amp is below the threshold:
-			if(this.nowBelow[i])
+			// canvas color (does not affect notes):
+			if( ( this.canvasColorSelectId != -1) && 
+					( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) ) )
 			{
-				this.curHue[i][0]	= color.getRed();
-				this.curHue[i][1]	= color.getGreen();
-				this.curHue[i][2]	= color.getBlue();
-			}
-		} // if - canvas
+				this.canvasColor[i][0]	= color.getRed();
+				this.canvasColor[i][1]	= color.getGreen();
+				this.canvasColor[i][2]	= color.getBlue();
 
-		// If there are special colors,
-		// check to see if this color corresponds to one or is one:
-		if(this.firstSpecialColorsCWId != -1)
-		{
-			// Position in colorSelect (if this CW is in colorSelect):
-			int	colorPos	= id - this.firstColorSelectCWId;
-			if(colorPos >= 0 && colorPos < this.colorSelect.length)
-			{
-				// Check to see if this position corresponds to a special color:
-				int	specialColorsPos	= this.arrayContains(this.specialColorsPos[i], colorPos);
-				if(specialColorsPos > -1)
+				// Ensures that the shape doesn't have to fade to this color if the amp is below the threshold:
+				if(this.nowBelow[i])
 				{
-					// Make sure that they don't just keep calling back and forth:
-					if(this.fromColorSelect[i])
-					{
-						((ColorWheel)this.controlP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
+					this.curHue[i][0]	= color.getRed();
+					this.curHue[i][1]	= color.getGreen();
+					this.curHue[i][2]	= color.getBlue();
+				}
+			} // if - canvas
 
-					} // if - only make one call per pair
-				} // if - this CW connects to a specialColor							
-			} // if - this CW is in colorSelect
-			else
+			// If there are special colors,
+			// check to see if this color corresponds to one or is one:
+			if(this.firstSpecialColorsCWId != -1)
 			{
-				// Check to see if this CW is a specialColors CW:
-				colorPos	= id - this.firstSpecialColorsCWId;
-				if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+				// Position in colorSelect (if this CW is in colorSelect):
+				int	colorPos	= id - this.firstColorSelectCWId;
+				if(colorPos >= 0 && colorPos < this.colorSelect.length)
 				{
-					// Make sure that they don't just keep calling back and forth:
-					if(this.fromSpecialColors[i])
+					// Check to see if this position corresponds to a special color:
+					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[i], colorPos);
+					if(specialColorsPos > -1)
 					{
-						int	colorSelectPos	= this.specialColorsPos[i][colorPos];
-						((ColorWheel)this.controlP5.getController("colorWheel" + (colorSelectPos + this.firstColorSelectCWId))).setRGB(color.getRGB());
+						// Make sure that they don't just keep calling back and forth:
+						if(this.fromColorSelect[i])
+						{
+							((ColorWheel)this.controlP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
 
-						this.setColorStyle(this.curColorStyle);
+						} // if - only make one call per pair
+					} // if - this CW connects to a specialColor							
+				} // if - this CW is in colorSelect
+				else
+				{
+					// Check to see if this CW is a specialColors CW:
+					colorPos	= id - this.firstSpecialColorsCWId;
+					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+					{
+						// Make sure that they don't just keep calling back and forth:
+						if(this.fromSpecialColors[i])
+						{
+							int	colorSelectPos	= this.specialColorsPos[i][colorPos];
+							((ColorWheel)this.controlP5.getController("colorWheel" + (colorSelectPos + this.firstColorSelectCWId))).setRGB(color.getRGB());
 
-					} // if - only make one call per pair
-				} // if
-			} // else - for CWs not in colorSelect
+							this.setColorStyle(this.curColorStyle);
 
-		} // if - specialColors
-					} // for
+						} // if - only make one call per pair
+					} // if
+				} // else - for CWs not in colorSelect
+
+			} // if - specialColors
+		} // for
 
 	} // colorWheelEvent
 
@@ -3356,8 +3428,8 @@ public class ModuleMenu extends MenuTemplate  {
 	public float getPianoThreshold()				{	return this.pianoThreshold;		}
 
 	public void setPianoThreshold(int newVal)	{	this.pianoThreshold	= newVal;	}
-*/
-	
+	 */
+
 	public int[][] getCurHue()				{	return this.curHue;	}
 
 	/**
@@ -3367,11 +3439,11 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param attRelTranPos	int indicating attack (0), release (1), or transition (2)
 	 * @return	current attack, release, or transition value
 	 */
-/*	public float getAttRelTranVal(int attRelTranPos)
+	/*	public float getAttRelTranVal(int attRelTranPos)
 	{
 		return this.attRelTranVals[attRelTranPos];
 	}
-*/
+	 */
 	/**
 	 * Sets either attack, release, or transition to the given value
 	 * 
@@ -3446,7 +3518,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public float getShapeSize() {
 		return this.shapeSize;
 	}
-	
+
 	/**
 	 * Getter for this.thresholds
 	 * 

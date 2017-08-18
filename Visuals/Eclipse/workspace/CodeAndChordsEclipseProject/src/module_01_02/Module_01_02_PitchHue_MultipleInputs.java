@@ -46,48 +46,12 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	 */
 
 	private Input  input;
-	private	int		numInputs;
+/*	private	int		numInputs;
 
 	private	int[]	xVals;
 	private	int[]	yVals;
 	private	int[]	rectWidths;
 	private	int[]	rectHeights;
-	private	int		rectWidth;
-	private	int		rectHeight;
-
-/*
-	private float[][]  goalHue;
-	private float[][]  curHue;
-
-	private int[]  newHuePos;
-	private int[]  goalHuePos;
-	private int[]  curHuePos;
-
-	private ModuleMenu[]	moduleTemplate;
-
-	private boolean[]		nowBelow;
-	private boolean[][]		colorReachedArray;
-	private boolean[]		colorReached;
-	private int[]			attRelTran;		// 0 = attack, 1 = release, 2 = transition
-
-	private	float[][]		colorRange;
-	private	float[][]		colorAdd;
-	*/
-/*
-//	private float[][]  colors;          // holds the RGB values for the colors responding to HSB: every 30th H with 100 S, 100 B
-	private ModuleTemplate01	moduleTemplate;
-	private boolean		nowBelow			= false;
-	private boolean[]	colorReachedArray	= new boolean[] { false, false, false };
-	private boolean		colorReached		= false;
-	private int			attRelTran	= 0;	// 0 = attack, 1 = release, 2 = transition
-	
-	private	float[]		colorRange	= new float[3];
-	private	float[]		colorAdd	= new float[3];
-*/
-/*	public void settings()
-	{
-		size(925, 520);
-	} // settings
 */
 	
 	public void setup() 
@@ -104,6 +68,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
+		int[]	controllerXVals	= new int[3];
 //		int					colorSelectY;
 		
 		// calculate y's
@@ -128,34 +93,42 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		textYVals[textYVals.length - 3]	= textYVals[textYVals.length - 4] + (int)(yValDif * 1.5);
 		textYVals[textYVals.length - 2]	= textYVals[textYVals.length - 3] + (int)(yValDif * 1);
 		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1);
+		
+		controllerXVals	= new int[] {	
+				0, 
+				(this.width / 3) - 20, 
+				((this.width / 3) * 2) - 40	
+			};
 
 		// call add methods:
 		
-		this.menu.addHideButtons(textYVals[0]);
+		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
 		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
-		this.menu.addPianoThresholdSlider(textYVals[1]);
+		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 		
-		this.menu.addARTSliders(textYVals[2], textYVals[3], textYVals[4]);
+		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
+		
+		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
-		this.menu.addGuideTonePopout(textYVals[5]);
-		this.menu.addKeySelector(textYVals[5]);
+		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
+		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
 		this.menu.setCurKey("A", 2);
 
 		modulateHSBVals[0] = textYVals[6];
 		modulateHSBVals[1] = textYVals[7];
 		modulateHSBVals[2] = textYVals[8];
 
-		modulateYVals[0]	= textYVals[9];
-		modulateYVals[1]	= textYVals[10];
-		modulateYVals[2]	= textYVals[11];
+		modulateYVals[0]	= textYVals[10];
+		modulateYVals[1]	= textYVals[11];
+		modulateYVals[2]	= textYVals[12];
 
 		// Adding ColorSelect first since everything to do with colors depends on that:
 		String[] noteNames = new String[] {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
 		
-		this.menu.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
 		
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
@@ -165,14 +138,14 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addSpecialColors(textYVals[14], buttonLabels, "Color Select", true);
+		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(textYVals[13]);
+		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
 
-		this.menu.addHSBSliders(modulateHSBVals);
+		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
-		this.menu.addModulateSliders(modulateYVals);
+		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
 		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
@@ -200,7 +173,19 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			this.menu.fade(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-			this.rect(this.xVals[i], this.yVals[i], this.rectWidths[i], this.rectHeights[i]);
+			
+			int	curX;
+			int	curY;
+			
+			if(this.menu.getIsRunning())
+			{
+				curX	= (int)this.menu.mapAdjustedMenuXPos(this.xVals[i]);
+				curY	= (int)this.menu.mapAdjustedMenuYPos(this.yVals[i]);
+			} else {
+				curX	= this.xVals[i];
+				curY	= this.yVals[i];
+			}
+			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 		} // for
 		
 		this.menu.runMenu();
@@ -216,7 +201,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
-	private void setSquareValues()
+/*	private void setSquareValues()
 	{
 
 		// Rectangles are always the same height, so will be set in a loop every time:
@@ -392,5 +377,5 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			};
 		} // 12
 	} // set Square Vals
-
+*/
 } // class
