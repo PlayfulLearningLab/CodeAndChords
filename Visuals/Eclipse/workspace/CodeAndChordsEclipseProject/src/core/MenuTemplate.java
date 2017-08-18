@@ -135,8 +135,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.menuBackground.vertex(this.parent.width, 0);
 		this.menuBackground.vertex(this.parent.width, this.mapAdjustedMenuYPos(0));
 		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.mapAdjustedMenuYPos(0));
-		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.parent.width);
-		this.menuBackground.vertex(0, this.parent.width);
+		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.parent.height);
+		this.menuBackground.vertex(0, this.parent.height);
 		this.menuBackground.vertex(0, 0);
 		
 		this.menuBackground.stroke(0);
@@ -181,7 +181,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.parent.rect(	this.mapAdjustedMenuXPos(0), 
 							this.mapAdjustedMenuYPos(0), 
 							this.parent.width * this.scale - 3, 
-							this.parent.width * this.scale - 3 );
+							this.parent.height * this.scale - 3 );
 		//System.out.println(this.scale);
 		//System.out.println(this.mapAdjustedMenuXPos(0) + "    "  +  this.mapAdjustedMenuXPos(this.parent.width));
 		
@@ -365,7 +365,7 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected void addSliderGroup(int yVal, String labelText, float lowRange, float highRange, float startingVals)
 	{
-		this.addSliderGroup(yVal, labelText, this.leftAlign, lowRange, highRange, startingVals);
+		this.addSliderGroup(0, yVal, labelText, lowRange, highRange, startingVals);
 	} // addSliderGroup - use default width
 	
 	
@@ -373,26 +373,28 @@ public abstract class MenuTemplate implements ControlListener {
 	 * Adds a Label with given text, Slider of given x value, lowest value, highest value, and starting value, with default 
 	 * width, and Textfield with default width at given y value; group == "groupPlaceholder".
 	 * 
+	 * @param xVal	x value for the leftmost edge of the group (i.e., label will be at xVal + this.labelX)
 	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
 	 * @param labelText	text for the Label
 	 * @param lowRange	Slider lowest value
 	 * @param highRange	Slider highest value
 	 * @param startingVals	Slider default/starting value
 	 */
-	protected void addSliderGroup(int yVal, String labelText, int sliderX, float lowRange, float highRange, float startingVals)
+	protected void addSliderGroup(int xVal, int yVal, String labelText, float lowRange, float highRange, float startingVals)
 	{
-		this.addSliderGroup(yVal, labelText, sliderX, this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "groupPlaceholder");
+		this.addSliderGroup(xVal, yVal, labelText, (xVal + this.leftAlign), this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "groupPlaceholder");
 	} // addSliderGroup - use default width
 	
 	
 	
 	/**	 
-	 * Adds a Label with given text, Slider with given x value, width, lowest value, 
+	 * Adds a Label with given text at xVal + this.labelX, Slider with given width, lowest value, 
 	 * highest value, and starting value, and Textfield with given width to the given group at the given y value.
 	 * 
+	 * @param xVal	x value for the leftmost edge of the group (i.e., label will be at xVal + this.labelX)
 	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
 	 * @param labelText	text for the Label
-	 * @param sliderX	x value for the Slider
+	 * @param sliderX	x for Slider
 	 * @param sliderWidth	Slider width
 	 * @param lowRange	Slider lowest value
 	 * @param highRange	Slider highest value
@@ -400,10 +402,10 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param textfieldWidth	Textfield width
 	 * @param group	String indicating to which group these Sliders and Textfields should belong
 	 */
-	protected void addSliderGroup(int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String group)
+	protected void addSliderGroup(int xVal, int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String group)
 	{
 		this.controlP5.addLabel("label" + this.nextSliderId)
-		.setPosition(labelX, yVal + 4)
+		.setPosition(xVal + this.labelX, yVal + 4)
 		.setWidth(labelWidth)
 		.setGroup(group)
 		.setValue(labelText);
@@ -589,7 +591,7 @@ public abstract class MenuTemplate implements ControlListener {
 	public float getAdjustedMenuYPos()
 	{
 		float adjustedY = PApplet.map(this.yPos, 0, 1, 0, this.scale);
-		adjustedY += (this.parent.width * (1 - this.scale));
+		adjustedY += (this.parent.height * (1 - this.scale));
 
 		return adjustedY;
 	}
@@ -618,7 +620,7 @@ public abstract class MenuTemplate implements ControlListener {
 	public float mapAdjustedMenuYPos(float fullAppletYPos)
 	{
 		float adjustedY = PApplet.map(fullAppletYPos, 0, 1, 0, this.scale);
-		adjustedY += (this.parent.width * (1 - this.scale));
+		adjustedY += (this.parent.height * (1 - this.scale));
 
 		return adjustedY;
 	}
@@ -645,11 +647,17 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public float mapFullAppletYPos(float adjustedMenuYPos)
 	{
-		float fullY = adjustedMenuYPos - (this.parent.width * (1 - this.scale));
+		float fullY = adjustedMenuYPos - (this.parent.height * (1 - this.scale));
 		fullY = PApplet.map(fullY, 0, this.scale, 0, 1);
 
 		return fullY;
 	}
+	
+	public float getCurMenuXPos()
+	{
+		if(this.isRunning)	{	return this.getAdjustedMenuXPos();	}
+		else				{	return 0;							}
+	} // getCurMenuXPos
 	
 	/**
 	 * Shows or hides this.controlP5, depending on whether or not the Menu is open,

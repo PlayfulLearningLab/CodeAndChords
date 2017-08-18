@@ -14,6 +14,14 @@ public abstract class Module extends PApplet {
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
 	protected	Input			input;
 	
+
+	private	int		numInputs;
+
+	private	int[]	xVals;
+	private	int[]	yVals;
+	private	int[]	rectWidths;
+	private	int[]	rectHeights;
+	
 	protected	Shape			shape;
 	
 	/**	For Modules with a Shape, this ShapeEditor provides Shape customization Controllers	*/
@@ -114,5 +122,187 @@ public abstract class Module extends PApplet {
 	 * @return	String[] of text to display in each position of the legend
 	 */
 	public abstract String[] getLegendText();
+	
+	
+	/**
+	 * Calculates the x and y values for the squares given the number of inputs.
+	 */
+	private void setSquareValues()
+	{
+
+		// Rectangles are always the same height, so will be set in a loop every time:
+		this.rectHeights	= new int[this.numInputs];
+
+		// Setting xVals and yVals and width and height of rectangles:
+		// Even number of inputs:
+		if(this.numInputs % 2 == 0 && this.numInputs != 12)
+		{
+			this.rectWidths		= new int[this.numInputs];
+			this.rectHeights	= new int[this.numInputs];
+			for(int i = 0; i < this.rectWidths.length; i++)
+			{
+				this.rectWidths[i]	= this.width / (this.numInputs / 2);
+				this.rectHeights[i]	= this.height / 2;
+			} // for
+
+			this.xVals	= new int[this.numInputs];
+			this.yVals	= new int[this.numInputs];
+
+			for(int i = 0; i < this.xVals.length; i++)
+			{
+				int xPos	= i % (this.numInputs / 2);
+				int xVal	= xPos * (this.rectWidths[i]);
+				xVals[i]	= xVal;
+				System.out.println(i + ": xPos = " + xPos + "; xVal = " + xVal);
+			} // for - xVals
+
+			for(int i = 0; i < this.yVals.length; i++)
+			{
+				int	yPos	= i / (this.numInputs / 2);
+				int	yVal	= yPos * this.rectHeights[i];
+				yVals[i]	= yVal;
+				System.out.println(i + ": yPos = " + yPos + "; yVal = " + yVal);
+			} // for - yVals
+		} // even number of inputs
+		else if(this.numInputs == 1)
+		{
+			this.rectWidths		= new int[] {	this.width	};
+			this.rectHeights	= new int[]	{	this.height	};
+
+			this.xVals	= new int[] {	0	};
+			this.yVals	= new int[] {	0	};
+		} // 1
+		else if(this.numInputs == 3)
+		{
+			this.rectWidths		= new int[] {	
+					this.width,
+					(this.width / 2), (this.width / 2)
+			};
+			for(int i = 0; i < this.rectHeights.length; i++)
+			{
+				this.rectHeights[i]	= this.height / 2;
+			}
+
+			this.xVals	= new int[] { 
+					0,
+					0,	(this.width / 2)
+			};
+			this.yVals	= new int[] {
+					0,
+					(this.height / 2), (this.height / 2)
+			};
+		} // 3
+		else if(this.numInputs == 5)
+		{
+			this.rectWidths	= new int[] {
+					(this.width / 2),	(this.width / 2),
+					(this.width / 3), (this.width / 3), (this.width / 3)
+			};
+			for(int i = 0; i < this.rectHeights.length; i++)
+			{
+				this.rectHeights[i]	= this.height / 2;
+			}
+
+			this.xVals	= new int[] {
+					0,				(this.width / 2),	
+					0,	(this.width / 3), ((this.width / 3) * 2)
+			};
+			this.yVals	= new int[] {
+					0,				0,
+					(this.height / 2), (this.height / 2), (this.height / 2)
+			};
+		} // 5
+		else if(this.numInputs == 7)
+		{
+			this.rectWidths	= new int[] {
+					(this.width / 2),	(this.width / 2),
+					(this.width / 2), (this.width / 3), (this.width / 3),
+					(this.width / 2),	(this.width / 2)
+			};
+			for(int i = 0; i < this.rectHeights.length; i++)
+			{
+				this.rectHeights[i]	= this.height / 3;
+			}
+
+			this.xVals	= new int[] {
+					0,				(this.width / 2),	
+					0,	(this.width / 3), ((this.width / 3) * 2),
+					0,				(this.width / 2)
+			};
+			this.yVals	= new int[] {
+					0,				0,
+					(this.height / 3), (this.height / 3), (this.height / 3),
+					(this.height / 3) * 2, (this.height / 3) * 2, (this.height / 3) * 2
+			};
+		} // 7
+		else if(this.numInputs == 9)
+		{
+			this.rectWidths		= new int[this.numInputs];
+			for(int i = 0; i < this.rectWidths.length; i++)
+			{
+				this.rectWidths[i]	= (this.width / 3);
+				this.rectHeights[i]	= (this.height / 3);
+			} // for
+
+			this.xVals	= new int[] {
+					0, this.width/3, (this.width/3) * 2,
+					0, this.width/3, (this.width/3) * 2,
+					0, this.width/3, (this.width/3) * 2
+			};
+			this.yVals	= new int[] {
+					0, 0, 0,
+					this.height/3, this.height/3, this.height/3, 
+					((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
+			};
+		} // 9
+		else if(this.numInputs == 11)
+		{
+			this.rectWidths		= new int[this.numInputs];
+			for(int i = 0; i < this.rectWidths.length; i++)
+			{
+				if(i < 4 || i > 6)
+				{
+					this.rectWidths[i]	= (this.width / 4);
+				} else {
+					// middle row has only 3:
+					this.rectWidths[i]	= (this.width / 3);
+				}
+
+				this.rectHeights[i]	= (this.height / 3);
+			} // for
+
+			this.xVals	= new int[] {
+					0, this.width/4, this.width/2, (this.width/4) * 3,
+					0, this.width/3, (this.width/3) * 2,
+					0, this.width/4, this.width/2, (this.width/4) * 3,
+			};
+			this.yVals	= new int[] {
+					0, 0, 0, 0,
+					this.height/3, this.height/3, this.height/3, 
+					((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
+			};
+		} // 11
+		else if(this.numInputs == 12)
+		{
+			this.rectWidths		= new int[this.numInputs];
+			for(int i = 0; i < this.rectWidths.length; i++)
+			{
+				this.rectWidths[i]	= (this.width / 4);
+				this.rectHeights[i]	= (this.height / 3);
+			} // for
+
+			this.xVals	= new int[] {
+					0, this.width/4, this.width/2, (this.width/4) * 3,
+					0, this.width/4, this.width/2, (this.width/4) * 3,
+					0, this.width/4, this.width/2, (this.width/4) * 3,
+			};
+			this.yVals	= new int[] {
+					0, 0, 0, 0,
+					this.height/3, this.height/3, this.height/3, this.height/3, 
+					((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
+			};
+		} // 12
+	} // set Square Vals
+
 
 } // Module
