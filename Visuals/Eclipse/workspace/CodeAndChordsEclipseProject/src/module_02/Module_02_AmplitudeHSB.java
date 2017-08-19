@@ -169,11 +169,11 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
 		pShape.stroke(curHue[0], curHue[1], curHue[2]);
-		pShape.rotate(this.shapeEditor.getRotation());
+		pShape.rotate(this.shape.getRotation());
 		pShape.endShape();
 
-		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
-		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
+		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.shape.getXPos(), this.shape.getYPos());
+		else this.shape(pShape, PApplet.map(this.shape.getXPos(), 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.shape.getYPos());
 
 	} // drawShape
 
@@ -199,25 +199,25 @@ public class Module_02_AmplitudeHSB extends PApplet implements ShapeEditorInterf
 		{
 			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getCP5().isVisible() && this.mouseX > this.shapeEditor.getAppletWidth() * (1 - this.shapeEditor.getScale()) && this.mouseY > this.shapeEditor.getAppletHeight() * (1 - this.shapeEditor.getScale()))
 			{			
-				this.shapeEditor.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
-				this.shapeEditor.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));
-				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
-				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+				this.shape.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
+				this.shape.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));
+				this.shapeEditor.getCP5().getController("xPos").setValue(this.shape.getXPos());
+				this.shapeEditor.getCP5().getController("yPos").setValue(this.shape.getYPos());
 
 			}
 			else if(this.moduleTemplate.getLeftEdgeX() == 0 && !this.shapeEditor.getCP5().isVisible())
 			{
-				this.shapeEditor.setXPos(this.mouseX);
-				this.shapeEditor.setYPos(this.mouseY);
-				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
-				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+				this.shape.setXPos(this.mouseX);
+				this.shape.setYPos(this.mouseY);
+				this.shapeEditor.getCP5().getController("xPos").setValue(this.shape.getXPos());
+				this.shapeEditor.getCP5().getController("yPos").setValue(this.shape.getYPos());
 			}
 			else if(this.mouseX > this.moduleTemplate.getLeftEdgeX() && !this.shapeEditor.getCP5().isVisible())
 			{
-				this.shapeEditor.setXPos(PApplet.map(this.mouseX - (this.width/3), 0, 2, 0, 3));
-				this.shapeEditor.setYPos(this.mouseY);
-				this.shapeEditor.getCP5().getController("xPos").setValue(this.shapeEditor.getXPos());
-				this.shapeEditor.getCP5().getController("yPos").setValue(this.shapeEditor.getYPos());
+				this.shape.setXPos(PApplet.map(this.mouseX - (this.width/3), 0, 2, 0, 3));
+				this.shape.setYPos(this.mouseY);
+				this.shapeEditor.getCP5().getController("xPos").setValue(this.shape.getXPos());
+				this.shapeEditor.getCP5().getController("yPos").setValue(this.shape.getYPos());
 			}
 		}
 	} // mouseClicked

@@ -21,6 +21,10 @@ public class Shape {
 	
 	private int   		numShapes;
 	private int 		shapeIndex;
+	
+	private float 		xPos;
+	private float 		yPos;
+	private float 		rotation;
 
 	private float[][]	currentShapeParameters;	
 	//May need to add a string at some point to identify which type of shape the parameters make
@@ -30,7 +34,6 @@ public class Shape {
 
 	private float 		xStretch;
 	private float 		yStretch;
-	private float 		rotation;
 	private float 		shapeScale = 1;
 
 	//constructors	
@@ -65,6 +68,9 @@ public class Shape {
 		
 		this.currentShape = new float[this.numShapes][this.steps];
 		this.nextShape = new float[this.steps];
+		
+		this.xPos = this.pApp.width/2;
+		this.yPos = this.pApp.height/2;
 
 		this.xStretch = 1;
 		this.yStretch = 1;
@@ -307,5 +313,29 @@ public class Shape {
 		this.shapeScale = scale;
 	}
 	
+	public void setXPos(float xPos)
+	{
+		this.xPos = xPos;
+	}
+	
+	public void setYPos(float yPos)
+	{
+		this.yPos = yPos;
+	}
+		
+	public float getXPos()
+	{
+		return this.xPos;
+	}
+	
+	public float getYPos()
+	{
+		return this.yPos;
+	}
+	
+	public float getRotation()
+	{
+		return this.rotation;
+	}
 	
 }//Shapes
