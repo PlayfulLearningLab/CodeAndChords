@@ -153,6 +153,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 	} // setup()
 
+	
 	public void draw()
 	{
 		int	scaleDegree;

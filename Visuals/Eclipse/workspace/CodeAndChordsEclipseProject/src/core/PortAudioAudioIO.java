@@ -170,6 +170,10 @@ public class PortAudioAudioIO extends AudioIO {
 			} // for - i
 
 			// TODO: maybe just write for availableToWrite, not whole buffer?
+			if(outStream == null)
+			{
+				throw new IllegalArgumentException("PAAIO.runRealTime: outStream is null.");
+			}
 			this.outStream.write( interleavedOutput, bufferSizeInFrames );
 		} // while
 		

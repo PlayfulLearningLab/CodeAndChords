@@ -120,7 +120,7 @@ public class Input {
 	 *  Creates an Input object with the given number of inputs and particular AudioContext.
 	 *
 	 *  @param  numInputs     an int specifying the number of lines in the AudioFormat.
-	 *  @param  audioContext  an AudioContext whose input lines will be procurred as a UGen and used for the analysis calculations.
+	 *  @param  audioContext  an AudioContext whose input lines will be procured as a UGen and used for the analysis calculations.
 	 */
 	public Input(int numInputs, AudioContext audioContext, PApplet pa)
 	{
