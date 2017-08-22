@@ -289,7 +289,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	boolean[]	fromColorSelect;
 
 	/**	True when a ColorWheel Button is a specialColors Button; false if colorSelect	*/
-//	protected	boolean[]	fromSpecialColors;
+	//	protected	boolean[]	fromSpecialColors;
 
 	/**	The current number of input lines	*/
 	protected	int	numInputs;
@@ -381,7 +381,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.colorReached		= new boolean[this.numInputs];
 		this.nowBelow			= new boolean[this.numInputs];
 		this.fromColorSelect	= new boolean[this.numInputs];
-//		this.fromSpecialColors	= new boolean[this.numInputs];
+		//		this.fromSpecialColors	= new boolean[this.numInputs];
 		this.specialColorsPos	= new int[this.numInputs][totalNumColorItems];
 		for(int i = 0; i < this.colorReachedArray.length; i++)
 		{
@@ -390,7 +390,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.nowBelow[i]			= false;
 
 			this.fromColorSelect[i]		= true;
-//			this.fromSpecialColors[i]	= false;
+			//			this.fromSpecialColors[i]	= false;
 			this.specialColorsPos[i]	= new int[totalNumColorItems];
 		}
 
@@ -1742,13 +1742,25 @@ public class ModuleMenu extends MenuTemplate  {
 
 			System.out.println("newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
 
-			this.setColor(i, newColor, false);
+//			this.setColor(i, newColor, false);
+			this.setColorSelectCW(i, newColor);
+			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
+			if(specialColorsPos > -1)
+			{
+				this.setSpecialColorsCW(specialColorsPos, newColor);
+			}
 		} // for - i
 		//		} // for - i
 
 		// Fill the last color manually, because if we don't,
 		// it can't seem to calculate correctly when the tonic color is changed:
-		this.setColor(this.colorSelect.length - 1, rgbVals2, false);
+//		this.setColor(this.colorSelect.length - 1, rgbVals2, false);	
+		this.setColorSelectCW(this.colorSelect.length - 1, rgbVals2);
+		int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], (this.colorSelect.length - 1));
+		if(specialColorsPos > -1)
+		{
+			this.setSpecialColorsCW(specialColorsPos, newColor);
+		}
 
 		this.fillHSBColors();
 
@@ -1838,7 +1850,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.trichromCounts++;
 		System.out.println("trichromCounts = " + this.trichromCounts);
-		
+
 		int	color1pos	= 0;
 		int	color2pos;
 		int	color3pos;
@@ -1915,7 +1927,7 @@ public class ModuleMenu extends MenuTemplate  {
 		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
 		Exception	e	= new Exception("Just detective work.");
 		e.printStackTrace();
-		
+
 		// fill from second color to third color:
 		for(int i = color2pos + 1; i < color3pos; i++)
 		{
@@ -1952,7 +1964,13 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				System.out.println("  Setting color at pos " + i + " to rgb(" + trichromColors[trichromColorPos][0] + ", " + trichromColors[trichromColorPos][1] + ", " + trichromColors[trichromColorPos][2] + ")");
 			}
-			this.setColor(i, trichromColors[trichromColorPos], false);
+//			this.setColor(i, trichromColors[trichromColorPos], false);
+			this.setColorSelectCW(i, rgbVals2);
+			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
+			if(specialColorsPos > -1)
+			{
+				this.setSpecialColorsCW(specialColorsPos, trichromColors[trichromColorPos]);
+			}
 
 		} // for
 
@@ -1967,7 +1985,13 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		for(int i = 0; i < this.colorSelect.length && i < this.rainbowColors[this.majMinChrom].length; i++)
 		{
-			this.setColor(i, this.rainbowColors[this.majMinChrom][i], false);
+//			this.setColor(i, this.rainbowColors[this.majMinChrom][i], true);this.setColorSelectCW(i, rgbVals2);
+			this.setColorSelectCW(i, this.rainbowColors[this.majMinChrom][i]);
+			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
+			if(specialColorsPos > -1)
+			{
+				this.setSpecialColorsCW(specialColorsPos, this.rainbowColors[this.majMinChrom][i]);
+			}
 		} // for - i (going through colors)
 
 		this.fillHSBColors();
@@ -2050,13 +2074,21 @@ public class ModuleMenu extends MenuTemplate  {
 				// every other time:
 				else
 				{
+					// TODO: colorPos2 and 3 are always going to be 4 and 8 when this is called?
 					System.out.println("Trichrom called more than one time");
 					// This makes sure that, even if the positions of the specialColors change,
 					// the colors themselves will remain constant from one style/scale to the next:
 					System.out.println("	In setColorStyle, 2nd color = rgb(" + this.getColor(this.specialColorsPos[i][1])[0] + ", "
 							+ this.getColor(this.specialColorsPos[i][1])[2] + ", " + this.getColor(this.specialColorsPos[i][1])[2] + ")");
-					this.setColor(colorPos2, this.getColor(this.specialColorsPos[i][1]), false);
-					this.setColor(colorPos3, this.getColor(this.specialColorsPos[i][2]), false);
+//					this.setColor(colorPos2, this.getColor(this.specialColorsPos[i][1]), false);
+//					this.setColor(colorPos3, this.getColor(this.specialColorsPos[i][2]), false);
+					this.setColorSelectCW(colorPos2, this.getColor(this.specialColorsPos[i][1]));
+					this.setColorSelectCW(colorPos3, this.getColor(this.specialColorsPos[i][2]));
+					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos2);
+					this.setSpecialColorsCW(specialColorsPos, this.getColor(this.specialColorsPos[i][1]));
+					specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos3);
+					this.setSpecialColorsCW(specialColorsPos, this.getColor(this.specialColorsPos[i][2]));
+					
 					if(this.majMinChrom == 2)
 					{
 						colorPos2	= 4;
@@ -2102,8 +2134,13 @@ public class ModuleMenu extends MenuTemplate  {
 				color[j]	= Math.min(Math.max(color[j] + (int)this.redGreenBlueMod[j], 0), 255);
 			} // for - j
 
-
-			this.setColor(i, color, false);
+//			this.setColor(i, color, false);
+			this.setColorSelectCW(i, color);
+			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
+			if(specialColorsPos > -1)
+			{
+				this.setSpecialColorsCW(specialColorsPos, color);
+			}
 		} // for - i
 
 	} // applyRGBModulate
@@ -2139,7 +2176,13 @@ public class ModuleMenu extends MenuTemplate  {
 					Color a = new Color(oc);
 
 					// Sets the ColorWheels to the newly modded color:
-					this.setColor(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() }, false);
+//					this.setColor(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() }, false);
+					this.setColorSelectCW(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
+					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
+					if(specialColorsPos > -1)
+					{
+						this.setSpecialColorsCW(specialColorsPos, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
+					}
 					//			((ColorWheel)this.controlP5.getController("colorWheel" + id)).setRGB(a.getRGB());
 				} // for 
 			} else {
@@ -2683,7 +2726,7 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				this.colors[this.currentInput][i]	= this.getColor(i);
 			}
-			
+
 			// Switch to newly selected input num:
 			this.currentInput	= (int)controlEvent.getValue();
 			// Turn off global:
@@ -2692,9 +2735,14 @@ public class ModuleMenu extends MenuTemplate  {
 			// Set the colorWheels to our new current input:
 			for(int i = 0; i < this.colorSelect.length; i++)
 			{
-				this.setColor(i, this.colors[this.currentInput][i], false);
+//				this.setColor(i, this.colors[this.currentInput][i], false);
+				this.setColorSelectCW(i, this.colors[this.currentInput][i]);
+				if(this.firstSpecialColorsCWId > 0)
+				{
+					this.setSpecialColorsCW(i, this.colors[this.currentInput][i]);
+				}
 			} // for - set ColorWheels
-			
+
 			this.fillHSBColors();
 		} // input select dropdown
 
@@ -2855,7 +2903,7 @@ public class ModuleMenu extends MenuTemplate  {
 					(this.arrayContains(this.specialColorsPos, colorPos) > -1) */)
 				{
 					this.fromColorSelect[i]	= true;
-//					this.fromSpecialColors[i]	= false;					
+					//					this.fromSpecialColors[i]	= false;					
 				} // if - this CW is in colorSelect
 				else
 				{
@@ -2863,7 +2911,7 @@ public class ModuleMenu extends MenuTemplate  {
 					colorPos	= (id % 100) - (this.firstSpecialColorsCWId % 100);
 					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
 					{
-//						this.fromSpecialColors[i]	= true;
+						//						this.fromSpecialColors[i]	= true;
 						this.fromColorSelect[i]	= false;
 					} // if
 				} // else - for CWs not in colorSelect
@@ -2878,7 +2926,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void colorWheelEvent(int id, Color color)
 	{
-//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
+		//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
 
 		// Either do everything once for the currentInput or do it for all inputs:
 		int	startHere;
@@ -2893,7 +2941,7 @@ public class ModuleMenu extends MenuTemplate  {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
 		}
-		
+
 		// if from ColorSelect:
 		if(id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length))
 		{
@@ -2924,12 +2972,19 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			} else {
 				// colors that are not canvasColor:
-				this.setColor(colorPos, color, i, true);
+//				this.setColor(colorPos, color, i, true);
+//				this.setColorSelectCW(colorPos, color);
+				if(this.firstSpecialColorsCWId > 0)
+				{
+//					this.setSpecialColorsCW(colorPos, color);
+				}
 			} // else - not canvas
-			
+
 		} // for
-		
-		this.setColorStyle(this.curColorStyle);
+
+		//		this.setColorStyle(this.curColorStyle);
+//		this.applySpecialColors();
+
 		/*	
 			// If there are special colors,
 			// check to see if this color corresponds to one or is one:
@@ -2938,12 +2993,12 @@ public class ModuleMenu extends MenuTemplate  {
 				if(colorPos >= 0 && colorPos < this.colorSelect.length)
 				{
 //					System.out.println("Color select color for colorPos " + colorPos);
-					
+
 					// Set this.colors:
 					this.colors[this.currentInput][colorPos][0]	= color.getRed();
 					this.colors[this.currentInput][colorPos][1]	= color.getGreen();
 					this.colors[this.currentInput][colorPos][2]	= color.getBlue();
-					
+
 					// Check to see if this position corresponds to a special color
 					// (and is from a colorSelect, to make sure that they don't just keep calling back and forth):
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[i], colorPos);
@@ -2960,7 +3015,7 @@ public class ModuleMenu extends MenuTemplate  {
 					if(colorPos >= 0 && colorPos < this.specialColorsPos[i].length)
 					{
 						System.out.println("SpecialColor for specialColorPos " + colorPos);
-						
+
 						// Make sure that they don't just keep calling back and forth:
 						if(this.fromSpecialColors[i])
 						{
@@ -2979,9 +3034,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.colors[this.currentInput][colorPos][0]	= color.getRed();
 			this.colors[this.currentInput][colorPos][1]	= color.getGreen();
 			this.colors[this.currentInput][colorPos][2]	= color.getBlue();
-			*/
-			
-//		} // for
+		 */
+
+		//		} // for
 
 	} // colorWheelEvent
 
@@ -3394,7 +3449,7 @@ public class ModuleMenu extends MenuTemplate  {
 			throw iae;
 		}
 	} // inputNumErrorCheck
-	
+
 	public int[][][] getColors()
 	{
 		return this.colors;
@@ -3411,22 +3466,102 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.getColor(colorPos, this.currentInput);
 	}
-	
+
 	public int[] getColor(int colorPos, int inputNum)
 	{
 		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
 			throw new IllegalArgumentException("ModuleTemplate.getColor: in parameter " + colorPos + 
 					" is out of bounds; must be within 0 to " + (this.colorSelect.length - 1));
 		} // error checking
-		
+
 		return this.colors[inputNum][colorPos];
-/*
+		/*
 		Color	curColor	= new Color(this.colorSelect[colorPos].getRGB());
 
 		// Making a new array rather than using getComponents so that we will have ints, not floats:
 		return	new int[] { curColor.getRed(), curColor.getGreen(), curColor.getBlue() };
-		*/
+		 */
 	} // getColor
+
+	public void setColorSelectCW(int colorPos, int[] color)
+	{
+		// Error checking:
+		if(colorPos < 0 || colorPos >= this.colorSelect.length) {
+			throw new IllegalArgumentException("ModuleMenu.setColorSelectCW: int parameter " + colorPos + 
+					" is out of bounds; must be between 0 and " + (this.colorSelect.length - 1));
+		}
+		if(color == null) {
+			throw new IllegalArgumentException("ModuleMenu.setColorSelectCW: float[] parameter is null.");
+		}
+
+		// Only do this if colorSelect CWs have actually been initialized:
+		if(this.firstColorSelectCWId > 0) 
+		{
+			//			throw new IllegalArgumentException("ModuleTemplate.setColor: firstColorSelectCWId == -1; did not attempt to set the ColorWheel.");
+
+			// Adjust for out-of-range parameters
+			for(int i = 0; i < color.length; i++)
+			{
+				int	originalColor	= color[i];
+				color[i]	= Math.min(Math.max(color[i], 0), 255);
+
+				// Let the user know if you made an adjustment:
+				if(originalColor != color[i]) {
+					System.out.println("ModuleMenu.setColorSelectCW: adjusted position " + i + " of color " + colorPos + " from " + originalColor + " to " + color[i] + ".");
+				}
+			} // for - color adjust
+
+			int	colorInt	= (new Color(color[0], color[1], color[2])).getRGB();
+			ColorWheel	cw	= ((ColorWheel)this.controlP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos)));
+
+			// Set the colorSelect ColorWheel:
+			if(cw.getRGB() != colorInt)
+			{
+				cw.setRGB(colorInt);
+			} // if
+		} else {
+			System.err.println("ModuleMenu.setColor: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
+		} // if/else
+	} // setCSColorWheel
+
+	public void setSpecialColorsCW(int colorPos, int[] color)
+	{
+		// Error checking:
+		if(colorPos < 0 || colorPos >= this.specialColorsPos[0].length) {
+			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: int parameter " + colorPos + 
+					" is out of bounds; must be between 0 and " + (this.specialColorsPos[0].length - 1));
+		}
+		if(color == null) {
+			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: float[] parameter is null.");
+		}
+
+		// Only do this if colorSelect CWs have actually been initialized:
+		if(this.firstSpecialColorsCWId > 0) 
+		{
+			// Adjust for out-of-range parameters
+			for(int i = 0; i < color.length; i++)
+			{
+				int	originalColor	= color[i];
+				color[i]	= Math.min(Math.max(color[i], 0), 255);
+
+				// Let the user know if you made an adjustment:
+				if(originalColor != color[i]) {
+					System.out.println("ModuleMenu.setSpecialColorsCW: adjusted position " + i + " of color " + colorPos + " from " + originalColor + " to " + color[i] + ".");
+				}
+			} // for - color adjust
+
+			int	colorInt	= (new Color(color[0], color[1], color[2])).getRGB();
+			ColorWheel	cw	= ((ColorWheel)this.controlP5.getController("colorWheel" + (this.firstSpecialColorsCWId + colorPos)));
+
+			// Set the colorSelect ColorWheel:
+			if(cw.getRGB() != colorInt)
+			{
+				cw.setRGB(colorInt);
+			} // if
+		} else {
+			System.err.println("ModuleTemplate.setSpecialColorsCW: firstSpecialColorsCWId == " + this.firstSpecialColorsCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
+		} // if/else
+	} // setSpecialColorsCW
 
 	/**
 	 * Sets the ColorWheel at colorPos to the given color
@@ -3438,12 +3573,12 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		this.setColor(colorPos, color, this.currentInput, fromColorWheel);
 	} // setColor(int, int[])
-	
+
 	public void setColor(int colorPos, Color color, int inputNum, boolean fromColorWheel)
 	{
 		this.setColor(colorPos, new int[] { color.getRed(), color.getGreen(), color.getBlue() }, inputNum, fromColorWheel);
 	}
-	
+
 	public void setColor(int colorPos, int[] color, int inputNum, boolean fromColorWheel)
 	{
 		// Error checking:
@@ -3478,16 +3613,16 @@ public class ModuleMenu extends MenuTemplate  {
 			// and this is not from a CW event:
 			if( ( inputNum == this.currentInput || global ) 
 					&& !this.fromColorSelect[inputNum] 
-					&& !fromColorWheel)
+							&& !fromColorWheel)
 			{
 				((ColorWheel)this.controlP5.getController("colorWheel" + (this.firstColorSelectCWId + colorPos))).setRGB(colorInt);
 			} // if - set colorSelect CW
-			
+
 			// Set the specialColors ColorWheel if this colorPos corresponds to a specialColor 
 			// and this didn't come from a specialColors CW:
 			if(this.arrayContains(this.specialColorsPos[inputNum], colorPos) > -1 
 					&& this.fromColorSelect[inputNum]
-					&& !fromColorWheel)
+							&& !fromColorWheel)
 			{
 				int specialColorsPos	= this.arrayContains(this.specialColorsPos[inputNum], colorPos);
 				((ColorWheel)this.controlP5.getController("colorWheel" + (this.firstSpecialColorsCWId + specialColorsPos))).setRGB(colorInt);
