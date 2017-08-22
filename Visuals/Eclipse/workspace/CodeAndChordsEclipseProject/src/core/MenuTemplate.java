@@ -16,12 +16,6 @@ public abstract class MenuTemplate {
 	private PApplet 	parent;
 	
 	private boolean 	isRunning;
-	
-	//these variables are stored relative to the size of the full applet,
-	//NOT RELATIVE TO THE SMALLER WINDOW USED WHEN THE MENU IS OPEN
-	private float 		xPos;
-	private float 		yPos;
-	private float 		rotation;
 
 	private float 		appletWidth;
 	private float 		appletHeight;
@@ -39,10 +33,6 @@ public abstract class MenuTemplate {
 		
 		this.appletWidth = appWidth;
 		this.appletHeight = appHeight;
-		
-		this.xPos = appWidth / 2;
-		this.yPos = appHeight / 2;
-		this.rotation = 0;
 
 		this.scale = .7f;
 		
@@ -87,39 +77,9 @@ public abstract class MenuTemplate {
 		this.isRunning = isRunning;
 	}
 	
-	public void setXPos(float xPos)
-	{
-		this.xPos = xPos;
-	}
-
-	public void setYPos(float yPos)
-	{
-		this.yPos = yPos;
-	}
-
-	public void setRotation(float rotation)
-	{
-		this.rotation = rotation;
-	}
-	
 	public boolean getIsRunning()
 	{
 		return this.isRunning;
-	}
-
-	public float getXPos()
-	{
-		return this.xPos;
-	}
-
-	public float getYPos()
-	{
-		return this.yPos;
-	}
-
-	public float getRotation()
-	{
-		return this.rotation;
 	}
 	
 	public float getAppletWidth()
@@ -135,22 +95,6 @@ public abstract class MenuTemplate {
 	public float getScale()
 	{
 		return this.scale;
-	}
-
-	public float getAdjustedMenuXPos()
-	{
-		float adjustedX = PApplet.map(this.xPos, 0, 1, 0, this.scale);
-		adjustedX += (this.appletWidth * (1 - this.scale));
-
-		return adjustedX;
-	}
-
-	public float getAdjustedMenuYPos()
-	{
-		float adjustedY = PApplet.map(this.yPos, 0, 1, 0, this.scale);
-		adjustedY += (this.appletHeight * (1 - this.scale));
-
-		return adjustedY;
 	}
 	
 	public float mapAdjustedMenuXPos(float fullAppletXPos)

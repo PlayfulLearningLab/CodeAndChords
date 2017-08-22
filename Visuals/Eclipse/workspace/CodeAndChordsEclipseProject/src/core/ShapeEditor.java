@@ -116,9 +116,9 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		ps.stroke(255);
 		ps.fill(255);
 		ps.scale(super.getScale());
-		ps.rotate(super.getRotation());
+		ps.rotate(this.shape.getRotation());
 		ps.endShape();
-		this.parent.shape(ps, super.getAdjustedMenuXPos(), this.getAdjustedMenuYPos());
+		this.parent.shape(ps, super.mapAdjustedMenuXPos(this.shape.getXPos()), this.mapAdjustedMenuYPos(this.shape.getYPos()));
 
 		super.drawMenu();
 	}// drawSE
@@ -153,10 +153,10 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		((Slider) this.cp5.addSlider("n3", .01f, 10, 1, (int) 20, (int) yVals[4],
 				(int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("xPos", -500, 1500, this.getXPos(), (int) 20,
+		((Slider) this.cp5.addSlider("xPos", -500, 1500, this.shape.getXPos(), (int) 20,
 				(int) yVals[5], (int) 230, 28)).getCaptionLabel().hide();
 
-		((Slider) this.cp5.addSlider("yPos", -500, 1000, this.getYPos(), (int) 20,
+		((Slider) this.cp5.addSlider("yPos", -500, 1000, this.shape.getYPos(), (int) 20,
 				(int) yVals[6], (int) 230, 28)).getCaptionLabel().hide();
 
 		((Slider) this.cp5.addSlider("rotation", -PConstants.PI * 2, PConstants.PI * 2, 0,
@@ -242,15 +242,15 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			break;
 
 		case "xPos":
-			super.setXPos(theEvent.getValue());
+			this.shape.setXPos(theEvent.getValue());
 			break;
 
 		case "yPos":
-			super.setYPos(theEvent.getValue());
+			this.shape.setYPos(theEvent.getValue());
 			break;
 
 		case "rotation":
-			super.setRotation(theEvent.getValue());
+			this.shape.setRotation(theEvent.getValue());
 			break;
 
 		case "exitButton":
