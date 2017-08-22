@@ -31,6 +31,7 @@ import processing.core.PImage;
  */
 public class ModuleMenu extends MenuTemplate  {
 
+	public int trichromCounts	= 0;
 
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
@@ -304,21 +305,21 @@ public class ModuleMenu extends MenuTemplate  {
 	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
-	protected	int	canvasColorSelectId		= -1;
-	protected	int	firstColorModSliderId	= -1;
-	protected	int	firstColorSelectCWId	= -1;
-	protected	int	firstSpecialColorsCWId	= -1;
-	protected	int	lastColorSelectId		= -1;
-	protected	int	firstARTSliderId		= -1;
-	protected	int	firstHSBSliderId		= -1;
-	protected	int	firstRGBSliderId		= -1;
-	protected	int	bpmSliderId				= -1;
-	protected	int	volumeSliderId			= -1;
-	protected	int	shapeSizeSliderId		= -1;
-	protected	int	firstRangeSegmentsId	= -1;
-	protected	int	pianoThresholdSliderId	= -1;
-	protected	int	forteThresholdSliderId	= -1;
-	protected	int	firstSatBrightThreshSliderId	= -1;
+	protected	int	canvasColorSelectId;//		= -1;
+	protected	int	firstColorModSliderId;//	= -1;
+	protected	int	firstColorSelectCWId;//	= -1;
+	protected	int	firstSpecialColorsCWId;//	= -1;
+	protected	int	lastColorSelectId;//		= -1;
+	protected	int	firstARTSliderId;//		= -1;
+	protected	int	firstHSBSliderId;//		= -1;
+	protected	int	firstRGBSliderId;//		= -1;
+	protected	int	bpmSliderId;//				= -1;
+	protected	int	volumeSliderId;//			= -1;
+	protected	int	shapeSizeSliderId;//		= -1;
+	protected	int	firstRangeSegmentsId;//	= -1;
+	protected	int	pianoThresholdSliderId;//	= -1;
+	protected	int	forteThresholdSliderId;//	= -1;
+	protected	int	firstSatBrightThreshSliderId;//	= -1;
 
 	/**
 	 * Constructor
@@ -1437,7 +1438,8 @@ public class ModuleMenu extends MenuTemplate  {
 		} // error checking
 
 
-		float	curAmp	= this.input.getAmplitude();
+		// Add one to inputNum because getAmplitude is working on a 1-to-numInputs range (rather than 0-to-[numInputs-1]):
+		float	curAmp	= this.input.getAmplitude(inputNum + 1);
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
@@ -1834,6 +1836,9 @@ public class ModuleMenu extends MenuTemplate  {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
 		} // error checking
 
+		this.trichromCounts++;
+		System.out.println("trichromCounts = " + this.trichromCounts);
+		
 		int	color1pos	= 0;
 		int	color2pos;
 		int	color3pos;
@@ -2032,7 +2037,7 @@ public class ModuleMenu extends MenuTemplate  {
 				// first time trichromatic has been called:
 				if(!this.trichromFlag)
 				{
-					//				this.trichromatic_OneRGB(this.getColor(0));
+					this.trichromatic_OneRGB(this.getColor(0));
 					this.trichromFlag	= true;
 				}
 				// every other time:
@@ -2103,7 +2108,7 @@ public class ModuleMenu extends MenuTemplate  {
 		for(int j = 0; j < this.numInputs; j++)
 		{
 
-			if(this.firstColorSelectCWId != -1)
+			if(this.firstColorSelectCWId > 0)
 			{
 				if(this.hsbColors == null)	{	this.fillHSBColors();	}
 
@@ -2210,7 +2215,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		// Only do this after the colors have been initialized:
-		if(this.firstColorSelectCWId != -1)
+		if(this.firstColorSelectCWId > 0)
 		{
 			for(int i = 0; i < this.hsbColors.length; i++)
 			{
@@ -2295,8 +2300,6 @@ public class ModuleMenu extends MenuTemplate  {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
-
-		System.out.println("global = " + this.global);
 
 		//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
 
@@ -2395,8 +2398,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(id > 499 && id < 600)
 		{
 			// Range Segments:
-			if(this.firstRangeSegmentsId != -1 &&
-					id >= this.firstRangeSegmentsId && id < (this.firstRangeSegmentsId + this.totalRangeSegments))
+			if(id >= this.firstRangeSegmentsId && id < (this.firstRangeSegmentsId + this.totalRangeSegments))
 			{
 				// Turn off the other Toggles:
 				Toggle[] toggleArray	= new Toggle[this.totalRangeSegments];
@@ -2429,7 +2431,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 				// Make Buttons corresponding to non-existent thresholds unclickable:
 				// (but don't do so before the Buttons have been initialized)
-				if(this.firstColorSelectCWId > -1)
+				if(this.firstColorSelectCWId > 0)
 				{
 					int	curButtonId;
 					boolean	state;
@@ -2660,14 +2662,24 @@ public class ModuleMenu extends MenuTemplate  {
 		// Input Select dropdown:
 		if(controlEvent.getName() == "inputSelectDropdown")
 		{
-			this.currentInput	= (int)controlEvent.getValue() + 1;
-
+			// Save these colors:
+			for(int i = 0; i < this.colorSelect.length; i++)
+			{
+				this.colors[this.currentInput][i]	= this.getColor(i);
+			}
+			
+			// Switch to newly selected input num:
+			this.currentInput	= (int)controlEvent.getValue();
+			// Turn off global:
 			((Toggle)this.controlP5.getController("global")).setState(false);
 
+			// Set the colorWheels to our new current input:
 			for(int i = 0; i < this.colorSelect.length; i++)
 			{
 				this.setColor(i, this.colors[this.currentInput][i]);
 			} // for - set ColorWheels
+			
+			this.fillHSBColors();
 		} // input select dropdown
 
 	} // controlEvent
@@ -2682,7 +2694,7 @@ public class ModuleMenu extends MenuTemplate  {
 		System.out.println("ModuleMenu: got sliderEvent with id " + id + " and val " + val);
 
 		// Piano Threshold:
-		if(this.pianoThresholdSliderId != -1 && id == this.pianoThresholdSliderId)
+		if(id == this.pianoThresholdSliderId)
 		{
 			for(int i = 0; i < this.numInputs; i++)
 			{
@@ -2692,7 +2704,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // piano threshold Slider
 
 		// Forte Threshold:
-		if(this.forteThresholdSliderId != -1 && id == this.forteThresholdSliderId)
+		if(id == this.forteThresholdSliderId)
 		{
 			for(int i = 0; i < this.numInputs; i++)
 			{
@@ -2702,8 +2714,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // forte threshold Slider
 
 		// Attack, Release, and Transition:
-		if(this.firstARTSliderId != -1 &&
-				id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3))
+		if(id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3))
 		{
 			//			int	pos	= (id / 2) - 1;
 			int	pos	= id - this.firstARTSliderId;
@@ -2721,8 +2732,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // attack/release/transition
 
 		// Hue/Saturation/Brightness modulate
-		if(this.firstHSBSliderId != -1 && 
-				id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
+		if(id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
 		{
 			//			int pos = (id/2)-7;
 			int pos = id - this.firstHSBSliderId;
@@ -2734,8 +2744,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}//hsb mod
 
 		// Red Modulate/Green Modulate/Blue Modulate:
-		if(this.firstRGBSliderId != -1 &&
-				id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
+		if(id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
 		{
 			//			int	pos	= (id / 2) - 4;		
 			int	pos	= id - this.firstRGBSliderId;	// red = 0, green = 1, blue = 2
@@ -2746,24 +2755,23 @@ public class ModuleMenu extends MenuTemplate  {
 			//					this.applyColorModulate(this.legendColors, this.originalColors);
 		} // red/green/blue mod
 
-		if(this.bpmSliderId != -1 && id == this.bpmSliderId)
+		if( id == this.bpmSliderId)
 		{
 			this.bpm	= Math.max(Math.min((int)val, 240), 0);
 		}
 
-		if(this.volumeSliderId != -1 && id == this.volumeSliderId)
+		if(id == this.volumeSliderId)
 		{
 			this.instrument.setVolume(Math.max(Math.min(val, 5), 0));
 		}
 
-		if(this.shapeSizeSliderId != -1 && id == this.shapeSizeSliderId)
+		if(id == this.shapeSizeSliderId)
 		{
 			this.shapeSize	= val;
 		}
 
 		// Saturation and Brightness Threshold and Percent Sliders:
-		if(this.firstSatBrightThreshSliderId != -1 &&
-				( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) ) )
+		if( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) )
 		{
 			System.out.println("did get into this event of Sliders");
 			int		arrayPos	= (id - this.firstSatBrightThreshSliderId /*- 1*/) / 2;
@@ -2794,12 +2802,12 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fillHSBColors();
 
 		// Reset whichever of the sliders is applicable:
-		if(this.firstRGBSliderId > -1)
+		if(this.firstRGBSliderId > 0)
 		{
 			this.resetRGBSlidersTextfields();
 			this.applyRGBModulate();
 		}
-		if(this.firstHSBSliderId > -1)
+		if(this.firstHSBSliderId > 0)
 		{
 			this.resetHSBSlidersTextfields();
 			this.applyHSBModulate();
@@ -2807,9 +2815,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		// If there are special colors, check to see if this color corresponds to one of them
 		// in order to correctly set the boolean flags:
-		if(this.firstSpecialColorsCWId != -1)
+		if(this.firstSpecialColorsCWId > 0)
 		{
-			// Either do everything once for the currenInput or do it for all inputs:
+			// Either do everything once for the currentInput or do it for all inputs:
 			int	startHere;
 			int	endBeforeThis;
 
@@ -2854,11 +2862,12 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void colorWheelEvent(int id, Color color)
 	{
-		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
+//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
 
-		// Either do everything once for the currenInput or do it for all inputs:
+		// Either do everything once for the currentInput or do it for all inputs:
 		int	startHere;
 		int	endBeforeThis;
+		int	colorPos;
 
 		if(global)	
 		{	
@@ -2873,8 +2882,7 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 
 			// canvas color (does not affect notes):
-			if( ( this.canvasColorSelectId != -1) && 
-					( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) ) )
+			if( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) )
 			{
 				this.canvasColor[i][0]	= color.getRed();
 				this.canvasColor[i][1]	= color.getGreen();
@@ -2889,32 +2897,38 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			} // if - canvas
 
+			// Position in colorSelect (if this CW is in colorSelect):
+			colorPos	= id - this.firstColorSelectCWId;
+			
 			// If there are special colors,
 			// check to see if this color corresponds to one or is one:
-			if(this.firstSpecialColorsCWId != -1)
+			if(this.firstSpecialColorsCWId > 0)
 			{
-				// Position in colorSelect (if this CW is in colorSelect):
-				int	colorPos	= id - this.firstColorSelectCWId;
 				if(colorPos >= 0 && colorPos < this.colorSelect.length)
 				{
-					// Check to see if this position corresponds to a special color:
+//					System.out.println("Color select color for colorPos " + colorPos);
+					
+					// Set this.colors:
+					this.colors[this.currentInput][colorPos][0]	= color.getRed();
+					this.colors[this.currentInput][colorPos][1]	= color.getGreen();
+					this.colors[this.currentInput][colorPos][2]	= color.getBlue();
+					
+					// Check to see if this position corresponds to a special color
+					// (and is from a colorSelect, to make sure that they don't just keep calling back and forth):
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[i], colorPos);
-					if(specialColorsPos > -1)
+					if(specialColorsPos > -1 && this.fromColorSelect[i])
 					{
-						// Make sure that they don't just keep calling back and forth:
-						if(this.fromColorSelect[i])
-						{
-							((ColorWheel)this.controlP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
-
-						} // if - only make one call per pair
+						((ColorWheel)this.controlP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
 					} // if - this CW connects to a specialColor							
 				} // if - this CW is in colorSelect
 				else
 				{
 					// Check to see if this CW is a specialColors CW:
 					colorPos	= id - this.firstSpecialColorsCWId;
-					if(colorPos >= 0 && colorPos < this.specialColorsPos.length)
+					if(colorPos >= 0 && colorPos < this.specialColorsPos[i].length)
 					{
+						System.out.println("SpecialColor for specialColorPos " + colorPos);
+						
 						// Make sure that they don't just keep calling back and forth:
 						if(this.fromSpecialColors[i])
 						{
@@ -2927,7 +2941,13 @@ public class ModuleMenu extends MenuTemplate  {
 					} // if
 				} // else - for CWs not in colorSelect
 
-			} // if - specialColors
+			} // if - there are indeed specialColors
+/*
+			this.colors[this.currentInput][colorPos][0]	= color.getRed();
+			this.colors[this.currentInput][colorPos][1]	= color.getGreen();
+			this.colors[this.currentInput][colorPos][2]	= color.getBlue();
+			*/
+			
 		} // for
 
 	} // colorWheelEvent
@@ -3035,7 +3055,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void resetModulateSlidersTextfields()
 	{
-		if(this.firstHSBSliderId > -1 && this.firstRGBSliderId > -1)
+		if(this.firstHSBSliderId > 0 && this.firstRGBSliderId > 0)
 		{
 
 			int	hsbId	= this.firstHSBSliderId;
@@ -3062,7 +3082,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void resetRGBSlidersTextfields()
 	{
-		if(this.firstRGBSliderId > -1)
+		if(this.firstRGBSliderId > 0)
 		{
 			int	rgbId	= this.firstRGBSliderId;
 
@@ -3082,7 +3102,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void resetHSBSlidersTextfields()
 	{
-		if(this.firstHSBSliderId > -1)
+		if(this.firstHSBSliderId > 0)
 		{
 			int	hsbId	= this.firstHSBSliderId;
 
@@ -3341,6 +3361,11 @@ public class ModuleMenu extends MenuTemplate  {
 			throw iae;
 		}
 	} // inputNumErrorCheck
+	
+	public int[][][] getColors()
+	{
+		return this.colors;
+	} // getColors
 
 
 	/**
@@ -3380,7 +3405,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		// Only do this if colorSelect CWs have actually been initialized:
-		if(this.firstColorSelectCWId != -1) {
+		if(this.firstColorSelectCWId > 0) {
 			//			throw new IllegalArgumentException("ModuleTemplate.setColor: firstColorSelectCWId == -1; did not attempt to set the ColorWheel.");
 
 

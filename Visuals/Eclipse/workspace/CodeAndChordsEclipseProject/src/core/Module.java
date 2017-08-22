@@ -15,12 +15,12 @@ public abstract class Module extends PApplet {
 	protected	Input			input;
 	
 
-	private	int		numInputs;
+	protected	int		numInputs;
 
-	private	int[]	xVals;
-	private	int[]	yVals;
-	private	int[]	rectWidths;
-	private	int[]	rectHeights;
+	protected	int[]	xVals;
+	protected	int[]	yVals;
+	protected	int[]	rectWidths;
+	protected	int[]	rectHeights;
 	
 	protected	Shape			shape;
 	
@@ -76,23 +76,32 @@ public abstract class Module extends PApplet {
 	 * 
 	 * @param goalHuePos	current position, be that note or threshold level, in this Module's menu.colorSelect
 	 */
-	public void legend(int goalHuePos)
+	public void legend(int goalHuePos, int inputNum)
 	{
-		this.textSize(24);		
+		if(this.rectWidths == null)
+		{
+			this.numInputs	= Math.max(this.numInputs, 1);
+			this.setSquareValues();
+		}
+		
+		this.textSize((24 - this.numInputs * 2));		
 
 		String[]	legendText	= this.getLegendText();
 		
-		float	sideWidth1   = (this.width - this.menu.getLeftEdgeX()) / legendText.length;
-		float	sideHeight  = this.width / 12;	// pretty arbitrary
-		float	addToLastRect	= (this.width - this.menu.getLeftEdgeX()) - (sideWidth1 * legendText.length);
+		float	scale	= 1;
+		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+		
+		float	sideWidth1	=(this.rectWidths[inputNum] * scale) / legendText.length;
+		float	sideHeight	= this.rectHeights[inputNum] / 10; //this.rectWidths[inputNum] / 12;	// pretty arbitrary
+		float	addToLastRect	= (this.rectWidths[inputNum] * scale) - (sideWidth1 * legendText.length);
 		float	sideWidth2	= sideWidth1;
 
 		this.noStroke();
 		
 		int	scaleDegree;
-		int	colorPos;
+		float	xVal	= this.menu.mapCurrentXPos(this.xVals[inputNum]);
+		float	yVal	= this.menu.mapCurrentYPos(this.yVals[inputNum] + this.rectHeights[inputNum]);
 
-//		for (int i = 0; i < this.thresholds.length; i++)
 		for (int i = 0; i < legendText.length; i++)
 		{
 			if(i == legendText.length - 1)
@@ -101,20 +110,18 @@ public abstract class Module extends PApplet {
 			}
 			
 			// colors is filled all the way and only picked at the desired notes:
-						scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
-						colorPos	= scaleDegree;
-			this.fill(this.menu.getColor(colorPos)[0], this.menu.getColor(colorPos)[1], this.menu.getColor(colorPos)[2]);
-
+			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
+			this.fill(this.menu.colors[inputNum][scaleDegree][0], this.menu.colors[inputNum][scaleDegree][1], this.menu.colors[inputNum][scaleDegree][2]);
 
 			if (i == goalHuePos) {
-				this.rect(this.menu.getLeftEdgeX() + (sideWidth1 * i), (float)(this.height - (sideHeight * 1.5)), sideWidth2, (float) (sideHeight * 1.5));
+				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * 1.5f), sideWidth2, (sideHeight * 1.5f));
 			} else {
-				this.rect(this.menu.getLeftEdgeX() + (sideWidth1 * i), this.height - sideHeight, sideWidth2, sideHeight);
+				this.rect(xVal + (sideWidth1 * i), yVal - sideHeight, sideWidth2, sideHeight);
 			}
 
 			this.fill(0);
-			this.text(legendText[i], (float) (this.menu.getLeftEdgeX() + (sideWidth1 * i) + (sideWidth1 * 0.3)), this.height - 20);
-		} // for
+			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
+		} // for - i
 
 	} // legend
 	
@@ -127,7 +134,7 @@ public abstract class Module extends PApplet {
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
-	private void setSquareValues()
+	protected void setSquareValues()
 	{
 
 		// Rectangles are always the same height, so will be set in a loop every time:

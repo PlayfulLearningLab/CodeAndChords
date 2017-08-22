@@ -188,7 +188,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
 		{
 			// draws the legend along the bottom of the screen:
-			this.legend(goalHuePos);
+			this.legend(goalHuePos, 0);
 
 		} // if showScale
 

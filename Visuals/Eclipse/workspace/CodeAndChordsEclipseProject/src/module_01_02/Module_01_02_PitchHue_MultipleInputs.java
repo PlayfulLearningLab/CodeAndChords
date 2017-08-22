@@ -177,7 +177,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			int	curX;
 			int	curY;
 			
-			if(this.menu.getIsRunning())
+/*			if(this.menu.getIsRunning())
 			{
 				curX	= (int)this.menu.mapAdjustedMenuXPos(this.xVals[i]);
 				curY	= (int)this.menu.mapAdjustedMenuYPos(this.yVals[i]);
@@ -185,7 +185,15 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 				curX	= this.xVals[i];
 				curY	= this.yVals[i];
 			}
+			*/
+			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
+			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
+			
+			if(this.menu.isShowScale())
+			{
+				this.legend(scaleDegree, i);
+			}
 		} // for
 		
 		this.menu.runMenu();
