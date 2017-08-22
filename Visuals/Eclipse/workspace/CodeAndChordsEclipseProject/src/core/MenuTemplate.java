@@ -86,6 +86,11 @@ public abstract class MenuTemplate implements ControlListener {
 	/**	Height of SliderS	*/
 	protected	int			sliderHeight;
 	
+//	protected	int[][][]	colors;
+	
+//	protected	int		currentInput;
+
+	
 	/**
 	 * The following are id's that are used within the add____ methods to keep id numbering consistent.
 	 * They are initially set to 0 (nextSliderId), 100 (nextSTextfieldId), 200 (nextButtonId), 
@@ -158,13 +163,21 @@ public abstract class MenuTemplate implements ControlListener {
 		this.sliderHeight		= this.parent.height / 26;
 
 		this.leftEdgeX	= 0;
-
+/*
 		this.nextSliderId		= 0;
 		this.nextSTextfieldId	= 100;
 		this.nextButtonId		= 200;
 		this.nextColorWheelId	= 300;
 		this.nextCWTextfieldId	= 400;
 		this.nextToggleId		= 500;
+		*/		
+		this.nextSliderId		= 1;
+		this.nextSTextfieldId	= 101;
+		this.nextButtonId		= 201;
+		this.nextColorWheelId	= 301;
+		this.nextCWTextfieldId	= 401;
+		this.nextToggleId		= 501;
+
 	} // constructor
 	
 	/**
@@ -265,7 +278,7 @@ public abstract class MenuTemplate implements ControlListener {
 
 			this.controlP5.getController("colorWheel" + (controlEvent.getId() + 100)).setVisible(curButton.getBooleanValue());
 			this.controlP5.getController("textfield" + (controlEvent.getId() + 200)).setVisible(curButton.getBooleanValue());
-
+			
 			this.buttonEvent(id);
 		} // CW Buttons
 		
@@ -653,11 +666,29 @@ public abstract class MenuTemplate implements ControlListener {
 		return fullY;
 	}
 	
-	public float getCurMenuXPos()
+	public float getCurrentMenuXPos()
 	{
 		if(this.isRunning)	{	return this.getAdjustedMenuXPos();	}
 		else				{	return 0;							}
 	} // getCurMenuXPos
+	
+	public float getCurrentMenuYPos()
+	{
+		if(this.isRunning)	{	return this.getAdjustedMenuYPos();	}
+		else				{	return 0;							}
+	} // getCurMenuXPos
+	
+	public float mapCurrentXPos(float xVal)
+	{
+		if(this.isRunning)	{	return this.mapAdjustedMenuXPos(xVal);	}
+		else				{	return xVal;							}
+	} // getCurrentXPos
+	
+	public float mapCurrentYPos(float yVal)
+	{
+		if(this.isRunning)	{	return this.mapAdjustedMenuYPos(yVal);	}
+		else				{	return yVal;							}
+	} // getCurrentXPos
 	
 	/**
 	 * Shows or hides this.controlP5, depending on whether or not the Menu is open,
