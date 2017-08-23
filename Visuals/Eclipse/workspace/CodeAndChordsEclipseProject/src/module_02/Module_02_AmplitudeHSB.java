@@ -131,7 +131,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void draw()
 	{
-		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
@@ -197,8 +197,11 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	private void drawShape()
 	{
-		int[]	curHue	= this.menu.getCurHue()[0];
+		int[]	curHue	= this.menu.getCurHue()[0];		
 		this.fill(curHue[0], curHue[1], curHue[2]);
+		
+//		System.out.println("We think we're drawing a shape with color rgb(" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
+
 		//		this.fill(255);
 
 //		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
@@ -268,7 +271,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shape.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));
 				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
 				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
-
 
 			}
 			else if(!this.menu.getIsRunning() && !this.shapeEditor.getControlP5().isVisible())

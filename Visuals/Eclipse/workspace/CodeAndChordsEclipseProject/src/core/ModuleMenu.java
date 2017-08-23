@@ -373,8 +373,12 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curHue				= new int[this.numInputs][3];
 		this.goalHue			= new int[this.numInputs][3];
 		this.canvasColor		= new int[this.numInputs][3];
-		for(int i = 0; i < this.canvasColor.length; i++)
+		for(int i = 0; i < this.colors.length; i++)
 		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.colors[i][j]	= this.rainbowColors[2][j];
+			}
 			this.canvasColor[i]	= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		}
 		this.colorAdd			= new int[this.numInputs][3];
@@ -568,7 +572,9 @@ public class ModuleMenu extends MenuTemplate  {
 				{
 					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor[0]);
 				} else {
-					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.rainbowColors[this.majMinChrom][colorSelectPos]))[1];
+					System.out.println("colorSelectPos = " + colorSelectPos);
+//					this.colors[colorSelectPos]	= this.rainbowColors[this.majMinChrom][colorSelectPos];
+					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.colors[this.currentInput][colorSelectPos]))[1];
 					colorSelectPos	= colorSelectPos + 1;
 				}
 
@@ -1448,6 +1454,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
+//			System.out.println("We're below the threshold....");
 			this.nowBelow[inputNum]	= true;
 
 			for(int i = 0; i < this.goalHue[inputNum].length; i++)
@@ -1459,6 +1466,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.nowBelow[inputNum]	= false;
 
 			this.goalHue[inputNum]	= this.applyThresholdSBModulate(curAmp, inputNum, position);
+
+			System.out.println("Now we're above it! applying the threshold modulate; goalHue = rgb("
+					+ this.goalHue[inputNum][0] + ", " + this.goalHue[inputNum][0] + ", "+ this.goalHue[inputNum][0] + ")");
 		} // else
 
 		if(this.checkpoint[inputNum] < this.parent.millis())
@@ -2993,8 +3003,9 @@ public class ModuleMenu extends MenuTemplate  {
 			endBeforeThis	= this.currentInput + 1;
 		}
 
-		// if from ColorSelect:
-		if(id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length))
+		// if from ColorSelect or canvasColorSelect:
+		if(( id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length ) ) 
+				|| (id == this.canvasColorSelectId) )
 		{
 			colorPos	= id - this.firstColorSelectCWId;
 		} else if(id >= this.firstSpecialColorsCWId && id < (this.firstSpecialColorsCWId + this.specialColorsPos[0].length))
@@ -3007,7 +3018,8 @@ public class ModuleMenu extends MenuTemplate  {
 			this.applySpecialColors();
 
 		} else {
-			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors.");
+			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors;" + 
+					"firstColorSelectCWID = " + this.firstColorSelectCWId + ".");
 		}
 
 		System.out.println("  ----- colorPos = " + colorPos);
@@ -3030,23 +3042,12 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			} else {
 				// colors that are not canvasColor:
-				//				this.setColor(colorPos, color, i, true);
-				//				this.setColorSelectCW(colorPos, color);
-				if(this.firstSpecialColorsCWId > 0)
-				{
-					//					this.setSpecialColorsCW(colorPos, color);
-				}
+				this.colors[i][colorPos][0]	= color.getRed();
+				this.colors[i][colorPos][1]	= color.getGreen();
+				this.colors[i][colorPos][2]	= color.getBlue();
 			} // else - not canvas
 
-			this.colors[i][colorPos][0]	= color.getRed();
-			this.colors[i][colorPos][1]	= color.getGreen();
-			this.colors[i][colorPos][2]	= color.getBlue();
 
-			if(!this.fromColorSelect[i])
-			{
-				//				System.out.println("not from colorSelect; applying specialColors.");
-				//				this.applySpecialColors();
-			}
 
 		} // for
 
