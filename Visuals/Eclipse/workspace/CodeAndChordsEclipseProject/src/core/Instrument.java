@@ -237,7 +237,7 @@ public class Instrument {
 		this.release	= Instrument.adsrPresets[presetNum][3];
 		
 
-		System.out.println("setADSR(int presetNum): " + attack + " / " + decay + " / " + sustain + " / " + release);
+//		System.out.println("setADSR(int presetNum): " + attack + " / " + decay + " / " + sustain + " / " + release);
 
 	} // adsrPresets
 	
@@ -248,7 +248,7 @@ public class Instrument {
 		this.sustain = s;
 		this.release = r;
 		
-		System.out.println("setADSR(float, float, float, float): " + a + " / " + d + " / " + s + " / " + r);
+//		System.out.println("setADSR(float, float, float, float): " + a + " / " + d + " / " + s + " / " + r);
 	}
 	
 	public float[] getADSR()
