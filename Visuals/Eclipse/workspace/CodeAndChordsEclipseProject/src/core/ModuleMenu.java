@@ -2531,6 +2531,7 @@ public class ModuleMenu extends MenuTemplate  {
 					} else {
 						toggleArray[i].setState(true);
 						this.curRangeSegments	= (int)toggleArray[i].internalValue();
+						this.resetThresholds(this.currentInput);
 					}
 
 					// set broadcasting back to original setting:
