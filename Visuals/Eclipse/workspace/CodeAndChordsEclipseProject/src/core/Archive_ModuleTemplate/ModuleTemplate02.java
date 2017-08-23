@@ -1,4 +1,4 @@
-package core;
+package core.Archive_ModuleTemplate;
 
 import java.awt.Color;
 
@@ -15,6 +15,8 @@ import controlP5.Textfield;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PShape;
+import core.Input;
+import core.ModuleMenu;
 import core.Shape;
 import module_02.Module_02_AmplitudeHSB;
 
@@ -26,13 +28,13 @@ import module_02.Module_02_AmplitudeHSB;
  * @author Emily Meuer
  *
  */
-public class ModuleTemplate02 extends ModuleTemplate {
+public class ModuleTemplate02 extends ModuleMenu {
 
 	/**	holds the y values for all Controllers	*/
-	private	int[]	yVals;
+//	private	int[]	yVals;
 
 	/**	Amplitude thresholds	*/
-	private	float[]	thresholds;
+//	private	float[]	thresholds;
 
 	/**	The highest amplitude threshold	*/
 //	private	float	forteThreshold;
@@ -48,7 +50,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 	private Module_02_AmplitudeHSB module2;
 
-	private boolean shapeMenuIsOpen;
+//	private boolean shapeMenuIsOpen;
 
 	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
 	//	private	float[]	satBrightPercentVals;
@@ -63,12 +65,15 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 */
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
-		super(parent, input, sidebarTitle, 4);
+		super(parent, null, input, sidebarTitle, 4);
 
 		this.module2 = (Module_02_AmplitudeHSB) parent;
 
-		this.shapeMenuIsOpen = false;
+//		this.shapeMenuIsOpen = false;
 
+		
+// Moved these calls to Module_02:
+/*
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
 		this.yVals[0]	= 26;
@@ -77,7 +82,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		{
 			this.yVals[i]	= this.yVals[i - 1] + distance;
 		}
-
+/*
 		// set amplitude thresholds
 		this.thresholds	= new float[] {
 				2,		// piano
@@ -87,7 +92,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		}; // thresholds
 		this.forteThreshold	= this.thresholds[this.thresholds.length - 1];
 		this.minThreshold	= 101;
-
+*/
 
 		/*
 		this.colors	= new float[][] {
@@ -111,6 +116,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		// already called addHideButtons in superclass with y-val of 26.
 
+		// 8/11: moved the following to Module_02:
+/*
 		// Have to addColorSelect() first so that everything else can access the colors:
 		String[]	buttonLabels	= new String[] {
 				"Canvas", "1", "2", "3", "4"
@@ -137,6 +144,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		this.addShapeCustomizationControls(this.yVals[16]);
 		//		this.initInput();
+		 * 
+		 */
 	} // constructor
 
 	/**
@@ -146,7 +155,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * @param hideY	y value at which this row should be added
 	 */
 	@Override
-	protected void addHideButtons(int hideY)
+	public void addHideButtons(int hideY)
 	{
 		int	hideWidth   = 69;
 		int hideSpace	= 4;
@@ -172,18 +181,18 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				thresholdsX
 		};
 
-		this.sidebarCP5.addTextlabel("hide")
+		this.controlP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Hide");
 
 		for(int i = 0; i < names.length; i++)
 		{
-			this.sidebarCP5.addToggle(names[i])
+			this.controlP5.addToggle(names[i])
 			.setPosition(xVals[i], hideY)
 			.setWidth(hideWidth)
 			.setGroup("sidebarGroup");
-			this.sidebarCP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
+			this.controlP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
 		}
 
 		this.showScale	= true;
@@ -195,7 +204,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * 
 	 * @param goalHuePos	current position in the threshold list; used to show the user their general amplitude level
 	 */
-	public void legend(int goalHuePos)
+/*	public void legend(int goalHuePos)
 	{
 		this.parent.textSize(24);
 
@@ -220,7 +229,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			 */
 			//			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
 			//			this.parent.fill(this.legendColors[i][0], this.legendColors[i][1], this.legendColors[i][2]);
-			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
+/*			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
 
 
 			if (i == goalHuePos) {
@@ -234,7 +243,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 
 	} // legend
-
+*/
+	
 	/**
 	 * Adds the "Color: Forte Threshold", "Saturation", "Saturation: Forte Threshold", 
 	 * "Brightness", and "Brightness: Forte Threshold" group of Sliders/Textfields
@@ -277,7 +287,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		for(int i = 0; i < names.length; i++)
 		{			
-			this.sidebarCP5.addLabel(names[i])
+			this.controlP5.addLabel(names[i])
 			.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)))
 			.setValue(labels[i])
 			.setGroup("sidebarGroup");
@@ -285,7 +295,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			// Forte Thresholds
 			if(i % 2 == 0)
 			{
-				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				this.controlP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, yVal + (i * (verticalSpacer + this.sliderHeight)))
 				.setSize(this.sliderWidth, this.sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
@@ -297,10 +307,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 				this.nextSliderId	= this.nextSliderId + 1;
 
-				this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
+				this.controlP5.addTextfield("textfield" + this.nextSTextfieldId)
 				.setPosition(textfieldX, yVal + (i * (verticalSpacer + this.sliderHeight)))
 				.setWidth(this.textfieldWidth)
-				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+				.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
 				.setId(this.nextSTextfieldId)
@@ -313,7 +323,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			// percent sliders
 			if(i % 2 == 1)
 			{
-				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				this.controlP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
 				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
 				.setRange(-1, 1)
@@ -370,7 +380,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				x5
 		};
 
-		this.sidebarCP5.addTextlabel("colorSelect")
+		this.controlP5.addTextlabel("colorSelect")
 		.setPosition(labelX, yVal + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Color Select");
@@ -417,7 +427,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 					"; curColor[1] = " + curColor[1] +
 					"; curColor[2] = " + curColor[2]);
 
-			this.sidebarCP5.addButton("button" + this.nextButtonId)
+			this.controlP5.addButton("button" + this.nextButtonId)
 			.setPosition(xVals[i], yVal)
 			.setWidth(colorSelectWidth)
 			.setCaptionLabel(labels[i])
@@ -427,7 +437,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 			this.nextButtonId	= this.nextButtonId + 1;
 
-			this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+			this.controlP5.addColorWheel("colorWheel" + this.nextColorWheelId)
 			.setPosition(xVals[i], yVal - 200)
 			.setRGB(this.parent.color(curColor[0], curColor[1], curColor[2]))
 			.setLabelVisible(false)
@@ -439,7 +449,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 			if(i > 3)	{	textfieldWidth	= textfieldWidth - colorSelectSpace;	}
 
-			this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+			this.controlP5.addTextfield("textfield" + this.nextCWTextfieldId)
 			.setPosition(xVals[i] + colorSelectWidth + colorSelectSpace, yVal)
 			.setWidth(textfieldWidth)
 			.setAutoClear(false)
@@ -454,59 +464,59 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	} // addColorSelectButtons
 	 */
 
-
+/*
 	protected void addShapeCustomizationControls(int yVal)
 	{
-		this.sidebarCP5.addButton("shapeMenuButton")
+		this.controlP5.addButton("shapeMenuButton")
 		.setPosition(30, yVal)
 		.setHeight(30)
 		.setWidth(250)
 		.setLabel("Shape Menu")
 		.setGroup("sidebarGroup");
 
-		this.sidebarCP5.addGroup("shapeMenuGroup");
+		this.controlP5.addGroup("shapeMenuGroup");
 
 
 		int fb = new Color((int)0,(int)0,(int)0, (int)250).getRGB();
 		CColor fadedBackground = new CColor();
 		//fadedBackground.setAlpha();
 
-		this.sidebarCP5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
+		this.controlP5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		this.sidebarCP5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
+		this.controlP5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		((Slider) this.sidebarCP5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
+		((Slider) this.controlP5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		((Slider) this.sidebarCP5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
+		((Slider) this.controlP5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		this.sidebarCP5.addSlider("n1", 0, 10, 1, 15, 320, 150, 28)
+		this.controlP5.addSlider("n1", 0, 10, 1, 15, 320, 150, 28)
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		this.sidebarCP5.addSlider("n2", 0, 10, 1, 15, 370, 150, 28)
+		this.controlP5.addSlider("n2", 0, 10, 1, 15, 370, 150, 28)
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		this.sidebarCP5.addSlider("n3", 0, 10, 1, 15, 420, 150, 28)
+		this.controlP5.addSlider("n3", 0, 10, 1, 15, 420, 150, 28)
 		.setGroup("shapeMenuGroup")
 		.getCaptionLabel()
 		.hide();
 
-		this.sidebarCP5.addScrollableList("shapeSelect")
+		this.controlP5.addScrollableList("shapeSelect")
 		.setPosition(15,70)
 		.setSize(150, 100)
 		.setBarHeight(30)
@@ -517,10 +527,11 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 
 
-		this.sidebarCP5.getGroup("shapeMenuGroup")
+		this.controlP5.getGroup("shapeMenuGroup")
 		.setVisible(false);
 
 	}
+	*/
 
 	/**
 	 * Given the id of a ColorWheel or Textfield, returns the corresponding position in colors
@@ -547,7 +558,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
 	 * to recalculate the length of and values within this.thresholds.
 	 */
-	private	void resetThresholds()
+/*	private	void resetThresholds()
 	{
 		float	segmentValue;
 		if(this.curRangeSegments == 1)
@@ -566,7 +577,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.thresholds[i]	= this.threshold + segmentValue * i;
 		} // for
 	} // resetThresholds
-
+*/
+	
 	/**
 	 * Applies the values of the threshold saturation and brightness Sliders 
 	 * to the color of the ColorWheel at the given position and returns the affected color.
@@ -671,7 +683,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			System.out.println("colors[colorPos][0] = " + this.colors[colorPos][0]);
 		}
 		 */
-
+/*
 		// Re-calculate thresholds for dynamicSegment Buttons, lowThreshold and forteThreshold sliders:
 		if( ( (this.firstRangeSegmentsId > -1) && 
 				(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments) )
@@ -685,8 +697,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 			this.resetThresholds();
 		} // dynamic segment buttons
-
-
+*/
+/*
 		if(controlEvent.getName() == "shapeMenuButton")
 		{
 			//open the menu
@@ -694,16 +706,16 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 			//set the shape select list
 			System.out.println(this.module2.getShape().getShapeIndex());
-			this.sidebarCP5.getController("shapeSelect").setValue(this.module2.getShape().getShapeIndex());
+			this.controlP5.getController("shapeSelect").setValue(this.module2.getShape().getShapeIndex());
 
 			//make the shape menu visible
-			this.sidebarCP5.getGroup("shapeMenuGroup")
+			this.controlP5.getGroup("shapeMenuGroup")
 			.setVisible(false);
 
 			//hide the other controls
-			this.sidebarCP5.getGroup("sidebarGroup").setVisible(false);
+			this.controlP5.getGroup("sidebarGroup").setVisible(false);
 
-			this.sidebarCP5.getController("menuX").update();
+			this.controlP5.getController("menuX").update();
 
 			this.module2.setShapeEditorRunning(true);
 
@@ -712,10 +724,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		if(controlEvent.getName() == "shapeSelect")
 		{
-			this.module2.getShape().setShapeIndex((int) this.sidebarCP5.getController("shapeSelect").getValue());
+			this.module2.getShape().setShapeIndex((int) this.controlP5.getController("shapeSelect").getValue());
 		}
 
-
+*/
 
 	} // controlEvent
 
@@ -724,14 +736,21 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * 
 	 * @return	this.thresholds instance variable
 	 */
-	public float[] getThresholds()
+/*	public float[] getThresholds()
 	{
 		return this.thresholds;
 	}
-
-	public boolean getShapeMenuIsOpen()
+*/
+	
+/*	public boolean getShapeMenuIsOpen()
 	{
 		return this.shapeMenuIsOpen;
 	}
+	*/
+	
+	public void runMenu()
+	{
+		
+	} // runMenu
 
 } // ModuleTemplate02

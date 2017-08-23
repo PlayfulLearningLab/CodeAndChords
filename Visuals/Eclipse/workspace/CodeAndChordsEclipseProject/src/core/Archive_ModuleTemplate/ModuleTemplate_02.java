@@ -1,4 +1,4 @@
-package core;
+package core.Archive_ModuleTemplate;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -15,6 +15,9 @@ import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
+import core.Input;
+import core.Instrument;
+import core.Melody;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -26,7 +29,7 @@ import processing.core.PImage;
  * @author Emily Meuer
  *
  */
-public abstract class ModuleTemplate implements ControlListener  {
+public abstract class ModuleTemplate_02 implements ControlListener  {
 
 
 	/**
@@ -301,6 +304,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	protected	int	nextCWTextfieldId;	// Textfield under a ColorWheels
 	protected	int	nextToggleId;
 
+	
 	/**
 	 * Constructor
 	 * 
@@ -308,7 +312,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * @param input		Input for all audio input; will instantiate this.input
 	 * @param sidebarTitle	String designating the title of the module to which this template corresponds
 	 */
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int totalNumColorItems)
+	public ModuleTemplate_02(PApplet parent, Input input, String sidebarTitle, int totalNumColorItems)
 	{
 		this.parent			= parent;
 		this.input			= input;
@@ -361,14 +365,14 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.bpm			= 120;
 		this.majMinChrom	= 2;	// chromatic
 		this.rangeOctave	= 3;
-
+/*
 		this.nextSliderId		= 0;
 		this.nextSTextfieldId	= 100;
 		this.nextButtonId		= 200;
 		this.nextColorWheelId	= 300;
 		this.nextCWTextfieldId	= 400;
 		this.nextToggleId		= 500;
-
+*/
 		this.initModuleTemplate();
 	} // constructor
 
