@@ -51,7 +51,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-		this.input    = new Input(this);
+		this.input    = new Input(1, new AudioContext(), this);
 
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
