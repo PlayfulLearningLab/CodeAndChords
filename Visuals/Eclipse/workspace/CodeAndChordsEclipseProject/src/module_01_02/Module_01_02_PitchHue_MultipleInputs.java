@@ -159,7 +159,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		int	scaleDegree;
 		
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true) 
+		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		} // if keyPressed
