@@ -395,6 +395,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.fromColorSelect[i]		= true;
 			//			this.fromSpecialColors[i]	= false;
 			this.specialColorsPos[i]	= new int[totalNumColorItems];
+			// Getting ready for trichromatic:
+			this.specialColorsPos[i][1]	= 4;
+			this.specialColorsPos[i][2]	= 8;
 		}
 
 
@@ -2131,8 +2134,6 @@ public class ModuleMenu extends MenuTemplate  {
 					specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos3);
 					this.setSpecialColorsCW(specialColorsPos, this.getColor(this.specialColorsPos[i][2]));
 */
-					this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
-					this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 					
 					if(this.majMinChrom == 2)
 					{
@@ -2146,6 +2147,9 @@ public class ModuleMenu extends MenuTemplate  {
 						colorPos3	= 7;
 					} // else - colorPos for different scales
 				} // else - all but the first time
+				
+				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
+				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
 
 				this.specialColorsPos[i][0]	= 0;
@@ -2995,7 +2999,9 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			// if from specialColors:
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
-
+			
+			System.out.println("controlEvent - specialColors: colorPos = " + colorPos);
+			
 			this.applySpecialColors();
 
 		} else {
