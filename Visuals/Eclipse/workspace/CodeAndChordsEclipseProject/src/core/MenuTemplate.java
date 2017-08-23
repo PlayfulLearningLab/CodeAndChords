@@ -113,6 +113,9 @@ public abstract class MenuTemplate implements ControlListener {
 */
 		this.scale = .7f;
 		
+		this.controlP5	= new ControlP5(this.parent);
+		this.controlP5.addListener(this);
+		
 		// Creating the menuBackground:
 		this.menuBackground = this.parent.createShape();
 		
