@@ -198,6 +198,17 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		} // for
 		
 		this.menu.runMenu();
+		
+		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
+/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+				{
+					for(int i = 0; i < menu.trichromColors.length; i++)
+					{
+						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
+						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
+					}
+				} // if		
+*/
 
 	} // draw()
 	

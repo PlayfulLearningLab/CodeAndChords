@@ -32,6 +32,9 @@ import processing.core.PImage;
 public class ModuleMenu extends MenuTemplate  {
 
 	public int trichromCounts	= 0;
+	
+	// TODO - for testing trichromatic bug:
+//	public int[][] trichromColors;
 
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
@@ -1662,7 +1665,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// convert them both to RGB;
 		int[]	rgbVals1	= new int[3];
 		int[]	rgbVals2	= new int[3];
-		
+
 		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
 
 		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
@@ -1744,15 +1747,12 @@ public class ModuleMenu extends MenuTemplate  {
 				newColor[0]	= (int)(curColor[0] - (rDif * j * percent / 100));
 				newColor[1]	= (int)(curColor[1] - (gDif * j * percent / 100));
 				newColor[2]	= (int)(curColor[2] - (bDif * j * percent / 100));
-				
-				this.parent.fill(newColor[0], newColor[1], newColor[2]);
-				this.parent.ellipse(this.parent.width / 2, 10 * j, 20, 20);
 
-				System.out.println("newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
+				System.out.println("dichrom: newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
 
 				this.colors[i][j][0]	= newColor[0];
-				this.colors[i][j][0]	= newColor[1];
-				this.colors[i][j][0]	= newColor[2];
+				this.colors[i][j][1]	= newColor[1];
+				this.colors[i][j][2]	= newColor[2];
 				//			this.setColor(i, newColor, false);
 				/*			this.setColorSelectCW(i, newColor);
 			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
@@ -1762,7 +1762,7 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 				 */			
 			} // for - j
-			
+
 			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
 		} // for - i
 
@@ -1922,6 +1922,7 @@ public class ModuleMenu extends MenuTemplate  {
 		 */
 		// This array has the trichromatic spectrum:
 		int[][]	trichromColors	= new int[this.scaleLength][3];
+//		trichromColors	= new int[this.scaleLength][3];
 		trichromColors	= new int[this.scaleLength][3];
 
 		// fill first position with first color:
@@ -1946,8 +1947,8 @@ public class ModuleMenu extends MenuTemplate  {
 		trichromColors[color2pos][1]	= rgbVals2[1];
 		trichromColors[color2pos][2]	= rgbVals2[2];
 		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
-		Exception	e	= new Exception("Just detective work.");
-		e.printStackTrace();
+//		Exception	e	= new Exception("Just detective work.");
+//		e.printStackTrace();
 
 		// fill from second color to third color:
 		for(int i = color2pos + 1; i < color3pos; i++)
@@ -1978,22 +1979,27 @@ public class ModuleMenu extends MenuTemplate  {
 
 		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
-		for(int i = 0; i < this.colorSelect.length && trichromColorPos < trichromColors.length; i++)
+		for(int i = 0; i < this.colors.length; i++)
 		{
-			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
-			if(i == color2pos)
+
+			for(int j = 0; j < this.colorSelect.length && trichromColorPos < trichromColors.length; j++)
 			{
-				System.out.println("  Setting color at pos " + i + " to rgb(" + trichromColors[trichromColorPos][0] + ", " + trichromColors[trichromColorPos][1] + ", " + trichromColors[trichromColorPos][2] + ")");
-			}
-			//			this.setColor(i, trichromColors[trichromColorPos], false);
-			this.setColorSelectCW(i, rgbVals2);
+				trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][j];
+				if(j == color2pos)
+				{
+					System.out.println("  Setting color at pos " + j + " to rgb(" + trichromColors[trichromColorPos][0] + ", " + trichromColors[trichromColorPos][1] + ", " + trichromColors[trichromColorPos][2] + ")");
+				}
+				//			this.setColor(i, trichromColors[trichromColorPos], false);
+				/*			this.setColorSelectCW(i, rgbVals2);
 			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
 			if(specialColorsPos > -1)
 			{
 				this.setSpecialColorsCW(specialColorsPos, trichromColors[trichromColorPos]);
 			}
-
-		} // for
+				 */
+				this.colors[i][j]	= trichromColors[trichromColorPos];
+			} // for - j
+		} // for - i
 
 		this.fillHSBColors();
 	} //trichromatic_ThreeRGB
@@ -2081,8 +2087,8 @@ public class ModuleMenu extends MenuTemplate  {
 							+ " to dichromatic:\n\trgb(" + this.colors[this.currentInput][0][0] + ", " + this.colors[this.currentInput][0][1] + ", " + this.colors[this.currentInput][0][2]
 									+ ");\n\trgb(" + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][0]
 											+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][1]
-											+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][2] + ")");
-					
+													+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][2] + ")");
+
 					this.dichromatic_TwoRGB(this.colors[this.currentInput][0], this.colors[this.currentInput][this.colors[this.currentInput].length - 1], false);
 					//					this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 				}
@@ -2118,13 +2124,16 @@ public class ModuleMenu extends MenuTemplate  {
 							+ this.getColor(this.specialColorsPos[i][1])[2] + ", " + this.getColor(this.specialColorsPos[i][1])[2] + ")");
 					//					this.setColor(colorPos2, this.getColor(this.specialColorsPos[i][1]), false);
 					//					this.setColor(colorPos3, this.getColor(this.specialColorsPos[i][2]), false);
-					this.setColorSelectCW(colorPos2, this.getColor(this.specialColorsPos[i][1]));
+/*					this.setColorSelectCW(colorPos2, this.getColor(this.specialColorsPos[i][1]));
 					this.setColorSelectCW(colorPos3, this.getColor(this.specialColorsPos[i][2]));
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos2);
 					this.setSpecialColorsCW(specialColorsPos, this.getColor(this.specialColorsPos[i][1]));
 					specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos3);
 					this.setSpecialColorsCW(specialColorsPos, this.getColor(this.specialColorsPos[i][2]));
-
+*/
+					this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
+					this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
+					
 					if(this.majMinChrom == 2)
 					{
 						colorPos2	= 4;
@@ -3713,6 +3722,8 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 
 	public int[][] getCurHue()				{	return this.curHue;	}
+	
+	public int getCurColorStyle()			{	return this.curColorStyle;	}
 
 	/**
 	 * Returns the current attack, release, or transition value indicated by the parameter:
