@@ -530,6 +530,16 @@ public abstract class MenuTemplate implements ControlListener {
 		return this.scale;
 	}
 	
+	public float getCurrentScale()
+	{
+		if(this.isRunning)
+		{
+			return this.scale;
+		} else {
+			return 1;
+		}
+	} // getCurrentScale
+	
 	public ControlP5 getControlP5()
 	{
 		return this.controlP5;
