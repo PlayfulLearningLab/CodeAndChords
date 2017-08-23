@@ -63,7 +63,7 @@ public abstract class MenuTemplate implements ControlListener {
 	protected	int			leftAlign;
 	
 	/**	0 if Menu is closed, this.sidebarWidth if Menu is open	*/
-	protected	int			leftEdgeX;
+//	protected	int			leftEdgeX;
 
 	/**	X value for the Labels along the left edge of the Menu	*/
 	protected	int			labelX;
@@ -162,7 +162,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
 		this.sliderHeight		= this.parent.height / 26;
 
-		this.leftEdgeX	= 0;
+//		this.leftEdgeX	= 0;
 /*
 		this.nextSliderId		= 0;
 		this.nextSTextfieldId	= 100;
