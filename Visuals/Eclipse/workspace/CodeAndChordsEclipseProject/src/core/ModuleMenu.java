@@ -385,7 +385,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.nowBelow			= new boolean[this.numInputs];
 		this.fromColorSelect	= new boolean[this.numInputs];
 		//		this.fromSpecialColors	= new boolean[this.numInputs];
-		this.specialColorsPos	= new int[this.numInputs][totalNumColorItems];
+		this.specialColorsPos	= new int[this.numInputs][3];
 		for(int i = 0; i < this.colorReachedArray.length; i++)
 		{
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
@@ -394,10 +394,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 			this.fromColorSelect[i]		= true;
 			//			this.fromSpecialColors[i]	= false;
-			this.specialColorsPos[i]	= new int[totalNumColorItems];
+			
 			// Getting ready for trichromatic:
-			this.specialColorsPos[i][1]	= 4;
-			this.specialColorsPos[i][2]	= 8;
+			this.specialColorsPos[i]	= new int[] { 0, 4, 8 };
 		}
 
 
@@ -2354,9 +2353,9 @@ public class ModuleMenu extends MenuTemplate  {
 		//		this.controlP5.getGroup("sidebarGroup").setVisible(show);
 		if(show)
 		{
-			this.leftEdgeX 	= this.sidebarWidth;
+//			this.leftEdgeX 	= this.sidebarWidth;
 		} else {
-			this.leftEdgeX	= 0;
+//			this.leftEdgeX	= 0;
 		}
 
 	} // displaySidebar
@@ -2372,9 +2371,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		if(this.getIsRunning())
 		{
-			this.leftEdgeX	= this.sidebarWidth;
+//			this.leftEdgeX	= this.sidebarWidth;
 		} else {
-			this.leftEdgeX	= 0;
+//			this.leftEdgeX	= 0;
 		}
 	} // runMenu
 
@@ -2770,19 +2769,21 @@ public class ModuleMenu extends MenuTemplate  {
 		// Input Select dropdown:
 		if(controlEvent.getName() == "inputSelectDropdown")
 		{
-			// Save these colors:
-			for(int i = 0; i < this.colorSelect.length; i++)
+			// Save these colors: -- no longer necessary, since getColor() uses this.colors, too
+/*			for(int i = 0; i < this.colorSelect.length; i++)
 			{
 				this.colors[this.currentInput][i]	= this.getColor(i);
 			}
-
+*/
+			
 			// Switch to newly selected input num:
 			this.currentInput	= (int)controlEvent.getValue();
+			System.out.println("currentInput = " + this.currentInput);
 			// Turn off global:
 			((Toggle)this.controlP5.getController("global")).setState(false);
 
 			// Set the colorWheels to our new current input:
-			for(int i = 0; i < this.colorSelect.length; i++)
+/*			for(int i = 0; i < this.specialColorsPos[this.currentInput].length; i++)
 			{
 				//				this.setColor(i, this.colors[this.currentInput][i], false);
 				this.setColorSelectCW(i, this.colors[this.currentInput][i]);
@@ -2793,6 +2794,7 @@ public class ModuleMenu extends MenuTemplate  {
 			} // for - set ColorWheels
 
 			this.fillHSBColors();
+			*/
 		} // input select dropdown
 
 	} // controlEvent
@@ -3596,13 +3598,15 @@ public class ModuleMenu extends MenuTemplate  {
 	public void setSpecialColorsCW(int colorPos, int[] color)
 	{
 		// Error checking:
-		if(colorPos < 0 || colorPos >= this.specialColorsPos[0].length) {
+		if(colorPos < 0 || colorPos >= this.specialColorsPos[this.currentInput].length) {
 			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: int parameter " + colorPos + 
-					" is out of bounds; must be between 0 and " + (this.specialColorsPos[0].length - 1));
+					" is out of bounds; must be between 0 and " + (this.specialColorsPos[this.currentInput].length - 1));
 		}
 		if(color == null) {
 			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: float[] parameter is null.");
 		}
+		
+		System.out.println("\t---- this.specialColorsPos[this.currentInput].length = " + this.specialColorsPos[this.currentInput].length + "; problem specialColor pos = " + colorPos);
 
 		// Only do this if colorSelect CWs have actually been initialized:
 		if(this.firstSpecialColorsCWId > 0) 
@@ -3771,7 +3775,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.hueSatBrightnessMod[position]	= val;
 	}
 
-	public int getLeftEdgeX()				{	return this.leftEdgeX;	}
+//	public int getLeftEdgeX()				{	return this.leftEdgeX;	}
 
 	/**
 	 * Getter for showScale instance variable
