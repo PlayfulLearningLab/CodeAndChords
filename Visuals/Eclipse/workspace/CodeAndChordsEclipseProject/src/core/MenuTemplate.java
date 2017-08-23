@@ -116,6 +116,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.controlP5	= new ControlP5(this.parent);
 		this.controlP5.addListener(this);
 		
+		this.controlP5.addGroup("groupPlaceholder");
+		
 		// Creating the menuBackground:
 		this.menuBackground = this.parent.createShape();
 		
