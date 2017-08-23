@@ -131,7 +131,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void draw()
 	{
-//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 

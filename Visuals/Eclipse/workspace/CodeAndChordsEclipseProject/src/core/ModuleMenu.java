@@ -1466,9 +1466,6 @@ public class ModuleMenu extends MenuTemplate  {
 			this.nowBelow[inputNum]	= false;
 
 			this.goalHue[inputNum]	= this.applyThresholdSBModulate(curAmp, inputNum, position);
-
-			System.out.println("Now we're above it! applying the threshold modulate; goalHue = rgb("
-					+ this.goalHue[inputNum][0] + ", " + this.goalHue[inputNum][0] + ", "+ this.goalHue[inputNum][0] + ")");
 		} // else
 
 		if(this.checkpoint[inputNum] < this.parent.millis())
