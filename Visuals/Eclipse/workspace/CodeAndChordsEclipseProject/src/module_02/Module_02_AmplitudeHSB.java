@@ -199,9 +199,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		int[]	curHue	= this.menu.getCurHue()[0];		
 		this.fill(curHue[0], curHue[1], curHue[2]);
-		
-//		System.out.println("We think we're drawing a shape with color rgb(" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
-
 		//		this.fill(255);
 
 //		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
@@ -218,15 +215,10 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
 		pShape.stroke(curHue[0], curHue[1], curHue[2]);
 		pShape.rotate(this.shape.getRotation());
+		pShape.scale(this.menu.getCurrentScale());
 		pShape.endShape();
-/*
-<<<<<<< HEAD
-		if(this.moduleTemplate.getLeftEdgeX() == 0) this.shape(pShape, this.shape.getXPos(), this.shape.getYPos());
-		else this.shape(pShape, PApplet.map(this.shape.getXPos(), 0, 925, this.moduleTemplate.getLeftEdgeX(), 925), this.shape.getYPos());
 
-=======
-*/
-		this.shape(pShape, this.shape.getXPos(), this.shape.getYPos());
+		this.shape(pShape, this.menu.mapCurrentXPos(this.shape.getXPos()), this.menu.mapCurrentYPos(this.shape.getYPos()));
 		/*		
 		if(this.menu.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
 		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
@@ -262,9 +254,9 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void mousePressed()
 	{
-
 		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver())
 		{
+<<<<<<< HEAD
 			if((this.shapeEditor.getIsRunning() || this.menu.getIsRunning() ) && this.mouseX > this.width * (1 - this.shapeEditor.getScale()) && this.mouseY > this.height * (1 - this.shapeEditor.getScale()) && this.mouseX < this.width && this.mouseY < this.height)
 			{	
 				this.shape.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
@@ -279,8 +271,25 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shape.setYPos(this.mouseY);
 				//this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
 				//this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
+=======
+			// Map if running:
+			if(this.shapeEditor.getIsRunning() || this.menu.getIsRunning())
+			{	
+				this.shape.setXPos( this.shapeEditor.mapFullAppletXPos( Math.max( this.shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, this.shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				this.shape.setYPos( this.shapeEditor.mapFullAppletYPos( Math.max( this.shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, this.shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
+				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
 			}
-		}
+			else
+			{
+				// If neither are running, just keep w/in bounds:
+				this.shape.setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				this.shape.setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
+				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
+				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
+>>>>>>> master
+			}
+		} // if - not over either ControlP5
 	} // mouseClicked
 
 
