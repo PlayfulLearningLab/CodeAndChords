@@ -60,7 +60,7 @@ public class ModuleMenu extends MenuTemplate  {
 	/**
 	 * Colors roughly ROYGBIV; used for the rainbow() method.
 	 */
-	private int[][][] rainbowColors	= new int[][][] { 
+	private final int[][][] rainbowColors	= new int[][][] { 
 		new int[][] {
 			{ 255, 0, 0 }, 
 			{ 255, 0, 0 },
@@ -1922,7 +1922,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			divideBy1	= 3;
 			divideBy2	= 1;
-			divideBy3	= 2;
+			divideBy3	= 3;
 		}
 
 		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / divideBy1);
@@ -1968,7 +1968,6 @@ public class ModuleMenu extends MenuTemplate  {
 		trichromColors[color2pos][0]	= rgbVals2[0];
 		trichromColors[color2pos][1]	= rgbVals2[1];
 		trichromColors[color2pos][2]	= rgbVals2[2];
-		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
 //		Exception	e	= new Exception("Just detective work.");
 //		e.printStackTrace();
 
@@ -1998,6 +1997,11 @@ public class ModuleMenu extends MenuTemplate  {
 			trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
 			//			} // for - j
 		} // for - third color to first color
+		
+		System.out.println("Trichromatic 1st color = rgb(" + rgbVals1[0] + ", " + rgbVals1[1] + ", " + rgbVals1[2] + ")");
+		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
+		System.out.println("Trichromatic 3rd color = rgb(" + rgbVals3[0] + ", " + rgbVals3[1] + ", " + rgbVals3[2] + ")");
+
 
 		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
@@ -2060,6 +2064,7 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
+				System.out.println("this.rainbowColors[" + this.majMinChrom + "][" + j + "][0] = " + this.rainbowColors[this.majMinChrom][j][0]);
 				this.colors[i][j][0]	= this.rainbowColors[this.majMinChrom][j][0];
 				this.colors[i][j][1]	= this.rainbowColors[this.majMinChrom][j][1];
 				this.colors[i][j][2]	= this.rainbowColors[this.majMinChrom][j][2];
@@ -2094,10 +2099,18 @@ public class ModuleMenu extends MenuTemplate  {
 		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
 		{
 			//	if avoids errors during instantiation:
-			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100
-					)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)).lock();	}
-			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).lock();	}
-			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	
+			{	
+				this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)).lock();	
+			}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)		
+			{	
+				this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).lock();	
+			}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)		
+			{	
+				this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	
+			}
 
 			this.rainbow();
 		} // if - rainbow
@@ -2122,7 +2135,9 @@ public class ModuleMenu extends MenuTemplate  {
 				// and the two colors will be set to contrast.			
 				if(!this.dichromFlag)
 				{
-					this.dichromatic_OneRGB(this.colors[i][0]);
+					this.dichromatic_OneRGB(this.colors[i][0]);					
+//					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1], false);
+
 					//					this.dichromatic_OneRGB(this.getColor(0));
 
 					this.dichromFlag	= true;
@@ -2149,8 +2164,20 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
+			
+			int	startHere;
+			int	endBeforeThis;
+			
+			if(global)
+			{
+				startHere		= 0;
+				endBeforeThis	= this.colors.length;
+			} else {
+				startHere		= this.currentInput;
+				endBeforeThis	= this.currentInput + 1;
+			}
 
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = startHere; i < endBeforeThis; i++)
 			{
 
 				// Turned off the "first time/remaining times" because it's still pretty interesting
@@ -2158,18 +2185,16 @@ public class ModuleMenu extends MenuTemplate  {
 				// first time trichromatic has been called:
 				if(!this.trichromFlag)
 				{
-					this.trichromatic_OneRGB(this.getColor(0));
+					this.trichromatic_OneRGB(this.colors[i][0]);
 					this.trichromFlag	= true;
 				}
 				// every other time:
 				else
 				{
-					// TODO: colorPos2 and 3 are always going to be 4 and 8 when this is called?
-					System.out.println("Trichrom called more than one time");
+					// TODO: colorPos2 and 3 are always going to be 4 and 8 when this is called? Problem if in major/minor when calling for first time?
+
 					// This makes sure that, even if the positions of the specialColors change,
 					// the colors themselves will remain constant from one style/scale to the next:
-					System.out.println("	In setColorStyle, 2nd color = rgb(" + this.getColor(this.specialColorsPos[i][1])[0] + ", "
-							+ this.getColor(this.specialColorsPos[i][1])[2] + ", " + this.getColor(this.specialColorsPos[i][1])[2] + ")");
 					//					this.setColor(colorPos2, this.getColor(this.specialColorsPos[i][1]), false);
 					//					this.setColor(colorPos3, this.getColor(this.specialColorsPos[i][2]), false);
 /*					this.setColorSelectCW(colorPos2, this.getColor(this.specialColorsPos[i][1]));
@@ -2192,8 +2217,11 @@ public class ModuleMenu extends MenuTemplate  {
 						colorPos3	= 7;
 					} // else - colorPos for different scales
 				} // else - all but the first time
-				
-				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1]);
+
+				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
+						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
+				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
+						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
 				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
 				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
@@ -2206,7 +2234,7 @@ public class ModuleMenu extends MenuTemplate  {
 				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
 				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).unlock();	}
 
-				this.trichromatic_ThreeRGB(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
+				this.trichromatic_ThreeRGB(this.colors[i][0], this.colors[i][colorPos2], this.colors[i][colorPos3]);
 			} // for
 		} // Trichromatic
 
@@ -2673,12 +2701,6 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 			this.setColorStyle((int)curToggle.internalValue());
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
