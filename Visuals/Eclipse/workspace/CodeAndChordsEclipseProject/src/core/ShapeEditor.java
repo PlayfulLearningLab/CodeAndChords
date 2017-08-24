@@ -35,6 +35,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	private int		XPOS_ID;
 	private int		YPOS_ID;
 	private int		ROTATION_ID;
+	private int 	YSTRETCH_ID;
+	private int		XSTRETCH_ID;
 
 //	private ControlP5 cp5;
 
@@ -158,7 +160,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		float spacing = ((this.parent.height - 20) / numControllers) + 2;
 
 		for (int i = 0; i < numControllers; i++) {
-			yVals[i] = spacing * (i) + 175;
+			yVals[i] = spacing * (i) + 150;
 		}
 		
 		//TODO: how to write text
@@ -190,7 +192,13 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.ROTATION_ID = this.nextSliderId;
 		this.addSliderGroup((int) yVals[8], "rotation", -2*(float)Math.PI, 2 * (float)Math.PI, 0);
 		
-
+		this.XSTRETCH_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[9], "xStretch", .01f, 5, 1);
+		
+		this.YSTRETCH_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[10], "yStretch", .01f, 5, 1);
+		
+		
 		this.controlP5.addScrollableList("shapeSelect")
 		.setPosition(10, 10).setSize(240, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
@@ -282,6 +290,16 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.shape.setRotation(val);
 		}
 		
+		if(id == this.XSTRETCH_ID)
+		{
+			this.shape.setXStretch(val);
+		}
+		
+		if(id == this.YSTRETCH_ID)
+		{
+			this.shape.setYStretch(val);
+		}
+		
 		this.updateSliders();
 		
 	}
@@ -340,6 +358,16 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		if(this.shape.getRotation() != this.controlP5.getController("slider" + this.ROTATION_ID).getValue())
 		{
 			this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shape.getRotation());
+		}
+		
+		if(this.shape.getXStretch() != this.controlP5.getController("slider" + this.XSTRETCH_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.XSTRETCH_ID).setValue(this.shape.getXStretch());
+		}
+		
+		if(this.shape.getYStretch() != this.controlP5.getController("slider" + this.YSTRETCH_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shape.getYStretch());
 		}
 		
 	}
