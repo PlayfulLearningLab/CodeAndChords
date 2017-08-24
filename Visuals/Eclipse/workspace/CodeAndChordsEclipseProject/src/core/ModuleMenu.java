@@ -2057,9 +2057,11 @@ public class ModuleMenu extends MenuTemplate  {
 		
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
-			for(int j = 0; j < this.colors[i].length && j < this.rainbowColors[this.majMinChrom].length; j++)
+			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				this.colors[i][j]	= this.rainbowColors[this.majMinChrom][j];
+				this.colors[i][j][0]	= this.rainbowColors[this.majMinChrom][j][0];
+				this.colors[i][j][1]	= this.rainbowColors[this.majMinChrom][j][1];
+				this.colors[i][j][2]	= this.rainbowColors[this.majMinChrom][j][2];
 
 				//				this.setColor(i, this.rainbowColors[this.majMinChrom][i], true);this.setColorSelectCW(i, rgbVals2);
 				/*			
@@ -2119,7 +2121,7 @@ public class ModuleMenu extends MenuTemplate  {
 				// and the two colors will be set to contrast.			
 				if(!this.dichromFlag)
 				{
-					this.dichromatic_OneRGB(this.colors[this.currentInput][0]);
+					this.dichromatic_OneRGB(this.colors[i][0]);
 					//					this.dichromatic_OneRGB(this.getColor(0));
 
 					this.dichromFlag	= true;
@@ -2128,13 +2130,13 @@ public class ModuleMenu extends MenuTemplate  {
 				// (allows selection of 2nd color):
 				else
 				{
-					System.out.println("passing colors at positions 0 and " + (this.colors[this.currentInput].length - 1) 
+/*					System.out.println("passing colors at positions 0 and " + (this.colors[this.currentInput].length - 1) 
 							+ " to dichromatic:\n\trgb(" + this.colors[this.currentInput][0][0] + ", " + this.colors[this.currentInput][0][1] + ", " + this.colors[this.currentInput][0][2]
 									+ ");\n\trgb(" + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][0]
 											+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][1]
 													+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][2] + ")");
-
-					this.dichromatic_TwoRGB(this.colors[this.currentInput][0], this.colors[this.currentInput][this.colors[this.currentInput].length - 1], false);
+*/
+					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1], false);
 					//					this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 				}
 			} // for
@@ -2190,6 +2192,7 @@ public class ModuleMenu extends MenuTemplate  {
 					} // else - colorPos for different scales
 				} // else - all but the first time
 				
+				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1]);
 				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
 				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
@@ -2202,7 +2205,7 @@ public class ModuleMenu extends MenuTemplate  {
 				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
 				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).unlock();	}
 
-				this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
+				this.trichromatic_ThreeRGB(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
 			} // for
 		} // Trichromatic
 
@@ -2462,7 +2465,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(controlEvent.getController().getName().equals("play"))
 		{
 			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
-			this.input.pause(true);
+			this.input.pause(val);
 			this.outsideButtonsCP5.getController("pause").setVisible(val);
 			this.showPause	= val;
 
@@ -2966,7 +2969,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void buttonEvent(int id)
 	{
-		System.out.println("ModuleMenu: got buttonEvent with id " + id);
+		System.out.print("ModuleMenu: got buttonEvent with id " + id);
 
 		this.fillHSBColors();
 
@@ -2983,7 +2986,8 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 		
 		int	colorPos;
-		int	cwId	= (id % 101) + 301;
+		int	cwId	= (id % 100) + 300;
+		System.out.println("; cwId " + cwId + "; canvas id = " + this.canvasColorSelectId + "; specialColorsId = " + this.firstSpecialColorsCWId);
 		
 		// if from colorSelect, set the ColorWheel to the correct color:
 		if(cwId >= this.firstColorSelectCWId && cwId < (this.firstColorSelectCWId + colors[this.currentInput].length) && cwId != this.canvasColorSelectId)
@@ -3000,7 +3004,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		// If there are special colors, check to see if this color corresponds to one of them
 		// in order to correctly set the boolean flags:
-		if(this.firstSpecialColorsCWId > 0)
+/*		if(this.firstSpecialColorsCWId > 0)
 		{
 			// Either do everything once for the currentInput or do it for all inputs:
 			int	startHere;
@@ -3037,7 +3041,7 @@ public class ModuleMenu extends MenuTemplate  {
 				} // else - for CWs not in colorSelect
 			} // for
 */
-		} // if - specialColors
+//		} // if - specialColors
 	} // buttonEvent
 
 	/**

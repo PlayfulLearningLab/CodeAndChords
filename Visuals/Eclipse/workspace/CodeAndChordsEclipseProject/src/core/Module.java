@@ -14,7 +14,6 @@ public abstract class Module extends PApplet {
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
 	protected	Input			input;
 	
-
 	protected	int		numInputs;
 
 	protected	int[]	xVals;

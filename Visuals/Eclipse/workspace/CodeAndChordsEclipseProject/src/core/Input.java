@@ -393,7 +393,7 @@ public class Input {
 	 *  Fills the fundamentalArray and adjustedFundArray with the current pitches of each input line:
 	 */
 	public void setFund()
-	{ 
+	{
 		// catching a NullPointer because I'm not sure why it happens and fear a crash during a concert.
 		try
 		{
@@ -903,13 +903,18 @@ import beads.TimeStamp;
 	 * @param pause boolean indicating whether to pause or un-pause the Gain
 	 */
 	public void pause(boolean pause)
-	{		
+	{	
+		System.out.println("Input.pause: pause = " + pause);
 		this.pause	= pause;
 		
+		this.ac.out.pause(this.pause);
+		
+		/*
 		for(int i = 0; i < this.uGenArray.length; i++)
 		{
 			uGenArray[i].pause(pause);
 		}
+		*/
 	} // pause
 	
 
