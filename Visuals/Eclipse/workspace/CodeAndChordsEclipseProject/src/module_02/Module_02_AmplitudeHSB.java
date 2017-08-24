@@ -254,23 +254,22 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void mousePressed()
 	{
-		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver())
+		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
+		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			// Map if running:
 			if(this.shapeEditor.getIsRunning() || this.menu.getIsRunning())
 			{	
 				this.shape.setXPos( this.shapeEditor.mapFullAppletXPos( Math.max( this.shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, this.shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
 				this.shape.setYPos( this.shapeEditor.mapFullAppletYPos( Math.max( this.shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, this.shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
-				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
-				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
+				this.shapeEditor.updateSliders();
 			}
 			else
 			{
 				// If neither are running, just keep w/in bounds:
 				this.shape.setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
 				this.shape.setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
-				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
-				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
+				this.shapeEditor.updateSliders();
 			}
 		} // if - not over either ControlP5
 	} // mouseClicked

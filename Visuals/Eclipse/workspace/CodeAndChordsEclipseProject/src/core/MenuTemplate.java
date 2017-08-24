@@ -131,8 +131,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.menuBackground.vertex(0, this.parent.height);
 		this.menuBackground.vertex(0, 0);
 		
-		this.menuBackground.stroke(0);
-		this.menuBackground.fill(0);
+		this.menuBackground.stroke(20);
+		this.menuBackground.fill(20);
 		
 		this.menuBackground.endShape();
 		
@@ -178,10 +178,12 @@ public abstract class MenuTemplate implements ControlListener {
 		this.parent.strokeWeight(3);
 		this.parent.noFill();
 		
+	/*
 		this.parent.rect(	this.mapAdjustedMenuXPos(0), 
 							this.mapAdjustedMenuYPos(0), 
-							this.parent.width * this.scale - 3, 
-							this.parent.height * this.scale - 3 );
+							this.parent.width * this.scale + 3, 
+							this.parent.height * this.scale + 3 );
+	*/
 		//System.out.println(this.scale);
 		//System.out.println(this.mapAdjustedMenuXPos(0) + "    "  +  this.mapAdjustedMenuXPos(this.parent.width));
 		
