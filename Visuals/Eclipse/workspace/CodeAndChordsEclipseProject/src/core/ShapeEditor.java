@@ -25,6 +25,18 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	private Shape	shape;
 	
 	private	Module	module;
+	
+	
+	private int 	SIZE_ID;
+	private int		NUM_POINTS_ID;
+	private int		N1_ID;
+	private int		N2_ID;
+	private int		N3_ID;
+	private int		XPOS_ID;
+	private int		YPOS_ID;
+	private int		ROTATION_ID;
+	private int 	YSTRETCH_ID;
+	private int		XSTRETCH_ID;
 
 //	private ControlP5 cp5;
 
@@ -101,7 +113,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	{
 		super.runMenu();
 		
-		if(super.getIsRunning()) {
+		if(super.getIsRunning()) 
+		{
 			this.drawSE();
 		}
 		
@@ -141,129 +154,75 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 * side menu
 	 */
 	private void addMenuControls() {
-		int numControllers = 8;
+		int numControllers = 16;
 		float[] yVals = new float[(int) numControllers];
 
-		float spacing = ((this.parent.height - 100) / numControllers) + 2;
+		float spacing = ((this.parent.height - 20) / numControllers) + 2;
 
 		for (int i = 0; i < numControllers; i++) {
-			yVals[i] = spacing * (i) + 100;
+			yVals[i] = spacing * (i) + 150;
 		}
-
-		this.controlP5.addSlider("size", .01f, 3, 1, (int) 20, (int) yVals[0], 230, 28)
-				.getCaptionLabel()
-				.hide();
-
-		this.controlP5.addSlider("numPoints", .01f, 15, 1, (int) 20, (int) yVals[1],
-				(int) 230, 28).getCaptionLabel().hide();
-
-		((Slider) this.controlP5.addSlider("n1", .01f, 10, 1, (int) 20, (int) yVals[2],
-				(int) 230, 28)).getCaptionLabel().hide();
-
-		((Slider) this.controlP5.addSlider("n2", .01f, 10, 1, (int) 20, (int) yVals[3],
-				(int) 230, 28)).getCaptionLabel().hide();
-
-		((Slider) this.controlP5.addSlider("n3", .01f, 10, 1, (int) 20, (int) yVals[4],
-				(int) 230, 28)).getCaptionLabel().hide();
-
-		((Slider) this.controlP5.addSlider("xPos", -500, 1500, this.shape.getXPos(), (int) 20,
-				(int) yVals[5], (int) 230, 28)).getCaptionLabel().hide();
-
-		((Slider) this.controlP5.addSlider("yPos", -500, 1000, this.shape.getYPos(), (int) 20,
-				(int) yVals[6], (int) 230, 28)).getCaptionLabel().hide();
-
-		((Slider) this.controlP5.addSlider("rotation", -PConstants.PI * 2, PConstants.PI * 2, 0,
-				(int) 20, (int) yVals[7], (int) 230, 28))
-		.getCaptionLabel().hide();
-
-		this.controlP5.addLabel("sizeLabel")
-		.setPosition((int) 20, (float) (yVals[0] - (spacing / 3.5)))
-		.setValue("Shape Size");
-
-		this.controlP5.addLabel("numPointsLabel")
-		.setPosition((int) 20, (float) (yVals[1] - (spacing / 3.5)))
-		.setValue("Number of Points");
-
-		this.controlP5.addLabel("n1Label")
-		.setPosition(20, (float) (yVals[2] - (spacing / 3.5)))
-		.setValue("N1");
-
-		this.controlP5.addLabel("n2Label")
-		.setPosition((int) 20, (float) (yVals[3] - (spacing / 3.5)))
-		.setValue("N2");
-
-		this.controlP5.addLabel("n3Label")
-		.setPosition((int) 20, (float) (yVals[4] - (spacing / 3.5)))
-		.setValue("N3");
-
-		this.controlP5.addLabel("xPosLabel")
-		.setPosition((int) 20, (float) (yVals[5] - (spacing / 3.5)))
-		.setValue("X Position");
-
-		this.controlP5.addLabel("yPosLabel")
-		.setPosition((int) 20, (float) (yVals[6] - (spacing / 3.5)))
-		.setValue("Y Position");
-
-		this.controlP5.addLabel("rotationLabel")
-		.setPosition((int) 20, (float) (yVals[7] - (spacing / 3.5)))
-		.setValue("Rotation");
-
+		
+		//TODO: how to write text
+		this.parent.fill(255);
+		this.parent.stroke(255);
+		this.parent.text("Shape Editor", 10, yVals[0]);
+		
+		this.SIZE_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[1], "size", .01f, 3, 1);
+		
+		this.NUM_POINTS_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[2], "numPoints", 0, 15, 1);
+		
+		this.N1_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[3], "n1", .01f, 10, 1);
+		
+		this.N2_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[4], "n2", .01f, 10, 1);
+		
+		this.N3_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[5], "n3", .01f, 10, 1);
+		
+		this.XPOS_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[6], "xPos", -500, 1500, 0);
+		
+		this.YPOS_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[7], "yPos", -500, 1000, 0);
+		
+		this.ROTATION_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[8], "rotation", -2*(float)Math.PI, 2 * (float)Math.PI, 0);
+		
+		this.XSTRETCH_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[9], "xStretch", .01f, 5, 1);
+		
+		this.YSTRETCH_ID = this.nextSliderId;
+		this.addSliderGroup((int) yVals[10], "yStretch", .01f, 5, 1);
+		
+		
 		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(200, 5).setSize(150, 250)
+		.setPosition(10, 10).setSize(240, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
-		.setValue(0).close();
+		.setValue(0)
+		.setItemHeight(25)
+		.close();
 
 		this.controlP5.addButton("exitButton").setLabel("Close Shape Editor")
-		.setPosition(400, 5).setSize(150, 40);
+		.setPosition(this.parent.width - 160, 10)
+		.setSize(150, 40);
 
 	}
 
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
-
+		
+		super.controlEvent(theEvent);
+		
 		switch (theEvent.getName()) {
 
 		case "shapeSelect":
 			this.shape.setShapeIndex((int) theEvent.getValue());
+			this.updateSliders();
 			System.out.println(theEvent.getValue());
-			break;
-
-		case "size":
-			this.shape.setCurrentShape("supershape",
-					new float[] { theEvent.getValue(), theEvent.getValue(), -1, -1, -1, -1, -1 });
-			break;
-
-		case "numPoints":
-			float val = (float) Math.floor(theEvent.getValue());
-			if (val == 0)
-				theEvent.getController().setValue(.01f);
-			else
-				theEvent.getController().setValue(val);
-			this.shape.setCurrentShape("supershape", new float[] { -1, -1, val, val, -1, -1, -1 });
-			break;
-
-		case "n1":
-			this.shape.setCurrentShape("supershape", new float[] { -1, -1, -1, -1, theEvent.getValue(), -1, -1 });
-			break;
-
-		case "n2":
-			this.shape.setCurrentShape("supershape", new float[] { -1, -1, -1, -1, -1, theEvent.getValue(), -1 });
-			break;
-
-		case "n3":
-			this.shape.setCurrentShape("supershape", new float[] { -1, -1, -1, -1, -1, -1, theEvent.getValue() });
-			break;
-
-		case "xPos":
-			this.shape.setXPos(theEvent.getValue());
-			break;
-
-		case "yPos":
-			this.shape.setYPos(theEvent.getValue());
-			break;
-
-		case "rotation":
-			this.shape.setRotation(theEvent.getValue());
 			break;
 
 		case "exitButton":
@@ -285,6 +244,64 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	public void sliderEvent(int id, float val) {
 		// TODO Auto-generated method stub
 		
+		if(id == this.SIZE_ID)
+		{
+			this.shape.setCurrentShape("supershape", 
+										new float[] { val, val, -1, -1, -1, -1, -1 });
+		}
+		
+		if(id == this.NUM_POINTS_ID)
+		{
+			val = (float) Math.floor(val);
+			this.shape.setCurrentShape("supershape", 
+										new float[] { -1, -1, val, val, -1, -1, -1 });
+		}
+		
+		if(id == this.N1_ID)
+		{
+			this.shape.setCurrentShape("supershape", 
+					new float[] { -1, -1, -1, -1, val, -1, -1 });
+		}
+		
+		if(id == this.N2_ID)
+		{
+			this.shape.setCurrentShape("supershape", 
+					new float[] { -1, -1, -1, -1, -1, val, -1 });
+		}
+		
+		if(id == this.N3_ID)
+		{
+			this.shape.setCurrentShape("supershape", 
+					new float[] { -1, -1, -1, -1, -1, -1, val });
+		}
+		
+		if(id == this.XPOS_ID)
+		{
+			this.shape.setXPos(val);
+		}
+		
+		if(id == this.YPOS_ID)
+		{
+			this.shape.setYPos(val);
+		}
+		
+		if(id == this.ROTATION_ID)
+		{
+			this.shape.setRotation(val);
+		}
+		
+		if(id == this.XSTRETCH_ID)
+		{
+			this.shape.setXStretch(val);
+		}
+		
+		if(id == this.YSTRETCH_ID)
+		{
+			this.shape.setYStretch(val);
+		}
+		
+		this.updateSliders();
+		
 	}
 
 	@Override
@@ -296,6 +313,62 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	@Override
 	public void colorWheelEvent(int id, Color color) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public void updateSliders()
+	{
+		float[] param = this.shape.getCurrentParameters();
+		
+		if(param[0] != this.controlP5.getController("slider" + this.SIZE_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.SIZE_ID).setValue(param[0]);
+		}
+		
+		if(param[2] != this.controlP5.getController("slider" + this.NUM_POINTS_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.NUM_POINTS_ID).setValue(param[2]);
+		}
+		
+		if(param[4] != this.controlP5.getController("slider" + this.N1_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.N1_ID).setValue(param[4]);
+		}
+		
+		if(param[5] != this.controlP5.getController("slider" + this.N2_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.N2_ID).setValue(param[5]);
+		}
+		
+		if(param[6] != this.controlP5.getController("slider" + this.N3_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.N3_ID).setValue(param[6]);
+		}
+		
+		if(this.shape.getXPos() != this.controlP5.getController("slider" + this.XPOS_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.XPOS_ID).setValue(this.shape.getXPos());
+		}
+		
+		if(this.shape.getYPos() != this.controlP5.getController("slider" + this.YPOS_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.YPOS_ID).setValue(this.shape.getYPos());
+		}
+		
+		if(this.shape.getRotation() != this.controlP5.getController("slider" + this.ROTATION_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shape.getRotation());
+		}
+		
+		if(this.shape.getXStretch() != this.controlP5.getController("slider" + this.XSTRETCH_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.XSTRETCH_ID).setValue(this.shape.getXStretch());
+		}
+		
+		if(this.shape.getYStretch() != this.controlP5.getController("slider" + this.YSTRETCH_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shape.getYStretch());
+		}
 		
 	}
 
