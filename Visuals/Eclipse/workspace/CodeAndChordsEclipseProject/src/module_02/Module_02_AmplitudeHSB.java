@@ -51,7 +51,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-		this.input    = new Input(this);
+		this.input    = new Input(1, new AudioContext(), this);
 
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
@@ -265,28 +265,20 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver())
 		{
-			if(this.shapeEditor.getIsRunning() && this.shapeEditor.getControlP5().isVisible() && this.mouseX > this.width * (1 - this.shapeEditor.getScale()) && this.mouseY > this.height * (1 - this.shapeEditor.getScale()))
+			if((this.shapeEditor.getIsRunning() || this.menu.getIsRunning() ) && this.mouseX > this.width * (1 - this.shapeEditor.getScale()) && this.mouseY > this.height * (1 - this.shapeEditor.getScale()) && this.mouseX < this.width && this.mouseY < this.height)
 			{	
 				this.shape.setXPos(this.shapeEditor.mapFullAppletXPos(this.mouseX));
 				this.shape.setYPos(this.shapeEditor.mapFullAppletYPos(this.mouseY));
-				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
-				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
+				//this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
+				//this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
 
 			}
-			else if(!this.menu.getIsRunning() && !this.shapeEditor.getControlP5().isVisible())
+			else if(!this.shapeEditor.getIsRunning() && !this.menu.getIsRunning())
 			{
 				this.shape.setXPos(this.mouseX);
 				this.shape.setYPos(this.mouseY);
-				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
-				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
-
-			}
-			else if(this.mouseX > this.menu.mapAdjustedMenuXPos(0) && !this.shapeEditor.getControlP5().isVisible())
-			{
-				this.shape.setXPos(PApplet.map(this.mouseX - (this.width/3), 0, 2, 0, 3));
-				this.shape.setYPos(this.mouseY);
-				this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
-				this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
+				//this.shapeEditor.getControlP5().getController("xPos").setValue(this.shape.getXPos());
+				//this.shapeEditor.getControlP5().getController("yPos").setValue(this.shape.getYPos());
 			}
 		}
 	} // mouseClicked
