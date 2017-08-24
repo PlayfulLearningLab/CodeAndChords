@@ -229,7 +229,6 @@ public class Melody implements Runnable {
 			{
 				instrument.playNote(notes[i]);
 
-
 				if(this.input != null)
 				{
 					this.input.setFundamentalArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
