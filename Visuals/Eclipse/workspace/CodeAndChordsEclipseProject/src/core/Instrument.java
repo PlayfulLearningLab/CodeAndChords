@@ -260,5 +260,12 @@ public class Instrument {
 	{
 		return Instrument.adsrPresets;
 	} // getADSRPresets
+	
+	public float getGain()
+	{
+		System.out.println(this.gainEnvelope.getCurrentValue());
+		return this.gainEnvelope.getCurrentValue();
+	}
+	
 
 } // Instrument

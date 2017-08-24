@@ -218,11 +218,18 @@ public class Melody implements Runnable {
 		} // for - calculate midi notes
 
 		// This while loop is what keeps the melody repeating:
+		
+		int multiplyer = 700;
+		
 		while(this.melodyThreadRunning)
 		{
 
 			float	nextNoteStartTime	= parent.millis();
-
+			
+			if(this.input != null)
+			{
+				this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
+			}
 
 			// use the Note's duration to call instrument.play() at the appropriate time
 			for( int i = 0 ; i < notes.length - 1 && this.melodyThreadRunning; i++)
@@ -234,7 +241,7 @@ public class Melody implements Runnable {
 				{
 					this.input.setFundamentalArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
 					this.input.setAdjustedFundArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
-					this.input.setAmplitudeArray(new float[] { notes[i].getAmplitude() * 100 });
+					this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
 				}
 
 				nextNoteStartTime	= parent.millis() + notes[i].getDuration();
@@ -243,6 +250,11 @@ public class Melody implements Runnable {
 
 				while(parent.millis() < nextNoteStartTime && this.isRunning())	
 				{
+					if(this.input != null)
+					{
+						this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
+					}
+					
 					if(this.paused) { nextNoteStartTime = nextNoteStartTime + 12; }
 					Thread.sleep(10);
 				}
