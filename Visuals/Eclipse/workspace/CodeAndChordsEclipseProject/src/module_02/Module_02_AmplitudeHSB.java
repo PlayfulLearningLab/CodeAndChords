@@ -255,7 +255,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	public void mousePressed()
 	{
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
-		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver())
+		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			// Map if running:
 			if(this.shapeEditor.getIsRunning() || this.menu.getIsRunning())
