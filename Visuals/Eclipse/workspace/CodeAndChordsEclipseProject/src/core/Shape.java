@@ -338,4 +338,12 @@ public class Shape {
 		return this.rotation;
 	}
 	
+	public float[] getCurrentParameters()
+	{
+		System.out.println("------------------------------------------------------------");
+		for(int i = 0; i < 7; i++)
+			System.out.println(this.currentShapeParameters[this.shapeIndex][i]);
+		return this.currentShapeParameters[this.shapeIndex];
+	}
+	
 }//Shapes

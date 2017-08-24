@@ -149,6 +149,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		for (int i = 0; i < numControllers; i++) {
 			yVals[i] = spacing * (i) + 100;
 		}
+				
 
 		this.controlP5.addSlider("size", .01f, 3, 1, (int) 20, (int) yVals[0], 230, 28)
 				.getCaptionLabel()

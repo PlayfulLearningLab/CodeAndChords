@@ -180,8 +180,8 @@ public abstract class MenuTemplate implements ControlListener {
 		
 		this.parent.rect(	this.mapAdjustedMenuXPos(0), 
 							this.mapAdjustedMenuYPos(0), 
-							this.parent.width * this.scale - 3, 
-							this.parent.height * this.scale - 3 );
+							this.parent.width * this.scale + 3, 
+							this.parent.height * this.scale + 3 );
 		//System.out.println(this.scale);
 		//System.out.println(this.mapAdjustedMenuXPos(0) + "    "  +  this.mapAdjustedMenuXPos(this.parent.width));
 		
