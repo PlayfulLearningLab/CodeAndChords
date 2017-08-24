@@ -2088,7 +2088,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 					this.dichromFlag	= true;
 				} // first time
-				// After the first time, use current color values
+				// After the fjrst tjme, use current color values
 				// (allows selection of 2nd color):
 				else
 				{
@@ -2207,19 +2207,20 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void applyHSBModulate()
 	{
-		for(int j = 0; j < this.numInputs; j++)
+		if(this.hsbColors == null)	{	this.fillHSBColors();	}
+		
+		for(int i = 0; i < this.colors.length; i++)
 		{
+//			if(this.firstColorSelectCWId > 0)
+//			{
 
-			if(this.firstColorSelectCWId > 0)
-			{
-				if(this.hsbColors == null)	{	this.fillHSBColors();	}
 
-				float[] hsb 			= new float[3];
-
-				for (int i = 0; i < this.colorSelect.length; i++)
+				for (int j = 0; j < this.colors[i].length; j++)
 				{
+					float[] hsb 			= new float[3];
+					
 					// Converts this position of hsbColors from RGB to HSB:
-					Color.RGBtoHSB(this.hsbColors[j][i][0], this.hsbColors[j][i][1], this.hsbColors[j][i][2], hsb);
+					Color.RGBtoHSB(this.hsbColors[i][j][0], this.hsbColors[i][j][1], this.hsbColors[i][j][2], hsb);
 
 					// Applies the status of the sliders to the newly-converted color:
 					hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
@@ -2229,20 +2230,23 @@ public class ModuleMenu extends MenuTemplate  {
 					// Converts the color back to RGB:
 					int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
 					Color a = new Color(oc);
-
+					
+					this.colors[i][j]	= new int[] { a.getRed(), a.getGreen(), a.getBlue() };
+					
 					// Sets the ColorWheels to the newly modded color:
 					//					this.setColor(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() }, false);
-					this.setColorSelectCW(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
+/*					this.setColorSelectCW(i, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
 					if(specialColorsPos > -1)
 					{
 						this.setSpecialColorsCW(specialColorsPos, new int[] { a.getRed(), a.getGreen(), a.getBlue() });
 					}
+					*/
 					//			((ColorWheel)this.controlP5.getController("colorWheel" + id)).setRGB(a.getRGB());
 				} // for 
-			} else {
-				System.out.println("ModuleTemplate.applyHSBModulate: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set ColorWheels.");
-			} // else - let the user know that CWs not there and we didn't set them
+//			} else {
+//				System.out.println("ModuleTemplate.applyHSBModulate: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set ColorWheels.");
+//			} // else - let the user know that CWs not there and we didn't set them
 		} // for
 
 	} // applyHSBModulate
@@ -2531,6 +2535,7 @@ public class ModuleMenu extends MenuTemplate  {
 					} else {
 						toggleArray[i].setState(true);
 						this.curRangeSegments	= (int)toggleArray[i].internalValue();
+						this.resetThresholds(this.currentInput);
 					}
 
 					// set broadcasting back to original setting:
