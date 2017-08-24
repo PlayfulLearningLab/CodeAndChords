@@ -110,7 +110,9 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.menu.addThresholdSliders(0, yVals[11], verticalSpacer);
 
 				this.menu.addShapeCustomizationControls(this.yVals[16]);
-
+				
+				this.menu.getInstrument().setADSR(1000, 500, 0, 0);
+				this.menu.setBPM(30);
 
 				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
 				//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);

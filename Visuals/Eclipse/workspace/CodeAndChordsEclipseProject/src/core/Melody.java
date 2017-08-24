@@ -435,6 +435,11 @@ public class Melody implements Runnable {
 
 		this.scale	= newScale.toLowerCase();
 	}
+	
+	public void setBPM(int bpm)
+	{
+		this.bpm = bpm;
+	}
 
 
 	/**

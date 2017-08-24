@@ -473,8 +473,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.melody			= new Melody(this.parent, this.input);
 		this.instrument		= new Instrument(this.parent);
-		this.instrument.setADSR(1000, 500, 0, 0);
-		this.bpm			= 30;
+		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
@@ -4065,5 +4064,15 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.outsideButtonsCP5;
 	}
+	
+	public Instrument getInstrument()
+	{
+		return this.instrument;
+	}
 
+	public void setBPM(int bpm)
+	{
+		this.bpm = bpm;
+	}
+	
 } // ModuleTemplate
