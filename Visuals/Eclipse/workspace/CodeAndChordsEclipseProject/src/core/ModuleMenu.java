@@ -4234,6 +4234,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getSliderHeight() {
 		return this.sliderHeight;
 	}
+	
+	public ControlP5 getOutsideButtonsCP5()
+	{
+		return this.outsideButtonsCP5;
+	}
 
 	public ControlP5 getOutsideButtonsCP5()
 	{
