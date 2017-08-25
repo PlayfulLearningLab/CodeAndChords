@@ -1336,7 +1336,8 @@ public class ModuleMenu extends MenuTemplate  {
 		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
 		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.setColorStyle(ModuleMenu.CS_RAINBOW);
+	//	this.setColorStyle(ModuleMenu.CS_RAINBOW);
+		this.controlP5.getController("rainbow").update();
 	} // addColorStyleButtons
 
 
@@ -1626,7 +1627,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// (allows selection of 2nd color):
 			else
 			{
-				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1));
 			}
 
 		} // Dichromatic
@@ -1708,7 +1709,7 @@ public class ModuleMenu extends MenuTemplate  {
 		rgbVals2[1]	= rgbColor2.getGreen();
 		rgbVals2[2]	= rgbColor2.getBlue();	
 
-		this.dichromatic_TwoRGB(rgbVals1, rgbVals2, true);
+		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
 	} // dichromatic_OneHSB(int)
 
 
@@ -1718,7 +1719,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param rgbVals1	float[] of rgb values defining tonicColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
-	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
+	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
@@ -1748,17 +1749,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
 
-		int[]	curColor	= this.getColor(0);
+		int[]	curColor;
 		int[]	newColor	= new int[3];
-
-		// Loop through red, then green, then blue
-		// (could do it like normal, but then would have to calculate difference each time;
-		// those who save processor cycles store up treasure in Heaven):
-		/*		for(int i = 0; i < 3; i++)
-		{
-			difference	= rgbVals1[i] - rgbVals2[i];
-		 */
-
 		int	startHere;
 		int	endBeforeThis;
 
@@ -1773,6 +1765,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
+			curColor	= this.colors[i][0];
+			
 			for(int j = 0; j < this.colors[i].length - 1; j++)
 			{
 				// Take the percent of the difference multiplied by the position in the array,
@@ -2150,9 +2144,7 @@ public class ModuleMenu extends MenuTemplate  {
 				if(!this.dichromFlag)
 				{
 					this.dichromatic_OneRGB(this.colors[i][0]);					
-					//					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1], false);
-
-					//					this.dichromatic_OneRGB(this.getColor(0));
+//					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1]);
 
 					this.dichromFlag	= true;
 				} // first time
@@ -2166,7 +2158,7 @@ public class ModuleMenu extends MenuTemplate  {
 											+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][1]
 													+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][2] + ")");
 					 */
-					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1], false);
+					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1]);
 					//					this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 				}
 			} // for
