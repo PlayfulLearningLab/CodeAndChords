@@ -57,9 +57,10 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	public void setup() 
 	{
 		// TODO: test with more inputs than are supported
-		this.input	= new Input(2, this);
-//		this.input	= new Input(16, true, this);
-		this.numInputs	= this.input.getAdjustedNumInputs();
+//		this.input	= new Input(2, this);
+		this.input	= new Input(16, true, this);
+		this.totalNumInputs	= this.input.getAdjustedNumInputs();
+		this.curNumInputs	= 2;
 		
 		this.setSquareValues();
 		
@@ -166,7 +167,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			this.menu.setMenuVal();
 		} // if keyPressed
 		
-		for(int i = 0; i < this.menu.getCurNumInputs(); i++)
+		for(int i = 0; i < this.curNumInputs; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));

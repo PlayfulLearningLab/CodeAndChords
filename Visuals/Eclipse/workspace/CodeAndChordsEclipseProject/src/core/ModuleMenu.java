@@ -295,7 +295,7 @@ public class ModuleMenu extends MenuTemplate  {
 	//	protected	boolean[]	fromSpecialColors;
 
 	/**	The current number of input lines	*/
-	protected	int	numInputs;
+//	protected	int	numInputs;
 
 	/**	If true, adjustments to Controllers affect all inputs	*/
 	protected	boolean	global;
@@ -360,7 +360,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.sliderWidth	= 170;
 		this.sliderHeight	= 20;
 		 */
-		this.numInputs		= this.input.getAdjustedNumInputs();
+//		this.numInputs		= this.input.getAdjustedNumInputs();
 		this.global			= true;
 		this.currentInput	= 0;
 
@@ -368,11 +368,11 @@ public class ModuleMenu extends MenuTemplate  {
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
-		this.colors				= new int[this.numInputs][totalNumColorItems][3];
-		this.hsbColors			= new int[this.numInputs][totalNumColorItems][3];
-		this.curHue				= new int[this.numInputs][3];
-		this.goalHue			= new int[this.numInputs][3];
-		this.canvasColor		= new int[this.numInputs][3];
+		this.colors				= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
+		this.hsbColors			= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
+		this.curHue				= new int[this.module.getTotalNumInputs()][3];
+		this.goalHue			= new int[this.module.getTotalNumInputs()][3];
+		this.canvasColor		= new int[this.module.getTotalNumInputs()][3];
 		for(int i = 0; i < this.colors.length; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
@@ -381,15 +381,15 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 			this.canvasColor[i]	= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		}
-		this.colorAdd			= new int[this.numInputs][3];
-		this.colorRange			= new int[this.numInputs][3];
+		this.colorAdd			= new int[this.module.getTotalNumInputs()][3];
+		this.colorRange			= new int[this.module.getTotalNumInputs()][3];
 
-		this.colorReachedArray	= new boolean[this.numInputs][3];
-		this.colorReached		= new boolean[this.numInputs];
-		this.nowBelow			= new boolean[this.numInputs];
-		this.fromColorSelect	= new boolean[this.numInputs];
-		//		this.fromSpecialColors	= new boolean[this.numInputs];
-		this.specialColorsPos	= new int[this.numInputs][3];
+		this.colorReachedArray	= new boolean[this.module.getTotalNumInputs()][3];
+		this.colorReached		= new boolean[this.module.getTotalNumInputs()];
+		this.nowBelow			= new boolean[this.module.getTotalNumInputs()];
+		this.fromColorSelect	= new boolean[this.module.getTotalNumInputs()];
+		//		this.fromSpecialColors	= new boolean[this.module.getTotalNumInputs()];
+		this.specialColorsPos	= new int[this.module.getTotalNumInputs()][3];
 		for(int i = 0; i < this.colorReachedArray.length; i++)
 		{
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
@@ -407,9 +407,9 @@ public class ModuleMenu extends MenuTemplate  {
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
 
-		this.attRelTranPos	= new int[this.numInputs];
-		this.attRelTranVals	= new float[this.numInputs][3];
-		this.checkpoint		= new int[this.numInputs];
+		this.attRelTranPos	= new int[this.module.getTotalNumInputs()];
+		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
+		this.checkpoint		= new int[this.module.getTotalNumInputs()];
 		for(int i = 0; i < this.attRelTranPos.length; i++)
 		{
 			this.attRelTranPos[i]	= 0;	// 0 = attack, 1 = release, 2 = transition
@@ -426,9 +426,9 @@ public class ModuleMenu extends MenuTemplate  {
 		this.totalRangeSegments	= totalNumColorItems;
 		this.curRangeSegments	= totalNumColorItems;
 
-		this.thresholds		= new int[this.numInputs][totalNumColorItems];
-		this.pianoThreshold	= new int[this.numInputs];
-		this.forteThreshold	= new int[this.numInputs];
+		this.thresholds		= new int[this.module.getTotalNumInputs()][totalNumColorItems];
+		this.pianoThreshold	= new int[this.module.getTotalNumInputs()];
+		this.forteThreshold	= new int[this.module.getTotalNumInputs()];
 		for(int i = 0; i < this.thresholds.length; i++)
 		{
 			this.pianoThreshold[i]	= 10;
@@ -1349,7 +1349,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(xVal + this.labelX, yVal + 4)
 		.setStringValue("Input:");
 
-		String[]	listItems	= new String[this.numInputs];
+		String[]	listItems	= new String[this.module.getTotalNumInputs()];
 		for(int i = 0; i < listItems.length; i++)
 		{
 			listItems[i]	= (i + 1) + "";
@@ -2132,7 +2132,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// Dichromatic:
 		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
 		{
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
 
 				this.specialColorsPos[i][0]	= 0;
@@ -2411,7 +2411,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	void fillHSBColors()
 	{
 		if(this.hsbColors == null) {
-			this.hsbColors = new int[this.numInputs][this.colorSelect.length][3];
+			this.hsbColors = new int[this.module.getTotalNumInputs()][this.colorSelect.length][3];
 		}
 
 		// Only do this after the colors have been initialized:
@@ -2895,7 +2895,7 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			System.out.println("A left click from numInputsList");
 
-			this.numInputs	= (int)controlEvent.getValue() + 1;
+			this.module.setCurNumInputs((int)controlEvent.getValue() + 1);
 			this.module.setSquareValues();
 		} // numInputsList
 
@@ -2913,7 +2913,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// Piano Threshold:
 		if(id == this.pianoThresholdSliderId)
 		{
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
 				this.pianoThreshold[i]	= (int)val;
 				this.resetThresholds(i);
@@ -2923,7 +2923,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// Forte Threshold:
 		if(id == this.forteThresholdSliderId)
 		{
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
 				this.forteThreshold[i]	= (int)val;
 				this.resetThresholds(i);
@@ -2939,7 +2939,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			if(global)
 			{
-				for(int i = 0; i < this.numInputs; i++)
+				for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 				{
 					this.setAttRelTranVal(pos, i, val);
 				} // for
@@ -3105,7 +3105,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(global)	
 		{	
 			startHere		= 0;
-			endBeforeThis	= this.numInputs;
+			endBeforeThis	= this.module.getTotalNumInputs();
 		} else {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
@@ -3613,8 +3613,8 @@ public class ModuleMenu extends MenuTemplate  {
 	 *  @param   String    name of the method that called this method, used in the exception message.
 	 */
 	private void inputNumErrorCheck(int inputNum) {
-		if (inputNum >= this.numInputs) {
-			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.numInputs + ", the number of inputs.");
+		if (inputNum >= this.module.getTotalNumInputs()) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.module.getTotalNumInputs() + ", the number of inputs.");
 			iae.printStackTrace();
 			throw iae;
 		}
@@ -3916,11 +3916,13 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.curKey;
 	}
 	
+	/*
 	public int getCurNumInputs()
 	{
 		return this.numInputs;
 	}
-
+*/
+	
 	public int getMajMinChrom() {
 		return this.majMinChrom;
 	}
