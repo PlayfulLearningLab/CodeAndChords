@@ -83,12 +83,13 @@ public abstract class Module extends PApplet {
 			this.setSquareValues();
 		}
 		
-		this.textSize((24 - this.numInputs * 2));		
+		this.textSize(Math.max(24 - (this.numInputs * 2), 8));
 
 		String[]	legendText	= this.getLegendText();
 		
-		float	scale	= 1;
-		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+//		float	scale	= 1;
+//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+		float	scale	= this.menu.getCurrentScale();
 		
 		float	sideWidth1	=(this.rectWidths[inputNum] * scale) / legendText.length;
 		float	sideHeight	= this.rectHeights[inputNum] / 10; //this.rectWidths[inputNum] / 12;	// pretty arbitrary
