@@ -373,12 +373,18 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curHue				= new int[this.module.getTotalNumInputs()][3];
 		this.goalHue			= new int[this.module.getTotalNumInputs()][3];
 		this.canvasColor		= new int[this.module.getTotalNumInputs()][3];
+		this.rainbow();
 		for(int i = 0; i < this.colors.length; i++)
 		{
+			// This was the source of the issue in which calling dichromatic as the first
+			// color style causes rainbow to be the dichromatic colors;
+			// fixed by setting to rainbow by calling rainbow() instead of the loop below:
+			/*
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
 				this.colors[i][j]	= this.rainbowColors[2][j];
 			}
+			*/
 			this.canvasColor[i]	= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		}
 		this.colorAdd			= new int[this.module.getTotalNumInputs()][3];
@@ -1601,9 +1607,9 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 
 	/**
-	 * Uses the values of the specialColors CWs to apply the current colorStyle.
+	 * Calls the appropriate function to apply the current color style.
 	 */
-	protected void applySpecialColors()
+/*	protected void applySpecialColors()
 	{
 		// Rainbow:
 		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
@@ -1652,7 +1658,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		} // Trichromatic
 	} // applySpecialColors
-
+*/
 
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
@@ -1796,13 +1802,14 @@ public class ModuleMenu extends MenuTemplate  {
 			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
 		} // for - i
 
-
+/*
 		// Fill the last color manually, because if we don't,
 		// it can't seem to calculate correctly when the tonic color is changed:
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
 			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
 		}
+		*/
 		//		this.setColor(this.colorSelect.length - 1, rgbVals2, false);	
 		/*
 		this.setColorSelectCW(this.colorSelect.length - 1, rgbVals2);
@@ -1838,7 +1845,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**
 	 * Uses the given HSB color to find the color across it on the HSB wheel,
-	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 * converts both colors to RGB, and passes them as parameters to triichromatic_ThreeRGB.
 	 *
 	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
@@ -3115,7 +3122,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 			System.out.println("controlEvent - specialColors: colorPos = " + colorPos);
 
-			this.applySpecialColors();
+//			this.applySpecialColors();
+			this.setColorStyle(this.curColorStyle);
 
 		} else {
 			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors;" + 
