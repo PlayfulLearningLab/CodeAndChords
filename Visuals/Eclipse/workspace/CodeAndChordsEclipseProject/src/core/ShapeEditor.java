@@ -200,15 +200,11 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		
 		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(10, 10).setSize(240, 250)
+		.setPosition(this.parent.width - 350, 10).setSize(240, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
 		.setValue(0)
 		.setItemHeight(25)
 		.close();
-
-		this.controlP5.addButton("exitButton").setLabel("Close Shape Editor")
-		.setPosition(this.parent.width - 160, 10)
-		.setSize(150, 40);
 
 	}
 
@@ -223,12 +219,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.shape.setShapeIndex((int) theEvent.getValue());
 			this.updateSliders();
 			System.out.println(theEvent.getValue());
-			break;
-
-		case "exitButton":
-			super.setIsRunning(false);
-			this.module.menu.setIsRunning(true);
-			this.module.menu.showOutsideButtons();
 			break;
 
 		}
