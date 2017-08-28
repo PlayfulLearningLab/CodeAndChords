@@ -35,6 +35,12 @@ public class Shape {
 	private float 		xStretch;
 	private float 		yStretch;
 	private float 		shapeScale = 1;
+	
+	private float[]		CIRCLE = new float[] {1, 1, 0, 0, 1, 1, 1};
+	private float[]		SQUARE= new float[] {1, 1, 4, 4, 1, 1, 1};
+	private float[]		STAR= new float[] {1, 1, 5, 5, .35f, 1, 1};
+	private float[]		PENTAGON= new float[] {1, 1, 5, 5, 1.5f, 1, 1};
+	private float[]		FLOWER= new float[] {.8f, .8f, 14, 14, 2.5f, 9, 1};
 
 	//constructors	
 	public Shape(PApplet p)
