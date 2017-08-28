@@ -308,21 +308,21 @@ public class ModuleMenu extends MenuTemplate  {
 	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
-	protected	int	canvasColorSelectId;//		= -1;
-	protected	int	firstColorModSliderId;//	= -1;
-	protected	int	firstColorSelectCWId;//	= -1;
-	protected	int	firstSpecialColorsCWId;//	= -1;
-	protected	int	lastColorSelectId;//		= -1;
-	protected	int	firstARTSliderId;//		= -1;
-	protected	int	firstHSBSliderId;//		= -1;
-	protected	int	firstRGBSliderId;//		= -1;
-	protected	int	bpmSliderId;//				= -1;
-	protected	int	volumeSliderId;//			= -1;
-	protected	int	shapeSizeSliderId;//		= -1;
-	protected	int	firstRangeSegmentsId;//	= -1;
-	protected	int	pianoThresholdSliderId;//	= -1;
-	protected	int	forteThresholdSliderId;//	= -1;
-	protected	int	firstSatBrightThreshSliderId;//	= -1;
+	protected	int	canvasColorSelectId		= -1;
+	protected	int	firstColorModSliderId	= -1;
+	protected	int	firstColorSelectCWId	= -1;
+	protected	int	firstSpecialColorsCWId	= -1;
+	protected	int	lastColorSelectId		= -1;
+	protected	int	firstARTSliderId		= -1;
+	protected	int	firstHSBSliderId		= -1;
+	protected	int	firstRGBSliderId		= -1;
+	protected	int	bpmSliderId				= -1;
+	protected	int	volumeSliderId			= -1;
+	protected	int	shapeSizeSliderId		= -1;
+	protected	int	firstRangeSegmentsId	= -1;
+	protected	int	pianoThresholdSliderId	= -1;
+	protected	int	forteThresholdSliderId	= -1;
+	protected	int	firstSatBrightThreshSliderId	= -1;
 
 	/**
 	 * Constructor
@@ -509,12 +509,14 @@ public class ModuleMenu extends MenuTemplate  {
 		// Add Menu and Title labels (after menuX, because it gets its x values from that):
 		ControlFont	largerStandard	= new ControlFont(ControlP5.BitFontStandard58, 13);
 
+/*
 		this.controlP5.addTextlabel("title")
 		//.setGroup("sidebarGroup")
 		.setPosition(this.leftAlign, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
 		.setValue(this.sidebarTitle);
+*/
 
 		//float	menuXX		= this.controlP5.getController("menuX").getPosition()[0];
 		//float	menuWidth	= this.controlP5.getController("menuX").getWidth();
@@ -2954,7 +2956,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // forte threshold Slider
 
 		// Attack, Release, and Transition:
-		if(id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3))
+		if((id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3)) && this.firstARTSliderId != -1)
 		{
 			//			int	pos	= (id / 2) - 1;
 			int	pos	= id - this.firstARTSliderId;
@@ -2972,7 +2974,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // attack/release/transition
 
 		// Hue/Saturation/Brightness modulate
-		if(id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
+		if((id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3)) && this.firstHSBSliderId != -1)
 		{
 			//			int pos = (id/2)-7;
 			int pos = id - this.firstHSBSliderId;
@@ -2984,7 +2986,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}//hsb mod
 
 		// Red Modulate/Green Modulate/Blue Modulate:
-		if(id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
+		if((id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3)) && this.firstRGBSliderId != -1)
 		{
 			//			int	pos	= (id / 2) - 4;		
 			int	pos	= id - this.firstRGBSliderId;	// red = 0, green = 1, blue = 2
