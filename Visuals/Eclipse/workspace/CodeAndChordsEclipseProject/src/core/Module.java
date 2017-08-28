@@ -16,7 +16,7 @@ public abstract class Module extends PApplet {
 	
 
 	protected	int		numInputs;
-
+	
 	protected	int[]	xVals;
 	protected	int[]	yVals;
 	protected	int[]	rectWidths;
