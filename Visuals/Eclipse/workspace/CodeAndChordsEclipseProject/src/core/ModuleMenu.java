@@ -1791,11 +1791,11 @@ public class ModuleMenu extends MenuTemplate  {
 				// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
 				//				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
 
-				newColor[0]	= (int)(curColor[0] - (rDif * j * percent / 100));
-				newColor[1]	= (int)(curColor[1] - (gDif * j * percent / 100));
-				newColor[2]	= (int)(curColor[2] - (bDif * j * percent / 100));
+				newColor[0]	= Math.round(curColor[0] - (rDif * j * percent / 100));
+				newColor[1]	= Math.round(curColor[1] - (gDif * j * percent / 100));
+				newColor[2]	= Math.round(curColor[2] - (bDif * j * percent / 100));
 
-				System.out.println("dichrom: newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
+	//			System.out.println("dichrom: newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
 
 				this.colors[i][j][0]	= newColor[0];
 				this.colors[i][j][1]	= newColor[1];

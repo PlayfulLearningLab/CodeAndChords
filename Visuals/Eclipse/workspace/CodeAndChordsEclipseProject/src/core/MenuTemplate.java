@@ -248,8 +248,8 @@ public abstract class MenuTemplate implements ControlListener {
 			if(curButton.getBooleanValue())
 			{
 
-				this.controlP5.getGroup("background").setVisible(true);
-				this.controlP5.getGroup("background").bringToFront();
+				this.controlP5.getGroup("leftBackground").setVisible(true);
+				this.controlP5.getGroup("leftBackground").bringToFront();
 
 			} else {
 
@@ -257,7 +257,7 @@ public abstract class MenuTemplate implements ControlListener {
 				// TODO: might need to fillOriginalColors here, too, at some point?				
 
 				this.controlP5.setAutoDraw(true);
-				this.controlP5.getGroup("background").setVisible(false);
+				this.controlP5.getGroup("leftBackground").setVisible(false);
 				//				this.displaySidebar(false);
 			}
 
