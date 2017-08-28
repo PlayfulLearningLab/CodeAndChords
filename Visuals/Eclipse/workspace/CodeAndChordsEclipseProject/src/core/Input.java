@@ -301,6 +301,9 @@ public class Input {
 			if(this.gainArray[i] == null)
 			{
 				this.gainArray[i]	= new Gain(this.ac, 0, 0);
+				
+				// TODO: uncomment this line to hear what's going in the mics (e.g., through headphones):
+//				this.gainArray[i]	= new Gain(this.ac, 1, 0.5f);
 			}
 			
 			this.gainArray[i].addInput(this.compressor);
