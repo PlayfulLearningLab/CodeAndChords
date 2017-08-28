@@ -93,15 +93,15 @@ public class Module_01_PitchHue extends Module
 
 		// call add methods:
 		
-		this.menu.addHideButtons(textYVals[0]);
+		this.menu.addHideButtons(0, textYVals[0]);
 		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
-		this.menu.addPianoThresholdSlider(textYVals[1]);
+		this.menu.addPianoThresholdSlider(0, textYVals[1]);
 		
-		this.menu.addARTSliders(textYVals[2], textYVals[3], textYVals[4]);
+		this.menu.addARTSliders(0, textYVals[2], textYVals[3], textYVals[4]);
 
-		this.menu.addGuideTonePopout(textYVals[5]);
-		this.menu.addKeySelector(textYVals[5]);
+		this.menu.addGuideTonePopout(0, textYVals[5]);
+		this.menu.addKeySelector(0, textYVals[5]);
 		this.menu.setCurKey("A", 2);
 
 		modulateHSBVals[0] = textYVals[6];
@@ -117,7 +117,7 @@ public class Module_01_PitchHue extends Module
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
 		
-		this.menu.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+		this.menu.addColorSelect(0, new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
 		
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
@@ -127,14 +127,14 @@ public class Module_01_PitchHue extends Module
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addSpecialColors(textYVals[14], buttonLabels, "Color Select", true);
+		this.menu.addSpecialColors(0, textYVals[14], buttonLabels, "Color Select", true);
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(textYVals[13]);
+		this.menu.addColorStyleButtons(0, textYVals[13]);
 
-		this.menu.addHSBSliders(modulateHSBVals);
+		this.menu.addHSBSliders(0, modulateHSBVals);
 
-		this.menu.addModulateSliders(modulateYVals);
+		this.menu.addModulateSliders(0, modulateYVals);
 
 		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
@@ -170,13 +170,13 @@ public class Module_01_PitchHue extends Module
 		this.menu.fade(scaleDegree, 0);
 
 		fill(this.menu.getCurHue()[0][0], this.menu.getCurHue()[0][1], this.menu.getCurHue()[0][2]);
-		rect(menu.getLeftEdgeX(), 0, width - menu.getLeftEdgeX(), height);
+		rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0), width - this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(height));
 		//		stroke(255);
 
 		if(this.menu.isShowScale())
 		{
 			// draws the legend along the bottom of the screen:
-			this.legend(scaleDegree);
+			this.legend(scaleDegree, 0);
 		} // if showScale
 		
 		this.menu.runMenu();
