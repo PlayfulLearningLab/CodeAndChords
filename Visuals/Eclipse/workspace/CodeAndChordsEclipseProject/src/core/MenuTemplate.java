@@ -39,7 +39,7 @@ public abstract class MenuTemplate implements ControlListener {
 
 	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
 	 * by the Module when the Menu is open	*/
-	private float 		scale;
+	protected float 		scale;
 	
 	/**	Blacks out the area behind the Menu	*/
 	private PShape		menuBackground;

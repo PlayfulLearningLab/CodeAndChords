@@ -108,9 +108,10 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
-		
-		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
+
+		// Adding inputNumSelect first so that inputSelect can be in front:
 		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 		
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
@@ -150,7 +151,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
-		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
@@ -201,7 +202,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		} // for
 		
 		this.menu.runMenu();
-		
+				
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
 /*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 				{
