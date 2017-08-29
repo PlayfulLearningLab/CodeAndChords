@@ -23,10 +23,6 @@
 	<classpathentry kind="lib" path="libs/jportaudio_x86.dll"/>
 	<classpathentry kind="lib" path="libs/portaudio_x64.dll"/>
 	<classpathentry kind="lib" path="libs/portaudio_x86.dll"/>
-	<classpathentry kind="lib" path="libs/jportaudio_x64.lib"/>
-	<classpathentry kind="lib" path="libs/jportaudio_x86.lib"/>
-	<classpathentry kind="lib" path="libs/portaudio_x64.lib"/>
-	<classpathentry kind="lib" path="libs/portaudio_x86.lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
