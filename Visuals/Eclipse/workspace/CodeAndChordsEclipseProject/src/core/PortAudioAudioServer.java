@@ -39,124 +39,51 @@ public class PortAudioAudioServer {
 
 	private enum State {
 
-		New, Initialising, Active, Closing, Terminated
-	};
-
+        New, Initialising, Active, Closing, Terminated
+    };
+	
 	private AudioConfiguration		context;
 	private AtomicReference<State>	state;
-	private	boolean					stopped	= false;
+	private	float[]					inputBuffer;
+	private	float[]					outputBuffer;
 
 	public PortAudioAudioServer(AudioConfiguration context)
 	{
 		this.context	= context;
 		this.state = new AtomicReference<State>(State.New);
 
-		System.out.println("this.context.getMaxBufferSize = " + this.context.getMaxBufferSize());
-
+		this.inputBuffer	= new float[this.context.getMaxBufferSize()];
+		this.outputBuffer	= new float[this.context.getMaxBufferSize()];
+		
+		for(int i = 0; i < this.inputBuffer.length; i++)
+		{
+			this.inputBuffer[i]	= 0;
+			this.outputBuffer[i]	= 0;
+		}
 	}
 
-
-	/**
-	 * Using the implementation from JSAudioServer and JackAudioServer.
-	 * @throws Exception
-	 */
-	public void run() throws Exception
-	{
-		if (!state.compareAndSet(State.New, State.Initialising)) {
-			throw new IllegalStateException();
-		}
-		try {
-			PortAudio.initialize();
-		} catch (Exception ex) {
-			//           state.set(State.Terminated);
-			// TODO: call shutdown() here, too?
-			this.shutdown();
-			PortAudio.terminate();
-			throw ex;
-		} // try/catch
-
-		if (state.compareAndSet(State.Initialising, State.Active)) {
-
-			int framesPerBuffer = 256;
-			int flags = 0;
-			int	sampleFormat	= PortAudio.FORMAT_FLOAT_32;
-			int sampleRate = 44100;
-			int numFrames = sampleRate * 3; // multiply by number of seconds
-			float[] floatBuffer = null;
-
-			PortAudio.initialize();
-			StreamParameters inParameters = new StreamParameters();
-			inParameters.sampleFormat = sampleFormat;
-			inParameters.device = PortAudio.getDefaultInputDevice();
-
-			DeviceInfo info = PortAudio.getDeviceInfo( inParameters.device );
-			inParameters.channelCount = info.maxInputChannels;
-			
-			System.out.println( "channelCount = " + inParameters.channelCount );
-			
-			inParameters.suggestedLatency = PortAudio
-					.getDeviceInfo( inParameters.device ).defaultLowInputLatency;
-
-
-			// TODO: should check sample format before writing?  
-			// if( sampleFormat == PortAudio.FORMAT_FLOAT_32 ) - float[];
-			// else if( sampleFormat == PortAudio.FORMAT_INT_16 ) - short[]
-			floatBuffer = new float[numFrames * inParameters.channelCount];
-
-			// Record a few seconds of audio.
-			BlockingStream inStream = PortAudio.openStream( inParameters, null,
-					sampleRate, framesPerBuffer, flags );
-
-			System.out.println( "RECORDING - say something like testing 1,2,3..." );
-			inStream.start();
-
-//			while(this.isActive())
-//			{
-				// TODO: should check sample format before reading?
-				inStream.read( floatBuffer, numFrames );
-
-				Thread.sleep( 100 );
-				int availableToRead = inStream.getReadAvailable();
-				System.out.println( "availableToRead =  " + availableToRead );
-//			}
-
-			inStream.stop();
-			inStream.close();
-			System.out.println( "Finished recording. Begin Playback." );
-
-			// Play back what we recorded.
-			StreamParameters outParameters = new StreamParameters();
-			outParameters.sampleFormat = sampleFormat;
-			outParameters.channelCount = inParameters.channelCount;
-			outParameters.device = PortAudio.getDefaultOutputDevice();
-			outParameters.suggestedLatency = PortAudio
-					.getDeviceInfo( outParameters.device ).defaultLowOutputLatency;
-
-			BlockingStream outStream = PortAudio.openStream( null, outParameters,
-					sampleRate, framesPerBuffer, flags );
-
-			outStream.start();
-			Thread.sleep( 100 );
-			int availableToWrite = outStream.getWriteAvailable();
-			System.out.println( "availableToWrite =  " + availableToWrite );
-
-			System.out.println( "inStream = " + inStream );
-			System.out.println( "outStream = " + outStream );
-			// TODO: should check sample format before writing?
-			outStream.write( floatBuffer, numFrames );
-
-			outStream.stop();
-
-			outStream.close();
-
-			// Open input and output streams, using defaults
-
-			/*
-			 * For some reason, this only records for a few seconds:
-			 * (Something to do with the nubmer of frames?)d
-			 // No, it's sleeping! -- never mind. :(
-			  */
-			/*
+    
+    /**
+     * Using the implementation from JSAudioServer and JackAudioServer.
+     * @throws Exception
+     */
+    public void run() throws Exception
+    {
+    	if (!state.compareAndSet(State.New, State.Initialising)) {
+            throw new IllegalStateException();
+        }
+        try {
+            PortAudio.initialize();
+        } catch (Exception ex) {
+            state.set(State.Terminated);
+            // TODO: call shutdown() here, too?
+            PortAudio.terminate();
+            throw ex;
+        } // try/catch
+        
+        if (state.compareAndSet(State.Initialising, State.Active)) {
+            // Open input and output streams, using defaults
+        	
         	StreamParameters	inputParams			= new StreamParameters();
         	StreamParameters	outputParams		= new StreamParameters();
 
@@ -166,29 +93,30 @@ public class PortAudioAudioServer {
         	int					outputDevice	= PortAudio.getDefaultOutputDevice();
         	DeviceInfo			outputDeviceInfo	= PortAudio.getDeviceInfo(outputDevice);
 
-        	int	inputChannels		= inputDeviceInfo.maxInputChannels;
-        	int	outputChannels		= inputDeviceInfo.maxInputChannels;
-        	int	framesPerBuffer		= 256;
-        	int	inputSampleRate		= (int)inputDeviceInfo.defaultSampleRate;
-        	int	outputSampleRate	= (int)inputDeviceInfo.defaultSampleRate;
-
-        	int					numFrames			= (int)(this.context.getSampleRate() * 3);
-        	System.out.println("this.context.getSampleRate() = " + (this.context.getSampleRate() * 3));
+        	
+        	int					inputChannels		= inputDeviceInfo.maxInputChannels;
+        	int					outputChannels		= inputDeviceInfo.maxInputChannels;
+        	
+        	double				inputSampleRate		= inputDeviceInfo.defaultSampleRate;
+        	double				outputSampleRate	= inputDeviceInfo.defaultSampleRate;
+        	
         	// define parameters:
         	inputParams.device					= inputDevice;
         	inputParams.channelCount			= inputChannels;
         	inputParams.sampleFormat			= PortAudio.FORMAT_FLOAT_32;
-        	inputParams.suggestedLatency		= inputDeviceInfo.defaultLowInputLatency;
-
+        	inputParams.suggestedLatency		= inputDeviceInfo.defaultHighInputLatency;
+        	
         	outputParams.device					= outputDevice;
         	outputParams.channelCount			= outputChannels;
         	outputParams.sampleFormat			= PortAudio.FORMAT_FLOAT_32;
-        	outputParams.suggestedLatency		= outputDeviceInfo.defaultLowOutputLatency;
-
+        	outputParams.suggestedLatency		= outputDeviceInfo.defaultHighInputLatency;
+        	
         	// StreamParameters
         	// sample rate (int?)
         	// frames per buffer (int?)
         	// flags - ?
+/*
+        	<<<<<<< HEAD
         	BlockingStream	inStream	= PortAudio.openStream(inputParams, null, 
         			inputSampleRate, framesPerBuffer, 0);
         	BlockingStream	outStream	= PortAudio.openStream(null, outputParams, 
@@ -240,7 +168,7 @@ public class PortAudioAudioServer {
         	System.out.println("run(): stopped streams; about to close them");
         	outStream.close();
         	System.out.println("run(): streams have been closed");
-*/
+
 			} // if active
 
 
@@ -257,7 +185,7 @@ public class PortAudioAudioServer {
 		 * server is processing audio.
 		 * @return AudioConfiguration
 		 */
-		public AudioConfiguration getAudioContext()
+/*		public AudioConfiguration getAudioContext()
 		{
 			return this.context;
 		} // getAudioContext
@@ -267,7 +195,7 @@ public class PortAudioAudioServer {
 		 * thread.
 		 * @return true if active.
 		 */
-		public boolean isActive()
+/*		public boolean isActive()
 		{
 			State st = state.get();
 			return (st == State.Active || st == State.Closing);
@@ -278,7 +206,7 @@ public class PortAudioAudioServer {
 		 * thread, but does not guarantee that the server is shut down at the moment
 		 * it returns. (Implementation from JSAudioServer and JackAudioServer.)
 		 */
-		public void shutdown() {
+/*		public void shutdown() {
 			State st;
 			do {
 				st = state.get();
@@ -290,3 +218,72 @@ public class PortAudioAudioServer {
 		}
 
 	} // PortAudioAudioServer
+=======
+*/
+        	BlockingStream	stream	= PortAudio.openStream(inputParams, outputParams, 
+        			(int)this.context.getSampleRate(), this.context.getMaxBufferSize(), 0);
+        	
+        	stream.start();
+        	
+        	System.out.println("PAAS.run: stream.isActive = " + stream.isActive());
+        	// TODO: see if this is also a problem if I make a C program doing this.
+        	
+        	int	writeAvailable;
+        	int	readAvailable;
+        	while(stream.isActive())
+        	{
+            	writeAvailable	= stream.getWriteAvailable();
+            	stream.write(this.inputBuffer, writeAvailable);
+            	
+            	readAvailable	= stream.getReadAvailable();
+            	stream.read(this.outputBuffer, readAvailable);
+        	} // while
+        	
+
+        	stream.stop();
+        	stream.close();
+        	
+        } // if active
+        
+        PortAudio.terminate();
+        state.set(State.Terminated);
+    	
+    } // run()
+
+    /**
+     * Get the current AudioConfiguration. This value should remain constant while the
+     * server is processing audio.
+     * @return AudioConfiguration
+     */
+    public AudioConfiguration getAudioContext()
+    {
+    	return this.context;
+    } // getAudioContext
+
+    /**
+     * Check whether the server is active. This method can be called from another
+     * thread.
+     * @return true if active.
+     */
+    public boolean isActive()
+    {
+    	State st = state.get();
+        return (st == State.Active || st == State.Closing);
+    } // isActive
+
+    /**
+     * Trigger the server to shut down. This method can be called from another
+     * thread, but does not guarantee that the server is shut down at the moment
+     * it returns. (Implementation from JSAudioServer and JackAudioServer.)
+     */
+    public void shutdown() {
+        State st;
+        do {
+            st = state.get();
+            if (st == State.Terminated || st == State.Closing) {
+                break;
+            }
+        } while (!state.compareAndSet(st, State.Closing));
+    }
+
+} // PortAudioAudioServer
