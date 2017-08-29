@@ -301,6 +301,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		this.cp5.getController("shapeSelect")
 		.bringToFront();
+		
 	}
 
 	@Override
