@@ -228,7 +228,10 @@ public class Melody implements Runnable {
 			
 			if(this.input != null)
 			{
-				this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
+				for(int i = 0; i < this.input.getAdjustedNumInputs(); i++)
+				{
+					this.input.setAmplitude((this.instrument.getGain() * multiplyer), i);
+				} // for - i
 			}
 
 			// use the Note's duration to call instrument.play() at the appropriate time
@@ -238,10 +241,15 @@ public class Melody implements Runnable {
 
 				if(this.input != null)
 				{
-					this.input.setFundamentalArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
-					this.input.setAdjustedFundArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
-					this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
-				}
+					for(int j = 0; j < this.input.getAdjustedNumInputs(); j++)
+					{
+						
+					this.input.setFundamental(Pitch.mtof(notes[i].getMidiNum()), j);
+					this.input.setAdjustedFund(Pitch.mtof(notes[i].getMidiNum()), j);
+					this.input.setAmplitude(this.instrument.getGain() * multiplyer, j);					
+					} // for - j
+
+				} // if - input != null
 
 				nextNoteStartTime	= parent.millis() + notes[i].getDuration();
 				//				System.out.println("nextNoteStartTime = " + nextNoteStartTime);
@@ -251,7 +259,10 @@ public class Melody implements Runnable {
 				{
 					if(this.input != null)
 					{
-						this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
+						for(int j = 0; j < this.input.getAdjustedNumInputs(); j++)
+						{
+							this.input.setAmplitude((this.instrument.getGain() * multiplyer), j);
+						} // for - j
 					}
 					
 					if(this.paused) { nextNoteStartTime = nextNoteStartTime + 12; }

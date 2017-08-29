@@ -25,6 +25,7 @@ public abstract class Module extends PApplet {
 	protected	int[]	rectHeights;
 	
 	protected	Shape			shape;
+	protected	Shape[]			shapes;
 	
 	/**	For Modules with a Shape, this ShapeEditor provides Shape customization Controllers	*/
 	protected 	ShapeEditor		shapeEditor;
@@ -327,7 +328,18 @@ public abstract class Module extends PApplet {
 					((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
 			};
 		} // 12
+		
+		for(int i = 0; i < this.curNumInputs; i++)
+		{
+			this.shapes[i].setXPos(this.xVals[i] + (this.rectWidths[i] * 0.5f));
+			this.shapes[i].setYPos(yVals[i] + (this.rectHeights[i] * 0.5f));
+		} // for - i
 	} // set Square Vals
+	
+	public void setShapePosVals()
+	{
+		
+	} // setShapePosVals
 
 
 } // Module

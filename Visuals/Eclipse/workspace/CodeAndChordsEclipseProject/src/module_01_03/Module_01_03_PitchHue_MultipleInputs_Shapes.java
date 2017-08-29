@@ -1,4 +1,4 @@
-package module_01_02;
+package module_01_03;
 
 import processing.core.*;
 
@@ -11,7 +11,7 @@ import core.Archive_ModuleTemplate.ModuleTemplate01;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
-public class Module_01_02_PitchHue_MultipleInputs extends Module
+public class Module_01_03_PitchHue_MultipleInputs_Shapes extends Module
 {
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	{
 
 		//Says cannot find or load main class???  This should not be an issue
-		PApplet.main("module_01_02.Module_01_02_PitchHue_MultipleInputs");
+		PApplet.main("module_01_03.Module_01_03_PitchHue_MultipleInputs_Shapes");
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
@@ -47,40 +47,40 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	 */
 
 	private Input  input;
-/*	private	int		numInputs;
+	/*	private	int		numInputs;
 
 	private	int[]	xVals;
 	private	int[]	yVals;
 	private	int[]	rectWidths;
 	private	int[]	rectHeights;
-*/
-	
+	 */
+
 	public void setup() 
 	{
 		// TODO: test with more inputs than are supported
-//		this.input	= new Input(2, this);
+		//		this.input	= new Input(2, this);
 		this.input	= new Input(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 
-		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
 		{
 			this.shapes[i]	= new Shape(this);
 			this.shapes[i].setCurrentShape("supershape", 
-					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
+					new float[] { (1 - (0.04f * this.curNumInputs)), (1 - (0.04f * this.curNumInputs)), 4, 4, 1, 1, 1 } );
+			//			this.shapes[i].setRotation(1);
 		} // for - i
-		
+
 		this.setSquareValues();
-		
+
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
 		int[]	controllerXVals	= new int[3];
-//		int					colorSelectY;
-		
+		//		int					colorSelectY;
+
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	26;
@@ -103,24 +103,24 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		textYVals[textYVals.length - 3]	= textYVals[textYVals.length - 4] + (int)(yValDif * 1.5);
 		textYVals[textYVals.length - 2]	= textYVals[textYVals.length - 3] + (int)(yValDif * 1);
 		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1);
-		
+
 		controllerXVals	= new int[] {	
 				0, 
 				(this.width / 3) - 20, 
 				((this.width / 3) * 2) - 40	
-			};
+		};
 
 		// call add methods:
-		
+
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
-		
-//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
+
+		//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
 		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
-		
+
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
 		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
@@ -139,14 +139,14 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		String[] noteNames = new String[] {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
-		
+
 		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
-		
+
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
 		// to lock them.
-//		this.addColorSelectButtons(textYVals[14]);
+		//		this.addColorSelectButtons(textYVals[14]);
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
@@ -159,53 +159,56 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
-//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
 	} // setup()
 
-	
+
 	public void draw()
 	{
 		int	scaleDegree;
-		
+
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		} // if keyPressed
-		
+
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
-//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
-			
+			//			this.background(this.menu.getCanvasColor()[i][0], this.menu.getCanvasColor()[i][1], this.menu.getCanvasColor()[i][2]);
+
+			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
+			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
+
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
-			
-			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-			
+
+			this.fill(this.menu.getCanvasColor()[i][0], this.menu.getCanvasColor()[i][1], this.menu.getCanvasColor()[i][2]);
 			int	curX;
 			int	curY;
-			
+
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
-						
+
+			/*		
+			 */
 			if(this.menu.isShowScale())
 			{
 				this.legend(scaleDegree, i);
 			}
 		} // for
-		
+
 		this.drawShapes();
-		
+
 		this.menu.runMenu();
-				
+
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 				{
 					for(int i = 0; i < menu.trichromColors.length; i++)
 					{
@@ -213,50 +216,50 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
 					}
 				} // if		
-*/
+		 */
 
 	} // draw()
-	
+
 	private void drawShapes()
 	{
 		int[]	curHue;
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			
-		curHue	= this.menu.getCurHue()[i];		
-		this.fill(curHue[0], curHue[1], curHue[2]);
-		//		this.fill(255);
 
-//		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
-//		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
+			curHue	= this.menu.getCurHue()[i];		
+			//		this.fill(curHue[0], curHue[1], curHue[2]);
+			//		this.fill(255);
 
-		//this.shapeMode(CORNER);
-		PShape pShape;
-		/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
+			//		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
+			//		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
+
+			//this.shapeMode(CORNER);
+			PShape pShape;
+			/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
 		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
-		 */
-		pShape = this.shapes[i].getPShape();
+			 */
+			pShape = this.shapes[i].getPShape();
 
-		pShape.beginShape();
-		pShape.fill(curHue[0], curHue[1], curHue[2]);
-		pShape.stroke(curHue[0], curHue[1], curHue[2]);
-		pShape.rotate(this.shapes[i].getRotation());
-		pShape.scale(this.menu.getCurrentScale());
-		pShape.endShape();
+			pShape.beginShape();
+			pShape.fill(curHue[0], curHue[1], curHue[2]);
+			pShape.stroke(curHue[0], curHue[1], curHue[2]);
+			pShape.rotate(this.shapes[i].getRotation());
+			pShape.scale(this.menu.getCurrentScale());
+			pShape.endShape();
 
-		this.shape(pShape, this.menu.mapCurrentXPos(this.shapes[i].getXPos()), this.menu.mapCurrentYPos(this.shapes[i].getYPos()));
+			this.shape(pShape, this.menu.mapCurrentXPos(this.shapes[i].getXPos()), this.menu.mapCurrentYPos(this.shapes[i].getYPos()));
 		} // for - i
 	} // drawShape	
-	
+
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-	
+
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
-/*	private void setSquareValues()
+	/*	private void setSquareValues()
 	{
 
 		// Rectangles are always the same height, so will be set in a loop every time:
@@ -432,5 +435,5 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			};
 		} // 12
 	} // set Square Vals
-*/
+	 */
 } // class
