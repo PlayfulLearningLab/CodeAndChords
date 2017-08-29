@@ -298,7 +298,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	} // mouseClicked
 
 
-
 	/**
 	 * 08/01/2017
 	 * Emily Meuer
