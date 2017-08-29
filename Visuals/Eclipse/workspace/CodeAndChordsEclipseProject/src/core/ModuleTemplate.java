@@ -1126,7 +1126,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 			//			((((hsb[i1] + this.hueSatBrightnessMod[i1]) * 100) % 100) / 100)
 			// Applies the status of the sliders to the newly-converted color:
 
+			System.out.println("hsb[0] = " + hsb[0]);
 			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + 1) % 1;
+//			hsb[0]	= 5.5f;
 
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
 			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2], 1), 0);
@@ -1150,11 +1152,12 @@ public abstract class ModuleTemplate implements ControlListener  {
 	{
 		if(this.colors == null)
 		{
-			throw new IllegalArgumentException("ModuleTemplate.fillHSBColors: super.colors is null.");
+			throw new IllegalArgumentException("ModuleTemplate.fillHSBColors: this.colors is null.");
 		}
 
 		if(this.hsbColors == null) {
 			this.hsbColors = new float[this.colors.length][3];
+			System.out.println("fillHSBColors: this.hsbColors = " + this.hsbColors);
 		}
 
 		for(int i = 0; i < this.hsbColors.length; i++)
@@ -1330,7 +1333,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 					int pos = id - this.firstHSBSliderId;
 
 					this.setHueSatBrightnessMod(pos, sliderValFloat);
-					this.applyHSBModulate(this.colors, originalColors);
+					// TODO how about this?
+					if(this.hsbColors == null)
+					{
+						this.fillHSBColors();
+					}
+//					this.fillHSBColors();
+					this.applyHSBModulate(this.colors, this.hsbColors);
 				}//hsb mod
 
 				// Red Modulate/Green Modulate/Blue Modulate:
@@ -1433,6 +1442,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 			} else {
 				if(this.firstHSBSliderId > -1)
 				{
+//					this.fillHSBColors();
 					this.applyHSBModulate(this.colors, this.hsbColors);
 				}
 			} // if - RGBSliderId > -1
