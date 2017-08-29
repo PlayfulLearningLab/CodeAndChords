@@ -32,14 +32,19 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * The text above constitutes the entire PortAudio license; however,
 =======
  * The text above constitutes the entire PortAudio license; however, 
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+ * The text above constitutes the entire PortAudio license; however,
+>>>>>>> 62b84d2... Trying 2 lines
  * the PortAudio community also makes the following non-binding requests:
  *
  * Any person wishing to distribute modifications to the Software is
  * requested to send the modifications to the original developer so that
+<<<<<<< HEAD
 <<<<<<< HEAD
  * they can be incorporated into the canonical version. It is also
  * requested that these non-binding requests be included along with the
@@ -47,6 +52,10 @@
  * they can be incorporated into the canonical version. It is also 
  * requested that these non-binding requests be included along with the 
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+ * they can be incorporated into the canonical version. It is also
+ * requested that these non-binding requests be included along with the
+>>>>>>> 62b84d2... Trying 2 lines
  * license above.
  */
 
@@ -184,10 +193,14 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     int finished;
     unsigned long framesLeft = data->maxFrameIndex - data->frameIndex;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
     (void) outputBuffer; /* Prevent unused variable warnings. */
     (void) timeInfo;
     (void) statusFlags;
@@ -290,6 +303,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 int selectDevice()
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     int     			i,
 						numDevices,
 						defaultDisplayed;
@@ -302,14 +316,22 @@ int selectDevice()
 =======
     int     			i, 
 						numDevices, 
+=======
+    int     			i,
+						numDevices,
+>>>>>>> 62b84d2... Trying 2 lines
 						defaultDisplayed;
     const PaDeviceInfo 	*deviceInfo;
-    PaStreamParameters 	inputParameters, 
+    PaStreamParameters 	inputParameters,
 						outputParameters;
 	PaStream*			stream;
     PaError 			err;
+<<<<<<< HEAD
 	
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
     paTestData          data;
     int                 totalFrames;
     int                 numSamples;
@@ -318,10 +340,14 @@ int selectDevice()
 	int					devSelectInt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
     err = Pa_Initialize();
     if( err != paNoError )
     {
@@ -329,10 +355,14 @@ int selectDevice()
         return -1;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
     printf( "PortAudio version: 0x%08X\n", Pa_GetVersion());
     printf( "Version text: '%s'\n", Pa_GetVersionInfo()->versionText );
 
@@ -344,20 +374,28 @@ int selectDevice()
         return -1;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
     printf( "Number of devices = %d\n", numDevices );
     for( i=0; i<numDevices; i++ )
     {
         deviceInfo = Pa_GetDeviceInfo( i );
         printf( "--------------------------------------- device #%d\n", i );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
                 
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
     /* Mark global and API specific default devices */
         defaultDisplayed = 0;
         if( i == Pa_GetDefaultInputDevice() )
@@ -372,10 +410,14 @@ int selectDevice()
             defaultDisplayed = 1;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
         if( i == Pa_GetDefaultOutputDevice() )
         {
             printf( (defaultDisplayed ? "," : "[") );
@@ -386,10 +428,14 @@ int selectDevice()
         {
             const PaHostApiInfo *hostInfo = Pa_GetHostApiInfo( deviceInfo->hostApi );
 <<<<<<< HEAD
+<<<<<<< HEAD
             printf( (defaultDisplayed ? "," : "[") );
 =======
             printf( (defaultDisplayed ? "," : "[") );                
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+            printf( (defaultDisplayed ? "," : "[") );
+>>>>>>> 62b84d2... Trying 2 lines
             printf( " Default %s Output", hostInfo->name );
             defaultDisplayed = 1;
         }
@@ -446,10 +492,14 @@ int selectDevice()
         inputParameters.suggestedLatency = 0; /* ignored by Pa_IsFormatSupported() */
         inputParameters.hostApiSpecificStreamInfo = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
         outputParameters.device = i;
         outputParameters.channelCount = deviceInfo->maxOutputChannels;
         outputParameters.sampleFormat = paInt16;
@@ -478,6 +528,7 @@ int selectDevice()
         }
     } /* for numDevices */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 	printf("What input device would you like to use? ");
@@ -492,11 +543,20 @@ int selectDevice()
 	devSelectInt	= atoi(devSelection);
 	
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+
+
+	printf("What input device would you like to use? ");
+	fgets(devSelection, 4, stdin);
+	devSelectInt	= atoi(devSelection);
+
+>>>>>>> 62b84d2... Trying 2 lines
 	if(devSelectInt >= numDevices)
 	{
 		printf("Sorry; that number is out of the parameters; must be less than %d.", numDevices);
 		return -1;
 	} // if
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	return devSelectInt;
@@ -506,6 +566,9 @@ int selectDevice()
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 =======
 	
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
 	return devSelectInt;
 } // selectDevice
 >>>>>>> 0e0e962... Can select device with portaudio
@@ -525,8 +588,10 @@ int main(void)
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
+    PaStream*           stream1;
     PaError             err = paNoError;
     paTestData          data;
+    paTestData          data1;
     int                 i;
     int                 totalFrames;
     int                 numSamples;
@@ -534,9 +599,13 @@ int main(void)
     SAMPLE              max, val;
     double              average;
 <<<<<<< HEAD
+<<<<<<< HEAD
     int					numDevices;
 =======
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+    int					numDevices;
+>>>>>>> 62b84d2... Trying 2 lines
 
     printf("patest_record.c\n"); fflush(stdout);
 
@@ -561,6 +630,7 @@ int main(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     numDevices	= 2;
 
 	// input stream:
@@ -570,6 +640,11 @@ int main(void)
     inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 =======
+=======
+    numDevices	= 2;
+
+	// input stream 1:
+>>>>>>> 62b84d2... Trying 2 lines
 	device	= selectDevice();
     inputParameters.device = device; /* default input device */
 >>>>>>> 0e0e962... Can select device with portaudio
@@ -599,9 +674,41 @@ int main(void)
     printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// while active:
 =======
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+	// input stream 2:
+		device	= selectDevice();
+	    inputParameters.device = device; /* default input device */
+	    if (inputParameters.device == paNoDevice) {
+	        fprintf(stderr,"Error: No default input device.\n");
+	        goto done;
+	    }
+	    inputParameters.channelCount = 2;                    /* stereo input */
+	    inputParameters.sampleFormat = PA_SAMPLE_TYPE;
+	    inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowInputLatency;
+	    inputParameters.hostApiSpecificStreamInfo = NULL;
+
+	    /* Record some audio. -------------------------------------------- */
+	    err = Pa_OpenStream(
+	              &stream1,
+	              &inputParameters,
+	              NULL,                  /* &outputParameters, */
+	              SAMPLE_RATE,
+	              FRAMES_PER_BUFFER,
+	              paClipOff,      /* we won't output out of range samples so don't bother clipping them */
+	              recordCallback,
+	              &data1 );
+	    if( err != paNoError ) goto done;
+
+	    err = Pa_StartStream( stream1 );
+	    if( err != paNoError ) goto done;
+	    printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
+
+	// while active:
+>>>>>>> 62b84d2... Trying 2 lines
     while( ( err = Pa_IsStreamActive( stream ) ) == 1 )
     {
         Pa_Sleep(100);
@@ -610,6 +717,9 @@ int main(void)
     if( err < 0 ) goto done;
 
     err = Pa_CloseStream( stream );
+    if( err != paNoError ) goto done;
+
+	err = Pa_CloseStream( stream1 );
     if( err != paNoError ) goto done;
 
     /* Measure maximum peak amplitude. */
@@ -679,14 +789,19 @@ int main(void)
         err = Pa_StartStream( stream );
         if( err != paNoError ) goto done;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+
+>>>>>>> 62b84d2... Trying 2 lines
         printf("Waiting for playback to finish.\n"); fflush(stdout);
 
         while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) Pa_Sleep(100);
         if( err < 0 ) goto done;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         err = Pa_CloseStream( stream );
@@ -698,6 +813,12 @@ int main(void)
         if( err != paNoError ) goto done;
         
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+
+        err = Pa_CloseStream( stream );
+        if( err != paNoError ) goto done;
+
+>>>>>>> 62b84d2... Trying 2 lines
         printf("Done.\n"); fflush(stdout);
     }
 
