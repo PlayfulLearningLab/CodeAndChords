@@ -1068,13 +1068,20 @@ public abstract class ModuleTemplate implements ControlListener  {
 		if(this.checkpoint < this.parent.millis())
 		{
 			for(int i = 0; i < 3; i++)
-			{
-				if(this.curHue[i] < this.goalHue[i])
+			{				
+				// if the current hue is less than the goalHue - the colorAdd, then add colorAdd:
+				if(this.curHue[i] < this.goalHue[i] - (this.colorAdd[i] / 2))
 				{
 					this.curHue[i]	=	this.curHue[i] + this.colorAdd[i];
-				} else if(this.curHue[i] > this.goalHue[i])
+				} else 
+				// otherwise, if it's more than the goal Hue, even after adding half of colorAdd, then subtract:
+				if(this.curHue[i] > this.goalHue[i] + (this.colorAdd[i] / 2))
 				{
 					this.curHue[i]	=	this.curHue[i] - this.colorAdd[i];
+				}
+				else
+				{
+//					System.out.println("It thinks that curHue[" + i + "] is set; curHue[" + i + "] = " + this.curHue[i] + "; goalHue[" + i + "] = " + this.goalHue[i]);
 				}
 			} // for - i
 
@@ -1570,6 +1577,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.canvasColor[0]	= color.getRed();
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
+				
+				if(this.nowBelow)
+				{
+					this.curHue[0]	= color.getRed();
+					this.curHue[1]	= color.getGreen();
+					this.curHue[2]	= color.getBlue();
+				}
 			} // if - canvas
 /*			else if( ( this.backgroundColorSelectId != -1 ) && 
 					( ( id % 100 ) == ( this.backgroundColorSelectId % 100 ) ) )
