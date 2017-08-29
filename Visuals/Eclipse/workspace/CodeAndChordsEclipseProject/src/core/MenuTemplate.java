@@ -36,7 +36,7 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**	Indicates whether or not the Menu is open	*/
 	private boolean 	isRunning;
-
+	
 	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
 	 * by the Module when the Menu is open	*/
 	protected float 		scale;
