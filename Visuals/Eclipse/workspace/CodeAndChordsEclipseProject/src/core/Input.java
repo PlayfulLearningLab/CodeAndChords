@@ -137,6 +137,19 @@ public class Input {
 	 */
 	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
 	{
+		this(numInputs, audioContext, false);
+	} // int, AudioContext
+	
+	/**
+	 * Creates an Input object with the given number of inputs and the particular AudioContext,
+	 * as well as the option to skip inputs 5-8 (this assumes that you will have adjusted for the skip
+	 * and passed in 4 more inputs than you plan to need; e.g., numInputs = 16 for 12 lines).
+	 * @param numInputs
+	 * @param audioContext
+	 * @param skip5thru8
+	 */
+	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8)
+	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
 		} // if(numInputs < 1)
@@ -248,6 +261,7 @@ public class Input {
 	{
 		// Moved this from the constructor:
 		this.numInputs  = sampleFilenames.length;
+		this.adjustedNumInputs	= this.numInputs;
 		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
 		int  semaphore      = 1;
 
@@ -297,7 +311,7 @@ public class Input {
 		} // for
 
 		uGenArray  = new UGen[SampleManager.getGroup("group").size()];
-		this.gainArray	= new Gain[this.numInputs];
+		this.gainArray	= new Gain[this.adjustedNumInputs];
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
