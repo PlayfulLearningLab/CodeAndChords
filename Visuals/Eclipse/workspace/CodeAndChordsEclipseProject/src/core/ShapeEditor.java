@@ -133,8 +133,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		} else if (this.cp5.isVisible()) {
 			// if cp5 is visible but the ShapeEditor is not running, hide cp5
 			this.cp5.hide();
-			returnVal = new float[] { PApplet.map(this.shapeXPos, 0, this.scale, 0, 1),
-					PApplet.map(this.shapeYPos, 0, this.scale, 0, 1), this.shapeRotation };
 		}
 */
 	} // runMenu
@@ -301,42 +299,33 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.updateSliders();
 
 		this.cp5.addLabel("n2Label")
-				.setPosition((int) (this.seXPos + (this.menuWidth / 8)), (float) (yVals[3] - (spacing / 3.5)))
-				.setValue("N2");
+		.setPosition((int) 20, (float) (yVals[3] - (spacing / 3.5)))
+		.setValue("N2");
 
 		this.cp5.addLabel("n3Label")
-				.setPosition((int) (this.seXPos + (this.menuWidth / 8)), (float) (yVals[4] - (spacing / 3.5)))
-				.setValue("N3");
+		.setPosition((int) 20, (float) (yVals[4] - (spacing / 3.5)))
+		.setValue("N3");
 
 		this.cp5.addLabel("xPosLabel")
-				.setPosition((int) (this.seXPos + (this.menuWidth / 8)), (float) (yVals[5] - (spacing / 3.5)))
-				.setValue("X Position");
+		.setPosition((int) 20, (float) (yVals[5] - (spacing / 3.5)))
+		.setValue("X Position");
 
 		this.cp5.addLabel("yPosLabel")
-				.setPosition((int) (this.seXPos + (this.menuWidth / 8)), (float) (yVals[6] - (spacing / 3.5)))
-				.setValue("Y Position");
+		.setPosition((int) 20, (float) (yVals[6] - (spacing / 3.5)))
+		.setValue("Y Position");
 
 		this.cp5.addLabel("rotationLabel")
-				.setPosition((int) (this.seXPos + (this.menuWidth / 8)), (float) (yVals[7] - (spacing / 3.5)))
-				.setValue("Rotation");
+		.setPosition((int) 20, (float) (yVals[7] - (spacing / 3.5)))
+		.setValue("Rotation");
 
 		this.cp5.addScrollableList("shapeSelect")
-				.setPosition((this.menuWidth + this.seWidth) / 2 + this.seXPos - 25 - 150, 5).setSize(150, 250)
-				.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
-				.setValue(0).close();
+		.setPosition(200, 5).setSize(150, 250)
+		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
+		.setValue(0).close();
 
 		this.cp5.addButton("exitButton").setLabel("Close Shape Editor")
-				.setPosition((this.menuWidth + this.seWidth) / 2 + this.seXPos + 25, 5).setSize(150, 40);
+		.setPosition(400, 5).setSize(150, 40);
 
-	}
-
-	public void setIsRunning(boolean isRunningFlag) {
-		this.isRunning = isRunningFlag;
-		if (isRunningFlag) {
-			this.cp5.get("b1").bringToFront();
-			this.cp5.get("exitButton").bringToFront();
-			this.cp5.get("shapeSelect").bringToFront();
-		}
 	}
 
 	public boolean getIsRunning() {
@@ -410,22 +399,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	}
 
-	public float[] getSEWindowSizeAndPlace() {
-		
-		System.out.println("seXPos = " + this.seXPos);
-		System.out.println("seYPos = " + this.seYPos);
-		System.out.println("menuWidth = " + this.menuWidth);
-		System.out.println("seWidth = " + this.seWidth);
-		System.out.println("seHeight = " + this.seHeight);
-		
-		return new float[] { 	this.seXPos + this.menuWidth, 
-								this.seYPos, 
-								this.seWidth,
-								this.seHeight };
-	}
-
-	public ControlP5 getCP5()
-	{
+	public ControlP5 getCP5() {
 		return this.cp5;
 	}
 }// ShapeEditor

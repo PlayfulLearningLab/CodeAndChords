@@ -28,7 +28,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	//	private	ModuleMenu			menu;
 
 	//	private Shape     			shape;
-
 	//	private ShapeEditor			shapeEditor;
 
 	/**	holds the y values for all Controllers	*/

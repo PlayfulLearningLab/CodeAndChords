@@ -3178,5 +3178,10 @@ public abstract class ModuleTemplate implements ControlListener  {
 	{
 		return this.menuIsOpen;
 	}
+	
+	public ControlP5 getCP5()
+	{
+		return this.sidebarCP5;
+	}
 
 } // ModuleTemplate
