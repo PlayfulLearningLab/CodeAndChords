@@ -62,6 +62,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 * 
 	 * THIS IS THE PREFERED CONSTRUCOR
 	 * 
+	 * THIS IS THE PREFERED CONSTRUCOR
+	 * 
 	 * @param parent
 	 * @param fullAppletWidth
 	 *            width of the window that this shape will be displayed in
@@ -114,9 +116,13 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		if(super.getIsRunning()) 
 		{
+			//if the ShapeEditor isRunning, it updates the x and y position variables based on
+			//		the values displayed by the x and y position sliders
 			this.cp5.getController("xPos").update();
 			this.cp5.getController("yPos").update();
+			this.cp5.getController("rotation").update();
 			
+			//draws the menu
 			this.drawSE();
 		}
 		
@@ -316,8 +322,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		this.cp5.addScrollableList("shapeSelect")
 		.setPosition((this.menuWidth + this.seWidth)/2 + this.seXPos - 25 - 150, 5)
-		.setSize(150, 100)
-		.setBarHeight(30)
+		.setSize(150, 250)
+		.setBarHeight(40)
 		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
 		.setValue(0)
 		.close();
@@ -336,6 +342,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		{
 			this.cp5.get("b1").bringToFront();
 			this.cp5.get("exitButton").bringToFront();
+			this.cp5.get("shapeSelect").bringToFront();
 		}
 	}
 	
