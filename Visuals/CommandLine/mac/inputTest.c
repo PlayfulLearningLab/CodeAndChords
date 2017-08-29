@@ -441,10 +441,14 @@ int main(void)
     int					numDevices;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     printf("inputTest.c\n"); fflush(stdout);
 =======
     printf("patest_record.c\n"); fflush(stdout);
 >>>>>>> 2627307... Experiments with multiple lines in one buffer
+=======
+    printf("inputTest.c\n"); fflush(stdout);
+>>>>>>> 61e0f0f... Ring buffer implemented to get current sound input data
 
     data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
 	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
