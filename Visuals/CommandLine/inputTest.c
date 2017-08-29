@@ -52,6 +52,9 @@
 
 #include <stdio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0e0e962... Can select device with portaudio
 #include <math.h>
 #include <stdlib.h>
 #include "portaudio.h"
@@ -65,11 +68,14 @@
 #endif
 #endif
 
+<<<<<<< HEAD
 =======
 #include <stdlib.h>
 #include "portaudio.h"
 
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+>>>>>>> 0e0e962... Can select device with portaudio
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
 #define SAMPLE_RATE  (44100)
 #define FRAMES_PER_BUFFER (512)
@@ -112,6 +118,9 @@ typedef struct
 paTestData;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0e0e962... Can select device with portaudio
 static void PrintSupportedStandardSampleRates(
         const PaStreamParameters *inputParameters,
         const PaStreamParameters *outputParameters )
@@ -152,8 +161,11 @@ static void PrintSupportedStandardSampleRates(
         printf( "\n" );
 } // PrintSupportedStandardSampleRates
 
+<<<<<<< HEAD
 =======
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+>>>>>>> 0e0e962... Can select device with portaudio
 /* This routine will be called by the PortAudio engine when audio is needed.
 ** It may be called at interrupt level on some machines so don't do anything
 ** that could mess up the system like calling malloc() or free().
@@ -211,10 +223,14 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     data->frameIndex += framesToCalc;
     return finished;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } // recordCallback
 =======
 }
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+} // recordCallback
+>>>>>>> 0e0e962... Can select device with portaudio
 
 /* This routine will be called by the PortAudio engine when audio is needed.
 ** It may be called at interrupt level on some machines so don't do anything
@@ -266,10 +282,14 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
     }
     return finished;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0e0e962... Can select device with portaudio
 } // playCallback
 
 int selectDevice()
 {
+<<<<<<< HEAD
     int     			i,
 						numDevices,
 						defaultDisplayed;
@@ -279,6 +299,17 @@ int selectDevice()
 	PaStream*			stream;
     PaError 			err;
 
+=======
+    int     			i, 
+						numDevices, 
+						defaultDisplayed;
+    const PaDeviceInfo 	*deviceInfo;
+    PaStreamParameters 	inputParameters, 
+						outputParameters;
+	PaStream*			stream;
+    PaError 			err;
+	
+>>>>>>> 0e0e962... Can select device with portaudio
     paTestData          data;
     int                 totalFrames;
     int                 numSamples;
@@ -286,14 +317,22 @@ int selectDevice()
 	char 				devSelection[4];
 	int					devSelectInt;
 
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 0e0e962... Can select device with portaudio
     err = Pa_Initialize();
     if( err != paNoError )
     {
         printf( "ERROR: Pa_Initialize returned 0x%x\n", err );
         return -1;
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 0e0e962... Can select device with portaudio
     printf( "PortAudio version: 0x%08X\n", Pa_GetVersion());
     printf( "Version text: '%s'\n", Pa_GetVersionInfo()->versionText );
 
@@ -304,13 +343,21 @@ int selectDevice()
         err = numDevices;
         return -1;
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 0e0e962... Can select device with portaudio
     printf( "Number of devices = %d\n", numDevices );
     for( i=0; i<numDevices; i++ )
     {
         deviceInfo = Pa_GetDeviceInfo( i );
         printf( "--------------------------------------- device #%d\n", i );
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> 0e0e962... Can select device with portaudio
     /* Mark global and API specific default devices */
         defaultDisplayed = 0;
         if( i == Pa_GetDefaultInputDevice() )
@@ -324,7 +371,11 @@ int selectDevice()
             printf( "[ Default %s Input", hostInfo->name );
             defaultDisplayed = 1;
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 0e0e962... Can select device with portaudio
         if( i == Pa_GetDefaultOutputDevice() )
         {
             printf( (defaultDisplayed ? "," : "[") );
@@ -334,7 +385,11 @@ int selectDevice()
         else if( i == Pa_GetHostApiInfo( deviceInfo->hostApi )->defaultOutputDevice )
         {
             const PaHostApiInfo *hostInfo = Pa_GetHostApiInfo( deviceInfo->hostApi );
+<<<<<<< HEAD
             printf( (defaultDisplayed ? "," : "[") );
+=======
+            printf( (defaultDisplayed ? "," : "[") );                
+>>>>>>> 0e0e962... Can select device with portaudio
             printf( " Default %s Output", hostInfo->name );
             defaultDisplayed = 1;
         }
@@ -390,7 +445,11 @@ int selectDevice()
         inputParameters.sampleFormat = paInt16;
         inputParameters.suggestedLatency = 0; /* ignored by Pa_IsFormatSupported() */
         inputParameters.hostApiSpecificStreamInfo = NULL;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 0e0e962... Can select device with portaudio
         outputParameters.device = i;
         outputParameters.channelCount = deviceInfo->maxOutputChannels;
         outputParameters.sampleFormat = paInt16;
@@ -418,32 +477,51 @@ int selectDevice()
             PrintSupportedStandardSampleRates( &inputParameters, &outputParameters );
         }
     } /* for numDevices */
+<<<<<<< HEAD
 
 
 	printf("What input device would you like to use? ");
 	fgets(devSelection, 4, stdin);
 	devSelectInt	= atoi(devSelection);
 
+=======
+	
+	
+	printf("What input device would you like to use? ");	
+	fgets(devSelection, 4, stdin);
+	devSelectInt	= atoi(devSelection);
+	
+>>>>>>> 0e0e962... Can select device with portaudio
 	if(devSelectInt >= numDevices)
 	{
 		printf("Sorry; that number is out of the parameters; must be less than %d.", numDevices);
 		return -1;
 	} // if
+<<<<<<< HEAD
 
 	return devSelectInt;
 } // selectDevice
 =======
 }
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+	
+	return devSelectInt;
+} // selectDevice
+>>>>>>> 0e0e962... Can select device with portaudio
 
 /*******************************************************************/
 int main(void);
 int main(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int					device;
 =======
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+	int					device;
+>>>>>>> 0e0e962... Can select device with portaudio
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
@@ -482,6 +560,7 @@ int main(void)
     if( err != paNoError ) goto done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     numDevices	= 2;
 
 	// input stream:
@@ -490,6 +569,10 @@ int main(void)
 =======
     inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+	device	= selectDevice();
+    inputParameters.device = device; /* default input device */
+>>>>>>> 0e0e962... Can select device with portaudio
     if (inputParameters.device == paNoDevice) {
         fprintf(stderr,"Error: No default input device.\n");
         goto done;
