@@ -1560,10 +1560,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.colors[colorPos][1]	= color.getGreen();
 				this.colors[colorPos][2]	= color.getBlue();
 				
-				System.out.println("ModuleTemplate.controlEvent: colorPos = " + colorPos);
-				System.out.println("colors[" + colorPos + "][0] = " + this.colors[colorPos][0]);
 			} // else - not canvas
-
+			
 		} // ColorWheels
 
 		// ColorWheel Textfields
