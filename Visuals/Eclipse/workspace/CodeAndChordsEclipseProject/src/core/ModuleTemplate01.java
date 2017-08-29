@@ -66,10 +66,13 @@ import processing.core.PImage;
  *
  */
 public class ModuleTemplate01 extends ModuleTemplate {
+	
+	private	int	trichromCounts	= 0;
 
 	private	static	float	CS_RAINBOW	= 1;
 	private	static	float	CS_DICHROM	= 2;
-	private	static	float	CS_TRICHROM	= 3;
+	// TODO: make private after fixing trichrom error
+	public static	float	CS_TRICHROM	= 3;
 	private	static	float	CS_CUSTOM	= 4;
 	private	float	curColorStyle;
 	//	private boolean menuVis = false;
@@ -730,7 +733,12 @@ public class ModuleTemplate01 extends ModuleTemplate {
 					colorPos2	= 5;
 					colorPos3	= 7;
 				}
-
+/*
+				System.out.println("updateColors: about to call trichrom_3RGB with rgb(" + 
+						this.colors[0][0] + ", " + this.colors[0][1] + ", " + this.colors[0][2] + "), rgb(" +
+						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
+						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
+*/
 				this.trichromatic_ThreeRGB(this.colors[0], this.colors[colorPos2], this.colors[colorPos3]);
 				//				this.updateCustomPitchCWs();
 			} // else
@@ -761,7 +769,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// (Will they need to check to make sure that the key is actually chromatic?)
 		} // custom colorStyle
 
-		System.out.println("updating custom pitch ColorWheels now...");
 		// Populate the CustomPitch ColorWheels with the current colors:
 		this.updateCustomPitchCWs();
 
@@ -890,7 +897,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.parent.text(notes[i], (float) (leftEdgeX + (sideWidth1 * i) + (sideWidth1 * 0.35)), this.parent.height - 20);
 		} // for
 
-		/*
+
 		// TODO: remove after fixing trichrom-maj/minor bug:
 		// Testing to see what's really in colors:
 		for(int i = 0; i < this.colors.length; i++)
@@ -898,7 +905,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
 			this.parent.ellipse(this.parent.width / 3 * 2, i * 30 + 60, 30, 30);
 		} // for
-		 */
+
 	} // legend
 
 
@@ -1093,6 +1100,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
 		} // error checking
 
+		this.trichromCounts++;
+		System.out.println("	this.trichromCounts = " + this.trichromCounts);
+		
 		int	color1pos	= 0;
 		int	color2pos;
 		int	color3pos;
@@ -1265,15 +1275,15 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	
 	/**
-	 * This method handles the functionality of all the buttons, sliders, and textFields;
-	 * Notate bene: any classes that include a moduleTemplate *must* include a controlEvent(ControlEvent) method that calls this method.
+	 * This method "catches" all ControlP5 ControlEvents, sends them to ModuleTemplate.controlEvent,
+	 * and deals with a few module-specific Controllers on its own.
 	 * 
 	 * @param theControlEvent	ControlEvent used to determine which controller needs to act.
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
-		//		System.out.println("ModuleTemplate01: theControlEvent.getController() = " + controlEvent.getController());
+//		System.out.println("ModuleTemplate01: theControlEvent.getController() = " + controlEvent.getController());
 
 		int	id	= controlEvent.getController().getId();
 
@@ -1337,7 +1347,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		if(controlEvent.getName().equals("major") ||
 				controlEvent.getName().equals("minor") ||
 				controlEvent.getName().equals("chrom"))
-		{		
+		{
+			System.out.println("New scale quality: " + controlEvent.getName());
+			
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
@@ -1386,7 +1398,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// only call updateColors() for colorSelect Buttons, ColorWheels, or Textfields:
 		if(id >= 200 && id < 500 && (id % 100) >= (this.firstColorSelectId % 100) && (id % 100) <= (this.lastColorSelectId % 100))
 		{
-			this.updateColors(this.curColorStyle);
+			System.out.println("------------ Making sure that this is ONLY ColorSelect Buttons/CWs/TFs: id = " + id + " ------------");
+			// TODO - this needs to happen... but maybe not as often....
+//			this.updateColors(this.curColorStyle);
 			this.updateCustomPitchCWs();
 		} // ColorWheels
 

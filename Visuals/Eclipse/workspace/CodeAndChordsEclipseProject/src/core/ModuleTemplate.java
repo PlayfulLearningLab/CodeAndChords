@@ -1559,7 +1559,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		// ColorWheels
 		if(id > 299 && id < 400)
 		{
-			System.out.println("ColorWheel event from id " + id);
 			// get current color:
 			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
 
@@ -1578,6 +1577,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
 
+				// Ensures that the shape doesn't have to fade to this color if the amp is below the threshold:
 				if(this.nowBelow)
 				{
 					this.curHue[0]	= color.getRed();
@@ -1597,8 +1597,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			{
 				int	colorPos	= this.calculateNotePos(id);
 
-				System.out.println("colorPos = " + colorPos);
-
 				this.colors[colorPos][0]	= color.getRed();
 				this.colors[colorPos][1]	= color.getGreen();
 				this.colors[colorPos][2]	= color.getBlue();
@@ -1607,6 +1605,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 				this.legendColors[colorPos][1]	= color.getGreen();
 				this.legendColors[colorPos][2]	= color.getBlue();
 
+/*				System.out.println("controlEvent: ColorWheel" + id + " setting colors[" + colorPos + "] to rgb(" + 
+						color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+						*/
 			} // else - not canvas
 
 			// Fill HSB colors so that it's always up to date
@@ -1737,7 +1738,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.melody.setRangeList();
 			try
 			{
-				System.out.println("this.sidebarCP5.getController('rangeDropdown') = " + this.sidebarCP5.getController("rangeDropdown"));
 				((ScrollableList)this.sidebarCP5.getController("rangeDropdown"))
 				.setItems(this.melody.getRangeList())
 				.setValue(0f);
@@ -2076,7 +2076,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 		//					Color	rgbColor	= new Color(this.tonicColor[0], this.tonicColor[1], this.tonicColor[2]);
 		Color	rgbColor	= new Color(red, green, blue);
 		int		rgbInt		= rgbColor.getRGB();
-		System.out.println("this.sidebarCP5.getController(colorWheel" + id + ") = " + this.sidebarCP5.getController("colorWheel" + id));
 		((ColorWheel)this.sidebarCP5.getController("colorWheel" + id)).setRGB(rgbInt);
 	} // updateColorWheel
 
