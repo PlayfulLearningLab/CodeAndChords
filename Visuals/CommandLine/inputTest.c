@@ -31,17 +31,27 @@
  */
 
 /*
+<<<<<<< HEAD
  * The text above constitutes the entire PortAudio license; however,
+=======
+ * The text above constitutes the entire PortAudio license; however, 
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
  * the PortAudio community also makes the following non-binding requests:
  *
  * Any person wishing to distribute modifications to the Software is
  * requested to send the modifications to the original developer so that
+<<<<<<< HEAD
  * they can be incorporated into the canonical version. It is also
  * requested that these non-binding requests be included along with the
+=======
+ * they can be incorporated into the canonical version. It is also 
+ * requested that these non-binding requests be included along with the 
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
  * license above.
  */
 
 #include <stdio.h>
+<<<<<<< HEAD
 #include <math.h>
 #include <stdlib.h>
 #include "portaudio.h"
@@ -55,6 +65,11 @@
 #endif
 #endif
 
+=======
+#include <stdlib.h>
+#include "portaudio.h"
+
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
 #define SAMPLE_RATE  (44100)
 #define FRAMES_PER_BUFFER (512)
@@ -96,6 +111,7 @@ typedef struct
 }
 paTestData;
 
+<<<<<<< HEAD
 static void PrintSupportedStandardSampleRates(
         const PaStreamParameters *inputParameters,
         const PaStreamParameters *outputParameters )
@@ -136,6 +152,8 @@ static void PrintSupportedStandardSampleRates(
         printf( "\n" );
 } // PrintSupportedStandardSampleRates
 
+=======
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 /* This routine will be called by the PortAudio engine when audio is needed.
 ** It may be called at interrupt level on some machines so don't do anything
 ** that could mess up the system like calling malloc() or free().
@@ -153,7 +171,11 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     long i;
     int finished;
     unsigned long framesLeft = data->maxFrameIndex - data->frameIndex;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
     (void) outputBuffer; /* Prevent unused variable warnings. */
     (void) timeInfo;
     (void) statusFlags;
@@ -188,7 +210,11 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     }
     data->frameIndex += framesToCalc;
     return finished;
+<<<<<<< HEAD
 } // recordCallback
+=======
+}
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 
 /* This routine will be called by the PortAudio engine when audio is needed.
 ** It may be called at interrupt level on some machines so don't do anything
@@ -239,6 +265,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
         finished = paContinue;
     }
     return finished;
+<<<<<<< HEAD
 } // playCallback
 
 int selectDevice()
@@ -405,12 +432,18 @@ int selectDevice()
 
 	return devSelectInt;
 } // selectDevice
+=======
+}
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 
 /*******************************************************************/
 int main(void);
 int main(void)
 {
+<<<<<<< HEAD
 	int					device;
+=======
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
@@ -422,12 +455,18 @@ int main(void)
     int                 numBytes;
     SAMPLE              max, val;
     double              average;
+<<<<<<< HEAD
     int					numDevices;
+=======
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 
     printf("patest_record.c\n"); fflush(stdout);
 
     data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
+<<<<<<< HEAD
 	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
+=======
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
     data.frameIndex = 0;
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(SAMPLE);
@@ -442,11 +481,15 @@ int main(void)
     err = Pa_Initialize();
     if( err != paNoError ) goto done;
 
+<<<<<<< HEAD
     numDevices	= 2;
 
 	// input stream:
 	device	= selectDevice();
     inputParameters.device = device;
+=======
+    inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
     if (inputParameters.device == paNoDevice) {
         fprintf(stderr,"Error: No default input device.\n");
         goto done;
@@ -472,7 +515,10 @@ int main(void)
     if( err != paNoError ) goto done;
     printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
 
+<<<<<<< HEAD
 	// while active:
+=======
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
     while( ( err = Pa_IsStreamActive( stream ) ) == 1 )
     {
         Pa_Sleep(100);
@@ -549,15 +595,26 @@ int main(void)
     {
         err = Pa_StartStream( stream );
         if( err != paNoError ) goto done;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
         printf("Waiting for playback to finish.\n"); fflush(stdout);
 
         while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) Pa_Sleep(100);
         if( err < 0 ) goto done;
+<<<<<<< HEAD
 
         err = Pa_CloseStream( stream );
         if( err != paNoError ) goto done;
 
+=======
+        
+        err = Pa_CloseStream( stream );
+        if( err != paNoError ) goto done;
+        
+>>>>>>> fd9d8bb... First attempts at getting audio with portaudio
         printf("Done.\n"); fflush(stdout);
     }
 
