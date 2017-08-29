@@ -114,6 +114,9 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		if(super.getIsRunning()) 
 		{
+			this.cp5.getController("xPos").update();
+			this.cp5.getController("yPos").update();
+			
 			this.drawSE();
 		}
 		
@@ -292,27 +295,36 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.updateSliders();
 
 		this.cp5.addLabel("n2Label")
-		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[4] - (spacing/3.5)))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[3] - (spacing/3.5)))
 		.setValue("N2");
 		
 		this.cp5.addLabel("n3Label")
-		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[5] - (spacing/3.5)))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[4] - (spacing/3.5)))
 		.setValue("N3");
 		
 		this.cp5.addLabel("xPosLabel")
-		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[6] - (spacing/3.5)))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[5] - (spacing/3.5)))
 		.setValue("X Position");
 		
 		this.cp5.addLabel("yPosLabel")
-		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[7] - (spacing/3.5)))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[6] - (spacing/3.5)))
 		.setValue("Y Position");
 		
-		this.cp5.getController("shapeSelect")
-		.bringToFront();
+		this.cp5.addLabel("rotationLabel")
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[7] - (spacing/3.5)))
+		.setValue("Rotation");
+		
+		this.cp5.addScrollableList("shapeSelect")
+		.setPosition((this.menuWidth + this.seWidth)/2 + this.seXPos - 25 - 150, 5)
+		.setSize(150, 100)
+		.setBarHeight(30)
+		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
+		.setValue(0)
+		.close();
 		
 		this.cp5.addButton("exitButton")
 		.setLabel("Close Shape Editor")
-		.setPosition( (this.menuWidth + this.seWidth + this.seXPos)/2 - 75, 5)
+		.setPosition( (this.menuWidth + this.seWidth)/2 + this.seXPos + 25, 5)
 		.setSize(150, 40);
 		
 	}
