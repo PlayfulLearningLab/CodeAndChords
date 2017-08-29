@@ -5,6 +5,7 @@ import java.awt.Color;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.ControllerInterface;
 import controlP5.Slider;
 import controlP5.Textfield;
 import processing.core.PApplet;
@@ -52,6 +53,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		super(parent, input, sidebarTitle);
 
+		this.shapeMenuIsOpen = false;
+		
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
 		this.yVals[0]	= 26;
@@ -572,6 +575,11 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	public float[] getThresholds()
 	{
 		return this.thresholds;
+	}
+	
+	public boolean getShapeMenuIsOpen()
+	{
+		return this.shapeMenuIsOpen;
 	}
 
 } // ModuleTemplate02
