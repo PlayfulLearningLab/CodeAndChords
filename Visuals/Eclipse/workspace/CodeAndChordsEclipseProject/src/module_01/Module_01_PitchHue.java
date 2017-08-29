@@ -191,7 +191,6 @@ public class Module_01_PitchHue extends Module
 			}
 		} // if		
 		*/
-
 	} // draw()
 	
 	public String[] getLegendText()
