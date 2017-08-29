@@ -291,7 +291,17 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		}
 		
 		this.updateSliders();
+
+		this.cp5.addLabel("n2Label")
+		.setPosition(15, yVals[4] - (spacing/3))
+		.setValue("N2");
 		
+		this.cp5.addLabel("n3Label")
+		.setPosition(15, yVals[5] - (spacing/3))
+		.setValue("N3");
+		
+		this.cp5.getController("shapeSelect")
+		.bringToFront();
 	}
 
 	@Override
@@ -303,7 +313,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	@Override
 	public void colorWheelEvent(int id, Color color) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void updateSliders()
