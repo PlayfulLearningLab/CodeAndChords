@@ -82,6 +82,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 	/**	The color when sound is below the threshold	*/
 	protected	float[]		canvasColor;
 	
+	/**	The color of the background	(only applicable for modules with a shape)	*/
+	protected	float[]		backgroundColor;
+	
 	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
 	private	float[]			colorAdd;
 	
@@ -123,6 +126,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 	
 	/**	Stores the values of the hue, saturation, and brightness modulate sliders	*/
 	protected	float[] hueSatBrightnessMod;
+	
+	/**	
+	 * Stores the values the hue/saturation/brightness percent sliders
+	 * that affect and are dependent on thresholds;
+	 * this variable will be included in applyHSBModulate, but child class must fill it.
+	 */
+	protected	float[]	hueSatBrightPercentMod;
 
 	/**	Melody object that guide tones will use to play scales	*/
 	protected Melody		melody;
@@ -175,6 +185,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
 	protected	int	canvasColorSelectId	= -1;
+	protected	int	backgroundColorSelectId	= -1;
 	protected	int	firstColorModSliderId	= -1;
 	protected	int	firstColorSelectId	= -1;
 	protected	int	lastColorSelectId	= -1;
@@ -229,6 +240,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.curHue				= new float[3];
 		this.goalHue			= new float[3];
 		this.canvasColor		= new float[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
+		this.backgroundColor	= new float[] { 1, 0, 0 };
 		this.colorAdd			= new float[3];
 		this.colorRange			= new float[3];
 
@@ -239,6 +251,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		this.attRelTranPos	= 0;	// 0 = attack, 1 = release, 2 = transition
 		this.attRelTranVals	= new float[] {		200, 200, 200	};	// attack, release, transition all begin at 200 millis
 		this.hueSatBrightnessMod        = new float[3];
+		this.hueSatBrightPercentMod		= new float[3];
 
 		this.checkpoint		= this.parent.millis() + 100;
 
@@ -1184,8 +1197,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 	} // applyColorModulate
 
 	/**
-	 * Applies the values from this.hueSatBrightnessMod to the contents of super.colors.
-	 * @param colors	super.colors
+	 * Applies the values from this.hueSatBrightnessMod to the contents of this.colors.
+	 * @param colors	this.colors
 	 * @param hsbColors	this.hsbColors
 	 */
 	protected void applyHSBModulate(float[][] colors, float[][] hsbColors)
@@ -1201,12 +1214,10 @@ public abstract class ModuleTemplate implements ControlListener  {
 			// Converts this position of hsbColors from RGB to HSB:
 			Color.RGBtoHSB((int)hsbColors[i][0], (int)hsbColors[i][1], (int)hsbColors[i][2], hsb);
 
-			//			((((hsb[i1] + this.hueSatBrightnessMod[i1]) * 100) % 100) / 100)
 			// Applies the status of the sliders to the newly-converted color:
-
-			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + 1) % 1;
-			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
-			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2], 1), 0);
+			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + this.hueSatBrightPercentMod[0] + 1) % 1;
+			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1] + this.hueSatBrightPercentMod[1], 1), 0);
+			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2] + this.hueSatBrightPercentMod[2], 1), 0);
 
 			// Converts the color back to RGB:
 			int oc = Color.HSBtoRGB(hsb[0], hsb[1],  hsb[2]);
@@ -1528,12 +1539,28 @@ public abstract class ModuleTemplate implements ControlListener  {
 			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
 
 			// canvas color (does not affect notes):
-			if((id % 100) == (this.canvasColorSelectId % 100))
+			if( ( this.canvasColorSelectId != -1) && 
+					( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) ) )
 			{			
 				this.canvasColor[0]	= color.getRed();
 				this.canvasColor[1]	= color.getGreen();
 				this.canvasColor[2]	= color.getBlue();
 			} // if - canvas
+			else if( ( this.backgroundColorSelectId != -1 ) && 
+					( ( id % 100 ) == ( this.backgroundColorSelectId % 100 ) ) )
+			{
+				this.backgroundColor[0]	= color.getRed();
+				this.backgroundColor[1]	= color.getGreen();
+				this.backgroundColor[2]	= color.getBlue();
+			} // if - background
+			else
+			{
+				int	colorPos	= this.calculateNotePos(id);
+
+				this.colors[colorPos][0]	= color.getRed();
+				this.colors[colorPos][1]	= color.getGreen();
+				this.colors[colorPos][2]	= color.getBlue();
+			} // else - not canvas
 
 		} // ColorWheels
 
@@ -2044,7 +2071,21 @@ public abstract class ModuleTemplate implements ControlListener  {
 	public float getBlueModulate() {
 		return this.redGreenBlueMod[2];
 	}
-
+	
+	/*
+	public float getHueModulate() {
+		return this.hueSatBrightnessMod[0];
+	}
+	
+	public float getSaturationModulate() {
+		return this.hueSatBrightnessMod[1];
+	}
+	
+	public float getBrightnessModulate() {
+		return this.hueSatBrightnessMod[3];
+	}
+*/
+	
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
 	}
@@ -2072,6 +2113,11 @@ public abstract class ModuleTemplate implements ControlListener  {
 	public boolean menuIsOpen()
 	{
 		return this.menuIsOpen;
+	}
+	
+	public float[] getBackgroundColor()
+	{
+		return this.backgroundColor;
 	}
 
 } // ModuleTemplate
