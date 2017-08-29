@@ -19,10 +19,13 @@
 	<classpathentry kind="lib" path="sound.jar"/>
 	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
 	<classpathentry kind="lib" path="jportaudio.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="libs/jportaudio_x64.dll"/>
 	<classpathentry kind="lib" path="libs/jportaudio_x86.dll"/>
 	<classpathentry kind="lib" path="libs/portaudio_x64.dll"/>
 	<classpathentry kind="lib" path="libs/portaudio_x86.dll"/>
+=======
+>>>>>>> 37d6e1c... Removed dll's from Eclipse classpath
 	<classpathentry kind="output" path="bin"/>
 </classpath>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
