@@ -1259,8 +1259,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	protected void fillOriginalColors()
 	{
-		if(this.colors == null)
-		{
+		if(this.colors == null) {
 			throw new IllegalArgumentException("ModuleTemplate.fillOriginalColors: this.colors is null.");
 		}
 
@@ -1600,7 +1599,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 				} // if - rgb
 
 			} catch(Exception e) {
-				System.out.println("Sorry, that is not recognized as a valid color (note that colors must be defined by Integer values). Exception message: "
+				System.out.println("Sorry, '" + controlEvent.getStringValue() + "' is not recognized as a valid color (note that colors must be defined by Integer values). Exception message: "
 						+ e.getMessage());
 			} // catch
 		} // ColorWheel Textfields

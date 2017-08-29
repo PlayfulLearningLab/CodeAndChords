@@ -553,8 +553,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			//			this.applyHSBModulate(this.colors, this.hsbColors);
 		} // if - sat/brightness threshold Sliders
 
-
-		this.legend(0);
+// TODO:
+//		this.legend(0);
 		
 		/*
 		 * So what's going on?
@@ -562,6 +562,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		 * When I draw the legend in controlEvent but outside of any ifs, it will get the color
 		 * that I'm currently changing correct.  But the other colors revert back to their
 		 * original states!
+		 * So: when I am actively moving a ColorWheel, it's updating,
+		 * but when I stop, it "goes back" - how does it go back?
+		 * 		I'll check ModuleTemplate.controlEvent...
+		 * 		Nothing there.
+		 * 
+		 * And - I know that it has something to do with settin the canvas color?
+		 * Not true; I just know that that defined that it couldn't show the last one;
+		 * this might be a completely different issue.
 		 */
 		
 		// ColorWheels - now this all happens in ModuleTemplate (post 7/26):
