@@ -5,10 +5,14 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 <<<<<<< HEAD
+<<<<<<< HEAD
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject/libs"/>
 =======
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject"/>
 >>>>>>> 08e6ab7... Added .dylib and lportaudio.jar to Eclipse
+=======
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject/libs"/>
+>>>>>>> b3e9caa... AudioServer can get data, but not continuously
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>

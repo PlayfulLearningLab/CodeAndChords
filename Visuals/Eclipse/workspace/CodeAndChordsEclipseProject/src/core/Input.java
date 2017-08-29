@@ -47,8 +47,6 @@ import beads.Compressor;
  */
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 
-import java.util.Set;
-
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
@@ -143,33 +141,13 @@ public class Input {
 		if(audioContext == null) {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
 		} // if(numInputs < 1)
-<<<<<<< HEAD
 
 		this.numInputs  = numInputs;
 		this.ac 		= audioContext;
 		this.skip5thru8	= skip5thru8;
-=======
-
-
-		this.numInputs  = numInputs;
-		this.ac = audioContext;
-
-		
-		Mixer.Info[]	mixerInfo	= AudioSystem.getMixerInfo();
-		Mixer			mixer3		= AudioSystem.getMixer(mixerInfo[4]);
-		System.out.println("mixer3.getLineInfo() = " + mixer3.getLineInfo() +
-				"; mixer3.getMixerInfo() = " + mixer3.getMixerInfo());
-		try {
-			mixer3.open();
-		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
->>>>>>> b8f8127... Back to a working Input class and Module_01
 		
 		if(this.skip5thru8)
 		{
-<<<<<<< HEAD
 			this.adjustedNumInputs	= this.numInputs - 4;
 			System.out.println("this.adjustedNumInputs = " + this.adjustedNumInputs);
 		} else {
@@ -178,12 +156,6 @@ public class Input {
 		
 		this.disposeHandler	= new DisposeHandler(pa, this);
 		System.out.println("just registered DisposeHandler for " + pa);
-=======
-			// getAudioInput needs an int[] with the number of the particular line.
-			this.uGenArray[i]  = this.ac.getAudioInput(new int[] {(i + 1)});
-			System.out.println("getuGenArray()[" + i + "] = " + getuGenArray()[i]);
-		}
->>>>>>> b8f8127... Back to a working Input class and Module_01
 
 		this.uGenArrayFromNumInputs(this.numInputs);
 	} // constructor(int, AudioContext, boolean)
@@ -250,8 +222,6 @@ public class Input {
 		this(2, pa); //, new AudioContext());
 	} // constructor()
 
-<<<<<<< HEAD
-=======
 	/**
 	 * Constructor for creating an Input object from an audio file.
 	 * NB: string parameter must include src/[modulePackageName]/[iterationPackageName]/fileName
@@ -276,7 +246,6 @@ public class Input {
 	{
 		// Moved this from the constructor:
 		this.numInputs  = sampleFilenames.length;
-		this.sampleManager  = new SampleManager();
 		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
 		int  semaphore      = 1;
 
@@ -342,7 +311,6 @@ public class Input {
 		initInput(uGenArray);
 	} // uGenArrayFromSample(String[])
 
->>>>>>> b8f8127... Back to a working Input class and Module_01
 	public void uGenArrayFromNumInputs(int numInputs)
 	{
 		// TODO: make sure we set this everywhere else
@@ -370,29 +338,18 @@ public class Input {
 		int	channelPos	= 0;
 		for (int i = 0; i < uGenArray.length; i++)
 		{
-<<<<<<< HEAD
 //			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
 			if(channelPos == 4 && this.skip5thru8)
 			{
 				channelPos	= 8;
 			}
-=======
-			// getAudioInput needs an int[] with the number of the particular line.
-//			uGenArray[i]  = acArray[i].getAudioInput(new int[] {(i + 1)});
-			uGenArray[i]  = this.ac.getAudioInput(new int[] {(i + 1)});
->>>>>>> b8f8127... Back to a working Input class and Module_01
 			
 			uGenArray[i]  = new Plug(this.ac, audioInput, channelPos);
 			System.out.println("Input: uGenArray[" + i + "] = " + uGenArray[i]);
 			this.gainArray[i]	= new Gain(this.ac, 0, 0);
 			
-<<<<<<< HEAD
 			channelPos	= channelPos + 1;
 		} // for
-=======
-			this.gainArray[i]	= new Gain(this.ac, 0, 0);
-		}
->>>>>>> b8f8127... Back to a working Input class and Module_01
 
 		initInput(uGenArray);
 	} // uGenArrayFromNumInputs
@@ -431,13 +388,9 @@ public class Input {
 			if(this.gainArray[i] == null)
 			{
 				this.gainArray[i]	= new Gain(this.ac, 0, 0);
-<<<<<<< HEAD
-				
+
 				// TODO: uncomment this line to hear what's going in the mics (e.g., through headphones):
 //				this.gainArray[i]	= new Gain(this.ac, 1, 0.5f);
-=======
-				System.out.println("Input.initInput: Had to set g in initInput(); should initialize it earlier.");
->>>>>>> b8f8127... Back to a working Input class and Module_01
 			}
 			
 			this.gainArray[i].addInput(this.compressor);
