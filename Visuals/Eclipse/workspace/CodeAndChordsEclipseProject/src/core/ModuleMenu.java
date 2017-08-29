@@ -1019,7 +1019,6 @@ public class ModuleMenu extends MenuTemplate  {
 	public void addModulateSliders(int xVal, int[] modulateYVals)
 	{
 		this.redGreenBlueMod		 	= new float[3];
-
 		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
 		this.firstRGBSliderId	= this.nextSliderId;
@@ -2620,6 +2619,103 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			} // range segments
 		} // Toggles
+		
+		// Major/Minor/Chromatic buttons
+		if(controlEvent.getName().equals("major") ||
+				controlEvent.getName().equals("minor") ||
+				controlEvent.getName().equals("chrom"))
+		{
+			System.out.println("New scale quality: " + controlEvent.getName());
+			
+			Toggle	curToggle	= (Toggle) controlEvent.getController();
+			this.setCurKey(this.curKey, (int) curToggle.internalValue());
+			//			this.majMinChrom	= (int) curToggle.internalValue();
+			this.setColorStyle(this.curColorStyle);
+
+			// Turn off the other two:
+			Toggle[] toggleArray	= new Toggle[] {
+					(Toggle)this.controlP5.getController("major"),
+					(Toggle)this.controlP5.getController("minor"),
+					(Toggle)this.controlP5.getController("chrom"),
+			};
+			boolean[]	broadcastState	= new boolean[toggleArray.length];
+			for(int i = 0; i < toggleArray.length; i++)
+			{
+				// save the current broadcast state of the controller:
+				broadcastState[i]	= toggleArray[i].isBroadcast();
+
+				// turn off broadcasting to avoid endless looping in this method:
+				toggleArray[i].setBroadcast(false);
+
+				// only switch off the ones that weren't just clicked:
+				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
+				{
+					toggleArray[i].setState(false);
+				}
+
+				// set broadcasting back to original setting:
+				toggleArray[i].setBroadcast(broadcastState[i]);
+			} // for - switch off all Toggles:
+
+			// Update Melody's scale:
+			String[] scales	= new String[] { "major", "minor", "chromatic" };
+			this.melody.setScale(scales[this.majMinChrom]);
+			this.melody.setRangeList();
+			try
+			{
+				((ScrollableList)this.controlP5.getController("rangeDropdown"))
+				.setItems(this.melody.getRangeList())
+				.setValue(0f);
+			} catch(ClassCastException cce) {
+				throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+			} // catch
+
+		} // majMinChrom buttons
+
+		// Color Style:
+		if(controlEvent.getName().equals("rainbow") ||
+				controlEvent.getName().equals("dichrom") ||
+				controlEvent.getName().equals("trichrom") ||
+				controlEvent.getName().equals("custom"))
+		{
+			Toggle	curToggle	= (Toggle) controlEvent.getController();
+
+			this.setColorStyle((int)curToggle.internalValue());
+			
+			// Turn off the other Toggles:
+			Toggle[] toggleArray	= new Toggle[] {
+					(Toggle)this.controlP5.getController("rainbow"),
+					(Toggle)this.controlP5.getController("dichrom"),
+					(Toggle)this.controlP5.getController("trichrom"),
+					(Toggle)this.controlP5.getController("custom")
+			};
+
+			boolean[]	broadcastState	= new boolean[toggleArray.length];
+			for(int i = 0; i < toggleArray.length; i++)
+			{
+				// save the current broadcast state of the controller:
+				broadcastState[i]	= toggleArray[i].isBroadcast();
+
+				// turn off broadcasting to avoid endless looping in this method:
+				toggleArray[i].setBroadcast(false);
+
+				// switch off the ones that weren't just clicked, but keep the current one on:
+				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
+				{
+					System.out.println("setting " + toggleArray[i] + " to false");
+					toggleArray[i].setState(false);
+				} else {
+					System.out.println("setting " + toggleArray[i] + " to true");
+					toggleArray[i].setState(true);
+				}
+
+				// set broadcasting back to original setting:
+				toggleArray[i].setBroadcast(broadcastState[i]);
+			} // for - switch off all Toggles:
+			
+			this.resetModulateSlidersTextfields();
+		} // colorStyle buttons
+
 
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
@@ -3970,6 +4066,14 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
 	}
+	
+	public String getCurKey() {
+		return this.curKey;
+	}
+	
+	public int getMajMinChrom() {
+		return this.majMinChrom;
+	}
 
 	public String getCurKey() {
 		return this.curKey;
@@ -3999,6 +4103,15 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
+	
+	/**
+	 * Getter for this.curRangeSegments
+	 * 
+	 * @return	this.curRangeSegments instance variable
+	 */
+	public int getCurRangeSegments() {
+		return this.curRangeSegments;
+	} // getCurRangeSegments
 
 	/**
 	 * Getter for this.curRangeSegments
