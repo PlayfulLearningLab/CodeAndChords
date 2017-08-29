@@ -167,10 +167,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PORTAUDIOJNI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
 =======
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
+=======
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -192,10 +196,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PORTAUDIOJNI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
 =======
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
+=======
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>

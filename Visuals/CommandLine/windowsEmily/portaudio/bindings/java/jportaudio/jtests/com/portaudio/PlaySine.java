@@ -20,15 +20,20 @@ public class PlaySine
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 /*
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
 	public static void main( String[] args )
 	{
 		PlaySine player = new PlaySine();
 		player.play();
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -36,6 +41,9 @@ public class PlaySine
 =======
 	*/
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
 	/**
 	 * Write a sine wave to the stream.
 	 * @param stream

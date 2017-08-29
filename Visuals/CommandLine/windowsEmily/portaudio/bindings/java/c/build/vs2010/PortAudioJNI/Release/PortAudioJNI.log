@@ -2,6 +2,7 @@
   com_portaudio_PortAudio.c
   jpa_tools.c
 <<<<<<< HEAD
+<<<<<<< HEAD
      Creating library ..\..\..\..\jportaudio\jportaudio_x86.lib and object ..\..\..\..\jportaudio\jportaudio_x86.exp
   Generating code
   All 40 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
@@ -10,9 +11,17 @@
   PortAudioJNI.vcxproj -> ..\..\..\..\jportaudio\jportaudio_x86.pdb (Full PDB)
 =======
      Creating library ..\..\..\..\jportaudio\jportaudio_x64.lib and object ..\..\..\..\jportaudio\jportaudio_x64.exp
+=======
+     Creating library ..\..\..\..\jportaudio\jportaudio_x86.lib and object ..\..\..\..\jportaudio\jportaudio_x86.exp
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
   Generating code
-  Finished generating code
   All 40 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+<<<<<<< HEAD
   PortAudioJNI.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\bindings\java\c\build\vs2010\PortAudioJNI\..\..\..\..\jportaudio\jportaudio_x64.dll
   PortAudioJNI.vcxproj -> ..\..\..\..\jportaudio\jportaudio_x64.pdb (Full PDB)
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+  Finished generating code
+  PortAudioJNI.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\bindings\java\c\build\vs2010\PortAudioJNI\..\..\..\..\jportaudio\jportaudio_x86.dll
+  PortAudioJNI.vcxproj -> ..\..\..\..\jportaudio\jportaudio_x86.pdb (Full PDB)
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
