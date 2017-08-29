@@ -420,8 +420,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		return new float[] { 	this.seXPos + this.menuWidth, 
 								this.seYPos, 
-								this.seXPos + this.menuWidth + this.seWidth,
-								this.seYPos + this.seHeight };
+								this.seWidth,
+								this.seHeight };
 	}
 
 	public ControlP5 getCP5()
