@@ -6,7 +6,10 @@ import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
+<<<<<<< HEAD
 import core.Shape;
+=======
+>>>>>>> 5ce29bd... Module_01 using ModuleMenu completely
 import core.Archive_ModuleTemplate.ModuleTemplate01;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;

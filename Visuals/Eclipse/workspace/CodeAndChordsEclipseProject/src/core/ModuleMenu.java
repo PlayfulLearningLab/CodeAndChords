@@ -469,7 +469,6 @@ public class ModuleMenu extends MenuTemplate  {
 		 */
 
 		this.minThreshold	= 101;
-
 		//		this.shapeMenuIsOpen	= false;
 
 		this.melody			= new Melody(this.parent, this.input);
@@ -1900,7 +1899,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			divideBy1	= 3;
 			divideBy2	= 1;
-			divideBy3	= 3;
+			divideBy3	= 2;
 		}
 
 		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / divideBy1);
@@ -3532,7 +3531,7 @@ public class ModuleMenu extends MenuTemplate  {
 //		this.thresholds	= new float[this.curRangeSegments];
 		for(int i = 0; i < this.curRangeSegments; i++)
 		{
-			this.thresholds[i]	= this.pianoThreshold + segmentValue * i;
+			this.thresholds[i]	= this.pianoThreshold + (int)segmentValue * i;
 		} // for
 	} // resetThresholds
 
