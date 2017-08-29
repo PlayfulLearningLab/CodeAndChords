@@ -108,22 +108,25 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		String[]	buttonLabels	= new String[] {
 				"Canvas", "1", "2", "3", "4"
 		};
-		this.addColorSelect(new int[] { this.yVals[7] }, buttonLabels, "Color Select", true);
+		//addColorSelect must be called first
+		this.addColorSelect(new int[] { this.yVals[8] }, buttonLabels, "Color Select", true);
 		this.fillHSBColors();
 
-		this.addSliders(this.yVals[1], this.yVals[3], this.yVals[4], this.yVals[5]);
+		this.addARTSliders(this.yVals[1], this.yVals[2], this.yVals[3]);
 
-		this.addShapeSizeSlider(this.yVals[2]);
+		this.addShapeSizeSlider(this.yVals[15]);
 
-		this.addRangeSegments(this.yVals[6], 4, 4, "Dynamic\nSegments");
+		this.addRangeSegments(this.yVals[7], 4, 4, "Dynamic\nSegments");
 
 		
 //		this.addColorSelectButtons(this.yVals[7]);
 
-		this.addHSBSliders(new int[] { this.yVals[8], this.yVals[9], this.yVals[10], });
+		this.addHSBSliders(new int[] { this.yVals[4], this.yVals[5], this.yVals[6], });
 
+		this.addPianoThresholdSlider(this.yVals[9]);
+		
 		int	verticalSpacer	= distance - this.sliderHeight;
-		this.addThresholdSliders(yVals[11], verticalSpacer);
+		this.addThresholdSliders(yVals[10], verticalSpacer);
 
 		this.addShapeCustomizationControls(this.yVals[16]);
 		//		this.initInput();
