@@ -116,13 +116,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 	public ModuleTemplate01(PApplet parent, Input input, String sidebarTitle)
 	{
-		super(parent, input, sidebarTitle);
+		// TODO: how am I going to deal with minor scales??
+		super(parent, input, sidebarTitle, 12);
 
 		this.parent	= parent;
 		this.input	= input;
 
-		this.colors 		= new float[12][3];
-		this.legendColors	= new float[12][3];
+//		this.colors 		= new float[12][3];
+		this.legendColors	= new int[12][3];
 		this.originalColors	= new float[12][3];
 		this.hsbColors      = new float[12][3];
 
@@ -267,7 +268,12 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		this.fillHSBColors();
 		//		this.updateColors(this.curColorStyle);
 
-		this.addCustomPitchColor(textYVals[15], noteYVals);
+//		this.addCustomPitchColor(textYVals[15], noteYVals);
+		String[] noteNames = new String[] {
+				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
+		}; // noteNames
+		
+		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames);
 
 		addHSBSliders(modulateHSBVals);
 
@@ -376,8 +382,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		.setValue("Color Select");
 
 		this.canvasColorSelectId	= this.nextButtonId;
-		this.firstColorSelectId		= this.canvasColorSelectId;
+//		this.firstColorSelectId		= this.canvasColorSelectId;
 
+		
 		for(int i = 0; i < labels.length; i++)
 		{
 			// Last button:
@@ -432,7 +439,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param noteYVals	int[] of y values for each note button
 	 */
-	private void addCustomPitchColor(int labelYVal, int[] noteYVals)
+/*	private void addCustomPitchColor(int labelYVal, int[] noteYVals)
 	{
 		int spacer1			= 5;	// between buttons and textfields
 		int	spacer2			= 15;	// between the two rows of pitches
@@ -472,7 +479,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		.setGroup("sidebarGroup")
 		.setValue("Custom Pitch Color");
 
-		this.firstCustomColorId	= this.nextButtonId;
+//		this.firstCustomColorId	= this.nextButtonId;
+		this.firstColorSelectCWId		= this.nextColorWheelId;
+
 
 		int	namePos	= 0;
 		int colorpos  = 0;
@@ -640,6 +649,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // fourth column of pitches
 
 	} // addNoteColorSelectors
+	*/
 	
 	/**
 	 * Sets the value colors for each new colorStyle
@@ -679,7 +689,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// and the two colors will be set to contrast.
 			if(!this.dichromFlag)
 			{
-				this.dichromatic_OneRGB(this.colors[0]);
+				this.dichromatic_OneRGB(this.getColor(0));
 
 				this.dichromFlag	= true;
 			} // first time
@@ -687,7 +697,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// (allows selection of 2nd color):
 			else
 			{
-				this.dichromatic_TwoRGB(this.colors[0], this.colors[this.colors.length - 1], true);
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 			}
 
 			// Unlock 2nd Color Button, but keep 3rd Color locked:
@@ -711,7 +721,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// first time trichromatic has been called:
 			if(!this.trichromFlag)
 			{
-				this.trichromatic_OneRGB(this.colors[0]);
+				this.trichromatic_OneRGB(this.getColor(0));
 
 				this.trichromFlag	= true;
 			}
@@ -739,7 +749,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 						this.colors[colorPos2][0] + ", " + this.colors[colorPos2][1] + ", " + this.colors[colorPos2][2] + "), (rgb" + 
 						this.colors[colorPos3][0] + ", " + this.colors[colorPos3][1] + ", " + this.colors[colorPos3][2] + ")");
 */
-				this.trichromatic_ThreeRGB(this.colors[0], this.colors[colorPos2], this.colors[colorPos3]);
+				this.trichromatic_ThreeRGB(this.getColor(0), this.getColor(colorPos2), this.getColor(colorPos3));
 				//				this.updateCustomPitchCWs();
 			} // else
 
@@ -758,9 +768,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // Trichromatic
 
 		// Custom:
+		// TODO: I think we should get rid of custom!
 		if(this.curColorStyle == ModuleTemplate01.CS_CUSTOM)
 		{
-
 			((Toggle)(this.sidebarCP5.getController("chrom"))).setState(true);
 
 			// (The functionality in controlEvent will check for custom, and if it is custom, they will set their position of colors to their internal color.)
@@ -770,14 +780,15 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} // custom colorStyle
 
 		// Populate the CustomPitch ColorWheels with the current colors:
-		this.updateCustomPitchCWs();
+// TODO: if things are weird, might be b/c of this:
+//		this.updateCustomPitchCWs();
 
 	} // updateColors
 
 	/**
 	 * Updates the colors of the colorSelect ColorWheels, which will then send an event to their connected Textfields.
 	 */
-	private void updateColorSelectCWs()
+/*	private void updateColorSelectCWs()
 	{
 		// If to avoid calling these before the Buttons/CWs/TFs have been initialized:
 		if(this.canvasColorSelectId > -1)
@@ -826,7 +837,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	/**
 	 * Updates the colors of the custom pitch ColorWheels, which will then send an event to their connected Textfields.
 	 */
-	private void updateCustomPitchCWs()
+	// 8/3 - commenting out b/c we don't even want to use this anymore:
+/*	private void updateCustomPitchCWs()
 	{
 		// Make sure that the Buttons/CWs/TFs have been added before we try to do this:
 		if(this.firstCustomColorId > -1)
@@ -841,8 +853,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		} else {
 			System.out.println("ModuleTemplate01.updateCustomPitchCWs: did not update ColorWheels - firstCustomColorId is " + this.firstCustomColorId);
 		} // else - let the user know we didn't do it
-	} // updateCustomPitchCWs
 
+	} // updateCustomPitchCWs
+*/
+	
 	/**
 	 * Draws the scale legend at the bottom of the screen.
 	 * 
@@ -882,7 +896,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			scaleDegree	= this.scaleDegrees[this.majMinChrom][i];
 			colorPos	= scaleDegree;
 
-			this.parent.fill(this.colors[colorPos][0], this.colors[colorPos][1], this.colors[colorPos][2]);
+			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
+//			this.parent.fill(this.colors[colorPos][0], this.colors[colorPos][1], this.colors[colorPos][2]);
 //			this.parent.fill(this.legendColors[colorPos][0], this.legendColors[colorPos][1], this.legendColors[colorPos][2]);
 			//			this.parent.fill(255);
 
@@ -900,9 +915,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		// TODO: remove after fixing trichrom-maj/minor bug:
 		// Testing to see what's really in colors:
-		for(int i = 0; i < this.colors.length; i++)
+		for(int i = 0; i < this.colorSelect.length; i++)
 		{
-			this.parent.fill(this.colors[i][0], this.colors[i][1], this.colors[i][2]);
+			this.parent.fill(this.getColor(i)[0], this.getColor(i)[1], this.getColor(i)[2]);
 			this.parent.ellipse(this.parent.width / 3 * 2, i * 30 + 60, 30, 30);
 		} // for
 
@@ -971,7 +986,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @param rgbVals1	float[] of rgb values defining tonicColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
-	public void dichromatic_TwoRGB(float[] rgbVals1, float[] rgbVals2, boolean fillFirstToLast)
+	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
@@ -994,30 +1009,45 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		}
 
 		// There will be a difference for red, green, and blue.
-		float	difference;
+//		float	difference;
+		float	rDif	= rgbVals1[0] - rgbVals2[0];
+		float	gDif	= rgbVals1[1] - rgbVals2[1];
+		float	bDif	= rgbVals1[2] - rgbVals2[2];
+		
+		float[]	curColor	= new float[3];
+		float[]	newColor	= new float[3];
 
 		// Loop through red, then green, then blue
 		// (could do it like normal, but then would have to calculate difference each time;
 		// those who save processor cycles store up treasure in Heaven):
-		for(int i = 0; i < 3; i++)
+/*		for(int i = 0; i < 3; i++)
 		{
 			difference	= rgbVals1[i] - rgbVals2[i];
-
-			for(int j = 0; j < this.colors.length - 1; j++)
+*/
+			for(int i = 0; i < this.colorSelect.length - 1; i++)
 			{
 				// Take the percent of the difference multiplied by the position in the array,
 				// subtracting it from the first color to deal with negatives correctly
 				// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
-				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
-			} // for - j
-		} // for - i
+//				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
+				curColor	= this.getColor(i);
+				newColor[0]	= curColor[0] - (rDif * i * percent / 100);
+				newColor[1]	= curColor[1] - (gDif * i * percent / 100);
+				newColor[2]	= curColor[2] - (bDif * i * percent / 100);
+				
+				this.setColor(i, newColor);
+			} // for - i
+//		} // for - i
 
 		// Fill the last color manually, because if we don't,
 		// it can't seem to calculate correctly when the tonic color is changed:
-		for(int i = 0; i < rgbVals2.length; i++)
+		this.setColor(this.colorSelect.length - 1, rgbVals2);
+		
+/*		for(int i = 0; i < rgbVals2.length; i++)
 		{
 			this.colors[this.colors.length - 1][i]	= rgbVals2[i];
 		}
+		*/
 	} // dichromatic_TwoRGB
 
 	/**
@@ -1135,7 +1165,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		 */
 		// This array has the trichromatic spectrum:
 //		float[][]	trichromColors	= new float[this.scaleLength][3];
-		trichromColors	= new float[this.scaleLength][3];
+		trichromColors	= new int[this.scaleLength][3];
 
 		// fill first position with first color:
 		for(int i = 0; i < rgbVals1.length; i++)
@@ -1179,23 +1209,26 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
-		for(int i = 0; i < this.colors.length && trichromColorPos < trichromColors.length; i++)
+		for(int i = 0; i < this.colorSelect.length && trichromColorPos < trichromColors.length; i++)
 		{
 			// TODO: I don't think that these positions are being set correctly :/
 			trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][i];
+			
+			this.setColor(i, trichromColors[trichromColorPos]);
 
-			this.colors[i][0]	= trichromColors[trichromColorPos][0];
+/*			this.colors[i][0]	= trichromColors[trichromColorPos][0];
 			this.colors[i][1]	= trichromColors[trichromColorPos][1];
 			this.colors[i][2]	= trichromColors[trichromColorPos][2];
+			*/
 		} // for
 
-		this.updateCustomPitchCWs();
+//		this.updateCustomPitchCWs();
 	} //trichromatic_ThreeRGB
 
 	/**
 	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
 	 */
-	public void rainbow()
+/*	public void rainbow()
 	{
 		// Filling colors all the way, regardless of the scale,
 		// and then we'll just pick out the colors at scaleDegrees[majMinChrom] for major or minor:
@@ -1243,23 +1276,34 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				{ 255, 0, (float) 127.5 }
 			} // chromatic
 		}; // rainbowColors
+		
+		int	id	= this.firstColorSelectCWId;
+		ColorWheel	curCW	= (ColorWheel)this.sidebarCP5.getController("colorWheel" + id);
 
 		for(int i = 0; i < this.colors.length && i < rainbowColors[this.majMinChrom].length; i++)
 		{
-			for(int j = 0; j < this.colors[i].length && j < rainbowColors[this.majMinChrom][i].length; j++)
+			Color	rgbColor	= new Color(rainbowColors[this.majMinChrom][i][0], rainbowColors[this.majMinChrom][i][1], rainbowColors[this.majMinChrom][i][2]);
+			((ColorWheel)this.sidebarCP5.getController("colorWheel" + (id - 100))).setRGB(rgbColor.getRGB());
+
+			id	= id + 1;
+			
+/*			for(int j = 0; j < this.colors[i].length && j < rainbowColors[this.majMinChrom][i].length; j++)
 			{
 				//				this.getColors()[i][j]	= rainbowColors[this.getMajMinChrom()][i][j];
 				this.colors[i][j]	= rainbowColors[this.majMinChrom][i][j];
 				this.hsbColors[i][j]	= rainbowColors[this.majMinChrom][i][j];
 			} // for - j (going through rgb values)
-		} // for - i (going through colors)
+			*/
+/*		} // for - i (going through colors)
+		
+		this.fillHSBColors();
 
 
 		// Populate the Textfields with the current colors in the colors array,
 		// but only if the custom color buttons have already been initialized
 		// (rainbow() is called before that in the constructor so that there will be colors for 
 		// the ColorWheels and Textfields to use when they are created):
-		if(this.firstCustomColorId > -1)
+/*		if(this.firstCustomColorId > -1)
 		{
 			int	id	= (this.firstCustomColorId % 100) + 300;	// CWTextfields start at 400
 
@@ -1271,8 +1315,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			} // for - colorPos
 
 		} // if - firstCustomColorId > -1
-
-	} // rainbow
+*/
+//	} // rainbow
 
 	
 	/**
@@ -1296,53 +1340,23 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			// this just updates the ColorWheels (which are specific to this child)
 
 			// Hue/Saturation/Brightness modulate
-			if(this.firstHSBSliderId != -1 && 
+/*			if(this.firstHSBSliderId != -1 && 
 					id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
 			{
 				this.updateColorSelectCWs();
 				this.updateCustomPitchCWs();
 			}//hsb mod
-
+*/
 			// Red Modulate/Green Modulate/Blue Modulate:
 			if(this.firstRGBSliderId != -1 &&
 					id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
 			{
-				this.updateColorSelectCWs();
-				this.updateCustomPitchCWs();
+				// TODO - this shouldn't be necessary:
+//				this.updateColorSelectCWs();
+//				this.updateCustomPitchCWs();
 			} // red/green/blue mod
 
 		} // sliders
-
-		// ColorWheels
-		if(id > 299 && id < 400)
-		{
-			// This all happens in ModuleTemplate:
-/*			// get current color:
-			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
-
-			int	rgbColor	= curCW.getRGB();
-			Color	color	= new Color(rgbColor);
-
-			id	= controlEvent.getId();
-
-			// ignore canvas color, which has been set by the parent, but set notes for all others:
-			if((id % 100) != (this.canvasColorSelectId % 100))
-			{
-				int notePos	= this.calculateNotePos(id);	// the position in colors that is to be changed.
-
-				// error checking
-				if(notePos < 0 || notePos > this.colors.length)	{
-					throw new IllegalArgumentException("ModuleTemplate.controlEvent - custom color Textfields: " +
-							"notePos " + notePos + " from id " + id + " is not a valid note position; " +
-							"it should be between 0 and " + this.colors.length);
-				} // error checking
-
-				this.colors[notePos][0]	= color.getRed();
-				this.colors[notePos][1]	= color.getGreen();
-				this.colors[notePos][2]	= color.getBlue();
-			} // else - not canvas
-*/
-		} // ColorWheels
 
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
@@ -1397,13 +1411,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 
 		// only call updateColors() for colorSelect Buttons, ColorWheels, or Textfields:
-		if(id >= 200 && id < 500 && (id % 100) >= (this.firstColorSelectId % 100) && (id % 100) <= (this.lastColorSelectId % 100))
+/*		if(id >= 200 && id < 500 && (id % 100) >= (this.firstColorSelectId % 100) && (id % 100) <= (this.lastColorSelectId % 100))
 		{
 			System.out.println("------------ Making sure that this is ONLY ColorSelect Buttons/CWs/TFs: id = " + id + " ------------");
 			// TODO - this needs to happen... but maybe not as often....
-//			this.updateColors(this.curColorStyle);
+			this.updateColors(this.curColorStyle);
 			this.updateCustomPitchCWs();
 		} // ColorWheels
+		*/
 
 
 		// Color Style:
@@ -1459,9 +1474,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			this.fillOriginalColors();
 			this.fillHSBColors();
 			this.resetModulateSlidersTextfields();
-			this.applyColorModulate(this.colors, this.originalColors);
+			this.applyColorModulate(this.originalColors);
 
-			this.updateColorSelectCWs();
+			// TODO: this shouldn't be necessary anymore.
+//			this.updateColorSelectCWs();
 		} // colorStyle buttons
 	} // controlEvent
 
@@ -1497,7 +1513,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		// adding 12 and modding by 12 avoids negative numbers.
 
 		id	= id % 100;
-		notePos	= ( id - (this.firstCustomColorId % 100) - this.curKeyEnharmonicOffset + 12) % 12;
+		notePos	= ( id - (this.firstColorSelectCWId % 100) - this.curKeyEnharmonicOffset + 12) % 12;
 
 
 		int	modCanvasId	= this.canvasColorSelectId % 100;
@@ -1517,7 +1533,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
 				{
 					// for Dichromatic, this is the last color:
-					notePos	= this.colors.length - 1;
+					notePos	= this.colorSelect.length - 1;
 				} else if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
 				{
 					// for tri, it's in the middle:

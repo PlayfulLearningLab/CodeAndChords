@@ -149,7 +149,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
 
-		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.menu.getThresholds()[0].length; i++)
 		{
