@@ -359,7 +359,13 @@ public class UserInterface extends PApplet {
 			break;
 			
 		case "morph":
-			this.drawMorph(this.displayPos(this.rectPosX),this.rectPosY,this.displaySize(this.rectWidth),this.rectHeight);
+			this.shape(this.mShape,this.displayPos(this.rectPosX), this.rectPosY);
+			//this.drawMorph();
+			//this.drawMorph(this.displayPos(this.rectPosX),this.rectPosY,this.displaySize(this.rectWidth),this.rectHeight);
+			break;
+			
+		case "custom":
+			this.shape(this.cShape, this.displayPos(this.rectPosX), this.rectPosY);
 			break;
 
 		default:
@@ -422,22 +428,35 @@ public class UserInterface extends PApplet {
 	
 	private void drawMorph(float xPos, float yPos, float width, float height)
 	{
-		float r = width;
+		float r = (this.rectWidth/2);
 		
-		beginShape();
+		PShape shape = this.createShape();
 		
-		for(float theta = 0; theta <= 2 * PI + .1; theta += .1f )
+		shape.beginShape();
+		
+		shape.stroke(255);
+		shape.fill(255);
+		
+		float incrament = 2*PI / 200;
+		float x1 = 0;
+		float y1 = 0;
+		
+		for(float theta = 0; theta <= 2 * PI; theta += incrament )
 		{
-			float x = rad(theta, r) * cos(theta);
-			float y = rad(theta, r) * sin(theta);
+			x1 = rad(theta, r) * cos(theta);
+			y1 = rad(theta, r) * sin(theta);
 			
-			x += (xPos + width/2);
-			y += (yPos + height/2);
-			
-			vertex(x,y);
+			shape.vertex(this.displaySize(x1),y1);
 		}
+		shape.endShape();
 		
-		endShape();
+		shape.rotate(this.rotation);
+		
+		this.mShape = shape;
+		
+		//shape.setVisible(true);
+		
+		//shape(shape,this.displayPos(this.rectPosX), this.rectPosY);
 		
 	}
 	

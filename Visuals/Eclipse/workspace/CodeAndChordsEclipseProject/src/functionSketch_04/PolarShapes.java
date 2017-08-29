@@ -6,12 +6,14 @@ import java.util.HashMap;
 import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Controller;
 import controlP5.ControllerGroup;
 import controlP5.Group;
 import controlP5.ScrollableList;
 import controlP5.Slider;
 import processing.core.PApplet;
+import processing.core.PShape;
 
 public class PolarShapes extends PApplet
 {
@@ -25,7 +27,7 @@ public class PolarShapes extends PApplet
 	
 	private float     steps     = 500; 
 	private float     incrament = (2*PI)/ this.steps;
-
+ 
 	private float     radius;
 
 	//[shape number][a,b,m1,m2,n1,n2,n3]
@@ -33,9 +35,25 @@ public class PolarShapes extends PApplet
 
 	private float     xStretch;
 	private float     yStretch;
+	
+	private float     rotation;
 
-	private float     morphTime;
-
+	private float     morphTime = 30;
+	
+	private boolean   settingSliders = false;
+	
+	//acceleration stuff
+	private float[]		velocity = new float[(int)this.steps];
+	
+	private float       accelerationIndex = 0;
+	private float       accelerationSpeed = .6f;
+	
+	private float       decay = 20;
+	private float       maxVelocity = 80;
+	
+	private int         triggerIndex = 0;
+	private int         lastTriggerTime = this.millis();
+	
 
 
 
@@ -130,8 +148,13 @@ public class PolarShapes extends PApplet
 
 		this.initializeShapeLib();
 
-		this.currentShape = this.copy(this.shapeLib.get("circle"));
-		this.nextShape = this.copy(this.shapeLib.get("circle"));
+		this.currentShape = this.copy(this.shapeLib.get("square"));
+		this.nextShape = this.copy(this.shapeLib.get("square"));
+		
+		for(int i = 0; i < this.velocity.length; i++)
+		{
+			this.velocity[i] = 0;
+		}
 		
 		this.initializeControls();
 		
@@ -149,20 +172,26 @@ public class PolarShapes extends PApplet
 
 		this.cp5.addGroup("shape");
 		this.cp5.addGroup("morph");
+		this.cp5.addGroup("velocity");
 
 		//Make the menu toggle buttons
 
 		this.cp5.addButton("shapeMenu")
 		.setPosition(2, 2)
-		.setSize(147, 46)
-		.setLabel("Shape Menu")
+		.setSize(97, 46)
+		.setLabel("Shape")
 		.setColorBackground(Color.GRAY.getRGB());
 
 		this.cp5.addButton("morphMenu")
-		.setPosition(151, 2)
-		.setSize(147, 46
-				)
-		.setLabel("Morph Menu")
+		.setPosition(101, 2)
+		.setSize(97, 46)
+		.setLabel("Morph")
+		.setColorBackground(Color.GRAY.getRGB());
+		
+		this.cp5.addButton("velocityMenu")
+		.setPosition(201, 2)
+		.setSize(97, 46)
+		.setLabel("Velocity")
 		.setColorBackground(Color.GRAY.getRGB());
 
 		//Make the morph menu controls
@@ -209,7 +238,7 @@ public class PolarShapes extends PApplet
 		.setLabel("Shape 5")
 		.setGroup("morph");
 
-		this.cp5.addSlider("morphTime", 1, 100, 30, 2, 450, 296, 48)
+		this.cp5.addSlider("rotationSlider", -2*PI, 2*PI, 0, 2, 450, 296, 48)
 		.setGroup("morph")
 		.getCaptionLabel()
 		.hide();
@@ -304,9 +333,61 @@ public class PolarShapes extends PApplet
 		.setText("N3 Value")
 		.setGroup("shape");
 
+		
+		
+		
+		
+		
+		this.cp5.addLabel("maxVelocity")
+		.setPosition(130,155)
+		.setText("Max Velocity")
+		.setGroup("velocity");
+	
+		this.cp5.addLabel("accSpeed")
+		.setPosition(130,205)
+		.setText("Acceleration Speed")
+		.setGroup("velocity");
+		
+		this.cp5.addLabel("morphTime")
+		.setPosition(130,255)
+		.setText("Morph Time")
+		.setGroup("velocity");
+		
+		this.cp5.addLabel("decay")
+		.setPosition(130,305)
+		.setText("Decay")
+		.setGroup("velocity");
+		
+		
+		
+		this.cp5.addSlider("maxVelocitySlider", 1, 200, 80, 2, 170, 296, 28)
+		.setGroup("velocity")
+		.getCaptionLabel()
+		.hide();
+		
+		this.cp5.addSlider("accSpeedSlider", .01f, 1, .6f, 2, 220, 296, 28)
+		.setGroup("velocity")
+		.getCaptionLabel()
+		.hide();
+		
+		((Slider) this.cp5.addSlider("morphTimeSlider", 0, 100, 30, 2, 270, 296, 28))
+		.setGroup("velocity")
+		.getCaptionLabel()
+		.hide();
+		
+		((Slider) this.cp5.addSlider("decaySlider", 1, 100, 25, 2, 320, 296, 28))
+		.setGroup("velocity")
+		.getCaptionLabel()
+		.hide();
+
+		
+		
 		//Set morph menu visible to start
 
 		((Group) this.cp5.get("shape"))
+		.setVisible(false);
+		
+		((Group) this.cp5.get("velocity"))
 		.setVisible(false);
 
 		((Group) this.cp5.get("morph"))
@@ -332,18 +413,20 @@ public class PolarShapes extends PApplet
 		this.strokeWeight(3);
 		this.line(301,0,301,520);
 		
+		if(this.cp5.get("maxVelocitySlider").isVisible() && this.millis() >= this.lastTriggerTime + 3000)
+		{
+			this.accelerationIndex = 1;
+			this.nextShape = this.makeSuperShape(this.superShapes[this.triggerIndex%5]);
+			this.triggerIndex++;
+			this.lastTriggerTime = this.millis();
+		}
+		
 		//this.cp5.get("a").setValue(this.cp5.getValue("b"));
 
 	}
 
 	private void drawShape()
 	{
-
-		stroke(255);
-		noFill();
-
-
-
 		//find out how much distance is between the current shape and the next shape at each point
 
 		float[] distance = new float[(int) this.steps];
@@ -354,54 +437,71 @@ public class PolarShapes extends PApplet
 		}
 
 		//move each point 1 pixel towards the goal shape
-
+		
 		for(int i = 0; i < this.steps; i++)
 		{
-			if(distance[i] != 0)
+			
+			if(distance[i] == 0)
 			{
-				this.currentShape[i] += (distance[i]/this.morphTime);
-				if(Math.abs(this.currentShape[i] - this.nextShape[i]) <= 3) { this.currentShape[i] = this.nextShape[i]; }
+				//this.velocity[i] = 0;
+			}
+			else
+			{
+				this.velocity[i] += (distance[i]/this.morphTime)*(this.accelerationIndex/20) - (this.velocity[i]/this.decay);
+ 				this.currentShape[i] += this.velocity[i];
+				
+				
+				//if(Math.abs(this.currentShape[i] - this.nextShape[i]) <= .5) { this.currentShape[i] = this.nextShape[i]; }
 			}
 		}//for loop
 
+		if(this.accelerationIndex < this.maxVelocity) this.accelerationIndex += this.accelerationSpeed;
+		
 		//draw the current shape
+		
+		PShape shape = this.createShape();
 
-		beginShape();
+		shape.beginShape();
+		shape.stroke(255);
+		shape.noFill();
 
 		int i = 0;
-		
+		float theta = 0;
 		float x;
 		float y;
 
 
-		for(float theta = 0; theta <= 2 * PI; theta += this.incrament )
+		for(theta = 0; theta <= 2*PI; theta += this.incrament )
 		{
 			if(this.cp5.get("a").isVisible()) { this.currentShape = this.copy(this.nextShape); }
 
 			x = (this.currentShape[i] * this.radius) * cos(theta);
 			y = (this.currentShape[i] * this.radius) * sin(theta);
+			//x += (300 + (625/2));
+			//y += 260;
 
-			x += (300 + (625/2));
-			y += 260;
-
-			vertex(x,y);
+			shape.vertex(x,y);
 
 			i++;
 		}
 		
-		float theta = 0;
+		theta = 0;
 		i = 0;
 		
 		x = (this.currentShape[i] * this.radius) * cos(theta);
 		y = (this.currentShape[i] * this.radius) * sin(theta);
 
-		x += (300 + (625/2));
-		y += 260;
+		//x += (300 + (625/2));
+		//y += 260;
 
-		vertex(x,y);
+		shape.vertex(x,y);
+		
+		shape.rotate(this.rotation);
 
-		endShape();
-
+		shape.endShape();
+		
+		this.shape(shape, (300 + (625/2)), 260);
+		
 	}//drawShape()
 	
 	private void updateSuperShape()
@@ -417,13 +517,14 @@ public class PolarShapes extends PApplet
 				this.cp5.get("n2").getValue(),
 				this.cp5.get("n3").getValue()};
 		
-		this.currentShape = this.copy(this.makeSuperShape(this.superShapes[index]));
 		this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
 	}
 	
 	private void setSliders(int index)
 	{		
 		System.out.println(index);
+		
+		this.settingSliders = true;
 		
 		this.cp5.get("a").setValue(this.superShapes[index][0]);
 		this.cp5.get("b").setValue(this.superShapes[index][1]);
@@ -432,6 +533,10 @@ public class PolarShapes extends PApplet
 		this.cp5.get("n1").setValue(this.superShapes[index][4]);
 		this.cp5.get("n2").setValue(this.superShapes[index][5]);
 		this.cp5.get("n3").setValue(this.superShapes[index][6]);
+		
+		this.settingSliders = false;
+		
+		this.updateSuperShape();
 
 	}
 
@@ -448,6 +553,7 @@ public class PolarShapes extends PApplet
 		case "circle":
 			this.nextShape = (float[])this.shapeLib.get("circle");
 			this.nextShapeName = "circle";
+			this.accelerationIndex = 1;
 
 			System.out.println("changing to circle");
 			//this.printFloat(this.shapeLib.get("circle"));
@@ -457,6 +563,7 @@ public class PolarShapes extends PApplet
 		case "square":
 			this.nextShape = (float[])this.shapeLib.get("square");
 			this.nextShapeName = "square";
+			this.accelerationIndex = 1;
 
 			System.out.println("changing to square");
 
@@ -467,55 +574,79 @@ public class PolarShapes extends PApplet
 		case "shapeSelect":
 			int index = (int) this.cp5.get("shapeSelect").getValue();
 			
-			this.currentShape = this.copy(this.makeSuperShape(this.superShapes[index]));
-			this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+			//this.currentShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+			//this.nextShape = this.copy(this.makeSuperShape(this.superShapes[index]));
+			
+			this.setSliders(index);
 			
 			break;
 
 		case "shape1":
 			this.nextShape = makeSuperShape(this.superShapes[0]);
+			this.accelerationIndex = 1;
 			break;
 
 		case "shape2":
 			this.nextShape = makeSuperShape(this.superShapes[1]);
+			this.accelerationIndex = 1;
 			break;
 
 		case "shape3":
 			this.nextShape = makeSuperShape(this.superShapes[2]);
+			this.accelerationIndex = 1;
 			break;
 
 		case "shape4":
 			this.nextShape = makeSuperShape(this.superShapes[3]);
+			this.accelerationIndex = 1;
 			break;
 
 		case "shape5":
 			this.nextShape = makeSuperShape(this.superShapes[4]);
+			this.accelerationIndex = 1;
 			break;
 
 		case "shapeMenu":
 			((Group) this.cp5.get("morph"))
 			.hide();
+			
+			((Group) this.cp5.get("velocity"))
+			.hide();
 
 			((Group) this.cp5.get("shape"))
 			.show();
 			
-			this.currentShape = this.copy(this.makeSuperShape(this.superShapes[0]));
 			this.nextShape = this.copy(this.makeSuperShape(this.superShapes[0]));
 			
 			this.cp5.get("shapeSelect")
 			.setValue(0);
 			
-			//this.setSliders();
+			this.setSliders((int) this.cp5.get("shapeSelect").getValue());
 
 			break;
 
 		case "morphMenu":
 			((Group) this.cp5.get("shape"))
 			.hide();
+			
+			((Group) this.cp5.get("velocity"))
+			.hide();
 
 			((Group) this.cp5.get("morph"))
 			.show();
 
+			break;
+			
+		case "velocityMenu":
+			((Group) this.cp5.get("shape"))
+			.hide();
+			
+			((Group) this.cp5.get("velocity"))
+			.show();
+
+			((Group) this.cp5.get("morph"))
+			.hide();
+			
 			break;
 
 		case "radius":
@@ -525,41 +656,61 @@ public class PolarShapes extends PApplet
 			break;
 			
 		case "a":
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			//this.cp5.get("b").setValue(this.cp5.getValue("a"));
 			break;
 			
 		case "b":
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			//this.cp5.get("a").setValue(this.cp5.getValue("b"));
 			break;
 			
 		case "m1":
 			//this.cp5.get("m1").setValue((int) this.cp5.getValue("m1"));
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			//this.cp5.get("m2").setValue(this.cp5.getValue("m1"));
 			break;
 			
 		case "m2":
 			//this.cp5.get("m2").setValue((int) this.cp5.getValue("m2"));
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			//this.cp5.get("m1").setValue(this.cp5.getValue("m2"));
 			break;
 			
 		case "n1":
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			break;
 			
 		case "n2":
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			break;
 			
 		case "n3":
-			this.updateSuperShape();
+			if (!this.settingSliders) this.updateSuperShape();
 			break;
 
 		case "morphTime":
 			this.morphTime = this.cp5.getValue("morphTime");
+			break;
+			
+		case "maxVelocitySlider":
+			this.maxVelocity = this.cp5.getValue(name);
+			break;
+			
+		case "accSpeedSlider":
+			this.accelerationSpeed = this.cp5.getValue(name);
+			break;
+			
+		case "morphTimeSlider":
+			this.morphTime = this.cp5.getValue(name);
+			break;
+			
+		case "decaySlider":
+			this.decay = this.cp5.getValue(name);
+			break;
+			
+		case "rotationSlider":
+			this.rotation = this.cp5.getValue("rotationSlider");
 			break;
 
 
@@ -567,6 +718,8 @@ public class PolarShapes extends PApplet
 
 			break;
 		}//switch
+		
+		//if(this.cp5.get("a").isVisible()) this.updateSuperShape();
 
 	}//ControlEvent()
 
