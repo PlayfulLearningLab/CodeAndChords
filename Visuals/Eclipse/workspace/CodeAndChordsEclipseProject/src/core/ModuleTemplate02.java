@@ -1,4 +1,4 @@
-package module_02;
+package core;
 
 import java.awt.Color;
 
@@ -8,8 +8,6 @@ import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.Slider;
 import controlP5.Textfield;
-import core.Input;
-import core.ModuleTemplate;
 import processing.core.PApplet;
 import core.Shape;
 
@@ -42,6 +40,14 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		{
 			this.yVals[i]	= this.yVals[i - 1] + distance;
 		}
+
+		// set amplitude thresholds
+		this.thresholds	= new float[] {
+				2,		// piano
+				100,	// mezzo piano
+				200,	// mezzo forte
+				500	//forte
+		}; // thresholds
 		
 		this.colors	= new float[this.totalRangeSegments][3];
 		this.colors	= new float[][] {
@@ -413,11 +419,15 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
 
 			int	colorPos	= id - this.firstColorSelectCWId - 1;
-			System.out.println("colorPos = " + colorPos);
 			this.colors[colorPos][0]	= color.getRed();
 			this.colors[colorPos][1]	= color.getGreen();
 			this.colors[colorPos][2]	= color.getBlue();
 		} // ColorWheels
 	} // controlEvent
+	
+	public float[] getThresholds()
+	{
+		return this.thresholds;
+	}
 
 } // ModuleTemplate02

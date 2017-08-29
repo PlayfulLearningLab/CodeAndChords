@@ -228,7 +228,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.curHue				= new float[3];
 		this.goalHue			= new float[3];
-		this.canvasColor		= new float[] { 0, 0, 0 };
+		this.canvasColor		= new float[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		this.colorAdd			= new float[3];
 		this.colorRange			= new float[3];
 
@@ -1204,10 +1204,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 			//			((((hsb[i1] + this.hueSatBrightnessMod[i1]) * 100) % 100) / 100)
 			// Applies the status of the sliders to the newly-converted color:
 
-			System.out.println("hsb[0] = " + hsb[0]);
 			hsb[0] = (hsb[0] + this.hueSatBrightnessMod[0] + 1) % 1;
-//			hsb[0]	= 5.5f;
-
 			hsb[1] = Math.max(Math.min(hsb[1] + this.hueSatBrightnessMod[1], 1), 0);
 			hsb[2] = Math.max(Math.min(hsb[2] + this.hueSatBrightnessMod[2], 1), 0);
 
