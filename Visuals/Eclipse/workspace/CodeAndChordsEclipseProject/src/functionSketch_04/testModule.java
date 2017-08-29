@@ -2,7 +2,10 @@ package functionSketch_04;
 
 import java.awt.Color;
 
+<<<<<<< HEAD
 import controlP5.ControlEvent;
+=======
+>>>>>>> 7337933... started ShapeEditor object.  CV has constructors and a runSE() method
 import core.Shape;
 import core.ShapeEditor;
 import processing.core.PApplet;
@@ -116,6 +119,5 @@ public class testModule extends PApplet implements Runnable {
 		if(!this.shapeEditorRunning) 		this.shapeEditorRunning = true;
 		System.out.println("testing ended");
 	}
-
 	
 }

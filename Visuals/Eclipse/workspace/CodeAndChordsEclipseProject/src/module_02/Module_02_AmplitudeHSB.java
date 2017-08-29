@@ -50,7 +50,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
-
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 				this.input	= new Input(this);
 		//this.input    = new Input(1, new AudioContext(), this);

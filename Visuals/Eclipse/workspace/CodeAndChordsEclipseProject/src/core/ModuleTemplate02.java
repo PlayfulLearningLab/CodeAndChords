@@ -2,12 +2,17 @@ package core;
 
 import java.awt.Color;
 
+import controlP5.Background;
+import controlP5.CColor;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.Controller;
+import controlP5.ControllerGroup;
 import controlP5.ControllerInterface;
 import controlP5.Slider;
 import controlP5.Textfield;
+import controlP5.Toggle;
 import processing.core.PApplet;
 
 /**
