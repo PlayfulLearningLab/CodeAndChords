@@ -1329,20 +1329,13 @@ public abstract class ModuleTemplate implements ControlListener  {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		System.out.println("ModuleTemplate.controlEvent: controlEvent = " + controlEvent);
-
-		if(controlEvent.getController().getName().equals("stopContext"))
-		{
-			System.out.println("	here's where we'll try to stop the AudioContext");
-			
-			this.input.ac.stop();
-		}
 		
 		int	id	= controlEvent.getController().getId();
 		// Play button:
 		if(controlEvent.getController().getName().equals("play"))
 		{
 			boolean	val	= ((Toggle)controlEvent.getController()).getBooleanValue();
-			this.input.pause();
+			this.input.pause(true);
 			this.sidebarCP5.getController("pause").setVisible(val);
 
 			if(val)
