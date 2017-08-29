@@ -394,7 +394,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		String[]	names	= new String[] { 
 				"playButton",
 				"menuButton",
-				"scale"
+				"legend"
 		};
 		String[]	labels	= new String[] {
 				"Play Button",
@@ -1232,7 +1232,6 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		if(this.hsbColors == null) {
 			this.hsbColors = new float[this.colors.length][3];
-			System.out.println("fillHSBColors: this.hsbColors = " + this.hsbColors);
 		}
 
 		for(int i = 0; i < this.hsbColors.length; i++)
@@ -1359,8 +1358,8 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.sidebarCP5.getController("hamburger").setVisible(!((Toggle)this.sidebarCP5.getController("menuButton")).getBooleanValue());
 		} // if - hidePlayButton
 
-		// Hide scale:
-		if(controlEvent.getName().equals("scale"))
+		// Hide legend:
+		if(controlEvent.getName().equals("legend"))
 		{
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
 		}

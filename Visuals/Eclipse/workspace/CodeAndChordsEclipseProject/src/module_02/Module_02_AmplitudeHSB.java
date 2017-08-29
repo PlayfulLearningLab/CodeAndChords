@@ -159,7 +159,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		} // for
 
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
-
 		// Now this threshold application happens in fade:
 		//		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 		this.menu.fade(goalHuePos, 0);
@@ -167,7 +166,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		//		this.fill(255);
 		//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
-
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		/*
