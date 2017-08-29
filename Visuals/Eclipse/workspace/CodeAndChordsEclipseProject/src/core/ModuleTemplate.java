@@ -1048,7 +1048,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 	 */
 	protected void addShapeSizeSlider(int yVal)
 	{
-		this.shapeSize	= 50;
+		this.shapeSize	= 1;
 
 		// first add label:
 		this.sidebarCP5.addLabel("shapeSize")
@@ -1062,7 +1062,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 		.setPosition(this.leftAlign, yVal)
 		.setSize(this.sliderWidth, this.sliderHeight)
 		.setSliderMode(Slider.FLEXIBLE)
-		.setRange(1, 100)
+		.setRange(.01f, 10)
 		.setValue(this.shapeSize)
 		.setLabelVisible(false)
 		.setGroup("sidebarGroup")
@@ -2285,7 +2285,7 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 				if(this.shapeSizeSliderId != -1 && id == this.shapeSizeSliderId)
 				{
-					this.shapeSize	= (int)sliderValFloat;
+					this.shapeSize	= sliderValFloat;
 				}
 
 				// Saturation and Brightness Threshold and Percent Sliders:
