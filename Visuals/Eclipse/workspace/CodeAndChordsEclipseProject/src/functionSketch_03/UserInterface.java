@@ -357,6 +357,10 @@ public class UserInterface extends PApplet {
 		case "custom":
 			this.shape(this.cShape, this.displayPos(this.rectPosX), this.rectPosY);
 			break;
+			
+		case "morph":
+			this.drawMorph(this.displayPos(this.rectPosX),this.rectPosY,this.displaySize(this.rectWidth),this.rectHeight);
+			break;
 
 		default:
 
@@ -403,6 +407,37 @@ public class UserInterface extends PApplet {
 		//shape.setVisible(true);
 		
 		//shape(shape,this.displayPos(this.rectPosX), this.rectPosY);
+		
+	}
+	
+	private float rad(float theta, float r)
+	{
+		float circle = r;
+		float square = min( abs(r/cos(theta)), abs(r/sin(theta)) );
+		
+		float output = square + (circle - square)*this.morph;
+		
+		return output;
+	}
+	
+	private void drawMorph(float xPos, float yPos, float width, float height)
+	{
+		float r = width;
+		
+		beginShape();
+		
+		for(float theta = 0; theta <= 2 * PI + .1; theta += .1f )
+		{
+			float x = rad(theta, r) * cos(theta);
+			float y = rad(theta, r) * sin(theta);
+			
+			x += (xPos + width/2);
+			y += (yPos + height/2);
+			
+			vertex(x,y);
+		}
+		
+		endShape();
 		
 	}
 	
