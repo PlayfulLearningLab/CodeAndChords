@@ -11,6 +11,10 @@
 	<classpathentry kind="lib" path="beads.jar"/>
 	<classpathentry kind="lib" path="sound.jar"/>
 	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
+<<<<<<< HEAD
+=======
+	<classpathentry kind="lib" path="libjportaudio.jnilib"/>
+>>>>>>> 08e6ab7... Added .dylib and lportaudio.jar to Eclipse
 	<classpathentry kind="lib" path="jportaudio.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,5 +1,6 @@
 package multiInputTest;
 
+<<<<<<< HEAD
 import org.jaudiolibs.audioservers.AudioConfiguration;
 
 import com.portaudio.*;
@@ -50,5 +51,19 @@ public class Driver extends PApplet {
 		} // if
 
 	} // run
+=======
+import com.portaudio.*;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		PortAudio.initialize();
+		
+		System.out.println("PortAudio.getDeviceCount() = " + PortAudio.getDeviceCount());
+		
+		PortAudio.terminate();
+
+	} // main
+>>>>>>> 08e6ab7... Added .dylib and lportaudio.jar to Eclipse
 
 } // Driver

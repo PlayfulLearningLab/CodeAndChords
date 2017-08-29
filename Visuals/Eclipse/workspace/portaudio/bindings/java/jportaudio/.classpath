@@ -4,7 +4,11 @@
 	<classpathentry kind="src" path="jtests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
+<<<<<<< HEAD
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject/libs"/>
+=======
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject"/>
+>>>>>>> 08e6ab7... Added .dylib and lportaudio.jar to Eclipse
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
