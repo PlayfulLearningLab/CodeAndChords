@@ -229,6 +229,7 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     {
         for( i=0; i<framesToCalc; i++ )
         {
+			printf("inputText.recordCallback: i = %d.\n", i);
             *wptr++ = *rptr++;  /* left */
             if( NUM_CHANNELS == 2 ) *wptr++ = *rptr++;  /* right */
         }
@@ -588,10 +589,8 @@ int main(void)
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
-    PaStream*           stream1;
     PaError             err = paNoError;
     paTestData          data;
-    paTestData          data1;
     int                 i;
     int                 totalFrames;
     int                 numSamples;
@@ -643,8 +642,12 @@ int main(void)
 =======
     numDevices	= 2;
 
+<<<<<<< HEAD
 	// input stream 1:
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+	// input stream:
+>>>>>>> b6f213c... More with ASIO input testing
 	device	= selectDevice();
     inputParameters.device = device; /* default input device */
 >>>>>>> 0e0e962... Can select device with portaudio
@@ -673,6 +676,7 @@ int main(void)
     if( err != paNoError ) goto done;
     printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	// while active:
@@ -707,6 +711,8 @@ int main(void)
 	    if( err != paNoError ) goto done;
 	    printf("\n=== Now recording!! Please speak into the microphone. ===\n"); fflush(stdout);
 
+=======
+>>>>>>> b6f213c... More with ASIO input testing
 	// while active:
 >>>>>>> 62b84d2... Trying 2 lines
     while( ( err = Pa_IsStreamActive( stream ) ) == 1 )
@@ -717,9 +723,6 @@ int main(void)
     if( err < 0 ) goto done;
 
     err = Pa_CloseStream( stream );
-    if( err != paNoError ) goto done;
-
-	err = Pa_CloseStream( stream1 );
     if( err != paNoError ) goto done;
 
     /* Measure maximum peak amplitude. */
