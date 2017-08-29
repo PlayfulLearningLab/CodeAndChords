@@ -78,7 +78,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	//	private boolean menuVis = false;
 
 	// TODO: get rid of this (use local variable) after major/minor trichromatic bug is solved:
-	public float[][] trichromColors;
+	public int[][] trichromColors;
 
 	private	PApplet		parent;
 
@@ -124,8 +124,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 //		this.colors 		= new float[12][3];
 		this.legendColors	= new int[12][3];
-		this.originalColors	= new float[12][3];
-		this.hsbColors      = new float[12][3];
+		this.originalColors	= new int[12][3];
+		this.hsbColors      = new int[12][3];
 
 		this.curColorStyle	= ModuleTemplate01.CS_RAINBOW;
 		// The following will happen in rainbow():
@@ -145,7 +145,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		// textYVals will be used for sliders and buttons, including hsb and 
 		// rgb modulate values - everything but the custom pitch color buttons.
-		this.textYVals		 = new int[16];
+		this.textYVals		 = new int[18];
 		this.noteYVals		 = new int[3];
 		this.modulateYVals	 = new int[3];
 		this.modulateHSBVals = new int[3];
@@ -252,6 +252,14 @@ public class ModuleTemplate01 extends ModuleTemplate {
 
 		//		addTonicColorSelector(textYVals[12]);
 
+		// Adding ColorSelect first since everything to do with colors depends on that:
+		String[] noteNames = new String[] {
+				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
+		}; // noteNames
+		
+		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames);
+		
+
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
 		// to lock them.
@@ -269,11 +277,6 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		//		this.updateColors(this.curColorStyle);
 
 //		this.addCustomPitchColor(textYVals[15], noteYVals);
-		String[] noteNames = new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames
-		
-		this.addColorSelect(new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames);
 
 		addHSBSliders(modulateHSBVals);
 
@@ -930,7 +933,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
 	 */
-	public void dichromatic_OneRGB(float[] rgbVals)
+	public void dichromatic_OneRGB(int[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_OneRGB: int[] parameter is null.");
@@ -958,8 +961,8 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		float[]	hsbComplement	= new float[] { (float) ((hsbVals[0] + 0.5) % 1), 1, 1 };
 
 		// convert them both to RGB;
-		float[]	rgbVals1	= new float[3];
-		float[]	rgbVals2	= new float[3];
+		int[]	rgbVals1	= new int[3];
+		int[]	rgbVals2	= new int[3];
 
 		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
 		Color	rgbColor1	=  new Color(rgb1);
@@ -1014,8 +1017,10 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		float	gDif	= rgbVals1[1] - rgbVals2[1];
 		float	bDif	= rgbVals1[2] - rgbVals2[2];
 		
-		float[]	curColor	= new float[3];
-		float[]	newColor	= new float[3];
+		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
+		
+		int[]	curColor	= this.getColor(0);
+		int[]	newColor	= new int[3];
 
 		// Loop through red, then green, then blue
 		// (could do it like normal, but then would have to calculate difference each time;
@@ -1030,10 +1035,12 @@ public class ModuleTemplate01 extends ModuleTemplate {
 				// subtracting it from the first color to deal with negatives correctly
 				// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
 //				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
-				curColor	= this.getColor(i);
-				newColor[0]	= curColor[0] - (rDif * i * percent / 100);
-				newColor[1]	= curColor[1] - (gDif * i * percent / 100);
-				newColor[2]	= curColor[2] - (bDif * i * percent / 100);
+
+				newColor[0]	= (int)(curColor[0] - (rDif * i * percent / 100));
+				newColor[1]	= (int)(curColor[1] - (gDif * i * percent / 100));
+				newColor[2]	= (int)(curColor[2] - (bDif * i * percent / 100));
+				
+				System.out.println("newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
 				
 				this.setColor(i, newColor);
 			} // for - i
@@ -1056,7 +1063,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * 
 	 * @param rgbVals	float[] of RGB values defining the color for the tonic of the scale.
 	 */
-	public void trichromatic_OneRGB(float[] rgbVals)
+	public void trichromatic_OneRGB(int[] rgbVals)
 	{
 		if(rgbVals == null) {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_OneRGB: int[] parameter is null.");
@@ -1085,9 +1092,9 @@ public class ModuleTemplate01 extends ModuleTemplate {
 		float[]	hsbTriad2	= new float[] { (float) ((hsbVals[0] + 0.67) % 1), 1, 1 };
 
 		// convert them both to RGB;
-		float[]	rgbVals1	= new float[3];
-		float[]	rgbVals2	= new float[3];
-		float[]	rgbVals3	= new float[3];
+		int[]	rgbVals1	= new int[3];
+		int[]	rgbVals2	= new int[3];
+		int[]	rgbVals3	= new int[3];
 
 		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
 		Color	rgbColor1	=  new Color(rgb1);
@@ -1124,7 +1131,7 @@ public class ModuleTemplate01 extends ModuleTemplate {
 	 * @param rgbVals2	rgb vals for the sub-dominant for major/minor scales or "5th scale degree" (counting by half steps) for chromatic scales
 	 * @param rgbVals3	rgb vals for the dominant for major/minor scales or the "9th scale degree" (counting by half steps) for chromatic scales
 	 */
-	public void trichromatic_ThreeRGB(float[] rgbVals1, float[] rgbVals2, float[] rgbVals3)
+	public void trichromatic_ThreeRGB(int[] rgbVals1, int[] rgbVals2, int[] rgbVals3)
 	{
 		if(rgbVals1 == null || rgbVals2 == null || rgbVals3 == null) {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
@@ -1147,24 +1154,24 @@ public class ModuleTemplate01 extends ModuleTemplate {
 			color3pos	= 4;	// dominant
 		}
 
-		float	redDelta1	= (rgbVals1[0] - rgbVals2[0]) / (color2pos - color1pos);
-		float	greenDelta1	= (rgbVals1[1] - rgbVals2[1]) / (color2pos - color1pos);
-		float	blueDelta1	= (rgbVals1[2] - rgbVals2[2]) / (color2pos - color1pos);
+		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / (color2pos - color1pos));
+		int	greenDelta1	= (int)((rgbVals1[1] - rgbVals2[1]) / (color2pos - color1pos));
+		int	blueDelta1	= (int)((rgbVals1[2] - rgbVals2[2]) / (color2pos - color1pos));
 
-		float	redDelta2	= (rgbVals2[0] - rgbVals3[0]) / (color3pos - color2pos);
-		float	greenDelta2	= (rgbVals2[1] - rgbVals3[1]) / (color3pos - color2pos);
-		float	blueDelta2	= (rgbVals2[2] - rgbVals3[2]) / (color3pos - color2pos);
+		int	redDelta2	= (int)((rgbVals2[0] - rgbVals3[0]) / (color3pos - color2pos));
+		int	greenDelta2	= (int)((rgbVals2[1] - rgbVals3[1]) / (color3pos - color2pos));
+		int	blueDelta2	= (int)((rgbVals2[2] - rgbVals3[2]) / (color3pos - color2pos));
 
-		float	redDelta3	= (rgbVals3[0] - rgbVals1[0]) / (this.scaleLength - color3pos);
-		float	greenDelta3	= (rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos);
-		float	blueDelta3	= (rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos);
+		int	redDelta3	= (int)((rgbVals3[0] - rgbVals1[0]) / (this.scaleLength - color3pos));
+		int	greenDelta3	= (int)((rgbVals3[1] - rgbVals1[1]) / (this.scaleLength - color3pos));
+		int	blueDelta3	= (int)((rgbVals3[2] - rgbVals1[2]) / (this.scaleLength - color3pos));
 		/*		
 		System.out.println("redDelta1 = " + redDelta1 + "; greenDelta1 = " + greenDelta1 + "; blueDelta1 = " + blueDelta1);
 		System.out.println("redDelta2 = " + redDelta2 + "; greenDelta2 = " + greenDelta1 + "; blueDelta2 = " + blueDelta2);
 		System.out.println("redDelta3 = " + redDelta3 + "; greenDelta3 = " + greenDelta1 + "; blueDelta3 = " + blueDelta3);
 		 */
 		// This array has the trichromatic spectrum:
-//		float[][]	trichromColors	= new float[this.scaleLength][3];
+//		int[][]	trichromColors	= new int[this.scaleLength][3];
 		trichromColors	= new int[this.scaleLength][3];
 
 		// fill first position with first color:

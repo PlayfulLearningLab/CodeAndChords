@@ -131,7 +131,7 @@ public class PortAudioAudioIO extends AudioIO {
 	@Override
 	public boolean stop()
 	{
-		this.isRunning	= false;
+//		this.isRunning	= false;
 		try {
 			// Give it a little time to get out of the loop in runRealTime()
 			Thread.sleep(25);
