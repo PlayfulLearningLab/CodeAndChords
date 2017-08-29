@@ -339,6 +339,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.module			= module;
 		this.input			= input;
 		this.sidebarTitle	= sidebarTitle;
+
+		this.outsideButtonsCP5	= new ControlP5(this.parent);
+		this.outsideButtonsCP5.addListener((ControlListener)this);
+		
+		this.showPlayStop	= true;
+		this.showPause		= false;
+		this.showHamburger	= true;
 		
 		System.out.println("this.parent.height = " + (this.parent.height));
 
@@ -2436,6 +2443,15 @@ public class ModuleMenu extends MenuTemplate  {
 			this.leftEdgeX	= 0;
 		}
 	} // runMenu
+	
+	public void showOutsideButtons()
+	{
+		this.outsideButtonsCP5.setVisible(true);
+		
+		this.outsideButtonsCP5.getController("play").setVisible(this.showPlayStop);
+		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
+		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
+	} // showOutsideButtons
 
 	/**
 	 * Calls super.runMenu to show or hide the Controllers,

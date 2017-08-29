@@ -112,6 +112,8 @@ public abstract class MenuTemplate implements ControlListener {
 		
 		this.controlP5		= new ControlP5(this.parent);
 		this.controlP5.addListener((ControlListener)this);
+		// This is the group that Sliders added w/out a specific group get added to:
+		this.controlP5.addGroup("groupPlaceholder").setVisible(true);
 		
 >>>>>>> f0020e9... Beginning of transition from ModuleTemplate to MenuTemplate and ModuleMenu.
 		this.appletWidth = appWidth;
@@ -415,7 +417,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.controlP5.addLabel("label" + this.nextSliderId)
 		.setPosition(xVal + this.labelX, yVal + 4)
 		.setWidth(labelWidth)
-//		.setGroup(group)
+		.setGroup(group)
 		.setValue(labelText);
 
 		this.controlP5.addSlider("slider" + this.nextSliderId)
@@ -425,7 +427,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setValue(startingVals)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setLabelVisible(false)
-//		.setGroup(group)
+		.setGroup(group)
 		.setId(this.nextSliderId);
 
 		this.nextSliderId	= this.nextSliderId + 1;
@@ -435,7 +437,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setSize(this.textfieldWidth, this.sliderHeight)
 		.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 		.setAutoClear(false)
-//		.setGroup(group)
+		.setGroup(group)
 		.setId(this.nextSTextfieldId)
 		.getCaptionLabel().setVisible(false);
 

@@ -71,6 +71,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) {
 
 		super(parent, fullAppletWidth, fullAppletHeight);
+		
+		this.module	= module;
 
 		this.module	= module;
 

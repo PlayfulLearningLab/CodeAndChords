@@ -69,7 +69,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 					shape.setCurrentShape("supershape", superShapes[i]);
 				}
 
-
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
 
