@@ -778,6 +778,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.pianoThresholdSliderId	= this.nextSliderId;
 		this.addSliderGroup(yVal, "Piano \nThreshold", 2, 100, 10);
 	} // addPianoThresholdSlider
+	
+	public void addForteThresholdSlider(int yVal)
+	{
+		this.forteThresholdSliderId	= this.nextSliderId;
+		this.forteThreshold	= 500;
+		this.addSliderGroup(yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold);
+	} // addForteThresholdSlider
 
 	/**
 	 * Adds the forte (maximum) threshold Slider.
@@ -3407,6 +3414,31 @@ public class ModuleMenu extends MenuTemplate  {
 					"(firstHSBSliderId = " + this.firstHSBSliderId + ")");
 		} // else - let the user know that we ignored this method call
 	} // resetHSBSlidersTextfields
+	
+	
+	/**
+	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
+	 * to recalculate the length of and values within this.thresholds.
+	 */
+	private	void resetThresholds()
+	{
+		float	segmentValue;
+		if(this.curRangeSegments == 1)
+		{
+			segmentValue	= this.pianoThreshold;
+		} else {
+			segmentValue	= (this.forteThreshold - this.pianoThreshold) / (this.curRangeSegments - 1);
+		}
+
+		//		System.out.println("dynamic segment buttons: forteThreshold = " + this.forteThreshold + 
+		//				"; segmentValue = " + segmentValue);
+
+//		this.thresholds	= new float[this.curRangeSegments];
+		for(int i = 0; i < this.curRangeSegments; i++)
+		{
+			this.thresholds[i]	= this.pianoThreshold + segmentValue * i;
+		} // for
+	} // resetThresholds
 
 
 	/**
