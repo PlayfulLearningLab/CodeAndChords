@@ -302,6 +302,26 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.cp5.getController("shapeSelect")
 		.bringToFront();
 		
+		this.cp5.addButton("exitButton")
+		.setLabel("Close Shape Editor")
+		.setPosition( (this.menuWidth + this.seWidth + this.seXPos)/2 - 75, 5)
+		.setSize(150, 40);
+		
+	}
+	
+	public void setIsRunning(boolean isRunningFlag)
+	{
+		this.isRunning = isRunningFlag;
+		if(isRunningFlag) 
+		{
+			this.cp5.get("b1").bringToFront();
+			this.cp5.get("exitButton").bringToFront();
+		}
+	}
+	
+	public boolean getIsRunning()
+	{
+		return this.isRunning;
 	}
 
 	@Override
