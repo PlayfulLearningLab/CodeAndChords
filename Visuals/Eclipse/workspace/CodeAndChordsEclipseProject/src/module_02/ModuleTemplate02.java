@@ -1,9 +1,13 @@
 package module_02;
 
+import java.awt.Color;
+
+import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.Slider;
+import controlP5.Textfield;
 import core.Input;
 import core.ModuleTemplate;
 import processing.core.PApplet;
@@ -21,8 +25,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	private	int	brightness;
 	
 	private	int	firstThresholdSliderId	= -1;
+	private	int	firstColorSelectCWId	= -1;
 	
-	private	float[]	thresholds;
+	// thresholds is not private so that the module can access it
+	float[]	thresholds;
 
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
@@ -35,7 +41,22 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		{
 			this.yVals[i]	= this.yVals[i - 1] + distance;
 		}
-				
+		
+		this.colors	= new float[this.totalRangeSegments][3];
+		this.colors	= new float[][] {
+			new float[] { 255, 0, 0 },
+			new float[] { 0, 255, 0 },
+			new float[] { 0, 0, 255 },
+			new float[] { 150, 50, 150 },
+		};
+/*		for(int i = 0; i < this.colors.length; i++)
+		{
+			for(int j = 0; j < this.colors[i].length; j++)
+			{
+				this.colors[i][j]	= 0;
+			} // for - j
+		} // for - i
+		*/		
 //		this.spacer	= 5;
 		
 		// already called addHideButtons in superclass with y-val of 26.
@@ -47,8 +68,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		this.addRangeSegments(this.yVals[6], 4, 4, "Dynamic\nSegments");
 		
+		this.addColorSelectButtons(this.yVals[7]);
+		
 		int	verticalSpacer	= distance - this.sliderHeight;
-		this.addThresholdSliders(yVals[7], 3);
+		this.addThresholdSliders(yVals[8], 3);
 		
 //		this.initInput();
 	} // constructor
@@ -85,7 +108,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				menuButtonX
 		};
 
-		int	id	= 4;
 
 		this.sidebarCP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
@@ -97,11 +119,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			this.sidebarCP5.addToggle(names[i])
 			.setPosition(xVals[i], hideY)
 			.setWidth(hideWidth)
-			.setGroup("sidebarGroup")
-			.setId(id);
+			.setGroup("sidebarGroup");
 			this.sidebarCP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
-
-			id	= id + 1;
 		}
 
 	} // addHideButtons
@@ -112,12 +131,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		
 		int	defaultThreshold	= 3000;
 		
+		/*
 		if(this.totalRangeSegments <= 0)
 		{
 			this.totalRangeSegments	= 2;
 		}
 		this.thresholds	= new float[this.totalRangeSegments];	
-
+*/
 		
 		// Since some i's will add a couple rows of labels and sliders,
 		// this variable keeps track of which "level" of y the next thing should be added to.
@@ -138,41 +158,20 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				"Brightness",
 				"Bright: Forte\nThreshold"
 		}; // labels
-		
-		String[]	sliderNames	= new String[] {
-				"slider5",
-//				"forteThreshold",
-				"slider6",
-				"slider7",
-				"slider8",
-				"slider9"
-		}; // sliderNames
-		
-		String[]	textfieldNames	= new String[] {
-				"textfield105",
-//				"forteThresholdTF",
-				"textfield106",
-				"textfield107",
-				"textfield108",
-				"textfield109"
-		}; // sliderNames
 
 		this.forteThreshold	= defaultThreshold;
-		this.thresholds[this.thresholds.length - 1]	= defaultThreshold;
+/*		this.thresholds[this.thresholds.length - 1]	= defaultThreshold;
 		for(int i = 0; i < this.thresholds.length; i++)
 		{
 			this.thresholds[i]	= this.threshold + (i * (defaultThreshold / this.thresholds.length));
 		}
-		
-		System.out.println("addThresholdSlider.... hello!");
+		*/
 		
 		this.firstThresholdSliderId	= this.nextSliderId;
 		System.out.println("firstThresholdSliderId = " + this.firstThresholdSliderId);
 		
 		for(int i = 0; i < names.length; i++)
-		{
-			System.out.println("i = " + i + "; yPos = " + yPos + "; names[" + i + "] = " + names[i]);
-			
+		{			
 			this.sidebarCP5.addLabel(names[i])
 			.setPosition(this.labelX, yVal + (yPos * (verticalSpacer + this.sliderHeight)))
 			.setValue(labels[i])
@@ -188,7 +187,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				.setRange(10, 7000)
 				.setValue(defaultThreshold)
 				.setLabelVisible(false)
-//				.plugTo(this)
 				.setId(this.nextSliderId)
 				.setGroup("sidebarGroup");
 				
@@ -200,14 +198,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
-//				.plugTo(this)
 				.setId(this.nextSTextfieldId)
 				.getCaptionLabel().setVisible(false);
-				
+
+				System.out.println("	nextSTextfieldId = " + this.nextSTextfieldId);
 				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 				
 				yPos	= yPos + 1.5f;
-				System.out.println("	yPos = " + yPos);
 			} // if - Forte Thresholds
 			
 			// "As-Is" labels, percent sliders
@@ -221,7 +218,6 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				.setGroup("sidebarGroup");
 				
 				yPos	= yPos + 1;
-				System.out.println("	yPos = " + yPos);
 				
 				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, 
@@ -238,13 +234,97 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				// (since this slider had no connected Textfield).
 				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
 				yPos	= yPos + 1;
-				System.out.println("	yPos = " + yPos);
 			} // if - "As-Is, percent sliders
 		} // for
 		// Add labels
 		
 		// Add pairs of sliders
 	} // addThresholdSliders
+	
+	private	void addColorSelectButtons(int yVal)
+	{
+		int	colorSelectSpace	= 5;
+		int	colorSelectWidth	= (((this.parent.width / 3) - this.leftAlign - 10) / 5) - colorSelectSpace;
+		int	textfieldWidth		= 100;
+
+		int	labelX			= 10;
+
+		int canvasX	= this.leftAlign;
+		int x1		= this.leftAlign + colorSelectWidth + colorSelectSpace;
+		int x2		= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 2;
+		int x3		= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 3;
+		int x4		= this.leftAlign + (colorSelectWidth + colorSelectSpace) * 4;
+
+		String[]	labels	= new String[] { 
+				"Canvas",
+				"1",
+				"2",
+				"3",
+				"4"
+		};
+
+		int[]	xVals	= new int[] {
+				canvasX,
+				x1,
+				x2,
+				x3,
+				x4
+		};
+
+		this.sidebarCP5.addTextlabel("colorSelect")
+		.setPosition(labelX, yVal + 4)
+		.setGroup("sidebarGroup")
+		.setValue("Color Select");
+
+		this.canvasColorSelectId	= this.nextButtonId;
+		this.firstColorSelectId		= this.canvasColorSelectId;
+		this.firstColorSelectCWId	= this.nextColorWheelId;
+
+		float[]	curColor	= new float[3];
+		
+		for(int i = 0; i < labels.length; i++)
+		{
+			if(i == 0) {
+				curColor[0] = this.canvasColor[0];
+				curColor[1] = this.canvasColor[1];
+				curColor[2] = this.canvasColor[2];
+			} else {
+				curColor	= this.colors[i - 1];
+			}
+			
+			this.sidebarCP5.addButton("button" + this.nextButtonId)
+			.setPosition(xVals[i], yVal)
+			.setWidth(colorSelectWidth)
+			.setCaptionLabel(labels[i])
+			.setGroup("sidebarGroup")
+			.setId(this.nextButtonId)
+			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+			this.nextButtonId	= this.nextButtonId + 1;
+
+			this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+			.setPosition(xVals[i], yVal - 200)
+			.setRGB(this.parent.color(curColor[0], curColor[1], curColor[2]))
+			.setLabelVisible(false)
+			.setVisible(false)
+			.setGroup("sidebarGroup")
+			.setId(this.nextColorWheelId);
+
+			this.nextColorWheelId	= this.nextColorWheelId + 1;
+
+			this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+			.setPosition(xVals[i] + colorSelectWidth + colorSelectSpace, yVal)
+			.setWidth(textfieldWidth)
+			.setAutoClear(false)
+			.setVisible(false)
+			.setText("rgb(" + curColor[0] + ", " + curColor[1] + ", " + curColor[2] + ")")
+			.setGroup("sidebarGroup")
+			.setId(this.nextCWTextfieldId)
+			.getCaptionLabel().setVisible(false);
+
+			this.nextCWTextfieldId	= this.nextCWTextfieldId + 1;
+		} // for
+	} // addColorSelectButtons
 	
 	public void useSliderVal(int id, float val)
 	{
@@ -261,17 +341,72 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	{
 		super.controlEvent(controlEvent);
 		
-		int	id	= controlEvent.getId();
-
-		if(id == (this.firstThresholdSliderId + 100))
-		{
-			System.out.println("This is that first TF; what's the deal?");
-		}
+		System.out.println("ModuleTemplate02.controlEvent: controlEvent = " + controlEvent);
 		
-		if(id >= this.firstThresholdSliderId && id < (this.firstThresholdSliderId + this.totalRangeSegments))
+		int	id	= controlEvent.getId();
+		
+		// Dynamic segment buttons
+		if((this.firstRangeSegmentsId > -1) && 
+			(id >= this.firstRangeSegmentsId) && id < (this.firstRangeSegmentsId + this.totalRangeSegments))
 		{
-//			System.out.println("Cool! A threshold slider!");
-		}
+			System.out.println("range segment button!!");
+			
+			float	segmentValue	= (this.forteThreshold - this.threshold) / this.totalRangeSegments;
+			
+			this.thresholds	= new float[this.totalRangeSegments];
+			for(int i = 0; i < this.thresholds.length; i++)
+			{
+				this.thresholds[i]	= this.threshold + segmentValue * i;
+			} // for
+		} // dynamic segment buttons
+		
+		// Forte threshold slider
+		if(id == this.firstThresholdSliderId)
+		{
+			float	segmentValue	= (this.forteThreshold - this.threshold) / this.totalRangeSegments;
+			
+			if(this.thresholds == null)
+			{
+				if(this.totalRangeSegments == 0)	{	this.totalRangeSegments	= 2;	}
+				this.thresholds	= new float[this.totalRangeSegments];
+			}
+			
+			this.thresholds[this.thresholds.length - 1]	= controlEvent.getValue();
+			for(int i = 0; i < this.thresholds.length; i++)
+			{
+				this.thresholds[i]	= this.threshold + (segmentValue * i);
+			} // for
+		} // Forte threshold slider
+/*		
+		// ColorSelect Buttons:
+		if(this.firstColorSelectId > -1 && 
+				id > this.firstColorSelectId && id <= (this.firstColorSelectId + this.colors.length))
+		{
+			int	colorPos	= (id - this.firstColorSelectId - 1);
+			System.out.println("colorPos = " + colorPos);
+		} // if
+		*/
+		
+		// ColorWheels
+		if(this.firstColorSelectCWId > -1 && 
+				(id > this.firstColorSelectCWId) && id <= (this.firstColorSelectCWId + this.colors.length))
+		{
+			// get current color:
+			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
+
+			int	rgbColor	= curCW.getRGB();
+			Color	color	= new Color(rgbColor);
+
+			// Set corresponding Textfield with color value:
+			Textfield	curColorTF	= (Textfield)this.sidebarCP5.getController("textfield" + (controlEvent.getId() + 100));
+			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
+			int	colorPos	= id - this.firstColorSelectCWId - 1;
+			System.out.println("colorPos = " + colorPos);
+			this.colors[colorPos][0]	= color.getRed();
+			this.colors[colorPos][1]	= color.getGreen();
+			this.colors[colorPos][2]	= color.getBlue();
+		} // ColorWheels
 	} // controlEvent
 
 } // ModuleTemplate02
