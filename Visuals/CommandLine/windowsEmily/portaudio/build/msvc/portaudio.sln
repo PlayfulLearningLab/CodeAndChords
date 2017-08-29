@@ -1,9 +1,15 @@
 ﻿
+<<<<<<< HEAD
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portaudio", "portaudio.vcxproj", "{0A18A071-125E-442F-AFF7-A3F68ABECF99}"
+=======
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portaudio", "portaudio.vcproj", "{0A18A071-125E-442F-AFF7-A3F68ABECF99}"
+>>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +21,13 @@ Global
 		ReleaseMinDependency|x64 = ReleaseMinDependency|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+<<<<<<< HEAD
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.ActiveCfg = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.Build.0 = Debug|x64
+=======
+		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.Build.0 = Debug|Win32
+>>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|x64.ActiveCfg = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|x64.Build.0 = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Release|Win32.ActiveCfg = Release|Win32
