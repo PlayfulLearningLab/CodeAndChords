@@ -18,6 +18,7 @@ import core.ShapeEditorInterface;
 import core.Archive_ModuleTemplate.ModuleTemplate02;
 import net.beadsproject.beads.core.AudioContext;
 
+<<<<<<< HEAD
 public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterface {
 
 	//	private	DisposeHandler		disposeHandler;
@@ -35,6 +36,17 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	private	int[]	yVals;
 
 	private	int		currentMenu;
+=======
+public class Module_02_AmplitudeHSB extends PApplet {
+	
+	private Input				input;
+	private ModuleTemplate02	moduleTemplate;
+	
+//	private PShape 	shape;
+//	int		shapeCenter;
+	
+	float[]	thresholds;
+>>>>>>> 081586f... Module_02: added shape size slider, dynamic segments toggles (the latter not yet implemented)
 	
 	public static void main(String[] args) 
 	{
