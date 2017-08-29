@@ -46,7 +46,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <stdlib.h>
 #include "portaudio.h"
 
 #ifdef WIN32
