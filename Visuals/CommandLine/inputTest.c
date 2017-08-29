@@ -229,7 +229,6 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
     {
         for( i=0; i<framesToCalc; i++ )
         {
-			printf("inputText.recordCallback: i = %d.\n", i);
             *wptr++ = *rptr++;  /* left */
             if( NUM_CHANNELS == 2 ) *wptr++ = *rptr++;  /* right */
         }
@@ -610,9 +609,13 @@ int main(void)
 
     data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
 =======
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+=======
+	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
+>>>>>>> e4bfc26... The remainder of Emily on the Windows laptop for now
     data.frameIndex = 0;
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(SAMPLE);
@@ -635,6 +638,7 @@ int main(void)
 	// input stream:
 	device	= selectDevice();
     inputParameters.device = device;
+<<<<<<< HEAD
 =======
     inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
@@ -651,6 +655,8 @@ int main(void)
 	device	= selectDevice();
     inputParameters.device = device; /* default input device */
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+>>>>>>> e4bfc26... The remainder of Emily on the Windows laptop for now
     if (inputParameters.device == paNoDevice) {
         fprintf(stderr,"Error: No default input device.\n");
         goto done;
