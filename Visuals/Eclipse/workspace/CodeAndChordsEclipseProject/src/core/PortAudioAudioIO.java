@@ -1,6 +1,5 @@
 package core;
 
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
@@ -42,6 +41,7 @@ public class PortAudioAudioIO extends AudioIO {
 //		this.systemBufferSizeInFrames = systemBufferSize;
 		this.numInChannels	= numChannels;
 		this.numOutChannels	= numChannels;
+
 		setThreadPriority(Thread.MAX_PRIORITY);
 	}
 	
@@ -54,6 +54,7 @@ public class PortAudioAudioIO extends AudioIO {
 		StreamParameters outParameters = new StreamParameters();
 //		outParameters.sampleFormat = PortAudio.FORMAT_FLOAT_32; // maybe use int_16>  b/c AudioContext.getAudioFormat.bitDepth = 16; was previously .FORMAT_FLOAT_32;
 		outParameters.device = PortAudio.getDefaultOutputDevice();
+
 		if(this.numOutChannels > PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels)
 		{
 			System.out.println("PortAudioAudioIO: given number of channels was " + this.numOutChannels + 
@@ -72,6 +73,26 @@ public class PortAudioAudioIO extends AudioIO {
 		this.outStream.start();
 		
 		return true;
+		
+		/*getDefaultMixerIfNotAlreadyChosen();
+		if (mixer == null) {
+			return false;
+		}
+		DataLine.Info info = new DataLine.Info(SourceDataLine.class,
+				audioFormat);
+		try {
+			sourceDataLine = (SourceDataLine) mixer.getLine(info);
+			if (systemBufferSizeInFrames < 0)
+				sourceDataLine.open(audioFormat);
+			else
+				sourceDataLine.open(audioFormat, systemBufferSizeInFrames
+						* audioFormat.getFrameSize());
+		} catch (LineUnavailableException ex) {
+			System.out
+					.println(getClass().getName() + " : Error getting line\n");
+		}
+		return true;
+		*/
 	} // create
 	
 	/**
@@ -108,6 +129,7 @@ public class PortAudioAudioIO extends AudioIO {
 		
 		PortAudio.terminate();
 		System.out.println("PortAudio terminated.");
+
 		return true;
 	}
 
@@ -157,6 +179,7 @@ public class PortAudioAudioIO extends AudioIO {
 		
 		int bufferSizeInFrames = context.getBufferSize();
 		// TODO: might need to use audioFormat.getChannels() instead of ioAudioFormat.outputs
+
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
 		while (context.isRunning())
@@ -174,6 +197,7 @@ public class PortAudioAudioIO extends AudioIO {
 			{
 				throw new IllegalArgumentException("PAAIO.runRealTime: outStream is null.");
 			}
+
 			this.outStream.write( interleavedOutput, bufferSizeInFrames );
 		} // while
 		
@@ -286,7 +310,7 @@ public class PortAudioAudioIO extends AudioIO {
 			if(!portAudioInitialized) {
 				initPortAudio();
 			}
-
+			
 			inStream.read( interleavedSamples, bufferSize );
 			
 //			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);

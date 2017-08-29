@@ -7,9 +7,13 @@ public class TestBasicDriver {
 		TestBasic	test	= new TestBasic();
 		try {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			test.testRecordPlayShort();
 =======
 >>>>>>> b3e9caa... AudioServer can get data, but not continuously
+=======
+			test.testRecordPlayShort();
+>>>>>>> 01202f7... PortAudioAudioIO runs smoothly, if not completely correctly
 			test.testRecordPlayFloat();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
