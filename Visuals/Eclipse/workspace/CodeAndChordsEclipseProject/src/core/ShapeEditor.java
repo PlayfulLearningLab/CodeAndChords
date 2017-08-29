@@ -292,12 +292,20 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.updateSliders();
 
 		this.cp5.addLabel("n2Label")
-		.setPosition(15, yVals[4] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[4] - (spacing/3.5)))
 		.setValue("N2");
 		
 		this.cp5.addLabel("n3Label")
-		.setPosition(15, yVals[5] - (spacing/3))
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[5] - (spacing/3.5)))
 		.setValue("N3");
+		
+		this.cp5.addLabel("xPosLabel")
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[6] - (spacing/3.5)))
+		.setValue("X Position");
+		
+		this.cp5.addLabel("yPosLabel")
+		.setPosition((int)(this.seXPos + (this.menuWidth/8)), (float) (yVals[7] - (spacing/3.5)))
+		.setValue("Y Position");
 		
 		this.cp5.getController("shapeSelect")
 		.bringToFront();
@@ -348,7 +356,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		{
 			this.controlP5.getController("slider" + this.NUM_POINTS_ID).setValue(param[2]);
 		}
-		
+
 		if(param[4] != this.controlP5.getController("slider" + this.N1_ID).getValue())
 		{
 			this.controlP5.getController("slider" + this.N1_ID).setValue(param[4]);
