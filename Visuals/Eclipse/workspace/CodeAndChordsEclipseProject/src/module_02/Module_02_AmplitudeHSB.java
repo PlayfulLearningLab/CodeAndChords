@@ -145,13 +145,10 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		background(this.menu.getCanvasColor()[0][0], this.menu.getCanvasColor()[0][1], this.menu.getCanvasColor()[0][2]);
 
-		System.out.println("canvasColor = rgb(" + this.moduleTemplate.getCanvasColor()[0] + 
-				", " + this.moduleTemplate.getCanvasColor()[1] + ", " + this.moduleTemplate.getCanvasColor()[2] + ")");
-		
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
 		int		goalHuePos	= 0;
-		
+
 		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 
 		for(int i = 0; i < this.menu.getThresholds()[0].length; i++)
@@ -268,6 +265,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		return this.shape;
 	}
+
 	/*
 	public void setShapeEditorRunning(boolean isRunning)
 	{

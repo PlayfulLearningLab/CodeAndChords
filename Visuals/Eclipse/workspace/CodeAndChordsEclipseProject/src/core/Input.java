@@ -1094,4 +1094,38 @@ import beads.TimeStamp;
 		}
 	} // DisposeHandler
 	
+	/**
+	 * Getter for this.ac
+	 * @return	AudioContext instance variable
+	 */
+	public AudioContext getAudioContext()
+	{
+		return this.ac;
+	} // getAudioContext
+	
+	public class DisposeHandler {
+
+//		PApplet	pa;
+		Input	input;
+
+		DisposeHandler(PApplet pa)
+		{
+			this.input	= (Input)pa;
+			pa.registerMethod("dispose", this);
+		}
+
+		public void dispose()
+		{
+			this.input.ac.stop();
+			if(this.input.ac.getAudioIO().getClass().getName().equalsIgnoreCase("PortAudioAudioIO"))
+			{
+				((PortAudioAudioIO)this.input.ac.getAudioIO()).stop();
+			} // if - PAAIO
+			
+			println("Closing sketch");
+//			((PortAudioAudioIO)this.module.input.getAudioContext().getAudioIO()).destroy();
+		}
+	} // DisposeHandler
+
+	
 } // Input class

@@ -109,7 +109,6 @@ public class PortAudioAudioIO extends AudioIO {
 		
 		PortAudio.terminate();
 		System.out.println("PortAudio terminated.");
-
 		return true;
 	}
 
