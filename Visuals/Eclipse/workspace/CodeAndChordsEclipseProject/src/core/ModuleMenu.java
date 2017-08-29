@@ -791,7 +791,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.addSliderGroup(xVal, yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
 	} // addForteThresholdSlider
 
-
 	/**
 	 * Method called during instantiation to initialize the key selector drop-down menu (ScrollableList)
 	 * and major/minor/chromatic selection buttons.
@@ -873,7 +872,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.controlP5.getController("guideToneButton").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 	} // addKeySelector
-
 
 	/**
 	 * Adds the guide tone pop-out with range and envelope preset select dropdowns, bpm and volume sliders.
@@ -1176,7 +1174,6 @@ public class ModuleMenu extends MenuTemplate  {
 		} // for
 
 	} // addThresholdSliders
-
 
 	/**
 	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
@@ -1806,7 +1803,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**
 	 * Uses the given HSB color to find the color across it on the HSB wheel,
-	 * converts both colors to RGB, and passes them as parameters to triichromatic_ThreeRGB.
+	 * converts both colors to RGB, and passes them as parameters to trichromatic_ThreeRGB.
 	 *
 	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
@@ -1851,7 +1848,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
 	} // trichromatic_OneHSB
-
 
 	/**
 	 * Calculates the colors between the 3 sets of given vals
@@ -2325,7 +2321,6 @@ public class ModuleMenu extends MenuTemplate  {
 		float	satMappingVal		= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100), 100), 0);
 		float	brightMappingVal	= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[1], this.minThreshold + 1), 0, 100), 100), 0);
 
-
 		// Notice how hueSatBrightPercentMod is accessed at 1 and 2, since hue is also a part of it,
 		// but satBrightPercentVals is accessed at 0 and 1, since it is only for saturation and brightness.
 		this.hueSatBrightPercentMod[1]	= (this.satBrightPercentVals[0] * satMappingVal) / 100;
@@ -2406,7 +2401,6 @@ public class ModuleMenu extends MenuTemplate  {
 		String[]	scales	= new String[] { "major", "minor", "chromatic" };
 		this.melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 	} // playMelody
-
 
 	/**
 	 * Displays the "sidebarGroup" of this.controlP5
@@ -2558,8 +2552,6 @@ public class ModuleMenu extends MenuTemplate  {
 		if(controlEvent.getName().equals("legend"))
 		{
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
-			
-
 		}
 
 		// Toggles
@@ -2830,12 +2822,10 @@ public class ModuleMenu extends MenuTemplate  {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent: rangeOctave " + rangeOctave + " is out of range.");
 			}
 		} // rangeDropdown
-
 		// Shape Menu Button:
 		if(controlEvent.getName() == "shapeMenuButton")
 		{
 			//open the menu
-			//			this.shapeMenuIsOpen = true;
 
 			//set the shape select list
 			System.out.println(this.module.getShape().getShapeIndex());
@@ -3557,7 +3547,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // getScale
 
-
 	/**
 	 * Updates the keyDropdown ScrollableList and sets the current key and all 
 	 * connected variables: this.majMinChrom, this.scaleLength, this.curKey, this.keyAddVal.
@@ -3759,7 +3748,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 				// Let the user know if you made an adjustment:
 				if(originalColor != color[i]) {
-					System.out.println("ModuleMenu.setSpecialColorsCW: adjusted position " + i + " of color " + colorPos + " from " + originalColor + " to " + color[i] + ".");
+				System.out.println("ModuleMenu.setSpecialColorsCW: adjusted position " + i + " of color " + colorPos + " from " + originalColor + " to " + color[i] + ".");
 				}
 			} // for - color adjust
 

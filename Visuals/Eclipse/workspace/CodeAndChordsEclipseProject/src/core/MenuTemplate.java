@@ -108,6 +108,12 @@ public abstract class MenuTemplate implements ControlListener {
 		
 		this.parent = pApp;
 		/*
+=======
+		
+		this.controlP5		= new ControlP5(this.parent);
+		this.controlP5.addListener((ControlListener)this);
+		
+>>>>>>> f0020e9... Beginning of transition from ModuleTemplate to MenuTemplate and ModuleMenu.
 		this.appletWidth = appWidth;
 		this.appletHeight = appHeight;
 */

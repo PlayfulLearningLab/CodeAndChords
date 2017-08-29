@@ -137,7 +137,7 @@ public class Input {
 	 */
 	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
 	{
-		this(numInputs, audioContext, false);
+		this(numInputs, audioContext, false, pa);
 	} // int, AudioContext
 	
 	/**
@@ -148,7 +148,7 @@ public class Input {
 	 * @param audioContext
 	 * @param skip5thru8
 	 */
-	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8)
+	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
 	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");

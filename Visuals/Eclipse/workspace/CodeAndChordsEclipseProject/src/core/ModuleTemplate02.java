@@ -23,13 +23,13 @@ import processing.core.PApplet;
  * @author Emily Meuer
  *
  */
-public class ModuleTemplate02 extends ModuleTemplate {
+public class ModuleTemplate02 extends ModuleMenu {
 
 	/**	holds the y values for all Controllers	*/
-	private	int[]	yVals;
+//	private	int[]	yVals;
 
 	/**	Amplitude thresholds	*/
-	private	float[]	thresholds;
+//	private	float[]	thresholds;
 
 	/**	The highest amplitude threshold	*/
 //	private	float	forteThreshold;
@@ -56,10 +56,13 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 */
 	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
 	{
-		super(parent, input, sidebarTitle, 4);
+		super(parent, null, input, sidebarTitle, 4);
 
 		this.shapeMenuIsOpen = false;
 
+		
+// Moved these calls to Module_02:
+/*
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
 		this.yVals[0]	= 26;
@@ -68,7 +71,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		{
 			this.yVals[i]	= this.yVals[i - 1] + distance;
 		}
-
+/*
 		// set amplitude thresholds
 		this.thresholds	= new float[] {
 				2,		// piano
@@ -130,6 +133,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		this.addShapeCustomizationControls(this.yVals[16]);
 		//		this.initInput();
+		 * 
+		 */
 	} // constructor
 
 	/**
@@ -139,7 +144,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * @param hideY	y value at which this row should be added
 	 */
 	@Override
-	protected void addHideButtons(int hideY)
+	public void addHideButtons(int hideY)
 	{
 		int	hideWidth   = 69;
 		int hideSpace	= 4;
@@ -165,18 +170,18 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				thresholdsX
 		};
 
-		this.sidebarCP5.addTextlabel("hide")
+		this.controlP5.addTextlabel("hide")
 		.setPosition(labelX, hideY + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Hide");
 
 		for(int i = 0; i < names.length; i++)
 		{
-			this.sidebarCP5.addToggle(names[i])
+			this.controlP5.addToggle(names[i])
 			.setPosition(xVals[i], hideY)
 			.setWidth(hideWidth)
 			.setGroup("sidebarGroup");
-			this.sidebarCP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
+			this.controlP5.getController(names[i]).getCaptionLabel().set(labels[i]).align(ControlP5.CENTER, ControlP5.CENTER);
 		}
 
 		this.showScale	= true;
@@ -188,7 +193,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 	 * 
 	 * @param goalHuePos	current position in the threshold list; used to show the user their general amplitude level
 	 */
-	public void legend(int goalHuePos)
+/*	public void legend(int goalHuePos)
 	{
 		this.parent.textSize(24);
 
@@ -227,7 +232,8 @@ public class ModuleTemplate02 extends ModuleTemplate {
 		} // for
 
 	} // legend
-
+*/
+	
 	/**
 	 * Adds the "Color: Forte Threshold", "Saturation", "Saturation: Forte Threshold", 
 	 * "Brightness", and "Brightness: Forte Threshold" group of Sliders/Textfields
@@ -270,7 +276,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 		for(int i = 0; i < names.length; i++)
 		{			
-			this.sidebarCP5.addLabel(names[i])
+			this.controlP5.addLabel(names[i])
 			.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)))
 			.setValue(labels[i])
 			.setGroup("sidebarGroup");
@@ -278,7 +284,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			// Forte Thresholds
 			if(i % 2 == 0)
 			{
-				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				this.controlP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, yVal + (i * (verticalSpacer + this.sliderHeight)))
 				.setSize(this.sliderWidth, this.sliderHeight)
 				.setSliderMode(Slider.FLEXIBLE)
@@ -290,10 +296,10 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 				this.nextSliderId	= this.nextSliderId + 1;
 
-				this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
+				this.controlP5.addTextfield("textfield" + this.nextSTextfieldId)
 				.setPosition(textfieldX, yVal + (i * (verticalSpacer + this.sliderHeight)))
 				.setWidth(this.textfieldWidth)
-				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+				.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 				.setAutoClear(false)
 				.setGroup("sidebarGroup")
 				.setId(this.nextSTextfieldId)
@@ -306,7 +312,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 			// percent sliders
 			if(i % 2 == 1)
 			{
-				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				this.controlP5.addSlider("slider" + this.nextSliderId)
 				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
 				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
 				.setRange(-1, 1)
@@ -363,7 +369,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 				x5
 		};
 
-		this.sidebarCP5.addTextlabel("colorSelect")
+		this.controlP5.addTextlabel("colorSelect")
 		.setPosition(labelX, yVal + 4)
 		.setGroup("sidebarGroup")
 		.setValue("Color Select");
@@ -410,7 +416,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 					"; curColor[1] = " + curColor[1] +
 					"; curColor[2] = " + curColor[2]);
 
-			this.sidebarCP5.addButton("button" + this.nextButtonId)
+			this.controlP5.addButton("button" + this.nextButtonId)
 			.setPosition(xVals[i], yVal)
 			.setWidth(colorSelectWidth)
 			.setCaptionLabel(labels[i])
@@ -420,7 +426,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 			this.nextButtonId	= this.nextButtonId + 1;
 
-			this.sidebarCP5.addColorWheel("colorWheel" + this.nextColorWheelId)
+			this.controlP5.addColorWheel("colorWheel" + this.nextColorWheelId)
 			.setPosition(xVals[i], yVal - 200)
 			.setRGB(this.parent.color(curColor[0], curColor[1], curColor[2]))
 			.setLabelVisible(false)
@@ -432,7 +438,7 @@ public class ModuleTemplate02 extends ModuleTemplate {
 
 			if(i > 3)	{	textfieldWidth	= textfieldWidth - colorSelectSpace;	}
 
-			this.sidebarCP5.addTextfield("textfield" + this.nextCWTextfieldId)
+			this.controlP5.addTextfield("textfield" + this.nextCWTextfieldId)
 			.setPosition(xVals[i] + colorSelectWidth + colorSelectSpace, yVal)
 			.setWidth(textfieldWidth)
 			.setAutoClear(false)
