@@ -438,6 +438,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.hueSatBrightnessMod        = new float[3];
 		this.hueSatBrightPercentMod		= new float[3];
+		this.redGreenBlueMod			= new float[3];
 
 		this.satBrightThresholdVals	= new float[2];
 		this.satBrightPercentVals	= new float[2];
@@ -515,15 +516,15 @@ public class ModuleMenu extends MenuTemplate  {
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
 		.setValue(this.sidebarTitle);
 
-		float	menuXX		= this.controlP5.getController("menuX").getPosition()[0];
-		float	menuWidth	= this.controlP5.getController("menuX").getWidth();
-
+		//float	menuXX		= this.controlP5.getController("menuX").getPosition()[0];
+		//float	menuWidth	= this.controlP5.getController("menuX").getWidth();
+/*
 		this.controlP5.addTextlabel("menu")
 		.setPosition(menuXX + menuWidth + 3, 10)
 		.setHeight(15)
 		//.setGroup("sidebarGroup")
 		.setValue("Menu");
-
+*/
 	} // constructor
 
 
@@ -649,7 +650,15 @@ public class ModuleMenu extends MenuTemplate  {
 		int	hamburgerY		= 13;
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
-
+		
+		this.outsideButtonsCP5.addScrollableList("menuList", hamburgerX, hamburgerY, 150, 450)
+		.setBarHeight(25)
+		.setItemHeight(20)
+		.close();
+		
+		
+		
+/*
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
 		this.outsideButtonsCP5.addButton("hamburger")
@@ -670,7 +679,9 @@ public class ModuleMenu extends MenuTemplate  {
 		//.setGroup("sidebarGroup")
 		.updateSize()
 		.bringToFront();
-
+*/
+		
+		
 		//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
 	} // addOutsideButtons
 
@@ -1226,79 +1237,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.fillHSBColors();
 	} // addSpecialColors
-
-	/**
-	 * TODO - needs commenting or can go.
-	 * 
-	 * @param yVal
-	 */
-	public void addShapeCustomizationControls(int yVal)
-	{
-		this.controlP5.addButton("shapeMenuButton")
-		.setPosition(this.leftAlign, yVal)
-		.setHeight(this.sliderHeight)
-		.setWidth(this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer)
-		.setLabel("Shape Menu");
-		//.setGroup("sidebarGroup");
-
-		this.controlP5.addGroup("shapeMenuGroup");
-
-
-		int fb = new Color((int)0,(int)0,(int)0, (int)250).getRGB();
-		CColor fadedBackground = new CColor();
-		//fadedBackground.setAlpha();
-
-		this.controlP5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		((Slider) this.controlP5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		((Slider) this.controlP5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("n1", 0, 10, 1, 15, 320, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("n2", 0, 10, 1, 15, 370, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("n3", 0, 10, 1, 15, 420, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(15,70)
-		.setSize(150, 100)
-		.setBarHeight(30)
-		.setGroup("shapeMenuGroup")
-		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
-		.close()
-		//		.setValue(this.module2.getShape().getShapeIndex());
-		.setValue(0f);
-
-
-
-		this.controlP5.getGroup("shapeMenuGroup")
-		.setVisible(false);
-
-	} // addShapeCustomizationControls
 
 
 	/**
@@ -2605,6 +2543,8 @@ public class ModuleMenu extends MenuTemplate  {
 			// Hamburger is still able to be clicked because of a boolean isClickable added to 
 			//Controller; automatically false, but able to be set to true.
 			// A Controller must be visible and/or clickable to respond to click.
+			
+
 			if(!this.getIsRunning())
 			{
 				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
@@ -2616,6 +2556,8 @@ public class ModuleMenu extends MenuTemplate  {
 		if(controlEvent.getName().equals("legend"))
 		{
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
+			
+
 		}
 
 		// Toggles
@@ -4073,6 +4015,17 @@ public class ModuleMenu extends MenuTemplate  {
 	public void setBPM(int bpm)
 	{
 		this.bpm = bpm;
+	}
+	
+	public void setMenuList(String[] list)
+	{
+		((ScrollableList)this.outsideButtonsCP5.getController("menuList"))
+		.addItems(list);
+	}
+	
+	public int getCurrentMenu()
+	{
+		return (int) this.outsideButtonsCP5.getController("menuList").getValue();
 	}
 	
 } // ModuleTemplate
