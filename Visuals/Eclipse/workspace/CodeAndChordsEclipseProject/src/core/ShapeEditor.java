@@ -25,8 +25,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	private Shape	shape;
 	
 	private	Module	module;
-	
-	
+		
 	private int 	SIZE_ID;
 	private int		NUM_POINTS_ID;
 	private int		N1_ID;
@@ -72,7 +71,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) {
 
 		super(parent, fullAppletWidth, fullAppletHeight);
-		
+
 		this.module	= module;
 
 		// make sure the PApplet isn't null and then set the parent instance variable
