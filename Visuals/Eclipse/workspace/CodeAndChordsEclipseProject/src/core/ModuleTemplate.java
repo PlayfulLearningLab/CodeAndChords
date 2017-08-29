@@ -152,6 +152,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
 	private	int[]			colorAdd;
+	
+	// TODO initialize elsewhere:
+//	private float[]			colorAddDecimals	= new float[3];
 
 	/**	The difference between the R, G, and B values of 2 colors that are being faded between	*/
 	private	int[]			colorRange;
@@ -173,6 +176,9 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 	/**	The minimum value for threshold Sliders	*/
 	protected	float	minThreshold;
+	
+	/**	The highest amplitude threshold	*/
+	protected	float	forteThreshold;
 
 	/**	Holds the values of the saturation threshold and brightness threshold Sliders, respectively	*/
 	protected	float[] satBrightThresholdVals;
@@ -709,6 +715,33 @@ public abstract class ModuleTemplate implements ControlListener  {
 		} // for
 
 	} // addSliders
+	
+	protected void addARTSliders(int attackY, int releaseY, int transitionY)
+	{
+		String[]	labels	= new String[] {
+				"Attack",
+				"Release",
+				"Transition"
+		}; // labels
+
+		int[]		yVals	= new int[] {
+				attackY,
+				releaseY,
+				transitionY
+		}; // yVals
+		
+		this.firstARTSliderId	= this.nextSliderId;
+		
+		for(int i = 0; i < labels.length; i++)
+		{
+			this.addSliderGroup(yVals[i], labels[i], 100, 3000, 200);
+		}
+	} // addARTSliders
+	
+	protected void addPianoThresholdSlider(int yVal)
+	{
+		this.addSliderGroup(yVal, "Piano Threshold", 2, 100, 10);
+	} // addPianoThresholdSlider
 
 
 	/**
@@ -1151,6 +1184,104 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.nextToggleId	= this.nextToggleId + 1;
 		} // for - adding Toggles
 	} // addRangeSegments
+	
+
+	/**
+	 * Adds the "Color: Forte Threshold", "Saturation", "Saturation: Forte Threshold", 
+	 * "Brightness", and "Brightness: Forte Threshold" group of Sliders/Textfields
+	 * 
+	 * @param yVal	y value of forte threshold
+	 * @param verticalSpacer	vertical space between sliders
+	 */
+	protected void addThresholdSliders(int yVal, int verticalSpacer)
+	{
+		int	textfieldX	= this.leftAlign + this.sliderWidth + this.spacer;
+
+		// Since some i's will add a couple rows of labels and sliders,
+		// this variable keeps track of which "level" of y the next thing should be added to.
+		//		float	yPos		= 0;
+
+		String[]	names	= new String[] {
+				"forteThresh",
+				"saturation",
+				"saturationForteThresh",
+				"brightness",
+				"brightnessForteThresh"
+		}; // names
+
+		String[]	labels = new String[] {
+				"Forte\nThreshold",
+				"Saturation",
+				"Sat: Forte\nThreshold",
+				"Brightness",
+				"Bright: Forte\nThreshold"
+		}; // labels
+		/*	
+		String[]	hsbSliderNames	= new String[] {
+				"hueSlider",
+				"saturationSlider",
+				"brightnessSlider"
+
+		}; // hsbSliderNames
+		 */
+		this.firstThresholdSliderId	= this.nextSliderId;
+
+		for(int i = 0; i < names.length; i++)
+		{			
+			this.sidebarCP5.addLabel(names[i])
+			.setPosition(this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)))
+			.setValue(labels[i])
+			.setGroup("sidebarGroup");
+
+			// Forte Thresholds
+			if(i % 2 == 0)
+			{
+				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				.setPosition(this.leftAlign, yVal + (i * (verticalSpacer + this.sliderHeight)))
+				.setSize(this.sliderWidth, this.sliderHeight)
+				.setSliderMode(Slider.FLEXIBLE)
+				.setRange(this.minThreshold, 7000)
+				.setValue(this.forteThreshold)
+				.setLabelVisible(false)
+				.setId(this.nextSliderId)
+				.setGroup("sidebarGroup");
+
+				this.nextSliderId	= this.nextSliderId + 1;
+
+				this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
+				.setPosition(textfieldX, yVal + (i * (verticalSpacer + this.sliderHeight)))
+				.setWidth(this.textfieldWidth)
+				.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+				.setAutoClear(false)
+				.setGroup("sidebarGroup")
+				.setId(this.nextSTextfieldId)
+				.getCaptionLabel().setVisible(false);
+
+				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+
+			} // if - Forte Thresholds
+
+			// percent sliders
+			if(i % 2 == 1)
+			{
+				this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+				.setPosition(this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
+				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
+				.setRange(-1, 1)
+				.setValue(0)
+				.setGroup("sidebarGroup")
+				//				.plugTo(this)
+				.setId(this.nextSliderId)
+				.getCaptionLabel().setVisible(false);
+
+				this.nextSliderId	= this.nextSliderId + 1;
+				// Also need to increment nextSTextfieldId so that they don't get out of sync
+				// (since this slider had no connected Textfield).
+				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+			} // if - percent sliders
+		} // for
+
+	} // addThresholdSliders
 
 	/**
 	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
@@ -1216,6 +1347,38 @@ public abstract class ModuleTemplate implements ControlListener  {
 
 		this.fillHSBColors();
 	} // addColorSelect
+	
+	protected void addSliderGroup(int yVal, String labelText, int lowRange, int highRange, int startingVal)
+	{
+		this.sidebarCP5.addLabel("label" + this.nextSliderId)
+		.setPosition(labelX, yVal + 4)
+		.setWidth(labelWidth)
+		.setGroup("sidebarGroup")
+		.setValue(labelText);
+
+		this.sidebarCP5.addSlider("slider" + this.nextSliderId)
+		.setPosition(this.leftAlign, yVal)
+		.setSize(this.sliderWidth, this.sliderHeight)
+		.setRange(lowRange, highRange)
+		.setValue(startingVal)
+		.setSliderMode(Slider.FLEXIBLE)
+		.setLabelVisible(false)
+		.setGroup("sidebarGroup")
+		.setId(this.nextSliderId);
+
+		this.nextSliderId	= this.nextSliderId + 1;
+
+		this.sidebarCP5.addTextfield("textfield" + this.nextSTextfieldId)
+		.setPosition(this.leftAlign + sliderWidth + spacer, yVal)
+		.setSize(this.textfieldWidth, this.sliderHeight)
+		.setText(this.sidebarCP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
+		.setAutoClear(false)
+		.setGroup("sidebarGroup")
+		.setId(this.nextSTextfieldId)
+		.getCaptionLabel().setVisible(false);
+
+		this.nextSTextfieldId	= this.nextSTextfieldId + 1;
+	} // addSliderGroup
 
 	/**
 	 * Adds a connected Button, ColorWheel, and Textfield to this.sidebarCP5, in group "sidebarGroup",
@@ -1370,19 +1533,20 @@ public abstract class ModuleTemplate implements ControlListener  {
 			this.checkpoint = (this.parent.millis() + 50);
 		} // if - adding every 50 millis
 
-		/*		
+/*	
 		System.out.println("curHue: " + this.curHue[0] + ", " + 
 				+ this.curHue[1] + ", "
 				+ this.curHue[2]);
 		System.out.println("goalHue: " + this.goalHue[0] + ", " + 
 						+ this.goalHue[1] + ", "
 						+ this.goalHue[2]);
+
 		System.out.println("input.getAmplitude() = " + input.getAmplitude());
 
 		System.out.println("colorAdd: " + this.colorAdd[0] + ", " + 
 				+ this.colorAdd[1] + ", "
 				+ this.colorAdd[2]);
-		 */		 
+	*/ 
 
 		float	lowBound;
 		float	highBound;
@@ -1412,29 +1576,44 @@ public abstract class ModuleTemplate implements ControlListener  {
 		if(!this.nowBelow && !colorReached) 
 		{	
 			this.attRelTranPos	= 0;
-			//			System.out.println("attack!!!!");
+//			System.out.println("	attack!!!!");
 		} else if(!this.nowBelow && colorReached) {
 			// Or, if coming from one super-threshold note to another, use the transition value:
 			this.attRelTranPos	= 2;
-			//			System.out.println("transition.... transition [doooooo do dooo do do ] - transition!");
+//			System.out.println("	transition.... transition [doooooo do dooo do do ] - transition!");
 		} else if(this.nowBelow) {
 			// Or, if volume fell below the threshold, switch to release value:
 			this.attRelTranPos	= 1;
-			//			System.out.println("re....lent! re...coil! re...verse!");
+//			System.out.println("	re....lent! re...coil! re...verse!");
 		}
 
-		if(this.attRelTranPos != oldARTpos)
-		{			
+//		if(this.attRelTranPos != oldARTpos)
+//		{			
 			// Calculate color ranges:
 			for(int i = 0; i < this.curHue.length; i++)
 			{
 				this.colorRange[i]	= Math.abs(this.goalHue[i] - this.curHue[i]);
-
+				
+//				System.out.println("colorAddDecimals[" + i + "] = " + colorAddDecimals[i]);
+				
+				// if colorAdd reached 1, add 1 to colorAdd:
+/*				if(this.colorAddDecimals[i] > 1)	
+				{	
+					this.colorAdd[i]++;	
+//					this.colorAddDecimals[i]	= this.colorAddDecimals[i] % 1;
+				}
+*/
 				// divide the attack/release/transition value by 50
 				// and divide colorRange by that value to find the amount to add each 50 millis.
-				this.colorAdd[i]	= (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
+				float addThis = (int)(this.colorRange[i] / (this.attRelTranVals[this.attRelTranPos] / 50));
+/*				if(addThis < 1)	
+				{	
+					this.colorAddDecimals[i]	= this.colorAddDecimals[i] + addThis;	
+				} else {	 */
+					this.colorAdd[i]	= (int)addThis;	
+//				}
 			} // for
-		} // if
+//		} // if
 
 	} // fade
 
