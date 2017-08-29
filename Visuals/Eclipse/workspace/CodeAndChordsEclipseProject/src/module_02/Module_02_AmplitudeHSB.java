@@ -76,7 +76,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 4);
 				this.menu.setIsRunning(false);
-
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
 				this.yVals[0]	= 50;
@@ -139,6 +138,8 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if (keyPressed == true) 
 		{
 			this.menu.setMenuVal();
+			
+			this.menu.setIsRunning(true);
 		}
 
 		background(this.menu.getCanvasColor()[0][0], this.menu.getCanvasColor()[0][1], this.menu.getCanvasColor()[0][2]);

@@ -298,32 +298,32 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		this.updateSliders();
 
-		this.cp5.addLabel("n2Label")
+		this.controlP5.addLabel("n2Label")
 		.setPosition((int) 20, (float) (yVals[3] - (spacing / 3.5)))
 		.setValue("N2");
 
-		this.cp5.addLabel("n3Label")
+		this.controlP5.addLabel("n3Label")
 		.setPosition((int) 20, (float) (yVals[4] - (spacing / 3.5)))
 		.setValue("N3");
 
-		this.cp5.addLabel("xPosLabel")
+		this.controlP5.addLabel("xPosLabel")
 		.setPosition((int) 20, (float) (yVals[5] - (spacing / 3.5)))
 		.setValue("X Position");
 
-		this.cp5.addLabel("yPosLabel")
+		this.controlP5.addLabel("yPosLabel")
 		.setPosition((int) 20, (float) (yVals[6] - (spacing / 3.5)))
 		.setValue("Y Position");
 
-		this.cp5.addLabel("rotationLabel")
+		this.controlP5.addLabel("rotationLabel")
 		.setPosition((int) 20, (float) (yVals[7] - (spacing / 3.5)))
 		.setValue("Rotation");
 
-		this.cp5.addScrollableList("shapeSelect")
+		this.controlP5.addScrollableList("shapeSelect")
 		.setPosition(200, 5).setSize(150, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
 		.setValue(0).close();
 
-		this.cp5.addButton("exitButton").setLabel("Close Shape Editor")
+		this.controlP5.addButton("exitButton").setLabel("Close Shape Editor")
 		.setPosition(400, 5).setSize(150, 40);
 
 	}

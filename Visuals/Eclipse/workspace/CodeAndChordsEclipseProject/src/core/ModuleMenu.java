@@ -339,6 +339,8 @@ public class ModuleMenu extends MenuTemplate  {
 		this.module			= module;
 		this.input			= input;
 		this.sidebarTitle	= sidebarTitle;
+		
+		System.out.println("this.parent.height = " + (this.parent.height));
 
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
 		this.outsideButtonsCP5.addListener((ControlListener)this);
@@ -2421,6 +2423,19 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 	} // displaySidebar
+	
+	@Override
+	public void runMenu()
+	{
+		super.runMenu();
+		
+		if(this.getIsRunning())
+		{
+			this.leftEdgeX	= this.sidebarWidth;
+		} else {
+			this.leftEdgeX	= 0;
+		}
+	} // runMenu
 
 	/**
 	 * Calls super.runMenu to show or hide the Controllers,
