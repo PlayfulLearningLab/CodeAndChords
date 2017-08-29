@@ -13,6 +13,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
 import core.Shape;
+<<<<<<< HEAD
 import core.ShapeEditor;
 import core.ShapeEditorInterface;
 import core.Archive_ModuleTemplate.ModuleTemplate02;
@@ -21,11 +22,21 @@ import net.beadsproject.beads.core.AudioContext;
 public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterface {
 
 	//	private	DisposeHandler		disposeHandler;
+=======
+>>>>>>> 9c78f22... added supershape to module2
 
 	//	private Input				input;
 	//	private ModuleTemplate02	moduleTemplate;
 
+<<<<<<< HEAD
 	//	private	ModuleMenu			menu;
+=======
+	private Input				input;
+	private ModuleTemplate02	moduleTemplate;
+	
+	private Shape     			shape;
+
+>>>>>>> 9c78f22... added supershape to module2
 
 	//	private Shape     			shape;
 
@@ -47,6 +58,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	} // settings
 	 */
 	public void setup()
+<<<<<<< HEAD
 	{
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
@@ -131,6 +143,41 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				//this.shapeMode(CENTER);
 				//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
 				//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2);
+=======
+	{		
+		this.input	= new Input();
+		this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
+
+		// set amplitude thresholds
+		this.moduleTemplate.thresholds	= new float[] {
+				2,		// piano
+				100,	// mezzo piano
+				200,	// mezzo forte
+				500	//forte
+		}; // thresholds
+
+		// Define them some default colors
+		this.moduleTemplate.setColors(new float[][] {
+			new float[] { 255, 0, 0 },
+			new float[] { 0, 255, 0 },
+			new float[] { 0, 0, 255 },
+			new float[] { 150, 50, 150 }
+		});
+
+		this.textSize(32);
+
+		// create the shape
+		
+		//Ask Emily:  What does this do?
+		this.shapeMode(CENTER);
+		//		this.shape			= createShape(ELLIPSE, (this.width - this.moduleTemplate.getLeftEdgeX()) / 2, this.height / 2, this.width * (this.moduleTemplate.getShapeSize() / 100), this.height * (this.moduleTemplate.getShapeSize() / 100));
+		//		this.shapeCenter	= (this.width - this.moduleTemplate.getLeftEdgeX()) / 2;
+		
+		this.shape = new Shape(this, this.moduleTemplate.getMenuWidth());
+		shape.setCurrentShape("supershape", new float[] {1,1,5,5,1,1,1});
+		
+		System.out.println("(this.moduleTemplate.getShapeSize() / 100) = " + ((float)this.moduleTemplate.getShapeSize() / 100f));
+>>>>>>> 9c78f22... added supershape to module2
 	} // setup
 
 	public void draw()
@@ -164,10 +211,18 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		//		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 		this.menu.fade(goalHuePos, 0);
 
+<<<<<<< HEAD
 
 		//		this.fill(255);
 		//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
 
+=======
+		this.fill(255);
+		this.textAlign(CENTER,CENTER);
+		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
+		this.textAlign(LEFT,BASELINE);
+		
+>>>>>>> 9c78f22... added supershape to module2
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		/*
@@ -220,11 +275,18 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	} // draw
 
 	private void drawShape()
+<<<<<<< HEAD
 	{
 		int[]	curHue	= this.menu.getCurHue()[0];		
+=======
+	{	
+		
+		float[]	curHue	= this.moduleTemplate.getCurHue();
+>>>>>>> 9c78f22... added supershape to module2
 		this.fill(curHue[0], curHue[1], curHue[2]);
 		//		this.fill(255);
 
+<<<<<<< HEAD
 //		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
 //		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
 
@@ -234,6 +296,24 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
 		 */
 		pShape = this.shape.getPShape();
+=======
+		float	shapeX		= ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2) + this.moduleTemplate.getLeftEdgeX();
+		float	shapeWidth	= (this.width - this.moduleTemplate.getLeftEdgeX()) * (this.moduleTemplate.getShapeSize() / 100);
+		float	shapeHeight	= this.height * (this.moduleTemplate.getShapeSize() / 100);
+		
+		this.shapeMode(CORNER);
+		PShape pShape = this.shape.getPShape();
+		pShape.fill(curHue[0], curHue[1], curHue[2]);
+		this.shape(pShape, shapeX, this.height/2);
+		this.shapeMode(CENTER);
+		
+		
+		//this.stroke(Color.red.getRGB());
+		//this.strokeWeight(10);
+		//this.point(shapeX, this.height/2);
+		
+		
+>>>>>>> 9c78f22... added supershape to module2
 
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);

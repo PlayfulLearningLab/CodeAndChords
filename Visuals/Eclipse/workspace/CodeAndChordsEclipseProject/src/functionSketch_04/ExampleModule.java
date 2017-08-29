@@ -7,7 +7,12 @@ import processing.core.PShape;
 public class ExampleModule extends PApplet { 
 	
 	
+<<<<<<< HEAD
 	private Shape shape = new Shape(this, 300);	
+=======
+	private Shape shape = new Shape(this, 300);
+	
+>>>>>>> 9c78f22... added supershape to module2
 
 	public static void main(String[] args)
 	{
