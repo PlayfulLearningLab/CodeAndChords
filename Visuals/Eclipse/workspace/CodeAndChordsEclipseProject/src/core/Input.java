@@ -47,15 +47,23 @@ import beads.Compressor;
  */
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 
+import java.util.Set;
+
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
+<<<<<<< HEAD
 public class Input {
 	/**
 	 * 08/01/2017
+=======
+public class Input extends PApplet {
+	/*
+	 * 11/04/2016
+>>>>>>> a54f44a... Working multiple ins!
 	 * 
 	 * Emily Meuer
 	 * 
@@ -97,6 +105,7 @@ public class Input {
 	public Input(int numInputs, PApplet pa)
 	{
 //		this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+<<<<<<< HEAD
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), pa);
 		
 	} // constructor - int, AudioContext
@@ -112,6 +121,10 @@ public class Input {
 	{
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8, pa);
 
+=======
+		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
+		
+>>>>>>> a54f44a... Working multiple ins!
 	} // constructor - int, AudioContext
 
 	/**
@@ -143,6 +156,7 @@ public class Input {
 		} // if(numInputs < 1)
 
 		this.numInputs  = numInputs;
+<<<<<<< HEAD
 		this.ac 		= audioContext;
 		this.skip5thru8	= skip5thru8;
 		
@@ -159,6 +173,12 @@ public class Input {
 
 		this.uGenArrayFromNumInputs(this.numInputs);
 	} // constructor(int, AudioContext, boolean)
+=======
+		this.ac = audioContext;
+
+		this.uGenArrayFromNumInputs(this.numInputs);
+	} // constructor(int)
+>>>>>>> a54f44a... Working multiple ins!
 	
 	/**
 	 * Constructor for creating an Input object with 2 lines, 
@@ -219,7 +239,11 @@ public class Input {
 	 */
 	public Input(PApplet pa)
 	{
+<<<<<<< HEAD
 		this(2, pa); //, new AudioContext());
+=======
+		this(2); //, new AudioContext());
+>>>>>>> a54f44a... Working multiple ins!
 	} // constructor()
 
 	/**
@@ -317,18 +341,26 @@ public class Input {
 //		this.numInputs  = numInputs;
 
 		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
+<<<<<<< HEAD
 		int[][]	inputNums2d	= new int[this.numInputs][1];
 		int[]	inputNums1d	= new int[this.numInputs];
 		for (int i = 0; i < inputNums2d.length; i++)
 		{
 			inputNums2d[i][0]	= (i + 1);
 			inputNums1d[i]		= (i + 1);
+=======
+		int[][]  inputNums  = new int[this.numInputs][1];
+		for (int i = 0; i < this.numInputs; i++)
+		{
+			inputNums[i][0]  = i + 1;
+>>>>>>> a54f44a... Working multiple ins!
 		} // for
 
 		// get the audio lines from the AudioContext:
 		//    this.inputsUGen = ac.getAudioInput(inputNums);
 
 		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
+<<<<<<< HEAD
 		this.uGenArray  = new UGen[this.adjustedNumInputs];
 		this.gainArray	= new Gain[this.adjustedNumInputs];
 		System.out.println("uGenArray.length = " + this.uGenArray.length);
@@ -343,6 +375,18 @@ public class Input {
 			{
 				channelPos	= 8;
 			}
+=======
+		this.uGenArray  = new UGen[this.numInputs];
+		this.gainArray	= new Gain[this.numInputs];
+		
+		UGen	audioInput	= this.ac.getAudioInput();
+		
+		for (int i = 0; i < uGenArray.length; i++)
+		{
+			// getAudioInput needs an int[] with the number of the particular line.
+//			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
+			uGenArray[i]  = new Plug(this.ac, audioInput, i);
+>>>>>>> a54f44a... Working multiple ins!
 			
 			uGenArray[i]  = new Plug(this.ac, audioInput, channelPos);
 			System.out.println("Input: uGenArray[" + i + "] = " + uGenArray[i]);
@@ -388,9 +432,12 @@ public class Input {
 			if(this.gainArray[i] == null)
 			{
 				this.gainArray[i]	= new Gain(this.ac, 0, 0);
+<<<<<<< HEAD
 
 				// TODO: uncomment this line to hear what's going in the mics (e.g., through headphones):
 //				this.gainArray[i]	= new Gain(this.ac, 1, 0.5f);
+=======
+>>>>>>> a54f44a... Working multiple ins!
 			}
 			
 			this.gainArray[i].addInput(this.compressor);
@@ -500,7 +547,11 @@ public class Input {
 						//       println("i = " + i);
 						//       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
 						this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
+<<<<<<< HEAD
 						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude(); // * 100;
+=======
+						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude() * 100;
+>>>>>>> a54f44a... Working multiple ins!
 
 						// ignores pitches with amplitude lower than "sensitivity":
 						if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {

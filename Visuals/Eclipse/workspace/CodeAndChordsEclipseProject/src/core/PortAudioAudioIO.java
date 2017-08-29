@@ -73,26 +73,6 @@ public class PortAudioAudioIO extends AudioIO {
 		this.outStream.start();
 		
 		return true;
-		
-		/*getDefaultMixerIfNotAlreadyChosen();
-		if (mixer == null) {
-			return false;
-		}
-		DataLine.Info info = new DataLine.Info(SourceDataLine.class,
-				audioFormat);
-		try {
-			sourceDataLine = (SourceDataLine) mixer.getLine(info);
-			if (systemBufferSizeInFrames < 0)
-				sourceDataLine.open(audioFormat);
-			else
-				sourceDataLine.open(audioFormat, systemBufferSizeInFrames
-						* audioFormat.getFrameSize());
-		} catch (LineUnavailableException ex) {
-			System.out
-					.println(getClass().getName() + " : Error getting line\n");
-		}
-		return true;
-		*/
 	} // create
 	
 	/**
@@ -258,8 +238,6 @@ public class PortAudioAudioIO extends AudioIO {
 			this.audioFormat 	= audioFormat;
 			this.inStream		= inStream;
 			this.numChannels	= numInChannels;
-			
-			System.out.println("PortAudioInput: numChannels = " + this.numChannels);
 			
 			this.channels		= new int[channels.length];
 			for(int i = 0; i < this.channels.length; i++)
