@@ -5,25 +5,37 @@
  @brief Example that shows how to play sine waves using JPortAudio.
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 //package portaudio;
 =======
 package com.portaudio;
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
+=======
+//package portaudio;
+>>>>>>> 253f6a1... 32 and 64 bit dll's
 
 import com.portaudio.TestBasic.SineOscillator;
 
 public class PlaySine
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+/*
+>>>>>>> 253f6a1... 32 and 64 bit dll's
 	public static void main( String[] args )
 	{
 		PlaySine player = new PlaySine();
 		player.play();
 	}
+<<<<<<< HEAD
 
 =======
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
+=======
+	*/
+>>>>>>> 253f6a1... 32 and 64 bit dll's
 	/**
 	 * Write a sine wave to the stream.
 	 * @param stream
@@ -96,6 +108,7 @@ public class PlaySine
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	public static void main( String[] args )
 	{
@@ -103,4 +116,6 @@ public class PlaySine
 		player.play();
 	}
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
+=======
+>>>>>>> 253f6a1... 32 and 64 bit dll's
 }

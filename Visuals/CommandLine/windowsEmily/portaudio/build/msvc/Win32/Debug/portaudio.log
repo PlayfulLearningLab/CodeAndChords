@@ -1,0 +1,100 @@
+﻿  pa_x86_plain_converters.c
+  pa_win_wdmks_utils.c
+  pa_win_waveformat.c
+  pa_win_util.c
+  pa_win_hostapis.c
+  pa_win_coinitialize.c
+  pa_win_wmme.c
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wmme\pa_win_wmme.c(211): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wmme\pa_win_wmme.c(746): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(93): note: see declaration of 'strcat'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wmme\pa_win_wmme.c(879): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(93): note: see declaration of 'strcat'
+  pa_win_wdmks.c
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(701): warning C4996: '_vsnprintf': This function or variable may be unsafe. Consider using _vsnprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1398): note: see declaration of '_vsnprintf'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1256): warning C4996: '_snwprintf': This function or variable may be unsafe. Consider using _snwprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstdio.h(1667): note: see declaration of '_snwprintf'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1259): warning C4996: '_snwprintf': This function or variable may be unsafe. Consider using _snwprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstdio.h(1667): note: see declaration of '_snwprintf'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1654): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(127): note: see declaration of 'wcscpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1686): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1715): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1787): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(127): note: see declaration of 'wcscpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1882): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(127): note: see declaration of 'wcscpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1960): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(127): note: see declaration of 'wcscpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(1986): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(127): note: see declaration of 'wcscpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(2704): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(2707): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(3572): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(3579): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(3594): warning C4996: '_snwprintf': This function or variable may be unsafe. Consider using _snwprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstdio.h(1667): note: see declaration of '_snwprintf'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wdmks\pa_win_wdmks.c(3597): warning C4996: '_snwprintf': This function or variable may be unsafe. Consider using _snwprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstdio.h(1667): note: see declaration of '_snwprintf'
+  pa_win_wasapi.c
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wasapi\pa_win_wasapi.c(1496): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wasapi\pa_win_wasapi.c(1520): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wasapi\pa_win_wasapi.c(1591): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\corecrt_wstring.h(211): note: see declaration of 'wcsncpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\wasapi\pa_win_wasapi.c(1640): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1958): note: see declaration of '_snprintf'
+  pa_hostapi_skeleton.c
+  pa_win_ds_dynlink.c
+  pa_win_ds.c
+  pa_trace.c
+  pa_stream.c
+  pa_ringbuffer.c
+  pa_process.c
+  pa_front.c
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\common\pa_front.c(151): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(343): note: see declaration of 'strncpy'
+  pa_dither.c
+  pa_debugprint.c
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\common\pa_debugprint.c(109): warning C4996: '_vsnprintf': This function or variable may be unsafe. Consider using _vsnprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\stdio.h(1398): note: see declaration of '_vsnprintf'
+  pa_cpuload.c
+  Generating Code...
+  Compiling...
+  pa_converters.c
+  pa_allocation.c
+  Generating Code...
+  pa_asio.cpp
+  asiolist.cpp
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\host\pc\asiolist.cpp(87): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\host\pc\asiolist.cpp(89): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\host\pc\asiolist.cpp(224): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\host\pc\asiolist.cpp(246): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+  asiodrivers.cpp
+  asio.cpp
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\common\asio.cpp(76): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\common\asio.cpp(86): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+c:\users\emily\documents\codeandchords\visuals\commandline\windowsemily\portaudio\src\hostapi\asio\asiosdk\common\asio.cpp(205): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+  Generating Code...
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1198,5): warning MSB8012: TargetPath(C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\Win32\Debug\portaudio.dll) does not match the Linker's OutputFile property value (C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\Win32\Debug\portaudio_x86.dll). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1200,5): warning MSB8012: TargetName(portaudio) does not match the Linker's OutputFile property value (portaudio_x86). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+pa_allocation.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+     Creating library Win32\Debug\portaudio_x86.lib and object Win32\Debug\portaudio_x86.exp
+  portaudio.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\Win32\Debug\portaudio.dll
+  portaudio.vcxproj -> Win32\Debug\portaudio_x86.pdb (Full PDB)

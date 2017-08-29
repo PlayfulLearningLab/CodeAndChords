@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  pa_allocation.c
   pa_converters.c
   pa_cpuload.c
@@ -38,3 +39,6 @@
   Generating Code...
      Creating library x64\Release/portaudio_x64.lib and object x64\Release/portaudio_x64.exp
   portaudio.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\x64\Release\portaudio_x64.dll
+=======
+﻿  portaudio.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\x64\Release\portaudio_x64.dll
+>>>>>>> 253f6a1... 32 and 64 bit dll's
