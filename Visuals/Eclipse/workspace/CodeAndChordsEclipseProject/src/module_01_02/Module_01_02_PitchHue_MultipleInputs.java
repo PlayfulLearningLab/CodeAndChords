@@ -62,7 +62,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.input	= new Input(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
-
 		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 		this.shapes	= new Shape[12];
@@ -91,7 +90,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		if(yValDif < 25) {
 			yValDif	= 25;
 		}
-
 		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length; i++)
@@ -276,7 +274,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 			this.xVals	= new int[this.numInputs];
 			this.yVals	= new int[this.numInputs];
-
 			for(int i = 0; i < this.xVals.length; i++)
 			{
 				int xPos	= i % (this.numInputs / 2);

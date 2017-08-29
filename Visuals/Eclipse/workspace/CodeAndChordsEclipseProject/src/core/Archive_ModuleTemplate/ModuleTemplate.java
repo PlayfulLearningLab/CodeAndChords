@@ -282,7 +282,6 @@ public class ModuleTemplate {
 		this.topYVal	= topYVal;
 		
 		this.modTempNum	= modTempNum;
-
 		this.sidebarTitle	= sidebarTitle;
 
 		this.colors 		= new float[12][3];
@@ -1541,7 +1540,6 @@ public class ModuleTemplate {
 
 	public void legend(int goalHuePos, int textSize)
 	{
-
 		this.parent.textSize(textSize);
 
 		//		String[]	notes	= this.getScale(this.curKeyOffset, this.majMinChrom);
