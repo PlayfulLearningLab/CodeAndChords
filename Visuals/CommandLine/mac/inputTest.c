@@ -440,7 +440,11 @@ int main(void)
     double              avg3;
     int					numDevices;
 
+<<<<<<< HEAD
     printf("inputTest.c\n"); fflush(stdout);
+=======
+    printf("patest_record.c\n"); fflush(stdout);
+>>>>>>> 2627307... Experiments with multiple lines in one buffer
 
     data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
 	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
