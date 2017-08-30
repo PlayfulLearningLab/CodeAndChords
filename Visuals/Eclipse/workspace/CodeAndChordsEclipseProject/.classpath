@@ -1,50 +1,17 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject/libs"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="core.jar"/>
 	<classpathentry kind="lib" path="beads-io.jar"/>
 	<classpathentry kind="lib" path="beads.jar"/>
 	<classpathentry kind="lib" path="controlP5.jar"/>
-	<classpathentry kind="lib" path="sound.jar"/>
-	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
-	<classpathentry kind="lib" path="jportaudio.jar"/>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="libs/jportaudio_x64.dll"/>
-	<classpathentry kind="lib" path="libs/jportaudio_x86.dll"/>
-	<classpathentry kind="lib" path="libs/portaudio_x64.dll"/>
-	<classpathentry kind="lib" path="libs/portaudio_x86.dll"/>
-=======
->>>>>>> 37d6e1c... Removed dll's from Eclipse classpath
-	<classpathentry kind="output" path="bin"/>
-</classpath>
->>>>>>> 253f6a1... 32 and 64 bit dll's
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CodeAndChordsEclipseProject/libs"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="core.jar"/>
-	<classpathentry kind="lib" path="beads-io.jar"/>
-	<classpathentry kind="lib" path="beads.jar"/>
-	<classpathentry kind="lib" path="sound.jar"/>
-	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
 	<classpathentry kind="lib" path="jportaudio.jar"/>
+	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
+	<classpathentry kind="lib" path="sound.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
->>>>>>> 466a55a... Fixed color select error and smoothed the canvas color select when sound is below threshold.
