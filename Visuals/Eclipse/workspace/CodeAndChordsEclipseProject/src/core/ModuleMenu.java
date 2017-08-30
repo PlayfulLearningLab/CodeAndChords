@@ -2212,6 +2212,9 @@ public class ModuleMenu extends MenuTemplate  {
 						colorPos3	= 7;
 					} // else - colorPos for different scales
 				} // else - all but the first time
+				
+				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
+				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
 				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
 						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
@@ -3291,7 +3294,9 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			// if from specialColors:
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
-
+			
+			System.out.println("controlEvent - specialColors: colorPos = " + colorPos);
+			
 			this.applySpecialColors();
 
 		} else {
