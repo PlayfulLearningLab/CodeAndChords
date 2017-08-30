@@ -2454,9 +2454,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		if(this.getIsRunning())
 		{
-			this.leftEdgeX	= this.sidebarWidth;
+//			this.leftEdgeX	= this.sidebarWidth;
 		} else {
-			this.leftEdgeX	= 0;
+//			this.leftEdgeX	= 0;
 		}
 	} // runMenu
 
@@ -3959,6 +3959,8 @@ public class ModuleMenu extends MenuTemplate  {
 		if(color == null) {
 			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: float[] parameter is null.");
 		}
+		
+		System.out.println("\t---- this.specialColorsPos[this.currentInput].length = " + this.specialColorsPos[this.currentInput].length + "; problem specialColor pos = " + colorPos);
 
 		// Only do this if colorSelect CWs have actually been initialized:
 		if(this.firstSpecialColorsCWId > 0) 
