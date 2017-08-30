@@ -342,11 +342,11 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
 		this.outsideButtonsCP5.addListener((ControlListener)this);
-		
+
 		this.showPlayStop	= true;
 		this.showPause		= false;
 		this.showHamburger	= true;
-		
+
 		System.out.println("this.parent.height = " + (this.parent.height));
 
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
@@ -463,9 +463,6 @@ public class ModuleMenu extends MenuTemplate  {
 			this.pianoThreshold[i]	= 10;
 			this.forteThreshold[i]	= 500;
 			this.resetThresholds(i);
-
-			System.out.println("pianoThreshold[" + i + "] = " + this.pianoThreshold[i] +
-					"; forteThreshold[" + i + "] = " + this.forteThreshold[i]);
 		} // for - initialize Thresholds
 
 		// set amplitude thresholds
@@ -784,12 +781,11 @@ public class ModuleMenu extends MenuTemplate  {
 		this.pianoThresholdSliderId	= this.nextSliderId;
 		this.addSliderGroup(yVal, "Piano \nThreshold", 2, 100, 10);
 	} // addPianoThresholdSlider
-	
+
 	public void addForteThresholdSlider(int yVal)
 	{
 		this.forteThresholdSliderId	= this.nextSliderId;
-		this.forteThreshold	= 500;
-		this.addSliderGroup(yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold);
+		this.addSliderGroup(yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
 	} // addForteThresholdSlider
 
 	/**
@@ -886,7 +882,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addKeySelector
 
-	
+
 	/**
 	 * Adds the guide tone pop-out with range and envelope preset select dropdowns, bpm and volume sliders.
 	 * 
@@ -1026,6 +1022,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public void addModulateSliders(int xVal, int[] modulateYVals)
 	{
 		this.redGreenBlueMod		 	= new float[3];
+
 		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
 
 		this.firstRGBSliderId	= this.nextSliderId;
@@ -1188,7 +1185,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addThresholdSliders
 
-	
+
 	/**
 	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
 	 * e.g., "Tonic", "2nd Color", and "3rd Color" in Module_01.
@@ -1859,7 +1856,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
 	} // trichromatic_OneHSB
 
-	
+
 	/**
 	 * Calculates the colors between the 3 sets of given vals
 	 * and fills colors with a spectrum fading between them.
@@ -2332,6 +2329,7 @@ public class ModuleMenu extends MenuTemplate  {
 		float	satMappingVal		= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100), 100), 0);
 		float	brightMappingVal	= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[1], this.minThreshold + 1), 0, 100), 100), 0);
 
+		
 		// Notice how hueSatBrightPercentMod is accessed at 1 and 2, since hue is also a part of it,
 		// but satBrightPercentVals is accessed at 0 and 1, since it is only for saturation and brightness.
 		this.hueSatBrightPercentMod[1]	= (this.satBrightPercentVals[0] * satMappingVal) / 100;
@@ -2413,7 +2411,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 	} // playMelody
 
-	
+
 	/**
 	 * Displays the "sidebarGroup" of this.controlP5
 	 */
@@ -2428,7 +2426,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 	} // displaySidebar
-	
+
 	/**
 	 * Calls super.runMenu to show or hide the Controllers,
 	 * but also sets leftEdgeX depending on whether or not the Menu is open.
@@ -2437,7 +2435,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public void runMenu()
 	{
 		super.runMenu();
-		
+
 		if(this.getIsRunning())
 		{
 			this.leftEdgeX	= this.sidebarWidth;
@@ -2445,7 +2443,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.leftEdgeX	= 0;
 		}
 	} // runMenu
-	
+
 	/**
 	 * Uses this.showPlayStop, this.showPause, and this.showHamburger to determine which of the 
 	 * outside Buttons should be set to visible.
@@ -2453,12 +2451,12 @@ public class ModuleMenu extends MenuTemplate  {
 	public void showOutsideButtons()
 	{
 		this.outsideButtonsCP5.setVisible(true);
-		
+
 		this.outsideButtonsCP5.getController("play").setVisible(this.showPlayStop);
 		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
 		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
 	} // showOutsideButtons
-	
+
 
 	/**
 	 * Calls super.runMenu to show or hide the Controllers,
@@ -2656,14 +2654,14 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			} // range segments
 		} // Toggles
-		
+
 		// Major/Minor/Chromatic buttons
 		if(controlEvent.getName().equals("major") ||
 				controlEvent.getName().equals("minor") ||
 				controlEvent.getName().equals("chrom"))
 		{
 			System.out.println("New scale quality: " + controlEvent.getName());
-			
+
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
@@ -2718,7 +2716,7 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 			this.setColorStyle((int)curToggle.internalValue());
-			
+
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
 					(Toggle)this.controlP5.getController("rainbow"),
@@ -2749,7 +2747,7 @@ public class ModuleMenu extends MenuTemplate  {
 				// set broadcasting back to original setting:
 				toggleArray[i].setBroadcast(broadcastState[i]);
 			} // for - switch off all Toggles:
-			
+
 			this.resetModulateSlidersTextfields();
 		} // colorStyle buttons
 
@@ -2962,6 +2960,7 @@ public class ModuleMenu extends MenuTemplate  {
 				throw new IllegalArgumentException("ModuleTemplate.controlEvent: rangeOctave " + rangeOctave + " is out of range.");
 			}
 		} // rangeDropdown
+
 		// Shape Menu Button:
 		if(controlEvent.getName() == "shapeMenuButton")
 		{
@@ -3057,7 +3056,6 @@ public class ModuleMenu extends MenuTemplate  {
 	} // controlEvent
 
 
-	
 	/**
 	 * Called from MenuTemplate for Sliders that were added by the addSliderGroup() method
 	 * and are connected to a Textfield (MenuTemplate has already updated the Textfield value).
@@ -3548,29 +3546,31 @@ public class ModuleMenu extends MenuTemplate  {
 					"(firstHSBSliderId = " + this.firstHSBSliderId + ")");
 		} // else - let the user know that we ignored this method call
 	} // resetHSBSlidersTextfields
-	
-	
+
+
 	/**
 	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
 	 * to recalculate the length of and values within this.thresholds.
 	 */
-	private	void resetThresholds()
+	private	void resetThresholds(int pos)
 	{
+		this.inputNumErrorCheck(pos);
+
 		float	segmentValue;
 		if(this.curRangeSegments == 1)
 		{
-			segmentValue	= this.pianoThreshold;
+			segmentValue	= this.pianoThreshold[pos];
 		} else {
-			segmentValue	= (this.forteThreshold - this.pianoThreshold) / (this.curRangeSegments - 1);
+			segmentValue	= (this.forteThreshold[pos] - this.pianoThreshold[pos]) / (this.curRangeSegments - 1);
 		}
 
 		//		System.out.println("dynamic segment buttons: forteThreshold = " + this.forteThreshold + 
 		//				"; segmentValue = " + segmentValue);
 
-//		this.thresholds	= new float[this.curRangeSegments];
+		//		this.thresholds	= new float[this.curRangeSegments];
 		for(int i = 0; i < this.curRangeSegments; i++)
 		{
-			this.thresholds[i]	= this.pianoThreshold + (int)segmentValue * i;
+			this.thresholds[pos][i]	= this.pianoThreshold[pos] + (int)segmentValue * i;
 		} // for
 	} // resetThresholds
 
@@ -3713,7 +3713,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // getScale
 
-	
+
 	/**
 	 * Updates the keyDropdown ScrollableList and sets the current key and all 
 	 * connected variables: this.majMinChrom, this.scaleLength, this.curKey, this.keyAddVal.
@@ -4105,11 +4105,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getCurKeyEnharmonicOffset() {
 		return curKeyEnharmonicOffset;
 	}
-	
+
 	public String getCurKey() {
 		return this.curKey;
 	}
-	
+
 	public int getMajMinChrom() {
 		return this.majMinChrom;
 	}
@@ -4132,7 +4132,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public float getShapeSize() {
 		return this.shapeSize;
 	}
-*/
+
 	/**
 	 * Getter for this.thresholds
 	 * 
@@ -4142,7 +4142,7 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
-	
+
 	/**
 	 * Getter for this.curRangeSegments
 	 * 

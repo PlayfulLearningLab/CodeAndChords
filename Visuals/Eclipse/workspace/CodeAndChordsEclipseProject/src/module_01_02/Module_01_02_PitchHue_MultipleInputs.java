@@ -274,6 +274,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 			this.xVals	= new int[this.numInputs];
 			this.yVals	= new int[this.numInputs];
+
 			for(int i = 0; i < this.xVals.length; i++)
 			{
 				int xPos	= i % (this.numInputs / 2);
@@ -429,5 +430,4 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			};
 		} // 12
 	} // set Square Vals
-*/
 } // class
