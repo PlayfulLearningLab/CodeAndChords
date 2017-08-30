@@ -33,9 +33,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public int trichromCounts	= 0;
 
-	// TODO - for testing trichromatic bug:
-	//	public int[][] trichromColors;
-
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
 	 */
@@ -308,21 +305,21 @@ public class ModuleMenu extends MenuTemplate  {
 	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
-	protected	int	canvasColorSelectId		= -1;
-	protected	int	firstColorModSliderId	= -1;
-	protected	int	firstColorSelectCWId	= -1;
-	protected	int	firstSpecialColorsCWId	= -1;
-	protected	int	lastColorSelectId		= -1;
-	protected	int	firstARTSliderId		= -1;
-	protected	int	firstHSBSliderId		= -1;
-	protected	int	firstRGBSliderId		= -1;
-	protected	int	bpmSliderId				= -1;
-	protected	int	volumeSliderId			= -1;
-	protected	int	shapeSizeSliderId		= -1;
-	protected	int	firstRangeSegmentsId	= -1;
-	protected	int	pianoThresholdSliderId	= -1;
-	protected	int	forteThresholdSliderId	= -1;
-	protected	int	firstSatBrightThreshSliderId	= -1;
+	protected	int	canvasColorSelectId;//		= -1;
+	protected	int	firstColorModSliderId;//	= -1;
+	protected	int	firstColorSelectCWId;//	= -1;
+	protected	int	firstSpecialColorsCWId;//	= -1;
+	protected	int	lastColorSelectId;//		= -1;
+	protected	int	firstARTSliderId;//		= -1;
+	protected	int	firstHSBSliderId;//		= -1;
+	protected	int	firstRGBSliderId;//		= -1;
+	protected	int	bpmSliderId;//				= -1;
+	protected	int	volumeSliderId;//			= -1;
+	protected	int	shapeSizeSliderId;//		= -1;
+	protected	int	firstRangeSegmentsId;//	= -1;
+	protected	int	pianoThresholdSliderId;//	= -1;
+	protected	int	forteThresholdSliderId;//	= -1;
+	protected	int	firstSatBrightThreshSliderId;//	= -1;
 
 	/**
 	 * Constructor
@@ -1880,8 +1877,8 @@ public class ModuleMenu extends MenuTemplate  {
 			throw new IllegalArgumentException("Module_01_02.trichromatic_ThreeRGB: at least one of the float[] parameters is null.");
 		} // error checking
 
+		// TODO - get rid of trichromCounts
 		this.trichromCounts++;
-		System.out.println("trichromCounts = " + this.trichromCounts);
 
 		int	color1pos	= 0;
 		int	color2pos;
@@ -2508,8 +2505,6 @@ public class ModuleMenu extends MenuTemplate  {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
-
-		System.out.println("global = " + this.global);
 
 		//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
 
@@ -3346,19 +3341,16 @@ public class ModuleMenu extends MenuTemplate  {
 				if(colorPos >= 0 && colorPos < this.colorSelect.length)
 				{
 //					System.out.println("Color select color for colorPos " + colorPos);
-
 					// Set this.colors:
 					this.colors[this.currentInput][colorPos][0]	= color.getRed();
 					this.colors[this.currentInput][colorPos][1]	= color.getGreen();
 					this.colors[this.currentInput][colorPos][2]	= color.getBlue();
-
 					// Check to see if this position corresponds to a special color
 					// (and is from a colorSelect, to make sure that they don't just keep calling back and forth):
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[i], colorPos);
 					if(specialColorsPos > -1 && this.fromColorSelect[i])
 					{
 						((ColorWheel)this.controlP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
-
 					} // if - this CW connects to a specialColor							
 				} // if - this CW is in colorSelect
 				else
@@ -3368,7 +3360,6 @@ public class ModuleMenu extends MenuTemplate  {
 					if(colorPos >= 0 && colorPos < this.specialColorsPos[i].length)
 					{
 						System.out.println("SpecialColor for specialColorPos " + colorPos);
-
 						// Make sure that they don't just keep calling back and forth:
 						if(this.fromSpecialColors[i])
 						{
@@ -3828,6 +3819,11 @@ public class ModuleMenu extends MenuTemplate  {
 			throw iae;
 		}
 	} // inputNumErrorCheck
+	
+	public int[][][] getColors()
+	{
+		return this.colors;
+	} // getColors
 
 	public int[][][] getColors()
 	{

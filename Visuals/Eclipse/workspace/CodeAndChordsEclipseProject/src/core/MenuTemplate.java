@@ -624,6 +624,24 @@ public abstract class MenuTemplate implements ControlListener {
 		else				{	return yVal;							}
 	} // getCurrentXPos
 	
+	public float getCurrentMenuYPos()
+	{
+		if(this.isRunning)	{	return this.getAdjustedMenuYPos();	}
+		else				{	return 0;							}
+	} // getCurMenuXPos
+	
+	public float mapCurrentXPos(float xVal)
+	{
+		if(this.isRunning)	{	return this.mapAdjustedMenuXPos(xVal);	}
+		else				{	return xVal;							}
+	} // getCurrentXPos
+	
+	public float mapCurrentYPos(float yVal)
+	{
+		if(this.isRunning)	{	return this.mapAdjustedMenuYPos(yVal);	}
+		else				{	return yVal;							}
+	} // getCurrentXPos
+	
 	/**
 	 * Shows or hides this.controlP5, depending on whether or not the Menu is open,
 	 * and then calls drawMenu(); should be called every time through draw.
