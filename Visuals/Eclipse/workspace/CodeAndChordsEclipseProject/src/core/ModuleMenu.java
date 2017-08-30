@@ -585,13 +585,11 @@ public class ModuleMenu extends MenuTemplate  {
 		// the "- (10 / buttonsPerRow)" adds [this.rightEdgeSpacer pixels] at the end of the row:
 		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
 
-		System.out.println("ColorSelect: buttonWidth = " + buttonWidth);
 
 		int[]	xVals	= new int[buttonsPerRow];
 		for(int i = 0; i < xVals.length; i++)
 		{
 			xVals[i]	= xVal + this.leftAlign + ((buttonWidth + this.spacer) * i);
-			System.out.println("    xVals[" + i + "] = " + xVals[i]);
 		}
 
 		this.controlP5.addTextlabel("colorSelectLabel")
@@ -1273,9 +1271,6 @@ public class ModuleMenu extends MenuTemplate  {
 		int dichromaticX	= xVal + this.leftAlign + colorStyleWidth + this.spacer;
 		int trichromaticX	= xVal + this.leftAlign + (colorStyleWidth + this.spacer) * 2;
 		int customX			= xVal + this.leftAlign + (colorStyleWidth + this.spacer) * 3;
-
-		System.out.println("    rainbowX = " + rainbowX + "\n    dichromaticX = " + dichromaticX
-				+ "\n    trichromaticX = " + trichromaticX + "\n    customX = " + customX);
 
 		this.controlP5.addTextlabel("colorStyle")
 		.setPosition(xVal + this.labelX, colorStyleY + 4)
