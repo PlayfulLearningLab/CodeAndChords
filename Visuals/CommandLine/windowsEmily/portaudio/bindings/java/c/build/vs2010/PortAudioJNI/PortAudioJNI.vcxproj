@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 =======
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -8,6 +9,9 @@
 =======
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -32,12 +36,16 @@
     <Keyword>Win32Proj</Keyword>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
 =======
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -46,12 +54,16 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <PlatformToolset>v141</PlatformToolset>
 =======
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
     <PlatformToolset>v141</PlatformToolset>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+    <PlatformToolset>v141</PlatformToolset>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -59,36 +71,48 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <PlatformToolset>v141</PlatformToolset>
 =======
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
     <PlatformToolset>v141</PlatformToolset>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+    <PlatformToolset>v141</PlatformToolset>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <PlatformToolset>v141</PlatformToolset>
 =======
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
     <PlatformToolset>v141</PlatformToolset>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+    <PlatformToolset>v141</PlatformToolset>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <PlatformToolset>v141</PlatformToolset>
 =======
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
     <PlatformToolset>v141</PlatformToolset>
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+    <PlatformToolset>v141</PlatformToolset>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -168,6 +192,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PORTAUDIOJNI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
 =======
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -175,6 +200,9 @@
 =======
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
 >>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -197,6 +225,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PORTAUDIOJNI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
 =======
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -204,6 +233,9 @@
 =======
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
 >>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>

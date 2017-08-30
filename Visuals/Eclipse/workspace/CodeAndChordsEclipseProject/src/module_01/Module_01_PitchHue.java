@@ -55,7 +55,7 @@ public class Module_01_PitchHue extends Module
 		int[]				textYVals;
 		int[]				modulateYVals;
 		int[]               modulateHSBVals;
-//		int					colorSelectY;
+//		int					colorSelectY;		
 
 		textYVals		 = new int[18];
 		modulateYVals	 = new int[3];

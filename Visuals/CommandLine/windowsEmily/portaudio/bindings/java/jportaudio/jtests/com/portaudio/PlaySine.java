@@ -6,6 +6,7 @@
 */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 //package portaudio;
 =======
 package com.portaudio;
@@ -13,11 +14,15 @@ package com.portaudio;
 =======
 //package portaudio;
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+//package portaudio;
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 
 import com.portaudio.TestBasic.SineOscillator;
 
 public class PlaySine
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -28,11 +33,15 @@ public class PlaySine
 =======
 
 >>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 	public static void main( String[] args )
 	{
 		PlaySine player = new PlaySine();
 		player.play();
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -44,6 +53,9 @@ public class PlaySine
 =======
 
 >>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 	/**
 	 * Write a sine wave to the stream.
 	 * @param stream
@@ -117,6 +129,7 @@ public class PlaySine
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	public static void main( String[] args )
 	{
@@ -126,4 +139,6 @@ public class PlaySine
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 }

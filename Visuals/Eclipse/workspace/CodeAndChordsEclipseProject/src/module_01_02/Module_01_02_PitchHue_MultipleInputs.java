@@ -92,6 +92,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		if(yValDif < 25) {
 			yValDif	= 25;
 		}
+
 		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length; i++)
@@ -407,6 +408,5 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			};
 		} // 12
 	} // set Square Vals
-
 */
 } // class

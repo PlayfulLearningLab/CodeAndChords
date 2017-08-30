@@ -25,6 +25,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	private Shape	shape;
 	
 	private	Module	module;
+
 	private int 	SIZE_ID;
 	private int		NUM_POINTS_ID;
 	private int		N1_ID;
@@ -73,8 +74,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		this.module	= module;
 
-		this.module	= module;
-
 		// make sure the PApplet isn't null and then set the parent instance variable
 		if (parent == null)
 			throw new IllegalArgumentException("PApplet parameter parent is null");
@@ -115,13 +114,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		if(super.getIsRunning()) 
 		{
-			//if the ShapeEditor isRunning, it updates the x and y position variables based on
-			//		the values displayed by the x and y position sliders
-			this.cp5.getController("xPos").update();
-			this.cp5.getController("yPos").update();
-			this.cp5.getController("rotation").update();
-			
-			//draws the menu
 			this.drawSE();
 		}
 		
@@ -308,42 +300,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		}
 		
 		this.updateSliders();
-
-		this.controlP5.addLabel("n2Label")
-		.setPosition((int) 20, (float) (yVals[3] - (spacing / 3.5)))
-		.setValue("N2");
-
-		this.controlP5.addLabel("n3Label")
-		.setPosition((int) 20, (float) (yVals[4] - (spacing / 3.5)))
-		.setValue("N3");
-
-		this.controlP5.addLabel("xPosLabel")
-		.setPosition((int) 20, (float) (yVals[5] - (spacing / 3.5)))
-		.setValue("X Position");
-
-		this.controlP5.addLabel("yPosLabel")
-		.setPosition((int) 20, (float) (yVals[6] - (spacing / 3.5)))
-		.setValue("Y Position");
-
-		this.controlP5.addLabel("rotationLabel")
-		.setPosition((int) 20, (float) (yVals[7] - (spacing / 3.5)))
-		.setValue("Rotation");
-
-		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(10, 10).setSize(240, 250)
-		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
-		.setValue(0)
-		.setItemHeight(25)
-		.close();
-
-		this.controlP5.addButton("exitButton").setLabel("Close Shape Editor")
-		.setPosition(this.parent.width - 160, 10)
-		.setSize(150, 40);
-
-	}
-
-	public boolean getIsRunning() {
-		return this.isRunning;
 	}
 
 	@Override
@@ -370,62 +326,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		{
 			this.controlP5.getController("slider" + this.NUM_POINTS_ID).setValue(param[2]);
 		}
-
-		if(param[4] != this.controlP5.getController("slider" + this.N1_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.N1_ID).setValue(param[4]);
-		}
-		
-		if(param[5] != this.controlP5.getController("slider" + this.N2_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.N2_ID).setValue(param[5]);
-		}
-		
-		if(param[6] != this.controlP5.getController("slider" + this.N3_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.N3_ID).setValue(param[6]);
-		}
-		
-		if(this.shape.getXPos() != this.controlP5.getController("slider" + this.XPOS_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.XPOS_ID).setValue(this.shape.getXPos());
-		}
-		
-		if(this.shape.getYPos() != this.controlP5.getController("slider" + this.YPOS_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.YPOS_ID).setValue(this.shape.getYPos());
-		}
-		
-		if(this.shape.getRotation() != this.controlP5.getController("slider" + this.ROTATION_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shape.getRotation());
-		}
-		
-		if(this.shape.getXStretch() != this.controlP5.getController("slider" + this.XSTRETCH_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.XSTRETCH_ID).setValue(this.shape.getXStretch());
-		}
-		
-		if(this.shape.getYStretch() != this.controlP5.getController("slider" + this.YSTRETCH_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shape.getYStretch());
-		}
-
-	}
-	
-	public void updateSliders()
-	{
-		float[] param = this.shape.getCurrentParameters();
-		
-		if(param[0] != this.controlP5.getController("slider" + this.SIZE_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.SIZE_ID).setValue(param[0]);
-		}
-		
-		if(param[2] != this.controlP5.getController("slider" + this.NUM_POINTS_ID).getValue())
-		{
-			this.controlP5.getController("slider" + this.NUM_POINTS_ID).setValue(param[2]);
-		}
 		
 		if(param[4] != this.controlP5.getController("slider" + this.N1_ID).getValue())
 		{
@@ -469,7 +369,4 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 	}
 
-	public ControlP5 getCP5() {
-		return this.cp5;
-	}
 }// ShapeEditor

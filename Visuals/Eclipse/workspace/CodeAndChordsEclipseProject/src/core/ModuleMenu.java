@@ -347,17 +347,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.showPause		= false;
 		this.showHamburger	= true;
 
-		System.out.println("this.parent.height = " + (this.parent.height));
-
-		this.outsideButtonsCP5	= new ControlP5(this.parent);
-		this.outsideButtonsCP5.addListener((ControlListener)this);
-
-		this.showPlayStop	= true;
-		this.showPause		= false;
-		this.showHamburger	= true;
-
-		System.out.println("this.parent.height = " + (this.parent.height));
-
 		/*
 		this.leftAlign	= (this.parent.width / 3) / 4;
 		this.leftEdgeX	= 0;
@@ -460,7 +449,6 @@ public class ModuleMenu extends MenuTemplate  {
 		 */
 
 		this.minThreshold	= 101;
-		//		this.shapeMenuIsOpen	= false;
 
 		//		this.shapeMenuIsOpen	= false;
 
@@ -560,7 +548,6 @@ public class ModuleMenu extends MenuTemplate  {
 		int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
 		// the "- (10 / buttonsPerRow)" adds [this.rightEdgeSpacer pixels] at the end of the row:
 		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
-
 
 		int[]	xVals	= new int[buttonsPerRow];
 
@@ -762,17 +749,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.addSliderGroup(xVal, yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
 	} // addForteThresholdSlider
 
-	/**
-	 * Adds the forte (maximum) threshold Slider.
-	 * 
-	 * @param xVal	x value for leftmost edge of whole group
-	 * @param yVal	y value of Slider
-	 */
-	public void addForteThresholdSlider(int xVal, int yVal)
-	{
-		this.forteThresholdSliderId	= this.nextSliderId;
-		this.addSliderGroup(xVal, yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
-	} // addForteThresholdSlider
 
 	/**
 	 * Method called during instantiation to initialize the key selector drop-down menu (ScrollableList)
@@ -1693,10 +1669,6 @@ public class ModuleMenu extends MenuTemplate  {
 		int[]	rgbVals1	= new int[3];
 		int[]	rgbVals2	= new int[3];
 
-		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
-
-		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
-
 		int	rgb1	= Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]);
 		Color	rgbColor1	=  new Color(rgb1);
 
@@ -2227,17 +2199,10 @@ public class ModuleMenu extends MenuTemplate  {
 					} // else - colorPos for different scales
 				} // else - all but the first time
 
-				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
-						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
-				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
-						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
-				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
-				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
-
-				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
-						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
-				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
-						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
+//				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
+//						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
+//				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
+//						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
 				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
 				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
@@ -2514,7 +2479,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.outsideButtonsCP5.getController("pause").setVisible(val);
 			this.showPause	= val;
 
-			//play button
+			// play Button:
 			if(val)
 			{
 				this.playMelody();
@@ -2707,51 +2672,6 @@ public class ModuleMenu extends MenuTemplate  {
 			} // catch
 
 		} // majMinChrom buttons
-
-		// Color Style:
-		if(controlEvent.getName().equals("rainbow") ||
-				controlEvent.getName().equals("dichrom") ||
-				controlEvent.getName().equals("trichrom") ||
-				controlEvent.getName().equals("custom"))
-		{
-			Toggle	curToggle	= (Toggle) controlEvent.getController();
-
-			this.setColorStyle((int)curToggle.internalValue());
-
-			// Turn off the other Toggles:
-			Toggle[] toggleArray	= new Toggle[] {
-					(Toggle)this.controlP5.getController("rainbow"),
-					(Toggle)this.controlP5.getController("dichrom"),
-					(Toggle)this.controlP5.getController("trichrom"),
-					(Toggle)this.controlP5.getController("custom")
-			};
-
-			boolean[]	broadcastState	= new boolean[toggleArray.length];
-			for(int i = 0; i < toggleArray.length; i++)
-			{
-				// save the current broadcast state of the controller:
-				broadcastState[i]	= toggleArray[i].isBroadcast();
-
-				// turn off broadcasting to avoid endless looping in this method:
-				toggleArray[i].setBroadcast(false);
-
-				// switch off the ones that weren't just clicked, but keep the current one on:
-				if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
-				{
-					System.out.println("setting " + toggleArray[i] + " to false");
-					toggleArray[i].setState(false);
-				} else {
-					System.out.println("setting " + toggleArray[i] + " to true");
-					toggleArray[i].setState(true);
-				}
-
-				// set broadcasting back to original setting:
-				toggleArray[i].setBroadcast(broadcastState[i]);
-			} // for - switch off all Toggles:
-
-			this.resetModulateSlidersTextfields();
-		} // colorStyle buttons
-
 
 		// Color Style:
 		if(controlEvent.getName().equals("rainbow") ||
@@ -3156,7 +3076,7 @@ public class ModuleMenu extends MenuTemplate  {
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
 
 			// Set the colorStyle for all or for currentInput:
-			if(global)
+/*			if(global)
 			{
 				startHere	= 0;
 				endBeforeThis	= this.module.getTotalNumInputs();
@@ -3164,6 +3084,7 @@ public class ModuleMenu extends MenuTemplate  {
 				startHere	= this.currentInput;
 				endBeforeThis	= this.currentInput + 1;
 			}
+			*/
 			for(int i = startHere; i < endBeforeThis; i++)
 			{
 				this.setColorStyle(this.curColorStyle[i], i);
@@ -3366,33 +3287,6 @@ public class ModuleMenu extends MenuTemplate  {
 					"(firstHSBSliderId = " + this.firstHSBSliderId + ")");
 		} // else - let the user know that we ignored this method call
 	} // resetHSBSlidersTextfields
-
-
-	/**
-	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
-	 * to recalculate the length of and values within this.thresholds.
-	 */
-	private	void resetThresholds(int pos)
-	{
-		this.inputNumErrorCheck(pos);
-
-		float	segmentValue;
-		if(this.curRangeSegments == 1)
-		{
-			segmentValue	= this.pianoThreshold[pos];
-		} else {
-			segmentValue	= (this.forteThreshold[pos] - this.pianoThreshold[pos]) / (this.curRangeSegments - 1);
-		}
-
-		//		System.out.println("dynamic segment buttons: forteThreshold = " + this.forteThreshold + 
-		//				"; segmentValue = " + segmentValue);
-
-		//		this.thresholds	= new float[this.curRangeSegments];
-		for(int i = 0; i < this.curRangeSegments; i++)
-		{
-			this.thresholds[pos][i]	= this.pianoThreshold[pos] + (int)segmentValue * i;
-		} // for
-	} // resetThresholds
 
 
 	/**
@@ -3637,11 +3531,6 @@ public class ModuleMenu extends MenuTemplate  {
 			throw iae;
 		}
 	} // inputNumErrorCheck
-
-	public int[][][] getColors()
-	{
-		return this.colors;
-	} // getColors
 
 	public int[][][] getColors()
 	{
@@ -3950,15 +3839,6 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
-
-	/**
-	 * Getter for this.curRangeSegments
-	 * 
-	 * @return	this.curRangeSegments instance variable
-	 */
-	public int getCurRangeSegments() {
-		return this.curRangeSegments;
-	} // getCurRangeSegments
 
 	/**
 	 * Getter for this.curRangeSegments

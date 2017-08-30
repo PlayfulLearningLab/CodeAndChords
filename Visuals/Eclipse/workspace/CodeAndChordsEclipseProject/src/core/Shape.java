@@ -137,7 +137,7 @@ public class Shape {
 
 		int i = 0;
 
-		for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
+		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
 		{
 			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
 			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
@@ -226,7 +226,7 @@ public class Shape {
 			float n2 = parameters[5];
 			float n3 = parameters[6];
 			
-			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
@@ -277,7 +277,7 @@ public class Shape {
 			float n2 = parameters[5];
 			float n3 = parameters[6];
 			
-			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);

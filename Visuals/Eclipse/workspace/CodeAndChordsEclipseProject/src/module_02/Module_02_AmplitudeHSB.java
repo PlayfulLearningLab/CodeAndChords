@@ -28,6 +28,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	//	private	ModuleMenu			menu;
 
 	//	private Shape     			shape;
+
 	//	private ShapeEditor			shapeEditor;
 
 	/**	holds the y values for all Controllers	*/
@@ -47,6 +48,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
+
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
 		this.input    = new Input(1, new AudioContext(), this);
@@ -154,6 +156,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		} // for
 
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
+
 		// Now this threshold application happens in fade:
 		//		this.moduleTemplate.applyThresholdSBModulate(curAmp);
 		this.menu.fade(goalHuePos, 0);
@@ -161,6 +164,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		//		this.fill(255);
 		//		this.text(goalHuePos, this.moduleTemplate.getLeftEdgeX() + ((this.width - this.moduleTemplate.getLeftEdgeX()) / 2), this.height / 2);
+
 		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		/*
@@ -233,18 +237,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		return result;
 	} // fillLegendText
 
-	@Override
-	public String[] getLegendText()
-	{
-		String[]	result	= new String[this.menu.getCurRangeSegments()];
-		for(int i = 0; i < result.length; i++)
-		{
-			result[i]	= this.menu.getThresholds()[0][i] + "";
-		} // for
-
-		return result;
-	} // fillLegendText
-
 	public Shape getShape()
 	{
 		return this.shape;
@@ -255,11 +247,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		this.shapeEditor.setIsRunning(isRunning);
 	}
 	 */
-	public void mouseDragged()
-	{
-		this.mousePressed();
-	}
-
 	public void mouseDragged()
 	{
 		this.mousePressed();

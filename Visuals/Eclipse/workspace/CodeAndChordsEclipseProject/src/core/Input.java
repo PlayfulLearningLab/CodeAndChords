@@ -137,19 +137,6 @@ public class Input {
 	 */
 	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
 	{
-		this(numInputs, audioContext, false, pa);
-	} // int, AudioContext
-	
-	/**
-	 * Creates an Input object with the given number of inputs and the particular AudioContext,
-	 * as well as the option to skip inputs 5-8 (this assumes that you will have adjusted for the skip
-	 * and passed in 4 more inputs than you plan to need; e.g., numInputs = 16 for 12 lines).
-	 * @param numInputs
-	 * @param audioContext
-	 * @param skip5thru8
-	 */
-	public Input(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
-	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
 		} // if(numInputs < 1)
@@ -968,39 +955,5 @@ import beads.TimeStamp;
 			this.input.stop();
 		}
 	} // DisposeHandler
-	
-	/**
-	 * Getter for this.ac
-	 * @return	AudioContext instance variable
-	 */
-	public AudioContext getAudioContext()
-	{
-		return this.ac;
-	} // getAudioContext
-	
-	public class DisposeHandler {
-
-//		PApplet	pa;
-		Input	input;
-
-		DisposeHandler(PApplet pa)
-		{
-			this.input	= (Input)pa;
-			pa.registerMethod("dispose", this);
-		}
-
-		public void dispose()
-		{
-			this.input.ac.stop();
-			if(this.input.ac.getAudioIO().getClass().getName().equalsIgnoreCase("PortAudioAudioIO"))
-			{
-				((PortAudioAudioIO)this.input.ac.getAudioIO()).stop();
-			} // if - PAAIO
-			
-			println("Closing sketch");
-//			((PortAudioAudioIO)this.module.input.getAudioContext().getAudioIO()).destroy();
-		}
-	} // DisposeHandler
-
 	
 } // Input class

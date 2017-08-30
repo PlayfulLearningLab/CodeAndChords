@@ -1,7 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 ﻿  pa_allocation.c
   pa_converters.c
   pa_cpuload.c
@@ -43,8 +46,11 @@
      Creating library x64\Release/portaudio_x64.lib and object x64\Release/portaudio_x64.exp
   portaudio.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\x64\Release\portaudio_x64.dll
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ﻿  portaudio.vcxproj -> C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\build\msvc\x64\Release\portaudio_x64.dll
 >>>>>>> 253f6a1... 32 and 64 bit dll's
 =======
 >>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6

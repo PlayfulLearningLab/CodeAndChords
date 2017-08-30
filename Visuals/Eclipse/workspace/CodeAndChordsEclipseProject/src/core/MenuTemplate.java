@@ -36,7 +36,7 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**	Indicates whether or not the Menu is open	*/
 	private boolean 	isRunning;
-	
+
 	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
 	 * by the Module when the Menu is open	*/
 	private float 		scale;
@@ -603,24 +603,6 @@ public abstract class MenuTemplate implements ControlListener {
 
 		return fullY;
 	}
-	
-	public float mapCurrentXPos(float xVal)
-	{
-		if(this.isRunning)	{	return this.mapAdjustedMenuXPos(xVal);	}
-		else				{	return xVal;							}
-	} // getCurrentXPos
-	
-	public float mapCurrentYPos(float yVal)
-	{
-		if(this.isRunning)	{	return this.mapAdjustedMenuYPos(yVal);	}
-		else				{	return yVal;							}
-	} // getCurrentXPos
-	
-	public float getCurrentMenuYPos()
-	{
-		if(this.isRunning)	{	return this.getAdjustedMenuYPos();	}
-		else				{	return 0;							}
-	} // getCurMenuXPos
 	
 	public float mapCurrentXPos(float xVal)
 	{

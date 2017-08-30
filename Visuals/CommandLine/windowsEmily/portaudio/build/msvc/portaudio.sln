@@ -1,13 +1,17 @@
 ﻿
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portaudio", "portaudio.vcxproj", "{0A18A071-125E-442F-AFF7-A3F68ABECF99}"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 Microsoft Visual Studio Solution File, Format Version 9.00
@@ -16,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "portaudio", "portaudio.vcpr
 >>>>>>> 2f3fbba... Reorganization - each machine has its own folder; Mac binaries compiled
 =======
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +35,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.ActiveCfg = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.Build.0 = Debug|x64
 =======
@@ -39,6 +46,10 @@ Global
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.ActiveCfg = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.Build.0 = Debug|x64
 >>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.ActiveCfg = Debug|x64
+		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|Win32.Build.0 = Debug|x64
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|x64.ActiveCfg = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Debug|x64.Build.0 = Debug|x64
 		{0A18A071-125E-442F-AFF7-A3F68ABECF99}.Release|Win32.ActiveCfg = Release|Win32

@@ -44,23 +44,14 @@ public class PortAudioAudioServer {
 
 	private AudioConfiguration		context;
 	private AtomicReference<State>	state;
-	private	float[]					inputBuffer;
-	private	float[]					outputBuffer;
-
+	private	boolean					stopped	= false;
 
 	public PortAudioAudioServer(AudioConfiguration context)
 	{
 		this.context	= context;
 		this.state = new AtomicReference<State>(State.New);
 
-		this.inputBuffer	= new float[this.context.getMaxBufferSize()];
-		this.outputBuffer	= new float[this.context.getMaxBufferSize()];
-		
-		for(int i = 0; i < this.inputBuffer.length; i++)
-		{
-			this.inputBuffer[i]	= 0;
-			this.outputBuffer[i]	= 0;
-		}
+		System.out.println("this.context.getMaxBufferSize = " + this.context.getMaxBufferSize());
 	}
 
 
@@ -156,7 +147,107 @@ public class PortAudioAudioServer {
 			outStream.stop();
 
 			outStream.close();
-		} // if Active
+
+			// Open input and output streams, using defaults
+
+			/*
+			 * For some reason, this only records for a few seconds:
+			 * (Something to do with the nubmer of frames?)d
+			 // No, it's sleeping! -- never mind. :(
+			  */
+			/*
+        	StreamParameters	inputParams			= new StreamParameters();
+        	StreamParameters	outputParams		= new StreamParameters();
+
+        	// Get default devices and info:
+        	int					inputDevice	= PortAudio.getDefaultInputDevice();
+        	DeviceInfo			inputDeviceInfo		= PortAudio.getDeviceInfo(inputDevice);
+        	int					outputDevice	= PortAudio.getDefaultOutputDevice();
+        	DeviceInfo			outputDeviceInfo	= PortAudio.getDeviceInfo(outputDevice);
+
+        	int	inputChannels		= inputDeviceInfo.maxInputChannels;
+        	int	outputChannels		= inputDeviceInfo.maxInputChannels;
+        	int	framesPerBuffer		= 256;
+        	int	inputSampleRate		= (int)inputDeviceInfo.defaultSampleRate;
+        	int	outputSampleRate	= (int)inputDeviceInfo.defaultSampleRate;
+
+        	int					numFrames			= (int)(this.context.getSampleRate() * 3);
+        	System.out.println("this.context.getSampleRate() = " + (this.context.getSampleRate() * 3));
+        	// define parameters:
+        	inputParams.device					= inputDevice;
+        	inputParams.channelCount			= inputChannels;
+        	inputParams.sampleFormat			= PortAudio.FORMAT_FLOAT_32;
+        	inputParams.suggestedLatency		= inputDeviceInfo.defaultLowInputLatency;
+
+        	outputParams.device					= outputDevice;
+        	outputParams.channelCount			= outputChannels;
+        	outputParams.sampleFormat			= PortAudio.FORMAT_FLOAT_32;
+        	outputParams.suggestedLatency		= outputDeviceInfo.defaultLowOutputLatency;
+
+        	// StreamParameters
+        	// sample rate (int?)
+        	// frames per buffer (int?)
+        	// flags - ?
+        	BlockingStream	inStream	= PortAudio.openStream(inputParams, null, 
+        			inputSampleRate, framesPerBuffer, 0);
+        	BlockingStream	outStream	= PortAudio.openStream(null, outputParams, 
+        			outputSampleRate, framesPerBuffer, 0);
+
+        	inStream.start();
+			Thread.sleep( 100 );
+
+        	System.out.println("PAAS.run: inStream.isActive = " + inStream.isActive());
+        	// TODO: see if this is also a problem if I make a C program doing this.
+
+        	int	writeAvailable;
+        	int	readAvailable;
+
+        	// TODO: remove these after testing
+        	int	count	= 0;
+        	boolean	readOverflow	= false;
+        	boolean	writeOverflow	= false;
+
+        	// Start here:
+        	float[] inputBuffer		= new float[(numFrames * inputParams.channelCount)];
+        	float[] outputBuffer	= new float[numFrames * outputParams.channelCount];
+            	readAvailable	= inStream.getReadAvailable();
+            	System.out.println("run() - before read: readAvailable = " + readAvailable);
+            	inStream.read(inputBuffer, numFrames);
+            	readAvailable	= inStream.getReadAvailable();
+            	System.out.println("run() - after read: readAvailable = " + readAvailable);
+
+//           while(this.isActive())
+//           {
+
+ //          }
+ //           Thread.sleep(10000);
+
+        	System.out.println("run(): about to stop the inStream");
+        	inStream.stop();
+        	inStream.close();
+
+        	outStream.start();
+			Thread.sleep( 100 );
+
+        	writeAvailable	= outStream.getWriteAvailable();
+        	System.out.println("run(): writeAvailable = " + writeAvailable +
+        			"; count = " + count + "; numFrames = " + numFrames);
+        	writeOverflow	= outStream.write(inputBuffer, numFrames);
+        	count++;
+        	outStream.stop();
+
+        	System.out.println("run(): stopped streams; about to close them");
+        	outStream.close();
+        	System.out.println("run(): streams have been closed");
+*/
+			} // if active
+
+
+			System.out.println("run(): about to terminate PortAudio");
+			PortAudio.terminate();
+			System.out.println("run(): about to call shutdown");
+			this.shutdown();
+			//       state.set(State.Terminated);
 
 		} // run()
 

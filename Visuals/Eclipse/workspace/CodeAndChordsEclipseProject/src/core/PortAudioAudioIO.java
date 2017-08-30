@@ -288,7 +288,7 @@ public class PortAudioAudioIO extends AudioIO {
 			if(!portAudioInitialized) {
 				initPortAudio();
 			}
-			
+
 			inStream.read( interleavedSamples, bufferSize );
 			
 //			AudioUtils.deinterleave(this.interleavedSamples, this.numChannels, bufferSize, this.nonInterleavedSamples);

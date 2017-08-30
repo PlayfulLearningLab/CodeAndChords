@@ -357,16 +357,6 @@ public class UserInterface extends PApplet {
 		case "custom":
 			this.shape(this.cShape, this.displayPos(this.rectPosX), this.rectPosY);
 			break;
-			
-		case "morph":
-			this.shape(this.mShape,this.displayPos(this.rectPosX), this.rectPosY);
-			//this.drawMorph();
-			//this.drawMorph(this.displayPos(this.rectPosX),this.rectPosY,this.displaySize(this.rectWidth),this.rectHeight);
-			break;
-			
-		case "custom":
-			this.shape(this.cShape, this.displayPos(this.rectPosX), this.rectPosY);
-			break;
 
 		default:
 
@@ -458,16 +448,6 @@ public class UserInterface extends PApplet {
 		
 		//shape(shape,this.displayPos(this.rectPosX), this.rectPosY);
 		
-	}
-	
-	private float rad(float theta, float r)
-	{
-		float circle = r;
-		float square = min( abs(r/cos(theta)), abs(r/sin(theta)) );
-		
-		float output = square + (circle - square)*this.morph;
-		
-		return output;
 	}
 	
 	private void updatePositionSliders()
