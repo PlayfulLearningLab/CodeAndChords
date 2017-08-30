@@ -484,7 +484,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.melody			= new Melody(this.parent, this.input);
 		this.instrument		= new Instrument(this.parent);
-		this.bpm			= 120;
+		this.instrument.setADSR(1000, 500, 0, 0);
+		this.bpm			= 30;
 		this.rangeOctave	= 3;
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
@@ -2528,6 +2529,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.outsideButtonsCP5.getController("pause").setVisible(val);
 			this.showPause	= val;
 			//play button
+
 			if(val)
 			{
 				this.playMelody();
