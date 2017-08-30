@@ -136,7 +136,7 @@ public class Module_01_PitchHue extends Module
 
 		this.menu.addModulateSliders(0, modulateYVals);
 
-		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW, 0);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 

@@ -200,7 +200,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		
 		
 		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(this.parent.width - 350, 10).setSize(240, 250)
+		.setPosition(10, 10).setSize(240, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
 		.setValue(0)
 		.setItemHeight(25)

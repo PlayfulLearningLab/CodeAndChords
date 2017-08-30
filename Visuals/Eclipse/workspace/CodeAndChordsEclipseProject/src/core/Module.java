@@ -14,8 +14,11 @@ public abstract class Module extends PApplet {
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
 	protected	Input			input;
 	
-	protected	int		numInputs;
+	protected	int		totalNumInputs;
 	
+	/**	This is the number of inputs currently displaying in the Module	*/
+	protected	int		curNumInputs;
+
 	protected	int[]	xVals;
 	protected	int[]	yVals;
 	protected	int[]	rectWidths;
@@ -79,16 +82,17 @@ public abstract class Module extends PApplet {
 	{
 		if(this.rectWidths == null)
 		{
-			this.numInputs	= Math.max(this.numInputs, 1);
+			this.curNumInputs		= Math.max(this.curNumInputs, 1);
 			this.setSquareValues();
 		}
 		
-		this.textSize((24 - this.numInputs * 2));		
+		this.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
 
 		String[]	legendText	= this.getLegendText();
 		
-		float	scale	= 1;
-		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+//		float	scale	= 1;
+//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+		float	scale	= this.menu.getCurrentScale();
 		
 		float	sideWidth1	=(this.rectWidths[inputNum] * scale) / legendText.length;
 		float	sideHeight	= this.rectHeights[inputNum] / 10; //this.rectWidths[inputNum] / 12;	// pretty arbitrary
@@ -130,6 +134,21 @@ public abstract class Module extends PApplet {
 	public abstract String[] getLegendText();
 	
 	
+	public void setCurNumInputs(int newCurNumInputs)
+	{
+		this.curNumInputs	= newCurNumInputs;
+	}
+	
+	public int getCurNumInputs()
+	{
+		return this.curNumInputs;
+	}
+	
+	public int getTotalNumInputs()
+	{
+		return this.totalNumInputs;
+	}
+	
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
@@ -137,26 +156,26 @@ public abstract class Module extends PApplet {
 	{
 
 		// Rectangles are always the same height, so will be set in a loop every time:
-		this.rectHeights	= new int[this.numInputs];
+		this.rectHeights	= new int[this.curNumInputs];
 
 		// Setting xVals and yVals and width and height of rectangles:
 		// Even number of inputs:
-		if(this.numInputs % 2 == 0 && this.numInputs != 12)
+		if(this.curNumInputs % 2 == 0 && this.curNumInputs != 12)
 		{
-			this.rectWidths		= new int[this.numInputs];
-			this.rectHeights	= new int[this.numInputs];
+			this.rectWidths		= new int[this.curNumInputs];
+			this.rectHeights	= new int[this.curNumInputs];
 			for(int i = 0; i < this.rectWidths.length; i++)
 			{
-				this.rectWidths[i]	= this.width / (this.numInputs / 2);
+				this.rectWidths[i]	= this.width / (this.curNumInputs / 2);
 				this.rectHeights[i]	= this.height / 2;
 			} // for
 
-			this.xVals	= new int[this.numInputs];
-			this.yVals	= new int[this.numInputs];
+			this.xVals	= new int[this.curNumInputs];
+			this.yVals	= new int[this.curNumInputs];
 
 			for(int i = 0; i < this.xVals.length; i++)
 			{
-				int xPos	= i % (this.numInputs / 2);
+				int xPos	= i % (this.curNumInputs / 2);
 				int xVal	= xPos * (this.rectWidths[i]);
 				xVals[i]	= xVal;
 				System.out.println(i + ": xPos = " + xPos + "; xVal = " + xVal);
@@ -164,13 +183,13 @@ public abstract class Module extends PApplet {
 
 			for(int i = 0; i < this.yVals.length; i++)
 			{
-				int	yPos	= i / (this.numInputs / 2);
+				int	yPos	= i / (this.curNumInputs / 2);
 				int	yVal	= yPos * this.rectHeights[i];
 				yVals[i]	= yVal;
 				System.out.println(i + ": yPos = " + yPos + "; yVal = " + yVal);
 			} // for - yVals
 		} // even number of inputs
-		else if(this.numInputs == 1)
+		else if(this.curNumInputs == 1)
 		{
 			this.rectWidths		= new int[] {	this.width	};
 			this.rectHeights	= new int[]	{	this.height	};
@@ -178,7 +197,7 @@ public abstract class Module extends PApplet {
 			this.xVals	= new int[] {	0	};
 			this.yVals	= new int[] {	0	};
 		} // 1
-		else if(this.numInputs == 3)
+		else if(this.curNumInputs == 3)
 		{
 			this.rectWidths		= new int[] {	
 					this.width,
@@ -198,7 +217,8 @@ public abstract class Module extends PApplet {
 					(this.height / 2), (this.height / 2)
 			};
 		} // 3
-		else if(this.numInputs == 5)
+		else if(this.curNumInputs == 5)
+
 		{
 			this.rectWidths	= new int[] {
 					(this.width / 2),	(this.width / 2),
@@ -218,7 +238,7 @@ public abstract class Module extends PApplet {
 					(this.height / 2), (this.height / 2), (this.height / 2)
 			};
 		} // 5
-		else if(this.numInputs == 7)
+		else if(this.curNumInputs == 7)
 		{
 			this.rectWidths	= new int[] {
 					(this.width / 2),	(this.width / 2),
@@ -241,9 +261,9 @@ public abstract class Module extends PApplet {
 					(this.height / 3) * 2, (this.height / 3) * 2, (this.height / 3) * 2
 			};
 		} // 7
-		else if(this.numInputs == 9)
+		else if(this.curNumInputs == 9)
 		{
-			this.rectWidths		= new int[this.numInputs];
+			this.rectWidths		= new int[this.curNumInputs];
 			for(int i = 0; i < this.rectWidths.length; i++)
 			{
 				this.rectWidths[i]	= (this.width / 3);
@@ -261,9 +281,9 @@ public abstract class Module extends PApplet {
 					((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
 			};
 		} // 9
-		else if(this.numInputs == 11)
+		else if(this.curNumInputs == 11)
 		{
-			this.rectWidths		= new int[this.numInputs];
+			this.rectWidths		= new int[this.curNumInputs];
 			for(int i = 0; i < this.rectWidths.length; i++)
 			{
 				if(i < 4 || i > 6)
@@ -288,9 +308,9 @@ public abstract class Module extends PApplet {
 					((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
 			};
 		} // 11
-		else if(this.numInputs == 12)
+		else if(this.curNumInputs == 12)
 		{
-			this.rectWidths		= new int[this.numInputs];
+			this.rectWidths		= new int[this.curNumInputs];
 			for(int i = 0; i < this.rectWidths.length; i++)
 			{
 				this.rectWidths[i]	= (this.width / 4);
