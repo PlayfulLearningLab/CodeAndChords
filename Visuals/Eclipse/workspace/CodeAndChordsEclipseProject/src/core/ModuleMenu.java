@@ -1916,7 +1916,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			divideBy1	= 3;
 			divideBy2	= 1;
-			divideBy3	= 2;
+			divideBy3	= 3;
 		}
 
 		int	redDelta1	= (int)((rgbVals1[0] - rgbVals2[0]) / divideBy1);
@@ -1991,6 +1991,11 @@ public class ModuleMenu extends MenuTemplate  {
 			trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
 			//			} // for - j
 		} // for - third color to first color
+		
+		System.out.println("Trichromatic 1st color = rgb(" + rgbVals1[0] + ", " + rgbVals1[1] + ", " + rgbVals1[2] + ")");
+		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
+		System.out.println("Trichromatic 3rd color = rgb(" + rgbVals3[0] + ", " + rgbVals3[1] + ", " + rgbVals3[2] + ")");
+
 
 		System.out.println("Trichromatic 1st color = rgb(" + rgbVals1[0] + ", " + rgbVals1[1] + ", " + rgbVals1[2] + ")");
 		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
@@ -2160,6 +2165,18 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
+			
+			int	startHere;
+			int	endBeforeThis;
+			
+			if(global)
+			{
+				startHere		= 0;
+				endBeforeThis	= this.colors.length;
+			} else {
+				startHere		= this.currentInput;
+				endBeforeThis	= this.currentInput + 1;
+			}
 
 			int	startHere;
 			int	endBeforeThis;
@@ -2213,8 +2230,11 @@ public class ModuleMenu extends MenuTemplate  {
 						colorPos3	= 7;
 					} // else - colorPos for different scales
 				} // else - all but the first time
-				
-				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1]);
+
+				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
+						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
+				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
+						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
 				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
 				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
@@ -2735,12 +2755,6 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 			this.setColorStyle((int)curToggle.internalValue());
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
