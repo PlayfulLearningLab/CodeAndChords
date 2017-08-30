@@ -881,17 +881,6 @@ import beads.TimeStamp;
 			} // for
 		} // if
 	} // setFundamentalArray
-	
-	public void setFundamental(float newVal, int inputNum)
-	{
-		if(inputNum > this.adjustedNumInputs)
-		{
-			throw new IllegalArgumentException("Input.setFundamental: int parameter " + inputNum + 
-					" is out of bounds; must be within within 0 and " + (this.adjustedNumInputs - 1));
-		}
-		
-		this.fundamentalArray[inputNum]	= newVal;
-	} // setFundamental
 
 	public void setAdjustedFundArray(float[] newVal) {
 		if(newVal == null)
@@ -908,18 +897,6 @@ import beads.TimeStamp;
 		} // if
 	} // setAdjustedFundArray
 	
-
-	public void setAdjustedFund(float newVal, int inputNum)
-	{
-		if(inputNum > this.adjustedNumInputs)
-		{
-			throw new IllegalArgumentException("Input.setAdjustedFund: int parameter " + inputNum + 
-					" is out of bounds; must be within within 0 and " + (this.adjustedNumInputs - 1));
-		}
-		
-		this.adjustedFundArray[inputNum]	= newVal;
-	} // setAdjustedFund
-	
 	public void setAmplitudeArray(float[] newVal) {
 		if(newVal == null)
 		{
@@ -934,17 +911,6 @@ import beads.TimeStamp;
 			} // for
 		} // if
 	} // setAmplitudeArray
-
-	public void setAmplitude(float newVal, int inputNum)
-	{
-		if(inputNum > this.adjustedNumInputs)
-		{
-			throw new IllegalArgumentException("Input.setAmplitude: int parameter " + inputNum + 
-					" is out of bounds; must be within within 0 and " + (this.adjustedNumInputs - 1));
-		}
-		
-		this.amplitudeArray[inputNum]	= newVal;
-	} // setAmplitude
 	
 	/**
 	 * Pauses the Gain connected to ac.out.

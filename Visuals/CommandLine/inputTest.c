@@ -36,10 +36,10 @@
  * The text above constitutes the entire PortAudio license; however,
 =======
  * The text above constitutes the entire PortAudio license; however, 
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
  * The text above constitutes the entire PortAudio license; however,
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
  * the PortAudio community also makes the following non-binding requests:
  *
  * Any person wishing to distribute modifications to the Software is
@@ -51,11 +51,11 @@
 =======
  * they can be incorporated into the canonical version. It is also 
  * requested that these non-binding requests be included along with the 
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
  * they can be incorporated into the canonical version. It is also
  * requested that these non-binding requests be included along with the
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
  * license above.
  */
 
@@ -63,7 +63,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 #include <math.h>
 #include <stdlib.h>
 #include "portaudio.h"
@@ -82,9 +82,9 @@
 #include <stdlib.h>
 #include "portaudio.h"
 
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 /* #define SAMPLE_RATE  (17932) // Test failure to open with this value. */
 #define SAMPLE_RATE  (44100)
 #define FRAMES_PER_BUFFER (512)
@@ -129,7 +129,7 @@ paTestData;
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 static void PrintSupportedStandardSampleRates(
         const PaStreamParameters *inputParameters,
         const PaStreamParameters *outputParameters )
@@ -172,9 +172,9 @@ static void PrintSupportedStandardSampleRates(
 
 <<<<<<< HEAD
 =======
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 /* This routine will be called by the PortAudio engine when audio is needed.
 ** It may be called at interrupt level on some machines so don't do anything
 ** that could mess up the system like calling malloc() or free().
@@ -197,10 +197,10 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
 
 =======
 	
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
     (void) outputBuffer; /* Prevent unused variable warnings. */
     (void) timeInfo;
     (void) statusFlags;
@@ -240,10 +240,10 @@ static int recordCallback( const void *inputBuffer, void *outputBuffer,
 } // recordCallback
 =======
 }
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 } // recordCallback
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 
 /* This routine will be called by the PortAudio engine when audio is needed.
 ** It may be called at interrupt level on some machines so don't do anything
@@ -297,7 +297,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 } // playCallback
 
 int selectDevice()
@@ -322,7 +322,7 @@ int selectDevice()
 >>>>>>> 726f4d5... Commit after aborting the rebase
     int     			i,
 						numDevices,
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
 						defaultDisplayed;
     const PaDeviceInfo 	*deviceInfo;
     PaStreamParameters 	inputParameters,
@@ -331,9 +331,10 @@ int selectDevice()
     PaError 			err;
 <<<<<<< HEAD
 	
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -356,6 +357,9 @@ int selectDevice()
 
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
     paTestData          data;
     int                 totalFrames;
     int                 numSamples;
@@ -376,11 +380,15 @@ int selectDevice()
 
 =======
     
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
+<<<<<<< HEAD
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
     err = Pa_Initialize();
     if( err != paNoError )
     {
@@ -392,10 +400,10 @@ int selectDevice()
 
 =======
     
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
     printf( "PortAudio version: 0x%08X\n", Pa_GetVersion());
     printf( "Version text: '%s'\n", Pa_GetVersionInfo()->versionText );
 
@@ -412,9 +420,10 @@ int selectDevice()
 
 =======
     
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
+<<<<<<< HEAD
 =======
 
 =======
@@ -424,6 +433,9 @@ int selectDevice()
 
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
     printf( "Number of devices = %d\n", numDevices );
     for( i=0; i<numDevices; i++ )
     {
@@ -435,9 +447,10 @@ int selectDevice()
 
 =======
                 
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
+<<<<<<< HEAD
 =======
 
 =======
@@ -447,6 +460,9 @@ int selectDevice()
 
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
     /* Mark global and API specific default devices */
         defaultDisplayed = 0;
         if( i == Pa_GetDefaultInputDevice() )
@@ -465,10 +481,10 @@ int selectDevice()
 
 =======
         
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
         if( i == Pa_GetDefaultOutputDevice() )
         {
             printf( (defaultDisplayed ? "," : "[") );
@@ -491,11 +507,15 @@ int selectDevice()
             printf( (defaultDisplayed ? "," : "[") );
 =======
             printf( (defaultDisplayed ? "," : "[") );                
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
             printf( (defaultDisplayed ? "," : "[") );
+<<<<<<< HEAD
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
             printf( " Default %s Output", hostInfo->name );
             defaultDisplayed = 1;
         }
@@ -557,9 +577,10 @@ int selectDevice()
 
 =======
         
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 
+<<<<<<< HEAD
 =======
 
 =======
@@ -569,6 +590,9 @@ int selectDevice()
 
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
         outputParameters.device = i;
         outputParameters.channelCount = deviceInfo->maxOutputChannels;
         outputParameters.sampleFormat = paInt16;
@@ -612,7 +636,7 @@ int selectDevice()
 	fgets(devSelection, 4, stdin);
 	devSelectInt	= atoi(devSelection);
 	
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 =======
 =======
 >>>>>>> 726f4d5... Commit after aborting the rebase
@@ -622,6 +646,7 @@ int selectDevice()
 	fgets(devSelection, 4, stdin);
 	devSelectInt	= atoi(devSelection);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -641,6 +666,9 @@ int selectDevice()
 
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 62b84d2... Trying 2 lines
+=======
+>>>>>>> 35e86f1... Trying 2 lines
+>>>>>>> d43f794... Second rebase abort
 	if(devSelectInt >= numDevices)
 	{
 		printf("Sorry; that number is out of the parameters; must be less than %d.", numDevices);
@@ -653,15 +681,15 @@ int selectDevice()
 } // selectDevice
 =======
 }
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 	
 =======
 
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
 	return devSelectInt;
 } // selectDevice
->>>>>>> 0e0e962... Can select device with portaudio
+>>>>>>> 65cc807... Can select device with portaudio
 
 /*******************************************************************/
 int main(void);
@@ -672,9 +700,10 @@ int main(void)
 <<<<<<< HEAD
 	int					device;
 =======
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 	int					device;
+<<<<<<< HEAD
 =======
 	int					device;
 =======
@@ -683,6 +712,9 @@ int main(void)
 	int					device;
 >>>>>>> 726f4d5... Commit after aborting the rebase
 >>>>>>> 0e0e962... Can select device with portaudio
+=======
+>>>>>>> 65cc807... Can select device with portaudio
+>>>>>>> d43f794... Second rebase abort
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
@@ -700,10 +732,10 @@ int main(void)
 <<<<<<< HEAD
     int					numDevices;
 =======
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
     int					numDevices;
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
 
     printf("patest_record.c\n"); fflush(stdout);
 
@@ -715,6 +747,7 @@ int main(void)
 <<<<<<< HEAD
 	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);
 =======
+<<<<<<< HEAD
 >>>>>>> fd9d8bb... First attempts at getting audio with portaudio
 <<<<<<< HEAD
 =======
@@ -722,6 +755,9 @@ int main(void)
 >>>>>>> e4bfc26... The remainder of Emily on the Windows laptop for now
 =======
 >>>>>>> 726f4d5... Commit after aborting the rebase
+=======
+>>>>>>> cca125d... First attempts at getting audio with portaudio
+>>>>>>> d43f794... Second rebase abort
     data.frameIndex = 0;
     numSamples = totalFrames * NUM_CHANNELS;
     numBytes = numSamples * sizeof(SAMPLE);
@@ -750,7 +786,7 @@ int main(void)
 >>>>>>> 726f4d5... Commit after aborting the rebase
 =======
     inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 =======
     numDevices	= 2;
@@ -769,11 +805,15 @@ int main(void)
 >>>>>>> e4bfc26... The remainder of Emily on the Windows laptop for now
 =======
 	// input stream 1:
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
 	device	= selectDevice();
     inputParameters.device = device; /* default input device */
+<<<<<<< HEAD
 >>>>>>> 0e0e962... Can select device with portaudio
 >>>>>>> 726f4d5... Commit after aborting the rebase
+=======
+>>>>>>> 65cc807... Can select device with portaudio
+>>>>>>> d43f794... Second rebase abort
     if (inputParameters.device == paNoDevice) {
         fprintf(stderr,"Error: No default input device.\n");
         goto done;
@@ -807,7 +847,7 @@ int main(void)
 <<<<<<< HEAD
 	// while active:
 =======
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 	// input stream 2:
 		device	= selectDevice();
@@ -843,7 +883,7 @@ int main(void)
 =======
 >>>>>>> 726f4d5... Commit after aborting the rebase
 	// while active:
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
     while( ( err = Pa_IsStreamActive( stream ) ) == 1 )
     {
         Pa_Sleep(100);
@@ -928,10 +968,10 @@ int main(void)
 
 =======
         
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
         printf("Waiting for playback to finish.\n"); fflush(stdout);
 
         while( ( err = Pa_IsStreamActive( stream ) ) == 1 ) Pa_Sleep(100);
@@ -947,13 +987,13 @@ int main(void)
         err = Pa_CloseStream( stream );
         if( err != paNoError ) goto done;
         
->>>>>>> fd9d8bb... First attempts at getting audio with portaudio
+>>>>>>> cca125d... First attempts at getting audio with portaudio
 =======
 
         err = Pa_CloseStream( stream );
         if( err != paNoError ) goto done;
 
->>>>>>> 62b84d2... Trying 2 lines
+>>>>>>> 35e86f1... Trying 2 lines
         printf("Done.\n"); fflush(stdout);
     }
 

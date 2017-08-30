@@ -6,7 +6,6 @@ import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
-import core.Shape;
 import core.Archive_ModuleTemplate.ModuleTemplate01;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
@@ -74,6 +73,9 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 		this.setSquareValues();
 		
+		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		
+
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
@@ -114,14 +116,12 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
-
-		// Adding inputNumSelect first so that inputSelect can be in front:
-		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+		
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 		
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
-		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
+		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
 		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
 		this.menu.setCurKey("A", 2);
 
@@ -157,7 +157,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
-//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
@@ -174,7 +174,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			this.menu.setMenuVal();
 		} // if keyPressed
 		
-		for(int i = 0; i < this.curNumInputs; i++)
+		for(int i = 0; i < this.numInputs; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
@@ -188,19 +188,27 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			int	curX;
 			int	curY;
 			
+/*			if(this.menu.getIsRunning())
+			{
+				curX	= (int)this.menu.mapAdjustedMenuXPos(this.xVals[i]);
+				curY	= (int)this.menu.mapAdjustedMenuYPos(this.yVals[i]);
+			} else {
+				curX	= this.xVals[i];
+				curY	= this.yVals[i];
+			}
+			*/
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
-						
+			
 			if(this.menu.isShowScale())
 			{
 				this.legend(scaleDegree, i);
 			}
 		} // for
 		
-		this.drawShapes();
-		
 		this.menu.runMenu();
+
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
 /*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 				{
@@ -214,36 +222,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 	} // draw()
 	
-	private void drawShapes()
-	{
-		int[]	curHue;
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
-			
-		curHue	= this.menu.getCurHue()[i];		
-		this.fill(curHue[0], curHue[1], curHue[2]);
-		//		this.fill(255);
-
-//		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
-//		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
-
-		//this.shapeMode(CORNER);
-		PShape pShape;
-		/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
-		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
-		 */
-		pShape = this.shapes[i].getPShape();
-
-		pShape.beginShape();
-		pShape.fill(curHue[0], curHue[1], curHue[2]);
-		pShape.stroke(curHue[0], curHue[1], curHue[2]);
-		pShape.rotate(this.shapes[i].getRotation());
-		pShape.scale(this.menu.getCurrentScale());
-		pShape.endShape();
-
-		this.shape(pShape, this.menu.mapCurrentXPos(this.shapes[i].getXPos()), this.menu.mapCurrentYPos(this.shapes[i].getYPos()));
-		} // for - i
-	} // drawShape	
 	
 	public String[] getLegendText()
 	{

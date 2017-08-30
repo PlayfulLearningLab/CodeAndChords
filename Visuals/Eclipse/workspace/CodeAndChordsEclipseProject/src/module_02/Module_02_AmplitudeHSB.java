@@ -33,8 +33,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
-	private	int		currentMenu;
-	
 	public static void main(String[] args) 
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
@@ -52,7 +50,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
 		this.input    = new Input(1, new AudioContext(), this);
-		this.totalNumInputs	= 1;
 
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
@@ -70,6 +67,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 					shape.setCurrentShape("supershape", superShapes[i]);
 				}
 
+
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
 
@@ -79,7 +77,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
-				this.yVals[0]	= 50;
+				this.yVals[0]	= 26;
 				int	distance	= (this.height - this.yVals[0]) / this.yVals.length;
 				for(int i = 1; i < this.yVals.length; i++)
 				{
@@ -108,16 +106,14 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				int	verticalSpacer	= distance - this.menu.getSliderHeight();
 				this.menu.addThresholdSliders(0, yVals[11], verticalSpacer);
-				
-				this.menu.getInstrument().setADSR(1000, 500, 0, 0);
-				this.menu.setBPM(30);
+
+				this.menu.addShapeCustomizationControls(this.yVals[16]);
+
 
 				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
 				//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
 
-				this.textSize(32);		
-				
-				this.menu.setMenuList(new String[] {"Canvas", "Module Menu", "Shape Editor"});
+				this.textSize(32);				
 
 
 				//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
@@ -175,27 +171,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		 * 
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
-		
-		if(this.currentMenu != this.menu.getCurrentMenu())
-		{
-			this.currentMenu = this.menu.getCurrentMenu();
-			
-			if(this.currentMenu == 0)
-			{
-				this.menu.setIsRunning(false);
-				this.shapeEditor.setIsRunning(false);
-			}
-			else if(this.currentMenu == 1)
-			{
-				this.shapeEditor.setIsRunning(false);
-				this.menu.setIsRunning(true);
-			}
-			else if(this.currentMenu == 2)
-			{
-				this.menu.setIsRunning(false);
-				this.shapeEditor.setIsRunning(true);
-			}
-		}
 
 		this.shape.setShapeScale(this.menu.getShapeSize());
 

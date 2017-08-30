@@ -39,7 +39,7 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
 	 * by the Module when the Menu is open	*/
-	protected float 		scale;
+	private float 		scale;
 	
 	/**	Blacks out the area behind the Menu	*/
 	private PShape		menuBackground;
@@ -248,8 +248,8 @@ public abstract class MenuTemplate implements ControlListener {
 			if(curButton.getBooleanValue())
 			{
 
-				this.controlP5.getGroup("leftBackground").setVisible(true);
-				this.controlP5.getGroup("leftBackground").bringToFront();
+				this.controlP5.getGroup("background").setVisible(true);
+				this.controlP5.getGroup("background").bringToFront();
 
 			} else {
 
@@ -257,7 +257,7 @@ public abstract class MenuTemplate implements ControlListener {
 				// TODO: might need to fillOriginalColors here, too, at some point?				
 
 				this.controlP5.setAutoDraw(true);
-				this.controlP5.getGroup("leftBackground").setVisible(false);
+				this.controlP5.getGroup("background").setVisible(false);
 				//				this.displaySidebar(false);
 			}
 
