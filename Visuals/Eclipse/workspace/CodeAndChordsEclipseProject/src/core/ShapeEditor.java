@@ -447,6 +447,16 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shape.getRotation());
 		}
 		
+		if(this.shape.getXStretch() != this.controlP5.getController("slider" + this.XSTRETCH_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.XSTRETCH_ID).setValue(this.shape.getXStretch());
+		}
+		
+		if(this.shape.getYStretch() != this.controlP5.getController("slider" + this.YSTRETCH_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shape.getYStretch());
+		}
+		
 	}
 
 	public ControlP5 getCP5() {
