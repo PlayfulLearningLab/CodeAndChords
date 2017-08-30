@@ -219,9 +219,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		int[]	curHue	= this.menu.getCurHue()[0];		
 		this.fill(curHue[0], curHue[1], curHue[2]);
-		
-//		System.out.println("We think we're drawing a shape with color rgb(" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
-
 		//		this.fill(255);
 
 //		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
