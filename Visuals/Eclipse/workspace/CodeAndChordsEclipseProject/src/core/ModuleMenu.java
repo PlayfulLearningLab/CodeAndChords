@@ -32,6 +32,9 @@ import processing.core.PImage;
 public class ModuleMenu extends MenuTemplate  {
 
 	public int trichromCounts	= 0;
+	
+	// TODO - for testing trichromatic bug:
+//	public int[][] trichromColors;
 
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
@@ -1670,7 +1673,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// convert them both to RGB;
 		int[]	rgbVals1	= new int[3];
 		int[]	rgbVals2	= new int[3];
-		
+
 		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
 
 		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
@@ -4075,6 +4078,8 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 
 	public int[][] getCurHue()				{	return this.curHue;	}
+	
+	public int getCurColorStyle()			{	return this.curColorStyle;	}
 
 	public int getCurColorStyle(int inputNum)			{	return this.curColorStyle[inputNum];	}
 

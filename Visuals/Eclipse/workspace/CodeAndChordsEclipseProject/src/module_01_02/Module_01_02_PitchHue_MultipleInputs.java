@@ -202,7 +202,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.drawShapes();
 		
 		this.menu.runMenu();
-				
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
 /*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 				{
