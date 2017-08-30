@@ -34,7 +34,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	private	int[]	yVals;
 
 	private	int		currentMenu;
-	
+
 	public static void main(String[] args) 
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
@@ -79,6 +79,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
 				this.yVals[0]	= 50;
+
 				int	distance	= (this.height - this.yVals[0]) / this.yVals.length;
 				for(int i = 1; i < this.yVals.length; i++)
 				{
