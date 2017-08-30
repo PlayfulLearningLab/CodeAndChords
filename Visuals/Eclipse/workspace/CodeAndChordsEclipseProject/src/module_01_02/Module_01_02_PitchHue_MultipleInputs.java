@@ -63,13 +63,15 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.curNumInputs	= 2;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		this.shapes	= new Shape[12];
+/*
+ * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
 		{
 			this.shapes[i]	= new Shape(this);
 			this.shapes[i].setCurrentShape("supershape", 
 					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
 		} // for - i
+*/
 		
 		this.setSquareValues();
 		
@@ -117,12 +119,15 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
-		
+
+		// Adding inputNumSelect first so that inputSelect can be in front:
+		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 		
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
-		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
+		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
+
 		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
 		this.menu.setCurKey("A", 2);
 
@@ -158,7 +163,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
-		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
@@ -175,7 +180,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			this.menu.setMenuVal();
 		} // if keyPressed
 		
-		for(int i = 0; i < this.numInputs; i++)
+		for(int i = 0; i < this.curNumInputs; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));

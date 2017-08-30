@@ -32,9 +32,9 @@ import processing.core.PImage;
 public class ModuleMenu extends MenuTemplate  {
 
 	public int trichromCounts	= 0;
-	
+
 	// TODO - for testing trichromatic bug:
-//	public int[][] trichromColors;
+	//	public int[][] trichromColors;
 
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
@@ -141,7 +141,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public	static	int	CS_DICHROM	= 2;
 	public	static	int	CS_TRICHROM	= 3;
 	public	static	int	CS_CUSTOM	= 4;
-	protected	int	curColorStyle;
+	protected	int[]	curColorStyle;
 
 	/**	ControlP5 for the play/stop, pause, and hamburger Buttons	*/
 	protected	ControlP5	outsideButtonsCP5;
@@ -295,7 +295,7 @@ public class ModuleMenu extends MenuTemplate  {
 	//	protected	boolean[]	fromSpecialColors;
 
 	/**	The current number of input lines	*/
-	protected	int	numInputs;
+//	protected	int	numInputs;
 
 	/**	If true, adjustments to Controllers affect all inputs	*/
 	protected	boolean	global;
@@ -308,21 +308,21 @@ public class ModuleMenu extends MenuTemplate  {
 	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
-	protected	int	canvasColorSelectId;//		= -1;
-	protected	int	firstColorModSliderId;//	= -1;
-	protected	int	firstColorSelectCWId;//	= -1;
-	protected	int	firstSpecialColorsCWId;//	= -1;
-	protected	int	lastColorSelectId;//		= -1;
-	protected	int	firstARTSliderId;//		= -1;
-	protected	int	firstHSBSliderId;//		= -1;
-	protected	int	firstRGBSliderId;//		= -1;
-	protected	int	bpmSliderId;//				= -1;
-	protected	int	volumeSliderId;//			= -1;
-	protected	int	shapeSizeSliderId;//		= -1;
-	protected	int	firstRangeSegmentsId;//	= -1;
-	protected	int	pianoThresholdSliderId;//	= -1;
-	protected	int	forteThresholdSliderId;//	= -1;
-	protected	int	firstSatBrightThreshSliderId;//	= -1;
+	protected	int	canvasColorSelectId		= -1;
+	protected	int	firstColorModSliderId	= -1;
+	protected	int	firstColorSelectCWId	= -1;
+	protected	int	firstSpecialColorsCWId	= -1;
+	protected	int	lastColorSelectId		= -1;
+	protected	int	firstARTSliderId		= -1;
+	protected	int	firstHSBSliderId		= -1;
+	protected	int	firstRGBSliderId		= -1;
+	protected	int	bpmSliderId				= -1;
+	protected	int	volumeSliderId			= -1;
+	protected	int	shapeSizeSliderId		= -1;
+	protected	int	firstRangeSegmentsId	= -1;
+	protected	int	pianoThresholdSliderId	= -1;
+	protected	int	forteThresholdSliderId	= -1;
+	protected	int	firstSatBrightThreshSliderId	= -1;
 
 	/**
 	 * Constructor
@@ -358,7 +358,8 @@ public class ModuleMenu extends MenuTemplate  {
 		this.sliderWidth	= 170;
 		this.sliderHeight	= 20;
 		 */
-		this.numInputs		= this.input.getAdjustedNumInputs();
+//		this.numInputs		= this.input.getAdjustedNumInputs();
+
 		this.global			= true;
 		this.currentInput	= 0;
 
@@ -366,17 +367,25 @@ public class ModuleMenu extends MenuTemplate  {
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
-		this.colors				= new int[this.numInputs][totalNumColorItems][3];
-		this.hsbColors			= new int[this.numInputs][totalNumColorItems][3];
-		this.curHue				= new int[this.numInputs][3];
-		this.goalHue			= new int[this.numInputs][3];
-		this.canvasColor		= new int[this.numInputs][3];
+
+		this.colors				= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
+		this.hsbColors			= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
+		this.curHue				= new int[this.module.getTotalNumInputs()][3];
+		this.goalHue			= new int[this.module.getTotalNumInputs()][3];
+		this.canvasColor		= new int[this.module.getTotalNumInputs()][3];
+		this.curColorStyle		= new int[this.module.getTotalNumInputs()];
+		this.rainbow();
 		for(int i = 0; i < this.colors.length; i++)
 		{
+			// This was the source of the issue in which calling dichromatic as the first
+			// color style causes rainbow to be the dichromatic colors;
+			// fixed by setting to rainbow by calling rainbow() instead of the loop below:
+			/*
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
 				this.colors[i][j]	= this.rainbowColors[2][j];
 			}
+			*/
 			this.canvasColor[i]	= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		}
 
@@ -398,7 +407,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			this.fromColorSelect[i]		= true;
 			//			this.fromSpecialColors[i]	= false;
-			
+
 			// Getting ready for trichromatic:
 			this.specialColorsPos[i]	= new int[] { 0, 4, 8 };
 		}
@@ -407,9 +416,10 @@ public class ModuleMenu extends MenuTemplate  {
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
 
-		this.attRelTranPos	= new int[this.numInputs];
-		this.attRelTranVals	= new float[this.numInputs][3];
-		this.checkpoint		= new int[this.numInputs];
+		this.attRelTranPos	= new int[this.module.getTotalNumInputs()];
+		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
+		this.checkpoint		= new int[this.module.getTotalNumInputs()];
+
 		for(int i = 0; i < this.attRelTranPos.length; i++)
 		{
 			this.attRelTranPos[i]	= 0;	// 0 = attack, 1 = release, 2 = transition
@@ -419,6 +429,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.hueSatBrightnessMod        = new float[3];
 		this.hueSatBrightPercentMod		= new float[3];
+		this.redGreenBlueMod			= new float[3];
 
 		this.satBrightThresholdVals	= new float[2];
 		this.satBrightPercentVals	= new float[2];
@@ -426,9 +437,10 @@ public class ModuleMenu extends MenuTemplate  {
 		this.totalRangeSegments	= totalNumColorItems;
 		this.curRangeSegments	= totalNumColorItems;
 
-		this.thresholds		= new int[this.numInputs][totalNumColorItems];
-		this.pianoThreshold	= new int[this.numInputs];
-		this.forteThreshold	= new int[this.numInputs];
+		this.thresholds		= new int[this.module.getTotalNumInputs()][totalNumColorItems];
+		this.pianoThreshold	= new int[this.module.getTotalNumInputs()];
+		this.forteThreshold	= new int[this.module.getTotalNumInputs()];
+
 		for(int i = 0; i < this.thresholds.length; i++)
 		{
 			this.pianoThreshold[i]	= 10;
@@ -454,8 +466,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.melody			= new Melody(this.parent, this.input);
 		this.instrument		= new Instrument(this.parent);
-		this.instrument.setADSR(1000, 500, 0, 0);
-		this.bpm			= 30;
+		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
@@ -470,9 +481,16 @@ public class ModuleMenu extends MenuTemplate  {
 		Color	transparentBlack	= new Color(0, 0, 0, 200);
 		int		transBlackInt		= transparentBlack.getRGB();
 
-		this.controlP5.addBackground("background")
+		this.controlP5.addBackground("leftBackground")
 		.setPosition(0, 0)
 		.setSize(this.sidebarWidth, this.parent.height)
+		.setBackgroundColor(transBlackInt)
+		//.setGroup("sidebarGroup")
+		.setVisible(false);
+		
+		this.controlP5.addBackground("topBackground")
+		.setPosition(this.sidebarWidth, 0)
+		.setSize(this.parent.width - this.sidebarWidth, (int)(this.parent.height - (this.parent.height * this.scale)))
 		.setBackgroundColor(transBlackInt)
 		//.setGroup("sidebarGroup")
 		.setVisible(false);
@@ -483,22 +501,25 @@ public class ModuleMenu extends MenuTemplate  {
 		// Add Menu and Title labels (after menuX, because it gets its x values from that):
 		ControlFont	largerStandard	= new ControlFont(ControlP5.BitFontStandard58, 13);
 
+/*
 		this.controlP5.addTextlabel("title")
 		//.setGroup("sidebarGroup")
 		.setPosition(this.leftAlign, 5)
 		.setFont(largerStandard)
 		//			.setFont(this.parent.createFont("Consolas", 12, true))	// This is so blurry....
 		.setValue(this.sidebarTitle);
+*/
 
-		float	menuXX		= this.controlP5.getController("menuX").getPosition()[0];
-		float	menuWidth	= this.controlP5.getController("menuX").getWidth();
+		//float	menuXX		= this.controlP5.getController("menuX").getPosition()[0];
+		//float	menuWidth	= this.controlP5.getController("menuX").getWidth();
+/*
 
 		this.controlP5.addTextlabel("menu")
 		.setPosition(menuXX + menuWidth + 3, 10)
 		.setHeight(15)
 		//.setGroup("sidebarGroup")
 		.setValue("Menu");
-
+*/
 	} // constructor
 
 
@@ -620,7 +641,15 @@ public class ModuleMenu extends MenuTemplate  {
 		int	hamburgerY		= 13;
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
-
+		
+		this.outsideButtonsCP5.addScrollableList("menuList", hamburgerX, hamburgerY, 150, 450)
+		.setBarHeight(25)
+		.setItemHeight(20)
+		.close();
+		
+		
+		
+/*
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
 		this.outsideButtonsCP5.addButton("hamburger")
@@ -641,7 +670,9 @@ public class ModuleMenu extends MenuTemplate  {
 		//.setGroup("sidebarGroup")
 		.updateSize()
 		.bringToFront();
-
+*/
+		
+		
 		//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
 	} // addOutsideButtons
 
@@ -856,7 +887,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		int		height			= 18;
 
-		int		listSliderX		= xVal + (popoutSpacer * 2) + labelWidth;
+		int		listSliderX		= /*xVal + */(popoutSpacer * 2) + labelWidth;
+
 		//		int		textfieldX		= boxWidth - popoutSpacer - textfieldWidth;
 
 		int		rangeY			= popoutSpacer;
@@ -887,12 +919,12 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for(int i = 0; i < labels.length; i++)
 		{
-			this.addSliderGroup(xVal, yVals[i], labelVals[i], listSliderX, sliderWidth, ranges[i][0], ranges[i][1], startingVals[i], textfieldWidth, "guideToneBackground");
+			this.addSliderGroup(/*xVal*/0, yVals[i], labelVals[i], listSliderX, sliderWidth, ranges[i][0], ranges[i][1], startingVals[i], textfieldWidth, "guideToneBackground");
 		} // for
 
 		// "ADSR Presets" Textlabel
 		this.controlP5.addTextlabel("adsrPresets")
-		.setPosition(xVal + popoutSpacer, adsrY)
+		.setPosition(/*xVal + */popoutSpacer, adsrY)
 		.setGroup("guideToneBackground")
 		.setValue("ADSR \nPresets");
 
@@ -920,7 +952,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		// "Range" Textlabel
 		this.controlP5.addTextlabel("range")
-		.setPosition(xVal + popoutSpacer, rangeY + 4)
+		.setPosition(/*xVal + */popoutSpacer, rangeY + 4)
 		.setGroup("guideToneBackground")
 		.setValue("Range");
 
@@ -1198,79 +1230,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fillHSBColors();
 	} // addSpecialColors
 
-	/**
-	 * TODO - needs commenting or can go.
-	 * 
-	 * @param yVal
-	 */
-	public void addShapeCustomizationControls(int yVal)
-	{
-		this.controlP5.addButton("shapeMenuButton")
-		.setPosition(this.leftAlign, yVal)
-		.setHeight(this.sliderHeight)
-		.setWidth(this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer)
-		.setLabel("Shape Menu");
-		//.setGroup("sidebarGroup");
-
-		this.controlP5.addGroup("shapeMenuGroup");
-
-
-		int fb = new Color((int)0,(int)0,(int)0, (int)250).getRGB();
-		CColor fadedBackground = new CColor();
-		//fadedBackground.setAlpha();
-
-		this.controlP5.addSlider("a", .01f, 3, 1, 15, 120, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("b", .01f, 3, 1, 15, 170, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		((Slider) this.controlP5.addSlider("m1", 0, 15, 1, 15, 220, 150, 28))
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		((Slider) this.controlP5.addSlider("m2", 0, 15, 1, 15, 270, 150, 28))
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("n1", 0, 10, 1, 15, 320, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("n2", 0, 10, 1, 15, 370, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addSlider("n3", 0, 10, 1, 15, 420, 150, 28)
-		.setGroup("shapeMenuGroup")
-		.getCaptionLabel()
-		.hide();
-
-		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(15,70)
-		.setSize(150, 100)
-		.setBarHeight(30)
-		.setGroup("shapeMenuGroup")
-		.addItems(new String[] {"shape1", "shape2", "shape3", "shape4", "shape5"})
-		.close()
-		//		.setValue(this.module2.getShape().getShapeIndex());
-		.setValue(0f);
-
-
-
-		this.controlP5.getGroup("shapeMenuGroup")
-		.setVisible(false);
-
-	} // addShapeCustomizationControls
-
 
 	/**
 	 * Method called during instantiation to initialize the color style Toggles
@@ -1329,7 +1288,8 @@ public class ModuleMenu extends MenuTemplate  {
 		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
 		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.setColorStyle(ModuleMenu.CS_RAINBOW);
+	//	this.setColorStyle(ModuleMenu.CS_RAINBOW);
+		this.controlP5.getController("rainbow").update();
 	} // addColorStyleButtons
 
 
@@ -1342,7 +1302,8 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(xVal + this.labelX, yVal + 4)
 		.setStringValue("Input:");
 
-		String[]	listItems	= new String[this.numInputs];
+		String[]	listItems	= new String[this.module.getTotalNumInputs()];
+
 		for(int i = 0; i < listItems.length; i++)
 		{
 			listItems[i]	= (i + 1) + "";
@@ -1365,9 +1326,27 @@ public class ModuleMenu extends MenuTemplate  {
 		.setItems(listItems)
 		.setOpen(false)
 		.setCaptionLabel("Select an input")
+		.bringToFront()
 		//		.setValue(0f)
 		.getCaptionLabel().toUpperCase(false);
 	} // addInputSelect
+
+
+	public void addInputNumSelect(int xVal, int yVal)
+	{
+		// Add input number selection:
+		String[] numInputItems	= new String[] {
+				"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+		}; // numInputItems
+		this.controlP5.addScrollableList("numInputsList")
+		.setPosition(xVal + this.leftAlign, yVal)
+		.setItems(numInputItems)
+		.setOpen(false)
+		.bringToFront()
+		.setCaptionLabel("Select number of inputs")
+		.getCaptionLabel().toUpperCase(false);
+	} // addInputNumSelect
+
 
 	/**
 	 * Sets this.goalHue to the value of the given position in this.colors
@@ -1448,7 +1427,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
-//			System.out.println("We're below the threshold....");
 			this.nowBelow[inputNum]	= true;
 
 			for(int i = 0; i < this.goalHue[inputNum].length; i++)
@@ -1579,9 +1557,10 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 
 	/**
-	 * Uses the values of the specialColors CWs to apply the current colorStyle.
+	 * Calls the appropriate function to apply the current color style.
 	 */
-	protected void applySpecialColors()
+/*	protected void applySpecialColors()
+>>>>>>> recoverMod0103
 	{
 		// Rainbow:
 		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
@@ -1605,7 +1584,11 @@ public class ModuleMenu extends MenuTemplate  {
 			// (allows selection of 2nd color):
 			else
 			{
+<<<<<<< HEAD
 				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
+=======
+				this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1));
+>>>>>>> recoverMod0103
 			}
 
 		} // Dichromatic
@@ -1630,6 +1613,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		} // Trichromatic
 	} // applySpecialColors
+*/
 
 
 	/**
@@ -1685,7 +1669,7 @@ public class ModuleMenu extends MenuTemplate  {
 		rgbVals2[1]	= rgbColor2.getGreen();
 		rgbVals2[2]	= rgbColor2.getBlue();	
 
-		this.dichromatic_TwoRGB(rgbVals1, rgbVals2, true);
+		this.dichromatic_TwoRGB(rgbVals1, rgbVals2);
 	} // dichromatic_OneHSB(int)
 
 
@@ -1695,7 +1679,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param rgbVals1	float[] of rgb values defining tonicColor.
 	 * @param rgbVals2	float[] of rgb values defining the color of the last note of the scale.
 	 */
-	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2, boolean fillFirstToLast)
+	public void dichromatic_TwoRGB(int[] rgbVals1, int[] rgbVals2)
 	{
 		if(rgbVals1 == null || rgbVals2 == null) {
 			throw new IllegalArgumentException("Module_01_02.dichromatic_TwoRGB: at least one of the float[] parameters is null.");
@@ -1725,20 +1709,11 @@ public class ModuleMenu extends MenuTemplate  {
 
 		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
 
-		int[]	curColor	= this.getColor(0);
+		int[]	curColor;
 		int[]	newColor	= new int[3];
-
-		// Loop through red, then green, then blue
-		// (could do it like normal, but then would have to calculate difference each time;
-		// those who save processor cycles store up treasure in Heaven):
-		/*		for(int i = 0; i < 3; i++)
-		{
-			difference	= rgbVals1[i] - rgbVals2[i];
-		 */
-		
 		int	startHere;
 		int	endBeforeThis;
-		
+
 		if(global)
 		{
 			startHere		= 0;
@@ -1747,7 +1722,7 @@ public class ModuleMenu extends MenuTemplate  {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
 		}
-		
+
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
 			curColor	= this.colors[i][0];
@@ -1759,9 +1734,11 @@ public class ModuleMenu extends MenuTemplate  {
 				// (and dividing by 100 because percent requires it but to do so earlier would create smaller numbers than Java likes to deal with).
 				//				this.colors[j][i]	= this.colors[0][i] - (difference * j * percent / 100);
 
-				newColor[0]	= (int)(curColor[0] - (rDif * j * percent / 100));
-				newColor[1]	= (int)(curColor[1] - (gDif * j * percent / 100));
-				newColor[2]	= (int)(curColor[2] - (bDif * j * percent / 100));
+				newColor[0]	= Math.round(curColor[0] - (rDif * j * percent / 100));
+				newColor[1]	= Math.round(curColor[1] - (gDif * j * percent / 100));
+				newColor[2]	= Math.round(curColor[2] - (bDif * j * percent / 100));
+
+	//			System.out.println("dichrom: newColor[0] = " + newColor[0] + "; newColor[1] = " + newColor[1] + "; newColor[2] = " + newColor[2]);
 
 				this.colors[i][j][0]	= newColor[0];
 				this.colors[i][j][1]	= newColor[1];
@@ -1779,13 +1756,6 @@ public class ModuleMenu extends MenuTemplate  {
 			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
 		} // for - i
 
-
-		// Fill the last color manually, because if we don't,
-		// it can't seem to calculate correctly when the tonic color is changed:
-		for(int i = startHere; i < endBeforeThis; i++)
-		{
-			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
-		}
 		//		this.setColor(this.colorSelect.length - 1, rgbVals2, false);	
 		/*
 		this.setColorSelectCW(this.colorSelect.length - 1, rgbVals2);
@@ -1820,7 +1790,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**
 	 * Uses the given HSB color to find the color across it on the HSB wheel,
-	 * converts both colors to RGB, and passes them as parameters to dichromatic_TwoRGB.
+	 * converts both colors to RGB, and passes them as parameters to trichromatic_ThreeRGB.
 	 *
 	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
@@ -1935,7 +1905,6 @@ public class ModuleMenu extends MenuTemplate  {
 		// This array has the trichromatic spectrum:
 		int[][]	trichromColors	= new int[this.scaleLength][3];
 //		trichromColors	= new int[this.scaleLength][3];
-		trichromColors	= new int[this.scaleLength][3];
 
 		// fill first position with first color:
 		for(int i = 0; i < rgbVals1.length; i++)
@@ -1958,8 +1927,6 @@ public class ModuleMenu extends MenuTemplate  {
 		trichromColors[color2pos][0]	= rgbVals2[0];
 		trichromColors[color2pos][1]	= rgbVals2[1];
 		trichromColors[color2pos][2]	= rgbVals2[2];
-//		Exception	e	= new Exception("Just detective work.");
-//		e.printStackTrace();
 
 		// fill from second color to third color:
 		for(int i = color2pos + 1; i < color3pos; i++)
@@ -1992,7 +1959,7 @@ public class ModuleMenu extends MenuTemplate  {
 		int	trichromColorPos	= 0;
 		int	startHere;
 		int	endBeforeThis;
-		
+
 		if(global)
 		{
 			startHere		= 0;
@@ -2001,7 +1968,7 @@ public class ModuleMenu extends MenuTemplate  {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
 		}
-		
+
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
 			for(int j = 0; j < this.colors[i].length && trichromColorPos < trichromColors.length; j++)
@@ -2028,10 +1995,9 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void rainbow()
 	{
-		System.out.println(" --------- in rainbow() ---------- ");
 		int	startHere;
 		int	endBeforeThis;
-		
+
 		if(global)
 		{
 			startHere		= 0;
@@ -2040,12 +2006,11 @@ public class ModuleMenu extends MenuTemplate  {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
 		}
-		
+
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				System.out.println("this.rainbowColors[" + this.majMinChrom + "][" + j + "][0] = " + this.rainbowColors[this.majMinChrom][j][0]);
 				this.colors[i][j][0]	= this.rainbowColors[this.majMinChrom][j][0];
 				this.colors[i][j][1]	= this.rainbowColors[this.majMinChrom][j][1];
 				this.colors[i][j][2]	= this.rainbowColors[this.majMinChrom][j][2];
@@ -2071,13 +2036,19 @@ public class ModuleMenu extends MenuTemplate  {
 	 * Buttons should all be unlocked, but for Dichromatic, only 3rdColor should be locked).
 	 * 
 	 * @param newColorStyle	int between 1 and 4 indicating the new ColorStyle
+	 * @param inputNum	the input for which to change the colorStyle
 	 */
-	public void setColorStyle(int newColorStyle)
+	public void setColorStyle(int newColorStyle, int inputNum)
 	{
-		this.curColorStyle	= newColorStyle;
+		if(inputNum >= this.curColorStyle.length || inputNum < 0)
+		{
+			throw new IllegalArgumentException("ModuleMenu.setColorStyle: inputNum " + inputNum + 
+					" is outside the acceptable range; must be between 0 and " + this.curColorStyle.length + ".");
+		}
+		this.curColorStyle[inputNum]	= newColorStyle;
 
 		// Rainbow:
-		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		if(this.curColorStyle[inputNum] == ModuleTemplate01.CS_RAINBOW)
 		{
 			//	if avoids errors during instantiation:
 			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	
@@ -2097,9 +2068,9 @@ public class ModuleMenu extends MenuTemplate  {
 		} // if - rainbow
 
 		// Dichromatic:
-		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		if(this.curColorStyle[inputNum] == ModuleTemplate01.CS_DICHROM)
 		{
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
 
 				this.specialColorsPos[i][0]	= 0;
@@ -2117,9 +2088,6 @@ public class ModuleMenu extends MenuTemplate  {
 				if(!this.dichromFlag)
 				{
 					this.dichromatic_OneRGB(this.colors[i][0]);					
-//					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1], false);
-
-					//					this.dichromatic_OneRGB(this.getColor(0));
 
 					this.dichromFlag	= true;
 				} // first time
@@ -2127,13 +2095,7 @@ public class ModuleMenu extends MenuTemplate  {
 				// (allows selection of 2nd color):
 				else
 				{
-/*					System.out.println("passing colors at positions 0 and " + (this.colors[this.currentInput].length - 1) 
-							+ " to dichromatic:\n\trgb(" + this.colors[this.currentInput][0][0] + ", " + this.colors[this.currentInput][0][1] + ", " + this.colors[this.currentInput][0][2]
-									+ ");\n\trgb(" + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][0]
-											+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][1]
-													+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][2] + ")");
-*/
-					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1], false);
+					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1]);
 					//					this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 				}
 			} // for
@@ -2141,14 +2103,14 @@ public class ModuleMenu extends MenuTemplate  {
 		} // Dichromatic
 
 		// Trichromatic:
-		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		if(this.curColorStyle[inputNum] == ModuleTemplate01.CS_TRICHROM)
 		{
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
-			
+
 			int	startHere;
 			int	endBeforeThis;
-			
+
 			if(global)
 			{
 				startHere		= 0;
@@ -2180,6 +2142,7 @@ public class ModuleMenu extends MenuTemplate  {
 					//					this.setColor(colorPos3, this.getColor(this.specialColorsPos[i][2]), false);
 /*					this.setColorSelectCW(colorPos2, this.getColor(this.specialColorsPos[i][1]));
 					this.setColorSelectCW(colorPos3, this.getColor(this.specialColorsPos[i][2]));
+
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos2);
 					this.setSpecialColorsCW(specialColorsPos, this.getColor(this.specialColorsPos[i][1]));
 					specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], colorPos3);
@@ -2205,7 +2168,6 @@ public class ModuleMenu extends MenuTemplate  {
 //						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
 				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
 				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
-
 
 				this.specialColorsPos[i][0]	= 0;
 				this.specialColorsPos[i][1]	= colorPos2;
@@ -2233,13 +2195,13 @@ public class ModuleMenu extends MenuTemplate  {
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
 				color	= this.colors[i][j];
-				
+
 				for(int k = 0; k < color.length; k++)
 				{
 					// Adds redModulate to the red, greenModulate to the green, and blueModulate to the blue:
 					color[k]	= Math.min(Math.max(color[k] + (int)this.redGreenBlueMod[k], 0), 255);
 				} // for - k
-				
+
 				this.colors[i][j]	= color;
 			} // for - j
 
@@ -2378,7 +2340,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	void fillHSBColors()
 	{
 		if(this.hsbColors == null) {
-			this.hsbColors = new int[this.numInputs][this.colorSelect.length][3];
+			this.hsbColors = new int[this.module.getTotalNumInputs()][this.colorSelect.length][3];
 		}
 
 		// Only do this after the colors have been initialized:
@@ -2479,7 +2441,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.outsideButtonsCP5.getController("pause").setVisible(val);
 			this.showPause	= val;
 
-			// play Button:
+			//play button
 			if(val)
 			{
 				this.playMelody();
@@ -2549,6 +2511,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// Hamburger is still able to be clicked because of a boolean isClickable added to 
 			//Controller; automatically false, but able to be set to true.
 			// A Controller must be visible and/or clickable to respond to click.
+
 			if(!this.getIsRunning())
 			{
 				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
@@ -2630,8 +2593,21 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
-
-			this.setColorStyle(this.curColorStyle);
+			
+			int	startHere;
+			int	endBeforeThis;
+			if(global)
+			{
+				startHere	= 0;
+				endBeforeThis	= this.module.getTotalNumInputs();
+			} else {
+				startHere	= this.currentInput;
+				endBeforeThis	= this.currentInput + 1;
+			}
+			for(int i = startHere; i < endBeforeThis; i++)
+			{
+				this.setColorStyle(this.curColorStyle[i], i);
+			}
 
 			// Turn off the other two:
 			Toggle[] toggleArray	= new Toggle[] {
@@ -2680,8 +2656,21 @@ public class ModuleMenu extends MenuTemplate  {
 				controlEvent.getName().equals("custom"))
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
-
-			this.setColorStyle((int)curToggle.internalValue());
+			
+			int	startHere;
+			int	endBeforeThis;
+			if(global)
+			{
+				startHere	= 0;
+				endBeforeThis	= this.module.getTotalNumInputs();
+			} else {
+				startHere	= this.currentInput;
+				endBeforeThis	= this.currentInput + 1;
+			}
+			for(int i = startHere; i < endBeforeThis; i++)
+			{
+				this.setColorStyle((int)curToggle.internalValue(), i);
+			}
 
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
@@ -2754,19 +2743,22 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 
 				//				this.controlP5.setAutoDraw(false);
-				this.controlP5.getGroup("background").setVisible(true);
-				this.controlP5.getGroup("background").bringToFront();
+				this.controlP5.getGroup("leftBackground").setVisible(true);
+				this.controlP5.getGroup("leftBackground").bringToFront();
+				this.controlP5.getGroup("topBackground").setVisible(true);
+				this.controlP5.getGroup("topBackground").bringToFront();
+
 				this.controlP5.getController("guideToneButton").bringToFront();
 
 			} else {
 
 				//				this.controlP5.setAutoDraw(true);
-				this.controlP5.getGroup("background").setVisible(false);
+				this.controlP5.getGroup("leftBackground").setVisible(false);
+				this.controlP5.getGroup("topBackground").setVisible(false);
 			}
 
 			this.controlP5.getGroup("guideToneBackground").bringToFront();
 			this.controlP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
-
 		} // Guide Tone Generator
 
 		// ADSR Presets Scrollable List:
@@ -2829,23 +2821,44 @@ public class ModuleMenu extends MenuTemplate  {
 		// Input Select dropdown:
 		if(controlEvent.getName() == "inputSelectDropdown")
 		{
+			controlEvent.getController().bringToFront();
+			
 			// Save these colors: -- no longer necessary, since getColor() uses this.colors, too
-/*			for(int i = 0; i < this.colorSelect.length; i++)
+			/*			for(int i = 0; i < this.colorSelect.length; i++)
 			{
 				this.colors[this.currentInput][i]	= this.getColor(i);
 			}
-*/
-			
+			 */
+
 			// Switch to newly selected input num:
 			this.currentInput	= (int)controlEvent.getValue();
 			System.out.println("currentInput = " + this.currentInput);
 			// Turn off global:
 			((Toggle)this.controlP5.getController("global")).setState(false);
+			
+			// Restore this input's colorStyle:
+			if(this.curColorStyle[this.currentInput] == ModuleMenu.CS_RAINBOW)
+			{
+				this.controlP5.getController("rainbow").update();
+			}
+			if(this.curColorStyle[this.currentInput] == ModuleMenu.CS_DICHROM)
+			{
+				this.controlP5.getController("dichrom").update();
+			}
+			if(this.curColorStyle[this.currentInput] == ModuleMenu.CS_TRICHROM)
+			{
+				this.controlP5.getController("trichrom").update();
+			}
+			if(this.curColorStyle[this.currentInput] == ModuleMenu.CS_CUSTOM)
+			{
+				this.controlP5.getController("custom").update();
+			}
 
 			// Set the colorWheels to our new current input:
-/*			for(int i = 0; i < this.specialColorsPos[this.currentInput].length; i++)
+			/*			for(int i = 0; i < this.specialColorsPos[this.currentInput].length; i++)
 			{
-				//				this.setColor(i, this.colors[this.currentInput][i], false);				this.setColorSelectCW(i, this.colors[this.currentInput][i]);
+				//				this.setColor(i, this.colors[this.currentInput][i], false);
+				this.setColorSelectCW(i, this.colors[this.currentInput][i]);
 				if(this.firstSpecialColorsCWId > 0)
 				{
 					this.setSpecialColorsCW(i, this.colors[this.currentInput][i]);
@@ -2855,6 +2868,12 @@ public class ModuleMenu extends MenuTemplate  {
 			this.fillHSBColors();
 			*/
 		} // input select dropdown
+		
+		if(controlEvent.getName().equals("numInputsList"))
+		{
+			this.module.setCurNumInputs((int)controlEvent.getValue() + 1);
+			this.module.setSquareValues();
+		} // numInputsList
 
 	} // controlEvent
 
@@ -2870,7 +2889,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// Piano Threshold:
 		if(id == this.pianoThresholdSliderId)
 		{
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
 				this.pianoThreshold[i]	= (int)val;
 				this.resetThresholds(i);
@@ -2880,7 +2899,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// Forte Threshold:
 		if(id == this.forteThresholdSliderId)
 		{
-			for(int i = 0; i < this.numInputs; i++)
+			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
 				this.forteThreshold[i]	= (int)val;
 				this.resetThresholds(i);
@@ -2888,7 +2907,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // forte threshold Slider
 
 		// Attack, Release, and Transition:
-		if(id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3))
+		if((id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3)) && this.firstARTSliderId != -1)
 		{
 			//			int	pos	= (id / 2) - 1;
 			int	pos	= id - this.firstARTSliderId;
@@ -2896,7 +2915,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			if(global)
 			{
-				for(int i = 0; i < this.numInputs; i++)
+				for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 				{
 					this.setAttRelTranVal(pos, i, val);
 				} // for
@@ -2906,7 +2925,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // attack/release/transition
 
 		// Hue/Saturation/Brightness modulate
-		if(id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3))
+		if((id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3)) && this.firstHSBSliderId != -1)
 		{
 			//			int pos = (id/2)-7;
 			int pos = id - this.firstHSBSliderId;
@@ -2918,7 +2937,7 @@ public class ModuleMenu extends MenuTemplate  {
 		}//hsb mod
 
 		// Red Modulate/Green Modulate/Blue Modulate:
-		if(id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3))
+		if((id >= this.firstRGBSliderId && id < (this.firstRGBSliderId + 3)) && this.firstRGBSliderId != -1)
 		{
 			//			int	pos	= (id / 2) - 4;		
 			int	pos	= id - this.firstRGBSliderId;	// red = 0, green = 1, blue = 2
@@ -2986,8 +3005,7 @@ public class ModuleMenu extends MenuTemplate  {
 		
 		int	colorPos;
 		int	cwId	= (id % 100) + 300;
-		System.out.println("; cwId " + cwId + "; canvas id = " + this.canvasColorSelectId + "; specialColorsId = " + this.firstSpecialColorsCWId);
-		
+
 		// if from colorSelect, set the ColorWheel to the correct color:
 		if(cwId >= this.firstColorSelectCWId && cwId < (this.firstColorSelectCWId + colors[this.currentInput].length) && cwId != this.canvasColorSelectId)
 		{
@@ -3059,7 +3077,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(global)	
 		{	
 			startHere		= 0;
-			endBeforeThis	= this.numInputs;
+			endBeforeThis	= this.module.getTotalNumInputs();
 		} else {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
@@ -3135,7 +3153,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param id	int denoting the id of the current Event
 	 * @return	the position in colors that is to be changed
 	 */
-	protected	int	calculateNotePos(int id)
+/*	protected	int	calculateNotePos(int id)
 	{		
 		int	notePos;
 		/*
@@ -3156,7 +3174,7 @@ public class ModuleMenu extends MenuTemplate  {
 		// subtracting curKeyEnharmonicOffset adjusts for the particular key;
 		// adding 12 and modding by 12 avoids negative numbers.
 
-		id	= id % 100;
+/*		id	= id % 100;
 		notePos	= ( id - (this.firstColorSelectCWId % 100) - this.curKeyEnharmonicOffset + 12) % 12;
 
 
@@ -3218,7 +3236,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		return	notePos;
 	} // calculateNotePos
-
+*/
 
 	/**
 	 * Sets the Sliders and Textfields for RGB and HSB color modulate to 0
@@ -3520,8 +3538,9 @@ public class ModuleMenu extends MenuTemplate  {
 	 *  @param   String    name of the method that called this method, used in the exception message.
 	 */
 	private void inputNumErrorCheck(int inputNum) {
-		if (inputNum >= this.numInputs) {
-			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.numInputs + ", the number of inputs.");
+		if (inputNum >= this.module.getTotalNumInputs()) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.module.getTotalNumInputs() + ", the number of inputs.");
+
 			iae.printStackTrace();
 			throw iae;
 		}
@@ -3616,7 +3635,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(color == null) {
 			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: float[] parameter is null.");
 		}
-		
+
 		// Only do this if colorSelect CWs have actually been initialized:
 		if(this.firstSpecialColorsCWId > 0) 
 		{
@@ -3740,8 +3759,8 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 
 	public int[][] getCurHue()				{	return this.curHue;	}
-	
-	public int getCurColorStyle()			{	return this.curColorStyle;	}
+
+	public int getCurColorStyle(int inputNum)			{	return this.curColorStyle[inputNum];	}
 
 	/**
 	 * Returns the current attack, release, or transition value indicated by the parameter:
@@ -3864,10 +3883,31 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getSliderHeight() {
 		return this.sliderHeight;
 	}
-	
+
 	public ControlP5 getOutsideButtonsCP5()
 	{
 		return this.outsideButtonsCP5;
 	}
+	
+	public Instrument getInstrument()
+	{
+		return this.instrument;
+	}
 
+	public void setBPM(int bpm)
+	{
+		this.bpm = bpm;
+	}
+	
+	public void setMenuList(String[] list)
+	{
+		((ScrollableList)this.outsideButtonsCP5.getController("menuList"))
+		.addItems(list);
+	}
+	
+	public int getCurrentMenu()
+	{
+		return (int) this.outsideButtonsCP5.getController("menuList").getValue();
+	}
+	
 } // ModuleTemplate
