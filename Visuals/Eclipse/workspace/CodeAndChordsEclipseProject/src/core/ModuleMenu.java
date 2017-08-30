@@ -888,6 +888,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addKeySelector
 
+	
 	/**
 	 * Adds the guide tone pop-out with range and envelope preset select dropdowns, bpm and volume sliders.
 	 * 
@@ -1189,6 +1190,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // addThresholdSliders
 
+	
 	/**
 	 * Adds the Button/ColorWheel/Textfield groups for colors that will have a special function,
 	 * e.g., "Tonic", "2nd Color", and "3rd Color" in Module_01.
@@ -1796,7 +1798,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // dichromatic_TwoRGB
 
-
 	/**
 	 * Converts the given color to HSB and sends it to dichromatic_OneHSB.
 	 * (dichromatic_OneHSB will send it to _TwoHSB, which will set this.colors, changing the scale.)
@@ -1863,6 +1864,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.trichromatic_ThreeRGB(rgbVals1, rgbVals2, rgbVals3);
 	} // trichromatic_OneHSB
 
+	
 	/**
 	 * Calculates the colors between the 3 sets of given vals
 	 * and fills colors with a spectrum fading between them.
@@ -2416,6 +2418,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.melody.playMelody(this.curKey, this.bpm, scales[this.majMinChrom], this.rangeOctave, this.instrument);
 	} // playMelody
 
+	
 	/**
 	 * Displays the "sidebarGroup" of this.controlP5
 	 */
@@ -2431,6 +2434,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // displaySidebar
 	
+	/**
+	 * Calls super.runMenu to show or hide the Controllers,
+	 * but also sets leftEdgeX depending on whether or not the Menu is open.
+	 */
 	@Override
 	public void runMenu()
 	{
@@ -2444,6 +2451,10 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 	} // runMenu
 	
+	/**
+	 * Uses this.showPlayStop, this.showPause, and this.showHamburger to determine which of the 
+	 * outside Buttons should be set to visible.
+	 */
 	public void showOutsideButtons()
 	{
 		this.outsideButtonsCP5.setVisible(true);
@@ -2452,6 +2463,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
 		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
 	} // showOutsideButtons
+	
 
 	/**
 	 * Calls super.runMenu to show or hide the Controllers,
@@ -3050,6 +3062,7 @@ public class ModuleMenu extends MenuTemplate  {
 	} // controlEvent
 
 
+	
 	/**
 	 * Called from MenuTemplate for Sliders that were added by the addSliderGroup() method
 	 * and are connected to a Textfield (MenuTemplate has already updated the Textfield value).
@@ -3705,6 +3718,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // getScale
 
+	
 	/**
 	 * Updates the keyDropdown ScrollableList and sets the current key and all 
 	 * connected variables: this.majMinChrom, this.scaleLength, this.curKey, this.keyAddVal.
@@ -3733,7 +3747,6 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 	} // setCurKey
-
 
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
@@ -4034,6 +4047,7 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.attRelTranVals[attRelTranPos];
 	}
 	 */
+
 	/**
 	 * Sets either attack, release, or transition to the given value
 	 * 
@@ -4123,7 +4137,7 @@ public class ModuleMenu extends MenuTemplate  {
 	public float getShapeSize() {
 		return this.shapeSize;
 	}
-
+*/
 	/**
 	 * Getter for this.thresholds
 	 * 

@@ -112,7 +112,7 @@ public abstract class MenuTemplate implements ControlListener {
 		
 		this.controlP5		= new ControlP5(this.parent);
 		this.controlP5.addListener((ControlListener)this);
-		// This is the group that Sliders added w/out a specific group get added to:
+		// This is the group to which Sliders w/out a specific group get added:
 		this.controlP5.addGroup("groupPlaceholder").setVisible(true);
 		
 >>>>>>> f0020e9... Beginning of transition from ModuleTemplate to MenuTemplate and ModuleMenu.
