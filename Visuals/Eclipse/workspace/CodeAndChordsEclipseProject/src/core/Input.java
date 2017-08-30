@@ -314,7 +314,11 @@ public class Input {
 			if(this.gainArray[i] == null)
 			{
 				this.gainArray[i]	= new Gain(this.ac, 0, 0);
+<<<<<<< HEAD
 
+=======
+				
+>>>>>>> 726f4d5... Commit after aborting the rebase
 				// TODO: uncomment this line to hear what's going in the mics (e.g., through headphones):
 //				this.gainArray[i]	= new Gain(this.ac, 1, 0.5f);
 			}

@@ -34,7 +34,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	private	int[]	yVals;
 
 	private	int		currentMenu;
-
+	
 	public static void main(String[] args) 
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
@@ -50,9 +50,22 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
+<<<<<<< HEAD
 				this.input	= new Input(this);
 		//this.input    = new Input(1, new AudioContext(), this);
 				
+=======
+<<<<<<< HEAD
+		//		this.input	= new Input(this);
+		this.input    = new Input(1, new AudioContext(), this);
+		this.totalNumInputs	= 1;
+
+=======
+				this.input	= new Input(this);
+		//this.input    = new Input(1, new AudioContext(), this);
+				
+>>>>>>> e933c3b... menu select working with scrollable list, but there are bugs with the colors
+>>>>>>> 726f4d5... Commit after aborting the rebase
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
 				{
@@ -79,7 +92,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
 				this.yVals[0]	= 50;
-
 				int	distance	= (this.height - this.yVals[0]) / this.yVals.length;
 				for(int i = 1; i < this.yVals.length; i++)
 				{

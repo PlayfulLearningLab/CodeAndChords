@@ -340,5 +340,9 @@ public abstract class Module extends PApplet {
 	{
 		
 	} // setShapePosVals
+<<<<<<< HEAD
+=======
+
+>>>>>>> 726f4d5... Commit after aborting the rebase
 
 } // Module
