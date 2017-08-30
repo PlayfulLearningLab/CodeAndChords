@@ -1465,6 +1465,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.nowBelow[inputNum]	= false;
 
 			this.goalHue[inputNum]	= this.applyThresholdSBModulate(curAmp, inputNum, position);
+
+			System.out.println("Now we're above it! applying the threshold modulate; goalHue = rgb("
+					+ this.goalHue[inputNum][0] + ", " + this.goalHue[inputNum][0] + ", "+ this.goalHue[inputNum][0] + ")");
 		} // else
 
 		if(this.checkpoint[inputNum] < this.parent.millis())
@@ -3286,8 +3289,9 @@ public class ModuleMenu extends MenuTemplate  {
 			endBeforeThis	= this.currentInput + 1;
 		}
 
-		// if from ColorSelect:
-		if(id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length))
+		// if from ColorSelect or canvasColorSelect:
+		if(( id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length ) ) 
+				|| (id == this.canvasColorSelectId) )
 		{
 			colorPos	= id - this.firstColorSelectCWId;
 		} else if(id >= this.firstSpecialColorsCWId && id < (this.firstSpecialColorsCWId + this.specialColorsPos[0].length))
@@ -3300,7 +3304,8 @@ public class ModuleMenu extends MenuTemplate  {
 			this.applySpecialColors();
 
 		} else {
-			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors.");
+			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors;" + 
+					"firstColorSelectCWID = " + this.firstColorSelectCWId + ".");
 		}
 
 		// if from ColorSelect or canvasColorSelect:
@@ -3356,21 +3361,12 @@ public class ModuleMenu extends MenuTemplate  {
 				System.out.println("colorWheelEvent: i = " + i + "; colorPos = " + colorPos);
 
 				// colors that are not canvasColor:
-
 				this.colors[i][colorPos][0]	= color.getRed();
 				this.colors[i][colorPos][1]	= color.getGreen();
 				this.colors[i][colorPos][2]	= color.getBlue();
 			} // else - not canvas
 
-			this.colors[i][colorPos][0]	= color.getRed();
-			this.colors[i][colorPos][1]	= color.getGreen();
-			this.colors[i][colorPos][2]	= color.getBlue();
 
-			if(!this.fromColorSelect[i])
-			{
-				//				System.out.println("not from colorSelect; applying specialColors.");
-				//				this.applySpecialColors();
-			}
 
 		} // for
 
