@@ -22,6 +22,7 @@ public abstract class Module extends PApplet {
 	protected	int[]	rectHeights;
 	
 	protected	Shape			shape;
+	protected	Shape[]			shapes;
 	
 	/**	For Modules with a Shape, this ShapeEditor provides Shape customization Controllers	*/
 	protected 	ShapeEditor		shapeEditor;
