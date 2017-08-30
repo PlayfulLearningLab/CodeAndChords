@@ -117,6 +117,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
 		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 		
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
@@ -430,4 +431,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			};
 		} // 12
 	} // set Square Vals
+
+*/
 } // class

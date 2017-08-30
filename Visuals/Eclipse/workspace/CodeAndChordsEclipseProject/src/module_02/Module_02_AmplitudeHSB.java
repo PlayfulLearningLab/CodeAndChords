@@ -75,6 +75,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 4);
 				this.menu.setIsRunning(false);
+
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
 				this.yVals[0]	= 50;
@@ -137,7 +138,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if (keyPressed == true) 
 		{
 			this.menu.setMenuVal();
-			
+
 			this.menu.setIsRunning(true);
 		}
 
@@ -245,16 +246,16 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
 		 */
 	} // drawShape
-	
+
 	@Override
 	public String[] getLegendText()
 	{
 		String[]	result	= new String[this.menu.getCurRangeSegments()];
 		for(int i = 0; i < result.length; i++)
 		{
-			result[i]	= this.menu.getThresholds()[i] + "";
+			result[i]	= this.menu.getThresholds()[0][i] + "";
 		} // for
-		
+
 		return result;
 	} // fillLegendText
 
@@ -274,7 +275,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		return this.shape;
 	}
-
 	/*
 	public void setShapeEditorRunning(boolean isRunning)
 	{
@@ -290,7 +290,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		this.mousePressed();
 	}
-	
+
 	public void mousePressed()
 	{
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?

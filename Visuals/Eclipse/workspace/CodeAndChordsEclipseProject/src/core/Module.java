@@ -341,5 +341,4 @@ public abstract class Module extends PApplet {
 		
 	} // setShapePosVals
 
-
 } // Module

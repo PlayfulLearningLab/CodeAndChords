@@ -463,6 +463,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.pianoThreshold[i]	= 10;
 			this.forteThreshold[i]	= 500;
 			this.resetThresholds(i);
+
+			System.out.println("pianoThreshold[" + i + "] = " + this.pianoThreshold[i] +
+					"; forteThreshold[" + i + "] = " + this.forteThreshold[i]);
 		} // for - initialize Thresholds
 
 		// set amplitude thresholds
@@ -782,10 +785,16 @@ public class ModuleMenu extends MenuTemplate  {
 		this.addSliderGroup(yVal, "Piano \nThreshold", 2, 100, 10);
 	} // addPianoThresholdSlider
 
-	public void addForteThresholdSlider(int yVal)
+	/**
+	 * Adds the forte (maximum) threshold Slider.
+	 * 
+	 * @param xVal	x value for leftmost edge of whole group
+	 * @param yVal	y value of Slider
+	 */
+	public void addForteThresholdSlider(int xVal, int yVal)
 	{
 		this.forteThresholdSliderId	= this.nextSliderId;
-		this.addSliderGroup(yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
+		this.addSliderGroup(xVal, yVal, "Forte\nThreshold", this.minThreshold, 7000, this.forteThreshold[0]);
 	} // addForteThresholdSlider
 
 	/**
@@ -2329,7 +2338,7 @@ public class ModuleMenu extends MenuTemplate  {
 		float	satMappingVal		= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[0], this.minThreshold + 1), 0, 100), 100), 0);
 		float	brightMappingVal	= Math.max(Math.min(PApplet.map(curAmp, 0, Math.max(this.satBrightThresholdVals[1], this.minThreshold + 1), 0, 100), 100), 0);
 
-		
+
 		// Notice how hueSatBrightPercentMod is accessed at 1 and 2, since hue is also a part of it,
 		// but satBrightPercentVals is accessed at 0 and 1, since it is only for saturation and brightness.
 		this.hueSatBrightPercentMod[1]	= (this.satBrightPercentVals[0] * satMappingVal) / 100;
@@ -2499,6 +2508,8 @@ public class ModuleMenu extends MenuTemplate  {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		super.controlEvent(controlEvent);
+
+		System.out.println("global = " + this.global);
 
 		//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
 
@@ -4042,7 +4053,6 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.attRelTranVals[attRelTranPos];
 	}
 	 */
-
 	/**
 	 * Sets either attack, release, or transition to the given value
 	 * 
