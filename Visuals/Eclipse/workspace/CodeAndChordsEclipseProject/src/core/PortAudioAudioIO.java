@@ -176,7 +176,6 @@ public class PortAudioAudioIO extends AudioIO {
 			{
 				throw new IllegalArgumentException("PAAIO.runRealTime: outStream is null.");
 			}
-
 			this.outStream.write( interleavedOutput, bufferSizeInFrames );
 		} // while
 		

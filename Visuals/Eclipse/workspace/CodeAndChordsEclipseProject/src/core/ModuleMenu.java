@@ -406,6 +406,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.canvasColor[i]	= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 			this.curColorStyle[i]	= ModuleMenu.CS_RAINBOW;
 		}
+
 		this.colorAdd			= new int[this.module.getTotalNumInputs()][3];
 		this.colorRange			= new int[this.module.getTotalNumInputs()][3];
 
@@ -415,6 +416,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fromColorSelect	= new boolean[this.module.getTotalNumInputs()];
 		//		this.fromSpecialColors	= new boolean[this.module.getTotalNumInputs()];
 		this.specialColorsPos	= new int[this.module.getTotalNumInputs()][3];
+
 		for(int i = 0; i < this.colorReachedArray.length; i++)
 		{
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
@@ -2722,6 +2724,12 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
 			this.setColorStyle((int)curToggle.internalValue());
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			// Turn off the other Toggles:
 			Toggle[] toggleArray	= new Toggle[] {
@@ -3270,6 +3278,18 @@ public class ModuleMenu extends MenuTemplate  {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
 		}
+		
+		// if from ColorSelect:
+		if(id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length))
+		{
+			colorPos	= id - this.firstColorSelectCWId;
+		} else if(id >= this.firstSpecialColorsCWId && id < (this.firstSpecialColorsCWId + this.specialColorsPos[0].length))
+		{
+			// if from specialColors:
+			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
+		} else {
+			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors.");
+		}
 
 		// if from ColorSelect or canvasColorSelect:
 		if(( id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length ) ) 
@@ -3351,6 +3371,7 @@ public class ModuleMenu extends MenuTemplate  {
 					if(specialColorsPos > -1 && this.fromColorSelect[i])
 					{
 						((ColorWheel)this.controlP5.getController("colorWheel" + (specialColorsPos + this.firstSpecialColorsCWId))).setRGB(color.getRGB());
+
 					} // if - this CW connects to a specialColor							
 				} // if - this CW is in colorSelect
 				else
