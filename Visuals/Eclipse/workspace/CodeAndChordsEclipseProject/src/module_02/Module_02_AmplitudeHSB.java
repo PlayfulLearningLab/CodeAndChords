@@ -50,22 +50,10 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
-<<<<<<< HEAD
-				this.input	= new Input(this);
-		//this.input    = new Input(1, new AudioContext(), this);
-				
-=======
-<<<<<<< HEAD
 		//		this.input	= new Input(this);
 		this.input    = new Input(1, new AudioContext(), this);
 		this.totalNumInputs	= 1;
 
-=======
-				this.input	= new Input(this);
-		//this.input    = new Input(1, new AudioContext(), this);
-				
->>>>>>> e933c3b... menu select working with scrollable list, but there are bugs with the colors
->>>>>>> 726f4d5... Commit after aborting the rebase
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
 				{

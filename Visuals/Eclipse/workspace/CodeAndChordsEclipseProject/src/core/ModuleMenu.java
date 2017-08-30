@@ -32,15 +32,9 @@ import processing.core.PImage;
 public class ModuleMenu extends MenuTemplate  {
 
 	public int trichromCounts	= 0;
-<<<<<<< HEAD
 	
 	// TODO - for testing trichromatic bug:
 //	public int[][] trichromColors;
-=======
-
-	// TODO - for testing trichromatic bug:
-	//	public int[][] trichromColors;
->>>>>>> 726f4d5... Commit after aborting the rebase
 
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
@@ -314,23 +308,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 * if a child class adds any of these components (e.g., a canvasColorSelect Button or RGB mod sliders),
 	 * they should initiate the corresponding one of these variables to the id of either the Button or Slider in question.
 	 */
-<<<<<<< HEAD
-	protected	int	canvasColorSelectId;//		= -1;
-	protected	int	firstColorModSliderId;//	= -1;
-	protected	int	firstColorSelectCWId;//	= -1;
-	protected	int	firstSpecialColorsCWId;//	= -1;
-	protected	int	lastColorSelectId;//		= -1;
-	protected	int	firstARTSliderId;//		= -1;
-	protected	int	firstHSBSliderId;//		= -1;
-	protected	int	firstRGBSliderId;//		= -1;
-	protected	int	bpmSliderId;//				= -1;
-	protected	int	volumeSliderId;//			= -1;
-	protected	int	shapeSizeSliderId;//		= -1;
-	protected	int	firstRangeSegmentsId;//	= -1;
-	protected	int	pianoThresholdSliderId;//	= -1;
-	protected	int	forteThresholdSliderId;//	= -1;
-	protected	int	firstSatBrightThreshSliderId;//	= -1;
-=======
 	protected	int	canvasColorSelectId		= -1;
 	protected	int	firstColorModSliderId	= -1;
 	protected	int	firstColorSelectCWId	= -1;
@@ -346,7 +323,6 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	pianoThresholdSliderId	= -1;
 	protected	int	forteThresholdSliderId	= -1;
 	protected	int	firstSatBrightThreshSliderId	= -1;
->>>>>>> 726f4d5... Commit after aborting the rebase
 
 	/**
 	 * Constructor
@@ -443,10 +419,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fromColorSelect	= new boolean[this.module.getTotalNumInputs()];
 		//		this.fromSpecialColors	= new boolean[this.module.getTotalNumInputs()];
 		this.specialColorsPos	= new int[this.module.getTotalNumInputs()][3];
-<<<<<<< HEAD
 
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 		for(int i = 0; i < this.colorReachedArray.length; i++)
 		{
 			this.colorReachedArray[i]	= new boolean[] { false, false, false };
@@ -507,18 +480,7 @@ public class ModuleMenu extends MenuTemplate  {
 		 */
 
 		this.minThreshold	= 101;
-<<<<<<< HEAD
 		//		this.shapeMenuIsOpen	= false;
-
-		this.melody			= new Melody(this.parent, this.input);
-		this.instrument		= new Instrument(this.parent);
-		this.instrument.setADSR(1000, 500, 0, 0);
-		this.bpm			= 30;
-		this.rangeOctave	= 3;
-		this.curKey			= "A";
-		this.majMinChrom	= 2;	// chromatic
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
@@ -620,10 +582,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 
 		int[]	xVals	= new int[buttonsPerRow];
-<<<<<<< HEAD
-=======
-		System.out.println("xVals.length = " + xVals.length);
->>>>>>> 726f4d5... Commit after aborting the rebase
+
 		for(int i = 0; i < xVals.length; i++)
 		{
 			xVals[i]	= xVal + this.leftAlign + ((buttonWidth + this.spacer) * i);
@@ -634,12 +593,6 @@ public class ModuleMenu extends MenuTemplate  {
 		//.setGroup("sidebarGroup")
 		.setValue(labelText);
 
-<<<<<<< HEAD
-=======
-
-		System.out.println("yVals.length = " + yVals.length);
-
->>>>>>> 726f4d5... Commit after aborting the rebase
 		// Loop through all
 		for(int i = 0; i < yVals.length; i++)
 		{
@@ -650,7 +603,6 @@ public class ModuleMenu extends MenuTemplate  {
 				{
 					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor[0]);
 				} else {
-					System.out.println("colorSelectPos = " + colorSelectPos);
 					//					this.colors[colorSelectPos]	= this.rainbowColors[this.majMinChrom][colorSelectPos];
 					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.colors[this.currentInput][colorSelectPos]))[1];
 					colorSelectPos	= colorSelectPos + 1;
@@ -1819,11 +1771,7 @@ public class ModuleMenu extends MenuTemplate  {
 				 */			
 			} // for - j
 
-<<<<<<< HEAD
-			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
-=======
 			this.colors[i][this.specialColorsPos[i][1]]	= rgbVals2;
->>>>>>> 726f4d5... Commit after aborting the rebase
 		} // for - i
 
 		/*
@@ -1868,11 +1816,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**
 	 * Uses the given HSB color to find the color across it on the HSB wheel,
-<<<<<<< HEAD
 	 * converts both colors to RGB, and passes them as parameters to trichromatic_ThreeRGB.
-=======
-	 * converts both colors to RGB, and passes them as parameters to triichromatic_ThreeRGB.
->>>>>>> 726f4d5... Commit after aborting the rebase
 	 *
 	 * @param hsbVals	float[] of HSB values defining the color at the tonic of the current scale.
 	 */
@@ -2039,29 +1983,12 @@ public class ModuleMenu extends MenuTemplate  {
 			trichromColors[i][2]	= trichromColors[i - 1][2] - blueDelta3;
 			//			} // for - j
 		} // for - third color to first color
-<<<<<<< HEAD
-		
-		System.out.println("Trichromatic 1st color = rgb(" + rgbVals1[0] + ", " + rgbVals1[1] + ", " + rgbVals1[2] + ")");
-		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
-		System.out.println("Trichromatic 3rd color = rgb(" + rgbVals3[0] + ", " + rgbVals3[1] + ", " + rgbVals3[2] + ")");
-
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
-
-		System.out.println("Trichromatic 1st color = rgb(" + rgbVals1[0] + ", " + rgbVals1[1] + ", " + rgbVals1[2] + ")");
-		System.out.println("Trichromatic 2nd color = rgb(" + rgbVals2[0] + ", " + rgbVals2[1] + ", " + rgbVals2[2] + ")");
-		System.out.println("Trichromatic 3rd color = rgb(" + rgbVals3[0] + ", " + rgbVals3[1] + ", " + rgbVals3[2] + ")");
-
 
 		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
 		int	startHere;
 		int	endBeforeThis;
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> 726f4d5... Commit after aborting the rebase
 		if(global)
 		{
 			startHere		= 0;
@@ -2076,10 +2003,6 @@ public class ModuleMenu extends MenuTemplate  {
 			for(int j = 0; j < this.colors[i].length && trichromColorPos < trichromColors.length; j++)
 			{
 				trichromColorPos	= this.scaleDegreeColors[this.majMinChrom][j];
-				if(j == color2pos)
-				{
-					System.out.println("  Setting color at pos " + j + " to rgb(" + trichromColors[trichromColorPos][0] + ", " + trichromColors[trichromColorPos][1] + ", " + trichromColors[trichromColorPos][2] + ")");
-				}
 				//			this.setColor(i, trichromColors[trichromColorPos], false);
 				/*			this.setColorSelectCW(i, rgbVals2);
 			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
@@ -2208,11 +2131,7 @@ public class ModuleMenu extends MenuTemplate  {
 											+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][1]
 													+ ", " + this.colors[this.currentInput][this.colors[this.currentInput].length - 1][2] + ")");
 					 */
-<<<<<<< HEAD
-					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1]);
-=======
 					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.specialColorsPos[i][1]]);
->>>>>>> 726f4d5... Commit after aborting the rebase
 					//					this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 				}
 			} // for
@@ -2227,22 +2146,7 @@ public class ModuleMenu extends MenuTemplate  {
 			
 			int	startHere;
 			int	endBeforeThis;
-<<<<<<< HEAD
 			
-			if(global)
-			{
-				startHere		= 0;
-				endBeforeThis	= this.colors.length;
-			} else {
-				startHere		= this.currentInput;
-				endBeforeThis	= this.currentInput + 1;
-			}
-
-			int	startHere;
-			int	endBeforeThis;
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
-
 			if(global)
 			{
 				startHere		= 0;
@@ -2523,7 +2427,6 @@ public class ModuleMenu extends MenuTemplate  {
 			//			this.leftEdgeX 	= this.sidebarWidth;
 		} else {
 			//			this.leftEdgeX	= 0;
-<<<<<<< HEAD
 		}
 
 	} // displaySidebar
@@ -2542,8 +2445,6 @@ public class ModuleMenu extends MenuTemplate  {
 //			this.leftEdgeX	= this.sidebarWidth;
 		} else {
 //			this.leftEdgeX	= 0;
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 		}
 	} // runMenu
 
@@ -2614,10 +2515,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.outsideButtonsCP5.getController("pause").setVisible(val);
 			this.showPause	= val;
 			//play button
-<<<<<<< HEAD
 
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 			if(val)
 			{
 				this.playMelody();
@@ -2700,11 +2598,6 @@ public class ModuleMenu extends MenuTemplate  {
 		if(controlEvent.getName().equals("legend"))
 		{
 			this.setShowScale(!((Toggle) (controlEvent.getController())).getState());
-<<<<<<< HEAD
-=======
-			
-
->>>>>>> 726f4d5... Commit after aborting the rebase
 		}
 
 		// Toggles
@@ -2777,7 +2670,7 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
-<<<<<<< HEAD
+
 			this.setColorStyle(this.curColorStyle);
 
 			// Turn off the other two:
@@ -2875,8 +2768,6 @@ public class ModuleMenu extends MenuTemplate  {
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 
 			int	startHere;
 			int	endBeforeThis;
@@ -3258,17 +3149,14 @@ public class ModuleMenu extends MenuTemplate  {
 		// Saturation and Brightness Threshold and Percent Sliders:
 		if( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) )
 		{
-			System.out.println("did get into this event of Sliders");
 			int		arrayPos	= (id - this.firstSatBrightThreshSliderId /*- 1*/) / 2;
 			// Percent Sliders
 			if((id - this.firstSatBrightThreshSliderId) % 2 == 0)
 			{
-				System.out.println("percent Slider?");
 				this.satBrightPercentVals[arrayPos]		= val;
 				this.satBrightThresholdVals[arrayPos]	= this.controlP5.getValue("slider" + (id + 1));
 				//				percentVal		= controlEvent.getValue();
 			} else {
-				System.out.println("threshold Slider?");
 				// Threshold Sliders
 				this.satBrightThresholdVals[arrayPos]	= val;
 				this.satBrightPercentVals[arrayPos]		= this.controlP5.getValue("slider" + (id - 1));
@@ -3297,34 +3185,10 @@ public class ModuleMenu extends MenuTemplate  {
 			this.resetHSBSlidersTextfields();
 			this.applyHSBModulate();
 		}
-<<<<<<< HEAD
-		
-		int	colorPos;
-		int	cwId	= (id % 100) + 300;
-		System.out.println("; cwId " + cwId + "; canvas id = " + this.canvasColorSelectId + "; specialColorsId = " + this.firstSpecialColorsCWId);
-		
-		// if from colorSelect, set the ColorWheel to the correct color:
-		if(cwId >= this.firstColorSelectCWId && cwId < (this.firstColorSelectCWId + colors[this.currentInput].length) && cwId != this.canvasColorSelectId)
-		{
-			colorPos	= (id % 100) - (this.firstColorSelectCWId % 100);
-			this.setColorSelectCW(colorPos, this.colors[this.currentInput][colorPos]);
-		} else if(cwId >= this.firstSpecialColorsCWId && cwId < (this.firstSpecialColorsCWId + this.specialColorsPos[0].length))
-		{
-			// or if from specialColors, set that ColorWheel:
-			colorPos	= (id % 100) - (this.firstSpecialColorsCWId % 100);
-			System.out.println("specialColors colorPos = " + colorPos);
-			this.setSpecialColorsCW(colorPos, this.colors[this.currentInput][this.specialColorsPos[this.currentInput][colorPos]]);
-		}
 
 		int	colorPos;
 		int	cwId	= (id % 100) + 300;
 		System.out.println("; cwId " + cwId + "; canvas id = " + this.canvasColorSelectId + "; specialColorsId = " + this.firstSpecialColorsCWId);
-=======
-
-		int	colorPos;
-		int	cwId	= (id % 100) + 300;
-		System.out.println("; cwId " + cwId + "; canvas id = " + this.canvasColorSelectId + "; specialColorsId = " + this.firstSpecialColorsCWId);
->>>>>>> 726f4d5... Commit after aborting the rebase
 
 		// if from colorSelect, set the ColorWheel to the correct color:
 		if(cwId >= this.firstColorSelectCWId && cwId < (this.firstColorSelectCWId + colors[this.currentInput].length) && cwId != this.canvasColorSelectId)
@@ -3412,12 +3276,6 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			// if from specialColors:
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
-<<<<<<< HEAD
-			
-=======
-
->>>>>>> 726f4d5... Commit after aborting the rebase
-			System.out.println("controlEvent - specialColors: colorPos = " + colorPos);
 			
 			this.applySpecialColors();
 
@@ -3474,11 +3332,6 @@ public class ModuleMenu extends MenuTemplate  {
 					this.curHue[i][2]	= color.getBlue();
 				}
 			} else {
-<<<<<<< HEAD
-=======
-				System.out.println("colorWheelEvent: i = " + i + "; colorPos = " + colorPos);
-
->>>>>>> 726f4d5... Commit after aborting the rebase
 				// colors that are not canvasColor:
 				this.colors[i][colorPos][0]	= color.getRed();
 				this.colors[i][colorPos][1]	= color.getGreen();
@@ -4068,11 +3921,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(color == null) {
 			throw new IllegalArgumentException("ModuleMenu.setSpecialColorsCW: float[] parameter is null.");
 		}
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> 726f4d5... Commit after aborting the rebase
 		// Only do this if colorSelect CWs have actually been initialized:
 		if(this.firstSpecialColorsCWId > 0) 
 		{
@@ -4196,12 +4045,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 
 	public int[][] getCurHue()				{	return this.curHue;	}
-<<<<<<< HEAD
 	
-	public int getCurColorStyle()			{	return this.curColorStyle;	}
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
-
 	public int getCurColorStyle(int inputNum)			{	return this.curColorStyle[inputNum];	}
 
 	/**
@@ -4283,7 +4127,6 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.curKey;
 	}
 
-<<<<<<< HEAD
 	public int getMajMinChrom() {
 		return this.majMinChrom;
 	}
@@ -4292,8 +4135,6 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.curKey;
 	}
 
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 	/*
 	public int getCurNumInputs()
 	{
@@ -4352,23 +4193,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getSliderHeight() {
 		return this.sliderHeight;
 	}
-<<<<<<< HEAD
-	
-=======
-
->>>>>>> 726f4d5... Commit after aborting the rebase
-	public ControlP5 getOutsideButtonsCP5()
-	{
-		return this.outsideButtonsCP5;
-	}
-<<<<<<< HEAD
 
 	public ControlP5 getOutsideButtonsCP5()
 	{
 		return this.outsideButtonsCP5;
 	}
-=======
->>>>>>> 726f4d5... Commit after aborting the rebase
 	
 	public Instrument getInstrument()
 	{
