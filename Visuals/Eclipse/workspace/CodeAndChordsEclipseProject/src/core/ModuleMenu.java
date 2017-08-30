@@ -1670,6 +1670,8 @@ public class ModuleMenu extends MenuTemplate  {
 		// convert them both to RGB;
 		int[]	rgbVals1	= new int[3];
 		int[]	rgbVals2	= new int[3];
+		
+		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
 
 		System.out.println("dichromatic_OneHSB: rgbVals2 = rgb(" + rgbVals2[0] + ", " + + rgbVals2[1] + ", " + rgbVals2[2] + ")");
 
@@ -3286,6 +3288,9 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			// if from specialColors:
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
+
+			this.applySpecialColors();
+
 		} else {
 			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors.");
 		}
@@ -3343,10 +3348,21 @@ public class ModuleMenu extends MenuTemplate  {
 				System.out.println("colorWheelEvent: i = " + i + "; colorPos = " + colorPos);
 
 				// colors that are not canvasColor:
+
 				this.colors[i][colorPos][0]	= color.getRed();
 				this.colors[i][colorPos][1]	= color.getGreen();
 				this.colors[i][colorPos][2]	= color.getBlue();
 			} // else - not canvas
+
+			this.colors[i][colorPos][0]	= color.getRed();
+			this.colors[i][colorPos][1]	= color.getGreen();
+			this.colors[i][colorPos][2]	= color.getBlue();
+
+			if(!this.fromColorSelect[i])
+			{
+				//				System.out.println("not from colorSelect; applying specialColors.");
+				//				this.applySpecialColors();
+			}
 
 		} // for
 
@@ -3914,8 +3930,12 @@ public class ModuleMenu extends MenuTemplate  {
 			// Set the colorSelect ColorWheel:
 			if(cw.getRGB() != colorInt)
 			{
+				System.out.println("--- controlEvent: setting ColorWheel");
 				cw.setRGB(colorInt);
 			} // if
+			else {
+				System.out.println("----- controlEvent: not setting ColorWheel");
+			}
 		} else {
 			System.err.println("ModuleMenu.setColor: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
 		} // if/else
