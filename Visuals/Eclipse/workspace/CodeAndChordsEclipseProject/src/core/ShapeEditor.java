@@ -25,7 +25,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	private Shape	shape;
 	
 	private	Module	module;
-		
 	private int 	SIZE_ID;
 	private int		NUM_POINTS_ID;
 	private int		N1_ID;
@@ -321,12 +320,15 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		.setValue("Rotation");
 
 		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(200, 5).setSize(150, 250)
+		.setPosition(10, 10).setSize(240, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
-		.setValue(0).close();
+		.setValue(0)
+		.setItemHeight(25)
+		.close();
 
 		this.controlP5.addButton("exitButton").setLabel("Close Shape Editor")
-		.setPosition(400, 5).setSize(150, 40);
+		.setPosition(this.parent.width - 160, 10)
+		.setSize(150, 40);
 
 	}
 
@@ -399,6 +401,52 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shape.getYStretch());
 		}
 
+	}
+	
+	public void updateSliders()
+	{
+		float[] param = this.shape.getCurrentParameters();
+		
+		if(param[0] != this.controlP5.getController("slider" + this.SIZE_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.SIZE_ID).setValue(param[0]);
+		}
+		
+		if(param[2] != this.controlP5.getController("slider" + this.NUM_POINTS_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.NUM_POINTS_ID).setValue(param[2]);
+		}
+		
+		if(param[4] != this.controlP5.getController("slider" + this.N1_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.N1_ID).setValue(param[4]);
+		}
+		
+		if(param[5] != this.controlP5.getController("slider" + this.N2_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.N2_ID).setValue(param[5]);
+		}
+		
+		if(param[6] != this.controlP5.getController("slider" + this.N3_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.N3_ID).setValue(param[6]);
+		}
+		
+		if(this.shape.getXPos() != this.controlP5.getController("slider" + this.XPOS_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.XPOS_ID).setValue(this.shape.getXPos());
+		}
+		
+		if(this.shape.getYPos() != this.controlP5.getController("slider" + this.YPOS_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.YPOS_ID).setValue(this.shape.getYPos());
+		}
+		
+		if(this.shape.getRotation() != this.controlP5.getController("slider" + this.ROTATION_ID).getValue())
+		{
+			this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shape.getRotation());
+		}
+		
 	}
 
 	public ControlP5 getCP5() {
