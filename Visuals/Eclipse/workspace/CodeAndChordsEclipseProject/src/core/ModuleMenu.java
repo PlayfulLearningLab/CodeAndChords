@@ -2213,6 +2213,7 @@ public class ModuleMenu extends MenuTemplate  {
 					} // else - colorPos for different scales
 				} // else - all but the first time
 				
+				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1]);
 				this.colors[i][colorPos2]	= this.colors[i][this.specialColorsPos[i][1]];
 				this.colors[i][colorPos3]	= this.colors[i][this.specialColorsPos[i][2]];
 
@@ -3206,7 +3207,8 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 		
 		int	colorPos;
-		int	cwId	= (id % 101) + 301;
+		int	cwId	= (id % 100) + 300;
+		System.out.println("; cwId " + cwId + "; canvas id = " + this.canvasColorSelectId + "; specialColorsId = " + this.firstSpecialColorsCWId);
 		
 		// if from colorSelect, set the ColorWheel to the correct color:
 		if(cwId >= this.firstColorSelectCWId && cwId < (this.firstColorSelectCWId + colors[this.currentInput].length) && cwId != this.canvasColorSelectId)
