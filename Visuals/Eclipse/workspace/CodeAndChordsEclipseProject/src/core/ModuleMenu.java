@@ -3043,8 +3043,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// Set the colorWheels to our new current input:
 			/*			for(int i = 0; i < this.specialColorsPos[this.currentInput].length; i++)
 			{
-				//				this.setColor(i, this.colors[this.currentInput][i], false);
-				this.setColorSelectCW(i, this.colors[this.currentInput][i]);
+				//				this.setColor(i, this.colors[this.currentInput][i], false);				this.setColorSelectCW(i, this.colors[this.currentInput][i]);
 				if(this.firstSpecialColorsCWId > 0)
 				{
 					this.setSpecialColorsCW(i, this.colors[this.currentInput][i]);
@@ -3278,7 +3277,7 @@ public class ModuleMenu extends MenuTemplate  {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
 		}
-		
+
 		// if from ColorSelect:
 		if(id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length))
 		{
@@ -3365,6 +3364,7 @@ public class ModuleMenu extends MenuTemplate  {
 					this.colors[this.currentInput][colorPos][0]	= color.getRed();
 					this.colors[this.currentInput][colorPos][1]	= color.getGreen();
 					this.colors[this.currentInput][colorPos][2]	= color.getBlue();
+
 					// Check to see if this position corresponds to a special color
 					// (and is from a colorSelect, to make sure that they don't just keep calling back and forth):
 					int	specialColorsPos	= this.arrayContains(this.specialColorsPos[i], colorPos);
@@ -3381,6 +3381,7 @@ public class ModuleMenu extends MenuTemplate  {
 					if(colorPos >= 0 && colorPos < this.specialColorsPos[i].length)
 					{
 						System.out.println("SpecialColor for specialColorPos " + colorPos);
+
 						// Make sure that they don't just keep calling back and forth:
 						if(this.fromSpecialColors[i])
 						{
@@ -3840,7 +3841,7 @@ public class ModuleMenu extends MenuTemplate  {
 			throw iae;
 		}
 	} // inputNumErrorCheck
-	
+
 	public int[][][] getColors()
 	{
 		return this.colors;
@@ -3942,7 +3943,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 				// Let the user know if you made an adjustment:
 				if(originalColor != color[i]) {
-				System.out.println("ModuleMenu.setSpecialColorsCW: adjusted position " + i + " of color " + colorPos + " from " + originalColor + " to " + color[i] + ".");
 				}
 			} // for - color adjust
 
