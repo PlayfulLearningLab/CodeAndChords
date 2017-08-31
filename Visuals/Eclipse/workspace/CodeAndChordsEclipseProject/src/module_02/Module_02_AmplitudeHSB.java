@@ -5,7 +5,6 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
-import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
@@ -16,6 +15,7 @@ import core.Shape;
 import core.ShapeEditor;
 import core.ShapeEditorInterface;
 import core.Archive_ModuleTemplate.ModuleTemplate02;
+import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterface {
@@ -40,20 +40,24 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
 	} // main
-	/*
+
 	public void settings()
 	{
+		//fullScreen();
 		size(925, 520);
 	} // settings
-	 */
+
 	public void setup()
 	{
+		surface.setResizable(true);
+		frame.setResizable(true);
+		
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
 
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-		this.input    = new Input(1, new AudioContext(), this);
+		this.input    = new RealTimeInput(1, new AudioContext(), this);
 		this.totalNumInputs	= 1;
 		this.curNumInputs	= 1;
 
@@ -76,9 +80,10 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
+				this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
-				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 4);
+				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 6);
 				this.menu.setIsRunning(false);
 
 				this.yVals		= new int[18];
@@ -92,7 +97,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				// Have to addColorSelect() first so that everything else can access the colors:
 				String[]	buttonLabels	= new String[] {
-						"Canvas", "1", "2", "3", "4"
+						"Canvas", "1", "2", "3", "4", "5", "6"
 				};
 				this.menu.addColorSelect(0, new int[] { this.yVals[8] }, buttonLabels, "Color Select", true);
 
@@ -102,7 +107,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				this.menu.addShapeSizeSlider(0, this.yVals[15]);
 
-				this.menu.addRangeSegments(0, this.yVals[7], 4, 4, "Dynamic\nSegments");
+				this.menu.addRangeSegments(0, this.yVals[7], 6, 6, "Dynamic\nSegments");
 
 				this.menu.addHSBSliders(0, new int[] { this.yVals[4], this.yVals[5], this.yVals[6], });
 
@@ -137,10 +142,10 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void draw()
 	{
-		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true) 
+		if (keyPressed == true && !this.menu.getIsRunning() && !this.shapeEditor.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		}
@@ -152,7 +157,8 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		int		goalHuePos	= 0;
 
 
-		for(int i = 0; i < this.menu.getThresholds()[0].length; i++)
+//		for(int i = 0; i < this.menu.getThresholds()[0].length; i++)
+		for(int i = 0; i < this.menu.getCurRangeSegments(); i++)
 		{
 			if(curAmp > this.menu.getThresholds()[0][i]) {
 				goalHuePos	= i;

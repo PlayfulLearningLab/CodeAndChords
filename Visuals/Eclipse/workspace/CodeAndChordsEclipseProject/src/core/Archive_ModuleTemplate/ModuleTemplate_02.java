@@ -15,9 +15,9 @@ import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
-import core.Input;
 import core.Instrument;
 import core.Melody;
+import core.input.RealTimeInput;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -171,7 +171,7 @@ public abstract class ModuleTemplate_02 implements ControlListener  {
 	private	boolean		colorReached;
 
 	/**	Input from which the class will get all its audio data	*/
-	protected	Input	input;
+	protected	RealTimeInput	input;
 
 	/**	Volume below which input will be ignored	*/
 	protected float	threshold;
@@ -312,7 +312,7 @@ public abstract class ModuleTemplate_02 implements ControlListener  {
 	 * @param input		Input for all audio input; will instantiate this.input
 	 * @param sidebarTitle	String designating the title of the module to which this template corresponds
 	 */
-	public ModuleTemplate_02(PApplet parent, Input input, String sidebarTitle, int totalNumColorItems)
+	public ModuleTemplate_02(PApplet parent, RealTimeInput input, String sidebarTitle, int totalNumColorItems)
 	{
 		this.parent			= parent;
 		this.input			= input;

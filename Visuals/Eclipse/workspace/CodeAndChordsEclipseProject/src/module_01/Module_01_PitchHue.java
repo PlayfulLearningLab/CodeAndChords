@@ -1,12 +1,11 @@
 package module_01;
 
 import processing.core.*;
-
-import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
 import core.Archive_ModuleTemplate.ModuleTemplate01;
+import core.input.RealTimeInput;
 import module_02.Module_02_AmplitudeHSB;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
@@ -38,7 +37,7 @@ public class Module_01_PitchHue extends Module
 
 	private int  curHuePos;
 
-	private Input  input;
+	private RealTimeInput  input;
 //	private ModuleTemplate01	moduleTemplate;
 	
 //	private	ModuleMenu	menu;
@@ -63,7 +62,7 @@ public class Module_01_PitchHue extends Module
 		
 //	this.disposeHandler	= new DisposeHandler(this);
 		
-		this.input  = new Input(this);
+		this.input  = new RealTimeInput(this);
 //		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_PitchHue", 12);
 		

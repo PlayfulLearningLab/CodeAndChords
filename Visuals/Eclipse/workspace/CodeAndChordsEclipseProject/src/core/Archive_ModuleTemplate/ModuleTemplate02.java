@@ -15,9 +15,9 @@ import controlP5.Textfield;
 import controlP5.Toggle;
 import processing.core.PApplet;
 import processing.core.PShape;
-import core.Input;
 import core.ModuleMenu;
 import core.Shape;
+import core.input.RealTimeInput;
 import module_02.Module_02_AmplitudeHSB;
 
 /**
@@ -63,7 +63,7 @@ public class ModuleTemplate02 extends ModuleMenu {
 	 * @param input		the Input that the Module uses
 	 * @param sidebarTitle	String indicating the title of this module
 	 */
-	public ModuleTemplate02(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate02(PApplet parent, RealTimeInput input, String sidebarTitle)
 	{
 		super(parent, null, input, sidebarTitle, 4);
 

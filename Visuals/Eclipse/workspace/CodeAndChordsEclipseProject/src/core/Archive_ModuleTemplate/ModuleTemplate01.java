@@ -4,8 +4,8 @@ import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.ScrollableList;
 import controlP5.Toggle;
-import core.Input;
 import core.ModuleMenu;
+import core.input.RealTimeInput;
 import processing.core.PApplet;
 
 /**
@@ -77,7 +77,7 @@ public class ModuleTemplate01 extends ModuleMenu {
 	int[]               modulateHSBVals;
 	int					colorSelectY;
 
-	public ModuleTemplate01(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate01(PApplet parent, RealTimeInput input, String sidebarTitle)
 	{
 		super(parent, null, input, sidebarTitle, 12);
 

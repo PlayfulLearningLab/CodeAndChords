@@ -1,12 +1,12 @@
 package module_01_02;
 
 import processing.core.*;
-
-import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
 import core.Archive_ModuleTemplate.ModuleTemplate01;
+import core.input.RealTimeInput;
+import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
@@ -45,7 +45,8 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 	 */
 
-	private Input  input;
+	private RealTimeInput  input;
+	private	RecordedInput	recordedInput;
 /*	private	int		numInputs;
 
 	private	int[]	xVals;
@@ -58,7 +59,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	{
 		// TODO: test with more inputs than are supported
 //		this.input	= new Input(2, this);
-		this.input	= new Input(16, true, this);
+		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 		
