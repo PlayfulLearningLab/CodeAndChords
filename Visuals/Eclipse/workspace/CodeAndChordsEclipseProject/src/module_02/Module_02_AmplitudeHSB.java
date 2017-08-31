@@ -40,14 +40,18 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
 	} // main
-	/*
+
 	public void settings()
 	{
+		//fullScreen();
 		size(925, 520);
 	} // settings
-	 */
+
 	public void setup()
 	{
+		surface.setResizable(true);
+		frame.setResizable(true);
+		
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
 
@@ -74,6 +78,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
+				this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 4);
@@ -136,7 +141,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	public void draw()
 	{
 		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
-
+		
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true) 
 		{
