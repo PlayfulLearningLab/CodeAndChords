@@ -174,8 +174,9 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		this.parent.shape(this.menuBackground, 0, 0);
 		
-		this.parent.stroke(150);
-		this.parent.strokeWeight(3);
+//		this.parent.stroke(150);
+//		this.parent.strokeWeight(3);
+		this.parent.noStroke();
 		this.parent.noFill();
 		
 	/*
