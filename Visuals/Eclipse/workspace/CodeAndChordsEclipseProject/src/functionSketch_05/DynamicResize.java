@@ -5,8 +5,7 @@ import processing.core.PApplet;
 public class DynamicResize extends PApplet 
 {
 
-	private int fullScreenWidth;
-	private int fullScreenHeight;
+	PApplet p1;
 	
 	
 	public static void main(String args[])
@@ -16,32 +15,33 @@ public class DynamicResize extends PApplet
 	
 	public void settings()
 	{
-		this.fullScreen();
-		
+			size(925,520);		
 	}
 	
 	public void setup()
 	{
-		this.fullScreenWidth = this.width;
-		this.fullScreenHeight = this.height;
-		
-		surface.setResizable(true);
-		
-		surface.setSize(925, 520);
-		
-		System.out.println(this.width + "    " + this.height);
 		
 		
 	}
 	
 	public void draw()
 	{
-		//surface.setSize(this.width - 1, this.height - 1);
-		if(this.height < 300)
-		{
-			this.fullScreen();
-			while(true);
+
+	}
+	
+	public void mousePressed()
+	{
+		fullScreenModule fsm = new fullScreenModule();
+		fsm.startNewPApplet();
+		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		
 	}
 	
 }
