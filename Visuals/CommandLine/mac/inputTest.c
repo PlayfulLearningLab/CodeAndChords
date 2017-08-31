@@ -440,7 +440,19 @@ int main(void)
     double              avg3;
     int					numDevices;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
     printf("inputTest.c\n"); fflush(stdout);
+=======
+    printf("patest_record.c\n"); fflush(stdout);
+>>>>>>> 2627307... Experiments with multiple lines in one buffer
+=======
+    printf("inputTest.c\n"); fflush(stdout);
+>>>>>>> 61e0f0f... Ring buffer implemented to get current sound input data
+=======
+    printf("inputTest.c\n"); fflush(stdout);
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6
 
     data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE; /* Record for a few seconds. */
 	printf("maxFrameIndex = %d.\n", data.maxFrameIndex);

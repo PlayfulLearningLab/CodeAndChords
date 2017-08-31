@@ -1,6 +1,5 @@
 package core;
 
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
@@ -42,6 +41,7 @@ public class PortAudioAudioIO extends AudioIO {
 //		this.systemBufferSizeInFrames = systemBufferSize;
 		this.numInChannels	= numChannels;
 		this.numOutChannels	= numChannels;
+
 		setThreadPriority(Thread.MAX_PRIORITY);
 	}
 	
@@ -54,6 +54,7 @@ public class PortAudioAudioIO extends AudioIO {
 		StreamParameters outParameters = new StreamParameters();
 //		outParameters.sampleFormat = PortAudio.FORMAT_FLOAT_32; // maybe use int_16>  b/c AudioContext.getAudioFormat.bitDepth = 16; was previously .FORMAT_FLOAT_32;
 		outParameters.device = PortAudio.getDefaultOutputDevice();
+
 		if(this.numOutChannels > PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels)
 		{
 			System.out.println("PortAudioAudioIO: given number of channels was " + this.numOutChannels + 
@@ -157,6 +158,7 @@ public class PortAudioAudioIO extends AudioIO {
 		
 		int bufferSizeInFrames = context.getBufferSize();
 		// TODO: might need to use audioFormat.getChannels() instead of ioAudioFormat.outputs
+
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
 		while (context.isRunning())

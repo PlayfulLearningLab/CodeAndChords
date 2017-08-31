@@ -55,8 +55,7 @@ public class Module_01_PitchHue extends Module
 		int[]				textYVals;
 		int[]				modulateYVals;
 		int[]               modulateHSBVals;
-//		int					colorSelectY;
-		
+//		int					colorSelectY;		
 
 		textYVals		 = new int[18];
 		modulateYVals	 = new int[3];
@@ -136,7 +135,7 @@ public class Module_01_PitchHue extends Module
 
 		this.menu.addModulateSliders(0, modulateYVals);
 
-		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW, 0);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
@@ -192,7 +191,6 @@ public class Module_01_PitchHue extends Module
 			}
 		} // if		
 		*/
-
 	} // draw()
 	
 	public String[] getLegendText()

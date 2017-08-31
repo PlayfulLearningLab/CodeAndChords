@@ -26,8 +26,11 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	private	Module	module;
 
+<<<<<<< HEAD
 	private boolean	slidersInitialized = false;
 
+=======
+>>>>>>> 4e543dcbd805242dc09ff80a06c033194c0b8f20
 	private int 	SIZE_ID;
 	private int		NUM_POINTS_ID;
 	private int		N1_ID;
@@ -201,7 +204,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 
 		this.controlP5.addScrollableList("shapeSelect")
-		.setPosition(this.parent.width - 350, 10).setSize(240, 250)
+		.setPosition(10, 10).setSize(240, 250)
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
 		.setValue(0)
 		.setItemHeight(25)
@@ -344,7 +347,10 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		}
 
 		this.updateSliders();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e543dcbd805242dc09ff80a06c033194c0b8f20
 	}
 
 	@Override
@@ -356,7 +362,10 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	@Override
 	public void colorWheelEvent(int id, Color color) {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4e543dcbd805242dc09ff80a06c033194c0b8f20
 	}
 
 	public void updateSliders()

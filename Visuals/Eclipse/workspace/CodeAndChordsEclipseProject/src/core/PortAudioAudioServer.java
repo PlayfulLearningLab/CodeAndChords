@@ -52,7 +52,6 @@ public class PortAudioAudioServer {
 		this.state = new AtomicReference<State>(State.New);
 
 		System.out.println("this.context.getMaxBufferSize = " + this.context.getMaxBufferSize());
-
 	}
 
 

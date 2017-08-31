@@ -117,7 +117,6 @@ public class FunctionSketch_02_MultiInput extends PApplet
 
 	public void setSquareValues()
 	{
-
 		// Rectangles are always the same height, so will be set in a loop every time:
 		this.rectHeights	= new int[this.numInputs];
 

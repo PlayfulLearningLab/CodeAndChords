@@ -7,8 +7,7 @@ import processing.core.PShape;
 public class ExampleModule extends PApplet { 
 	
 	
-	private Shape shape = new Shape(this, 300);
-	
+	private Shape shape = new Shape(this, 300);	
 
 	public static void main(String[] args)
 	{

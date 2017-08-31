@@ -416,6 +416,40 @@ public class UserInterface extends PApplet {
 		return output;
 	}
 	
+	private void drawMorph(float xPos, float yPos, float width, float height)
+	{
+		float r = (this.rectWidth/2);
+		
+		PShape shape = this.createShape();
+		
+		shape.beginShape();
+		
+		shape.stroke(255);
+		shape.fill(255);
+		
+		float incrament = 2*PI / 200;
+		float x1 = 0;
+		float y1 = 0;
+		
+		for(float theta = 0; theta <= 2 * PI; theta += incrament )
+		{
+			x1 = rad(theta, r) * cos(theta);
+			y1 = rad(theta, r) * sin(theta);
+			
+			shape.vertex(this.displaySize(x1),y1);
+		}
+		shape.endShape();
+		
+		shape.rotate(this.rotation);
+		
+		this.mShape = shape;
+		
+		//shape.setVisible(true);
+		
+		//shape(shape,this.displayPos(this.rectPosX), this.rectPosY);
+		
+	}
+	
 	private void updatePositionSliders()
 	{
 		((Slider)this.x.getController("xPosSlider")).setRange(-(this.rectWidth), this.fullScreenX+this.rectWidth);
