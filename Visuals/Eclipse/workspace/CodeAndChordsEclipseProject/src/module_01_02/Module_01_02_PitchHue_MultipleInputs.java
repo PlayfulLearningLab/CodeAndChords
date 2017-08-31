@@ -166,6 +166,9 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 //		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
+		
+		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
+
 
 	} // setup()
 
@@ -210,6 +213,20 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			if(this.menu.isShowScale())
 			{
 				this.legend(scaleDegree, i);
+			}
+			
+			if(this.currentMenu != this.menu.getCurrentMenu())
+			{
+				this.currentMenu = this.menu.getCurrentMenu();
+				
+				if(this.currentMenu == 0)
+				{
+					this.menu.setIsRunning(false);
+				}
+				else if(this.currentMenu == 1)
+				{
+					this.menu.setIsRunning(true);
+				}
 			}
 		} // for
 		

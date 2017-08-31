@@ -34,7 +34,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
-	private	int		currentMenu;
+//	private	int		currentMenu;
 	
 	public static void main(String[] args) 
 	{
@@ -54,6 +54,8 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
 		this.input    = new Input(1, new AudioContext(), this);
+		this.totalNumInputs	= 1;
+		this.curNumInputs	= 1;
 
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 

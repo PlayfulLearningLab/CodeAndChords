@@ -14,7 +14,8 @@ public abstract class Module extends PApplet {
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
 	protected	Input			input;
 	
-	protected	int		totalNumInputs;
+	/**	This is the total number of possible inputs; *must* be initialized by child classes!	*/
+	protected	int		totalNumInputs = 1;
 	
 	/**	This is the number of inputs currently displaying in the Module	*/
 	protected	int		curNumInputs;
@@ -32,6 +33,9 @@ public abstract class Module extends PApplet {
 	
 	/**	"Sidebar" Menu, where most basic Controllers will be - global HSB and RGB modulation, etc.	*/
 	protected	ModuleMenu		menu;
+	
+	protected	int		currentMenu;
+	
 	
 	/**	Used by legend() to determine which colors to select for the legend along the bottom	*/
 	private	final	int[][] scaleDegrees = new int[][] {

@@ -363,7 +363,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.global			= true;
 		this.currentInput	= 0;
 
-		// TODO: this might run into problems when we adjust for 5-8:
+		this.melody			= new Melody(this.parent, this.input);
+		this.instrument		= new Instrument(this.parent);
+		this.bpm			= 120;
+		this.rangeOctave	= 3;
+		this.curKey			= "A";
+		this.majMinChrom	= 2;	// chromatic
+
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
@@ -463,13 +469,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.minThreshold	= 101;
 
 		//		this.shapeMenuIsOpen	= false;
-
-		this.melody			= new Melody(this.parent, this.input);
-		this.instrument		= new Instrument(this.parent);
-		this.bpm			= 120;
-		this.rangeOctave	= 3;
-		this.curKey			= "A";
-		this.majMinChrom	= 2;	// chromatic
 
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
