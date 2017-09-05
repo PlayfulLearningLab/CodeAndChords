@@ -130,8 +130,6 @@ public class RealTimeInput extends Input {
 			this.adjustedNumInputs	= this.numInputs;
 		} // 
 		
-		System.out.println("RealTimeInput: pa = " + this.pa);
-		
 		this.disposeHandler	= new DisposeHandler(this.pa, this);
 		System.out.println("just registered DisposeHandler for " + pa);
 

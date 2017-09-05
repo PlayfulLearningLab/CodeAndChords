@@ -64,9 +64,11 @@ public class Module_01_02_WantingMemories extends Module
 		this.recInput	= new RecordedInput(this, new String[] { 
 				"WantingMemories_Melody.wav",
 				"WantingMemories_Alto.wav",
-				"WantingMemories_Bass.wav",
+//				"WantingMemories_Bass.wav",
+				"WMBass_Later_Quiet.wav",
 				"WantingMemories_Soprano.wav",
-				"WantingMemories_Tenor.wav",
+//				"WantingMemories_Tenor.wav",
+				"WMTenor_Medium.wav"
 		});
 		
 //		this.totalNumInputs	= this.input.getAdjustedNumInputs();

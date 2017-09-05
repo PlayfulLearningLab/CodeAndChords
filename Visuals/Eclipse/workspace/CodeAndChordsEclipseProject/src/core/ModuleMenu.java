@@ -643,14 +643,13 @@ public class ModuleMenu extends MenuTemplate  {
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
 
+
 		this.outsideButtonsCP5.addScrollableList("menuList", hamburgerX, hamburgerY, 150, 450)
 		.setBarHeight(25)
 		.setItemHeight(20)
 		.close();
 
-
-
-		/*
+/*
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
 		this.outsideButtonsCP5.addButton("hamburger")
@@ -671,8 +670,8 @@ public class ModuleMenu extends MenuTemplate  {
 		//.setGroup("sidebarGroup")
 		.updateSize()
 		.bringToFront();
-		 */
 
+*/
 
 		//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
 	} // addOutsideButtons
@@ -2964,7 +2963,8 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		// Saturation and Brightness Threshold and Percent Sliders:
-		if( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) )
+		if( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) 
+				&& this.firstSatBrightThreshSliderId != -1)
 		{
 			int	startHere;
 			int	endBeforeThis;
@@ -3807,7 +3807,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param val	value to set either attack, release, or transition
 	 */
 	public void setAttRelTranVal(int position, int inputNum, float val) {
-		if(position < 0 || position > this.attRelTranVals.length) {
+		if(position < 0 || position > this.attRelTranVals[0].length) {
 			throw new IllegalArgumentException("ModuleTemplate.setAttRelTranVal: position " + position + " is out of range; must be 0, 1, or 2.");
 		} // error checking
 

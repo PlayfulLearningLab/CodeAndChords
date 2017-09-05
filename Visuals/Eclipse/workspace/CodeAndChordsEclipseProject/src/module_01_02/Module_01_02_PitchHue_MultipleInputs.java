@@ -61,7 +61,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 //		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 2;
+		this.curNumInputs	= 1;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 /*

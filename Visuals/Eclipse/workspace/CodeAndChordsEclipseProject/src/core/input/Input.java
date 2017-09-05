@@ -551,7 +551,6 @@ public abstract class Input {
 
 		DisposeHandler(PApplet pa, Input input)
 		{
-			System.out.println("DisposeHandler: pa = " + pa + "; input = " + input);
 			pa.registerMethod("dispose", this);
 			this.input	= input;
 		}
