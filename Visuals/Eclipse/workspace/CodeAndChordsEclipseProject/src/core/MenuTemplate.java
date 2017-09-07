@@ -636,5 +636,10 @@ public abstract class MenuTemplate implements ControlListener {
 			this.controlP5.hide();
 		}
 	} // runMenu
+	
+	public void setPApplet(PApplet applet)
+	{
+		this.parent = applet;
+	}
 
 } // MenuTemplate

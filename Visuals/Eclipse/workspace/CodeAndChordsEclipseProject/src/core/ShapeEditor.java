@@ -214,23 +214,23 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		this.controlP5.addButton("Square")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 10);
 
 		this.controlP5.addButton("Star")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 110);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 235, 10);
 
 		this.controlP5.addButton("Pentagon")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 10);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 345, 10);
 
 		this.controlP5.addButton("Flower")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 60);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 10);
 		
 		this.controlP5.addButton("Splat")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 110);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
 
 		this.slidersInitialized = true;
 

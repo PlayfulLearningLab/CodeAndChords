@@ -5,6 +5,7 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import core.FullScreenDisplay;
 import core.Input;
 import core.Module;
 import core.ModuleMenu;
@@ -49,8 +50,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void setup()
 	{
-		surface.setResizable(true);
-		frame.setResizable(true);
 		
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
@@ -286,6 +285,13 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void mousePressed()
 	{
+/*
+		FullScreenDisplay fsm = new FullScreenDisplay();
+		fsm.startDisplay();
+		this.shapeEditor.setPApplet(fsm);
+		this.menu.setPApplet(fsm);
+*/
+		
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
