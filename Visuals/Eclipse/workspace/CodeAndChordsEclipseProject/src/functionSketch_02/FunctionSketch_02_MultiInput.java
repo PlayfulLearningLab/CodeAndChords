@@ -5,7 +5,8 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.Slider;
-import core.Input;
+import core.input.Input;
+import core.input.RealTimeInput;
 import processing.core.PApplet;
 import processing.core.PShape;
 
@@ -58,7 +59,7 @@ public class FunctionSketch_02_MultiInput extends PApplet
 		//		this.textSize(10);
 
 		// Always initialize for 12, even if we actually have fewer, just to be safe:
-		this.input	= new Input((12 + 4), true, this);
+		this.input	= new RealTimeInput((12 + 4), true, this);
 		this.cp5	= new ControlP5(this);
 
 		this.setSquareValues();

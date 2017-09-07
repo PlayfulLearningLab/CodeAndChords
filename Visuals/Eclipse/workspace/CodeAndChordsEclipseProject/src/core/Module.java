@@ -1,5 +1,6 @@
 package core;
 
+import core.input.RealTimeInput;
 import processing.core.PApplet;
 
 /**
@@ -12,7 +13,7 @@ import processing.core.PApplet;
 public abstract class Module extends PApplet {
 	
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
-	protected	Input			input;
+	protected	RealTimeInput			input;
 	
 	/**	This is the total number of possible inputs; *must* be initialized by child classes!	*/
 	protected	int		totalNumInputs = 1;

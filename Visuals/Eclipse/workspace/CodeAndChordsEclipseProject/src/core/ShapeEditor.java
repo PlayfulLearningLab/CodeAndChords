@@ -26,7 +26,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	private	Module	module;
 
-
 	private boolean	slidersInitialized = false;
 
 	private int 	SIZE_ID;

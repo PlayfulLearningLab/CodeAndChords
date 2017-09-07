@@ -6,9 +6,9 @@ import controlP5.ControlEvent;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
 import controlP5.Toggle;
-import core.Input;
 import core.Instrument;
 import core.Melody;
+import core.input.RealTimeInput;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -34,7 +34,7 @@ public abstract class ModuleTemplate {
 	//	public ControlP5 	nonSidebarCP5;
 	// TODO set private post-testing:
 	private ControlP5 	sidebarCP5;
-	private	Input		input;
+	private	RealTimeInput		input;
 
 	private	int			modTempNum;	// Number to distinguish different instances of the class in the same sketch
 
@@ -154,7 +154,7 @@ public abstract class ModuleTemplate {
 	private boolean[]	colorReachedArray;
 	private	boolean		colorReached;
 
-	private	Input	input;
+	private	RealTimeInput	input;
 	private float	threshold;
 	private boolean	nowBelow;
 	
@@ -179,12 +179,12 @@ public abstract class ModuleTemplate {
 	protected int		lastSetColorSelectTextfieldId;
 
 	
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate(PApplet parent, RealTimeInput input, String sidebarTitle)
 	{
 		this(parent, input, sidebarTitle, 0, 0, parent.width, parent.height, 0);
 	} // Constructor - PApplet, Input, String
 	
-	public ModuleTemplate(PApplet parent, Input input, String sidebarTitle, int leftEdgeX, int topYVal, int rectWidth, int rectHeight, int modTempNum)
+	public ModuleTemplate(PApplet parent, RealTimeInput input, String sidebarTitle, int leftEdgeX, int topYVal, int rectWidth, int rectHeight, int modTempNum)
 	{
 		System.out.println("topYVal = " + topYVal);
 		this.parent	= parent;

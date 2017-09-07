@@ -13,7 +13,7 @@ import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
-import core.Input;
+import core.input.RealTimeInput;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -61,7 +61,7 @@ public class ModuleTemplate_01_05 {
 	private	PApplet		parent;
 	//	public ControlP5 	nonSidebarCP5;
 	public ControlP5 	sidebarCP5;
-	private	Input		input;
+	private	RealTimeInput		input;
 
 
 	private	int			leftAlign;
@@ -191,7 +191,7 @@ public class ModuleTemplate_01_05 {
 	private	boolean	dichromFlag;
 	private	boolean	trichromFlag;
 
-	public ModuleTemplate_01_05(PApplet parent, Input input, String sidebarTitle)
+	public ModuleTemplate_01_05(PApplet parent, RealTimeInput input, String sidebarTitle)
 	{
 		this.parent	= parent;
 		this.input	= input;
