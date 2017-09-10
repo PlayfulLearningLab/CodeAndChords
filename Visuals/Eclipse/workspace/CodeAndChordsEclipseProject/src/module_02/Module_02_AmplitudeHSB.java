@@ -5,11 +5,8 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
-<<<<<<< HEAD
-import core.FullScreenDisplay;
-import core.Input;
-=======
->>>>>>> master
+//import core.FullScreenDisplay;
+//import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
@@ -84,6 +81,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
 				this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
+				this.shapeEditor.updateSliders();
 
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 6);

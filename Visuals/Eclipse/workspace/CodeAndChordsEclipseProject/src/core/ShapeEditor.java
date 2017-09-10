@@ -231,6 +231,22 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
 
+		this.controlP5.addButton("X")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 60);
+
+		this.controlP5.addButton("Snowflake")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 235, 60);
+
+		this.controlP5.addButton("Sun")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 345, 60);
+
+		this.controlP5.addButton("Butterfly")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 60);
+		
 		this.slidersInitialized = true;
 
 	}
@@ -270,6 +286,22 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			
 		case "Splat":
 			this.shape.setCurrentShape("splat");
+			break;
+			
+		case "Snowflake":
+			this.shape.setCurrentShape("snowflake");
+			break;
+			
+		case "Sun":
+			this.shape.setCurrentShape("sun");
+			break;
+			
+		case "X":
+			this.shape.setCurrentShape("x");
+			break;
+			
+		case "Butterfly":
+			this.shape.setCurrentShape("butterfly");
 			break;
 
 		}
