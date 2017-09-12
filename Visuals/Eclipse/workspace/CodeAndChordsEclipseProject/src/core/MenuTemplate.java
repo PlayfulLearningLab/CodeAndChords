@@ -157,7 +157,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.nextColorWheelId	= 300;
 		this.nextCWTextfieldId	= 400;
 		this.nextToggleId		= 500;
-		*/		
+		*/
+		
 		this.nextSliderId		= 1;
 		this.nextSTextfieldId	= 101;
 		this.nextButtonId		= 201;

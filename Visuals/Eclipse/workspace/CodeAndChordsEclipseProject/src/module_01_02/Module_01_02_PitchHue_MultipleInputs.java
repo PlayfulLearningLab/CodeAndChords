@@ -1,6 +1,7 @@
 package module_01_02;
 
 import processing.core.*;
+import core.InputMatrix;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
@@ -54,16 +55,27 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	private	int[]	rectWidths;
 	private	int[]	rectHeights;
 */
+	private	InputMatrix	inputMatrix;
+	private	int			curInput;
 	
 	public void setup() 
 	{
 		// TODO: test with more inputs than are supported
 //		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(16, true, this);
-		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
+		this.totalNumEvents	= this.input.getAdjustedNumInputs();
+		this.curNumEvents	= 1;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		
+		this.inputMatrix	= new InputMatrix(this.totalNumEvents, this);
+		for(int i = 0; i < this.totalNumEvents; i++)
+		{
+			this.inputMatrix.assignInput(i, i);
+		}
+		
+		this.inputMatrix.printMatrix();
+
 /*
  * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
@@ -184,12 +196,20 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			this.menu.setMenuVal();
 		} // if keyPressed
 		
-		for(int i = 0; i < this.curNumInputs; i++)
+		if(mousePressed)
+		{
+			System.out.println("this.inputMatrix = " + this.inputMatrix);
+			this.inputMatrix.drawMatrix();
+		}
+		
+//		for(int i = 0; i < this.curNumInputs; i++)
+		for(int i = 0; i < this.curNumEvents; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 			
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			curInput	= this.inputMatrix.getInput(i);
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(curInput + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 			
@@ -207,6 +227,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 				curY	= this.yVals[i];
 			}
 			*/
+//			System.out.println("this.xVals.length = " + this.xVals.length);
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
