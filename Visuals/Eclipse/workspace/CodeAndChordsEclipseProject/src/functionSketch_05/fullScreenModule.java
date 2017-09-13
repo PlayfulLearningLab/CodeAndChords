@@ -19,6 +19,7 @@ public class fullScreenModule extends PApplet
 	
 	public void setup()
 	{
+		//should make an interface for some sort of second draw function so that parent can be cast using the interface
 		((DynamicResize) fullScreenModule.parent).setDisplayApplet(this);
 		
 		//background(0);

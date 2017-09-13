@@ -3,7 +3,7 @@ package core;
 /**
  * This class is meant to be a plugin of sorts into a module.  To use a ShapeEditor object to
  * 		edit your shapes, create a shape editor object and then call runSE() in draw().
- * 		The ShapeEditor is then opened and closed by manipulating the isRunning varibale, 
+ * 		The ShapeEditor is then opened and closed by manipulating the isRunning variable, 
  * 		through the use of the setIsRunning() function.
  */
 
