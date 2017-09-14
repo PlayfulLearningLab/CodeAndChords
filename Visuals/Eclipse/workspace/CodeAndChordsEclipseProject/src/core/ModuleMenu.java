@@ -175,7 +175,7 @@ public class ModuleMenu extends MenuTemplate  {
 	private	int[][]			goalHue;
 
 	/**	The color when sound is below the threshold	*/
-	protected	int[][]		canvasColor;
+	protected	int[]		canvasColor;
 
 	/**	The amount that must be added every 50 or so milliseconds to fade to the goal color	*/
 	private	int[][]			colorAdd;
@@ -380,22 +380,10 @@ public class ModuleMenu extends MenuTemplate  {
 		this.hsbColors			= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
 		this.curHue				= new int[this.module.getTotalNumInputs()][3];
 		this.goalHue			= new int[this.module.getTotalNumInputs()][3];
-		this.canvasColor		= new int[this.module.getTotalNumInputs()][3];
+		this.canvasColor		= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		this.curColorStyle		= new int[this.module.getTotalNumInputs()];
 		this.rainbow();
-		for(int i = 0; i < this.colors.length; i++)
-		{
-			// This was the source of the issue in which calling dichromatic as the first
-			// color style causes rainbow to be the dichromatic colors;
-			// fixed by setting to rainbow by calling rainbow() instead of the loop below:
-			/*
-			for(int j = 0; j < this.colors[i].length; j++)
-			{
-				this.colors[i][j]	= this.rainbowColors[2][j];
-			}
-			 */
-			this.canvasColor[i]	= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
-		}
+
 
 		this.colorAdd			= new int[this.module.getTotalNumInputs()][3];
 		this.colorRange			= new int[this.module.getTotalNumInputs()][3];
@@ -591,7 +579,7 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				if(i == 0 && j == 0 && canvas)
 				{
-					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor[0]);
+					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor);
 				} else {
 					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.colors[this.currentInput][colorSelectPos]))[1];
 					colorSelectPos	= colorSelectPos + 1;
@@ -1220,7 +1208,7 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			if(canvas && i == 0)
 			{
-				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], this.canvasColor[0]);
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], this.canvasColor);
 			} else {
 				int	thisColorPos	= this.specialColorsPos[0][i - 1];
 				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], new Color(this.colorSelect[thisColorPos].getRGB()));
@@ -1372,13 +1360,13 @@ public class ModuleMenu extends MenuTemplate  {
 				{
 					for(int j = 0; j < this.goalHue[i].length; j++)
 					{
-						this.goalHue[i][j]	= this.canvasColor[i][j];
+						this.goalHue[i][j]	= this.canvasColor[j];
 					} // for - canvas
 				} // for - i
 			} else {
 				for(int i = 0; i < this.goalHue.length; i++)
 				{
-					this.goalHue[this.currentInput][i]	= this.canvasColor[this.currentInput][i];
+					this.goalHue[this.currentInput][i]	= this.canvasColor[i];
 				} // for - i
 			} // else - not global
 		} else {
@@ -1422,7 +1410,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // error checking
 
 		// Add one to inputNum because getAmplitude is working on a 1-to-numInputs range (rather than 0-to-[numInputs-1]):
-		float	curAmp	= this.input.getAmplitude(inputNum + 1);
+		float	curAmp	= this.input.getAmplitude(inputNum);
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
@@ -1430,7 +1418,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 			for(int i = 0; i < this.goalHue[inputNum].length; i++)
 			{
-				this.goalHue[inputNum][i]	= this.canvasColor[inputNum][i];
+				this.goalHue[inputNum][i]	= this.canvasColor[i];
 			} // for - canvas
 
 		} else {
@@ -3145,9 +3133,9 @@ public class ModuleMenu extends MenuTemplate  {
 			// canvas color (does not affect notes):
 			if( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) )
 			{
-				this.canvasColor[i][0]	= color.getRed();
-				this.canvasColor[i][1]	= color.getGreen();
-				this.canvasColor[i][2]	= color.getBlue();
+				this.canvasColor[0]	= color.getRed();
+				this.canvasColor[1]	= color.getGreen();
+				this.canvasColor[2]	= color.getBlue();
 
 				// Ensures that the shape doesn't have to fade to this color if the amp is below the threshold:
 				if(this.nowBelow[i])
@@ -3842,7 +3830,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.showScale = showScale;
 	}
 
-	public int[][] getCanvasColor() {
+	public int[] getCanvasColor() {
 		return this.canvasColor;
 	}
 
