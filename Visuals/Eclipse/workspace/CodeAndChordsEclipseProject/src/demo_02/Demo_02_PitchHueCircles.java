@@ -210,7 +210,7 @@ public class Demo_02_PitchHueCircles extends Module
 			if(this.menu.isShowScale())
 			{
 //				this.legend(scaleDegree, i);
-				this.legend(scaleDegree, 0);
+//				this.legend(scaleDegree, 0);
 			}
 			
 			if(this.currentMenu != this.menu.getCurrentMenu())
