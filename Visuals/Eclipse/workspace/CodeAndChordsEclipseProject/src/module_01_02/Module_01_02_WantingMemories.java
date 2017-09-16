@@ -72,8 +72,8 @@ public class Module_01_02_WantingMemories extends Module
 		});
 		
 //		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.totalNumInputs	= this.recInput.getNumInputs();
-		this.curNumInputs	= 5;
+		this.totalNumEvents	= this.recInput.getNumInputs();
+		this.curNumEvents	= 5;
 		
 //		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 		this.menu	= new ModuleMenu(this, this, this.recInput, "Module_01_02_PitchHueBackground", 12);
@@ -196,7 +196,7 @@ public class Module_01_02_WantingMemories extends Module
 			this.menu.setMenuVal();
 		} // if keyPressed
 		
-		for(int i = 0; i < this.curNumInputs; i++)
+		for(int i = 0; i < this.curNumEvents; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));

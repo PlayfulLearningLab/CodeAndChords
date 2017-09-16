@@ -58,7 +58,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	private	InputMatrix	inputMatrix;
 	private	int			curInput;
 	
-	public void setup() 
+	public void setup()
 	{
 		// TODO: test with more inputs than are supported
 //		this.input	= new Input(2, this);
