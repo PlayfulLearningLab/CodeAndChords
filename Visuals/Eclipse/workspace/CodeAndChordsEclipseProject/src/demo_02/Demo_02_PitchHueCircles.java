@@ -29,23 +29,11 @@ public class Demo_02_PitchHueCircles extends Module
 
 	public static void main(String[] args)
 	{
-
-		//Says cannot find or load main class???  This should not be an issue
 		PApplet.main("demo_02.Demo_02_PitchHueCircles");
-		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
-	/*
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-	 */
 
-	private RealTimeInput  input;
+//	private RealTimeInput  input;
 	private	RecordedInput	recordedInput;
 	
 	private	int[]	circleDiams;
@@ -123,17 +111,19 @@ public class Demo_02_PitchHueCircles extends Module
 		
 //		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
+		this.menu.addForteThresholdSlider(controllerXVals[0], textYVals[3]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
-		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
-		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
+//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);		
+		
+		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
+
+		this.menu.addKeySelector(controllerXVals[0], textYVals[5]);
+		this.menu.setCurKey("A", 2);
 		
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
-		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
-
-		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
-		this.menu.setCurKey("A", 2);
 
 		modulateHSBVals[0] = textYVals[6];
 		modulateHSBVals[1] = textYVals[7];
@@ -161,11 +151,14 @@ public class Demo_02_PitchHueCircles extends Module
 		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
+		this.menu.addColorStyleButtons(controllerXVals[0], textYVals[13]);
 
 		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
+		
+		this.menu.addThresholdSliders(controllerXVals[2], textYVals[1], 5);
+		this.menu.setBrightnessPercentSlider(1);
 
 //		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
@@ -210,7 +203,7 @@ public class Demo_02_PitchHueCircles extends Module
 			if(this.menu.isShowScale())
 			{
 //				this.legend(scaleDegree, i);
-//				this.legend(scaleDegree, 0);
+				this.okGoLegend(scaleDegree, i);
 			}
 			
 			if(this.currentMenu != this.menu.getCurrentMenu())

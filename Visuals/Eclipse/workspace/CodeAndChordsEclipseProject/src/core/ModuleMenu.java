@@ -2871,7 +2871,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void sliderEvent(int id, float val)
 	{
-		System.out.println("ModuleMenu: got sliderEvent with id " + id + " and val " + val);
+//		System.out.println("ModuleMenu: got sliderEvent with id " + id + " and val " + val);
 
 		// Piano Threshold:
 		if(id == this.pianoThresholdSliderId)
@@ -2990,7 +2990,6 @@ public class ModuleMenu extends MenuTemplate  {
 				
 				this.satBrightThresholdVals[i][arrayPos]	= this.pianoThreshold[i] + (this.forteThreshold[i] * forteThreshPercent);
 				
-				System.out.println("satBrightThresholdVals[" + i + "][" + arrayPos + "] = " + this.satBrightThresholdVals[i][arrayPos]);
 			} // for
 		} // Saturation and Brightness Threshold and Percent Sliders
 	} // sliderEvent
@@ -3872,6 +3871,17 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
+	
+	/**
+	 * Sets the percent slider to the given value
+	 * (or to the max or min value, if the value is out of range).
+	 * 
+	 * @param newVal	new value for the brightness percent slider, from -1 to 1
+	 */
+	public void setBrightnessPercentSlider(float newVal)
+	{
+		this.controlP5.getController("slider" + (this.firstSatBrightThreshSliderId + 2)).setValue(newVal);
+	} // setBrightnessPercentSlider
 
 	/**
 	 * Getter for this.curRangeSegments

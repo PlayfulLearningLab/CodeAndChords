@@ -133,6 +133,70 @@ public abstract class Module extends PApplet {
 		} // for - i
 
 	} // legend
+
+	/**
+	 * Draws the legend at the bottom of the screen.
+	 * 
+	 * @param goalHuePos	current position, be that note or threshold level, in this Module's menu.colorSelect
+	 */
+	public void okGoLegend(int goalHuePos, int inputNum)
+	{
+		if(this.rectWidths == null)
+		{
+			this.curNumInputs		= Math.max(this.curNumInputs, 1);
+			this.setSquareValues();
+		}
+		
+		this.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
+
+		String[]	legendText	= this.getLegendText();
+		
+//		float	scale	= 1;
+//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+		float	scale	= this.menu.getCurrentScale();
+
+		float	sideWidth1	=(this.rectWidths[inputNum] * scale) / legendText.length;
+		float	sideHeight	= this.rectHeights[inputNum] / 10; //this.rectWidths[inputNum] / 12;	// pretty arbitrary
+		float	addToLastRect	= (this.rectWidths[inputNum] * scale) - (sideWidth1 * legendText.length);
+		float	sideWidth2	= sideWidth1;
+
+		this.noStroke();
+		
+		int	scaleDegree;
+		float	xVal;
+		float	yVal;
+		if(inputNum < 3)
+		{
+			xVal	= this.menu.mapCurrentXPos(this.xVals[inputNum]);
+			yVal	= this.menu.mapCurrentYPos(this.yVals[inputNum] + (sideHeight * this.menu.getCurrentScale() * 1.5f));
+		} else {
+			xVal	= this.menu.mapCurrentXPos(this.xVals[inputNum]);
+			yVal	= this.menu.mapCurrentYPos(this.yVals[inputNum] + this.rectHeights[inputNum]);
+		}
+
+		for (int i = 0; i < legendText.length; i++)
+		{
+			if(i == legendText.length - 1)
+			{
+				sideWidth2	= sideWidth1 + addToLastRect;
+			}
+			
+			// colors is filled all the way and only picked at the desired notes:
+			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
+			this.fill(this.menu.colors[inputNum][scaleDegree][0], this.menu.colors[inputNum][scaleDegree][1], this.menu.colors[inputNum][scaleDegree][2]);
+
+			if (i == goalHuePos) {
+				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale() * 1.5f), sideWidth2, (sideHeight * this.menu.getCurrentScale() * 1.5f));
+			} else {
+				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale()), sideWidth2, sideHeight * this.menu.getCurrentScale());
+			}
+
+			this.fill(0);
+			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
+		} // for - i
+
+	} // legend
+
 	
 	/**
 	 * @return	String[] of text to display in each position of the legend
