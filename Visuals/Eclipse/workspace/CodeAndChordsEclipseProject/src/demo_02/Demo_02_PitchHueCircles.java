@@ -172,7 +172,9 @@ public class Demo_02_PitchHueCircles extends Module
 	
 	public void draw()
 	{
-		int	scaleDegree;
+		int	scaleDegree;			
+		
+		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 		
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true && !this.menu.getIsRunning()) 
@@ -181,16 +183,20 @@ public class Demo_02_PitchHueCircles extends Module
 		} // if keyPressed
 		
 		for(int i = (this.curNumInputs - 1); i >= 0; i--)
+//		for(int i = 0; i < this.curNumInputs; i++)
 		{
-//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
-//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
+//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + input.getAdjustedFundAsMidiNote(i) + 
+//					"; input.getAmplitude(" + (i) + ") = " + input.getAmplitude(i));
 		
-			this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-
+			
+//			System.out.println(i + ": scaleDegree = " + scaleDegree);
+			
 			this.menu.fade(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
+					
+			System.out.println(i + ": rgb(" + this.menu.getCurHue()[i][0] + ", " + this.menu.getCurHue()[i][1] + ", " + this.menu.getCurHue()[i][2] + ")");
 			
 			int	curX;
 			int	curY;
@@ -199,6 +205,7 @@ public class Demo_02_PitchHueCircles extends Module
 			curY	= (int)this.menu.mapCurrentYPos(this.height / 2);
 //			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 			this.ellipse(curX, curY, this.circleDiams[i], this.circleDiams[i]);
+			System.out.println("circleDiams[" + i + "] = " + this.circleDiams[i]);
 			
 			if(this.menu.isShowScale())
 			{

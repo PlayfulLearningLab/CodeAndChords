@@ -165,7 +165,7 @@ public abstract class Module extends PApplet {
 		int	scaleDegree;
 		float	xVal;
 		float	yVal;
-		if(inputNum < 3)
+		if(inputNum < 2)
 		{
 			xVal	= this.menu.mapCurrentXPos(this.xVals[inputNum]);
 			yVal	= this.menu.mapCurrentYPos(this.yVals[inputNum] + (sideHeight * this.menu.getCurrentScale() * 1.5f));
