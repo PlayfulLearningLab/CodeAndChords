@@ -50,6 +50,18 @@ public class Demo_02_PitchHueCircles extends Module
 		// TODO: test with more inputs than are supported
 //		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(4, this);
+		
+/*		this.recordedInput	= new RecordedInput(this, new String[] { 
+				"WantingMemories_Melody.wav",
+				"WantingMemories_Alto.wav",
+//				"WantingMemories_Bass.wav",
+				"WMBass_Later_Quiet.wav",
+				"WantingMemories_Soprano.wav",
+//				"WantingMemories_Tenor.wav",
+				"WMTenor_Medium.wav"
+		});
+		*/
+		
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 		
@@ -185,19 +197,21 @@ public class Demo_02_PitchHueCircles extends Module
 		for(int i = (this.curNumInputs - 1); i >= 0; i--)
 //		for(int i = 0; i < this.curNumInputs; i++)
 		{
-//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + input.getAdjustedFundAsMidiNote(i) + 
-//					"; input.getAmplitude(" + (i) + ") = " + input.getAmplitude(i));
+//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + recordedInput.getAdjustedFundAsMidiNote(i) + 
+//					"; input.getAmplitude(" + (i) + ") = " + recordedInput.getAmplitude(i));
 		
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+//			scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 			
 //			System.out.println(i + ": scaleDegree = " + scaleDegree);
 			
 			this.menu.fade(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-					
-			System.out.println(i + ": rgb(" + this.menu.getCurHue()[i][0] + ", " + this.menu.getCurHue()[i][1] + ", " + this.menu.getCurHue()[i][2] + ")");
-			
+
+//			System.out.println(i + ": rgb(" + this.menu.getCurHue()[i][0] + ", " + 
+//					this.menu.getCurHue()[i][1] + ", " + this.menu.getCurHue()[i][2] + ")");
+
 			int	curX;
 			int	curY;
 			
@@ -205,7 +219,6 @@ public class Demo_02_PitchHueCircles extends Module
 			curY	= (int)this.menu.mapCurrentYPos(this.height / 2);
 //			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 			this.ellipse(curX, curY, this.circleDiams[i], this.circleDiams[i]);
-			System.out.println("circleDiams[" + i + "] = " + this.circleDiams[i]);
 			
 			if(this.menu.isShowScale())
 			{
