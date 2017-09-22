@@ -71,7 +71,7 @@ public class VerticalBarsDriver extends Module {
 		//		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
+		this.curNumInputs	= 4;
 
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 		/*
@@ -132,7 +132,7 @@ public class VerticalBarsDriver extends Module {
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
-		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
@@ -194,7 +194,7 @@ public class VerticalBarsDriver extends Module {
 
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			this.amplitude[i] = this.input.getAmplitude(i + 1);
+			this.amplitude[i] = this.input.getAmplitude(i);
 		}
 
 		// The following line is necessary so that key press shows the menu button
@@ -208,7 +208,7 @@ public class VerticalBarsDriver extends Module {
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 
@@ -254,8 +254,8 @@ public class VerticalBarsDriver extends Module {
 
 			this.barPos[i] = Math.max(this.barPos[i] + this.barVel[i], 0);
 
-			System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
-			System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
+//			System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
+//			System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
 
 			this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
 
