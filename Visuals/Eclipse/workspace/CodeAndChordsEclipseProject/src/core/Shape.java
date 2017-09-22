@@ -42,7 +42,13 @@ public class Shape {
 	private float[]		PENTAGON= new float[] {1, 1, 5, 5, 1.5f, 1, 1};
 	private float[]		FLOWER= new float[] {.8f, .8f, 14, 14, 2.5f, 9, 1};
 	private float[]		SPLAT= new float[] {2, 2, 14, 14, 2.85f, 3.6f, 2};
+	private float[]		X= new float[] {1, 1, 4, 4, (float).3, 1, 1};
+	private float[]		BUTTERFLY = new float[] {1, 1, 4, 4, (float).2, (float).69, 10};
+	private float[]		SUN= new float[] {1, 1, 15, 15, (float)1.25, (float)3.1, 3};
+	private float[]		SNOWFLAKE= new float[] {(float).95, (float).95, 14, 14, (float).28, 9, 1};
 
+	
+	
 	//constructors	
 	public Shape(PApplet p)
 	{
@@ -317,6 +323,9 @@ public class Shape {
 
 	public void setCurrentShape(String shape)
 	{
+		this.xStretch = 1;
+		this.yStretch = 1;
+		
 		shape = shape.toLowerCase();
 		
 		switch(shape)
@@ -328,6 +337,7 @@ public class Shape {
 
 		case "square":
 			this.setCurrentShape("supershape", this.SQUARE);
+			this.rotation = (float) (Math.PI / 8);
 			break;
 
 		case "pentagon":
@@ -344,6 +354,23 @@ public class Shape {
 			
 		case "splat":
 			this.setCurrentShape("supershape", this.SPLAT);
+			break;
+			
+		case "x":
+			this.setCurrentShape("supershape", this.X);
+			this.rotation = (float) (Math.PI / 8);
+			break;
+			
+		case "butterfly":
+			this.setCurrentShape("supershape", this.BUTTERFLY);
+			break;
+			
+		case "sun":
+			this.setCurrentShape("supershape", this.SUN);
+			break;
+			
+		case "snowflake":
+			this.setCurrentShape("supershape", this.SNOWFLAKE);
 			break;
 
 		}
