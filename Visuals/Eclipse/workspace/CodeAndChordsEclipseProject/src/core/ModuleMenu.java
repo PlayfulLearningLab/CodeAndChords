@@ -1693,8 +1693,13 @@ public class ModuleMenu extends MenuTemplate  {
 		float	rDif	= rgbVals1[0] - rgbVals2[0];
 		float	gDif	= rgbVals1[1] - rgbVals2[1];
 		float	bDif	= rgbVals1[2] - rgbVals2[2];
+		
+		int	redHalf		= Math.round(rgbVals1[0] + (rDif / 2));
+		int	greenHalf	= Math.round(rgbVals1[1] + (gDif / 2));
+		int	blueHalf	= Math.round(rgbVals1[2] + (bDif / 2));
+		
 
-		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
+//		System.out.println("gDif = " + gDif + "; (gDif * percent / 100) = " + (gDif * percent / 100));
 
 		int[]	curColor;
 		int[]	newColor	= new int[3];
@@ -1740,7 +1745,9 @@ public class ModuleMenu extends MenuTemplate  {
 				 */			
 			} // for - j
 
-			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
+//			this.colors[i][this.colors[i].length - 1]	= rgbVals2;
+			this.colors[i][this.specialColorsPos[i][1]]	= rgbVals2;
+
 		} // for - i
 
 		//		this.setColor(this.colorSelect.length - 1, rgbVals2, false);	

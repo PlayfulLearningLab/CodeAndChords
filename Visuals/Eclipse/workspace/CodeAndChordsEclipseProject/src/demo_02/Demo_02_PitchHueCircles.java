@@ -132,7 +132,6 @@ public class Demo_02_PitchHueCircles extends Module
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
 //		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
-		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);		
 		
 		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
 
@@ -140,6 +139,8 @@ public class Demo_02_PitchHueCircles extends Module
 		this.menu.setCurKey("A", 2);
 		
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
+		
+		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);		
 
 
 		modulateHSBVals[0] = textYVals[6];
