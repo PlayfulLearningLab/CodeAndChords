@@ -10,7 +10,7 @@ import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import	controlP5.*;
 
-public class Demo_02_PitchHueCircles extends Module
+public class Demo_02_PitchHueCircles_Fullscreen extends Module
 {
 	/**
 	 * 
