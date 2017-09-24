@@ -261,9 +261,9 @@ public class VerticalBarsDriver extends Module {
 
 			this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
 
-			this.stroke(255);
-			this.strokeWeight(5);
-			this.line(0, (this.height/2)- amp*(this.height/2), this.width, (this.height/2)- amp*(this.height/2));
+			//this.stroke(255);
+			//this.strokeWeight(5);
+			//this.line(0, (this.height/2)- amp*(this.height/2), this.width, (this.height/2)- amp*(this.height/2));
 			
 			if(this.menu.isShowScale())
 			{
