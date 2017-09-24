@@ -1,5 +1,6 @@
-package demo_VerticalBars;
+package demo_01;
 
+import controlP5.ControlP5;
 import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
@@ -7,7 +8,7 @@ import core.input.RealTimeInput;
 import core.input.RecordedInput;
 import processing.core.PApplet;
 
-public class VerticalBarsDriver extends Module {
+public class Demo_01_VerticalBars extends Module {
 	/**
 	 * 
 	 * 
@@ -30,7 +31,7 @@ public class VerticalBarsDriver extends Module {
 	{
 
 		//Says cannot find or load main class???  This should not be an issue
-		PApplet.main("demo_VerticalBars.VerticalBarsDriver");
+		PApplet.main("demo_01.Demo_01_VerticalBars");
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
@@ -54,6 +55,11 @@ public class VerticalBarsDriver extends Module {
 	private	int[]	rectHeights;
 	 */
 
+	public void settings()
+	{
+		fullScreen();
+	}
+	
 	public void setup() 
 	{
 		this.verticalBarsDemo = true;
@@ -186,8 +192,10 @@ public class VerticalBarsDriver extends Module {
 		.setPosition(700, 20)
 		.setState(false)
 		.setId(99999)
+		.setLabel("Dynamic Bar Height")
 		.getCaptionLabel()
-		.setVisible(false);
+		.align(ControlP5.CENTER, ControlP5.CENTER);
+//		.setVisible(false);
 		
 
 
