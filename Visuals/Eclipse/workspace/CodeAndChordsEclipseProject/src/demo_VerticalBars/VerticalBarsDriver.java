@@ -106,7 +106,7 @@ public class VerticalBarsDriver extends Module {
 			yValDif	= 25;
 		}
 
-		yValDif = 26;
+//		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length; i++)
 		{
@@ -197,12 +197,7 @@ public class VerticalBarsDriver extends Module {
 			this.amplitude[i] = this.input.getAmplitude(i);
 		}
 
-		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true && !this.menu.getIsRunning()) 
-		{
-			this.menu.setMenuVal();
-		} // if keyPressed
-
+		
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 

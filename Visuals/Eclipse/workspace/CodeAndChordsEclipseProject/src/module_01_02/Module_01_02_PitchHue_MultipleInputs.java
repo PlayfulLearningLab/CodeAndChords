@@ -76,9 +76,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 		this.setSquareValues();
 		
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		
-
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];

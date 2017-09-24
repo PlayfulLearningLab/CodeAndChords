@@ -84,9 +84,6 @@ public class Demo_02_PitchHueCircles extends Module
 //		this.setSquareValues();
 		this.circleDiams	= new int[] { 200, 350, 500, 650 };
 		
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		
-
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
@@ -104,7 +101,7 @@ public class Demo_02_PitchHueCircles extends Module
 			yValDif	= 25;
 		}
 
-		yValDif = 26;
+//		yValDif = 26;
 
 		for(int i = 1; i < textYVals.length; i++)
 		{
@@ -183,6 +180,8 @@ public class Demo_02_PitchHueCircles extends Module
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 		
 		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
+		
+		this.menu.getOutsideButtonsCP5().getController("play").hide();
 
 
 	} // setup()
@@ -194,11 +193,6 @@ public class Demo_02_PitchHueCircles extends Module
 		
 		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 		
-		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true && !this.menu.getIsRunning()) 
-		{
-			this.menu.setMenuVal();
-		} // if keyPressed
 		
 		for(int i = (this.curNumInputs - 1); i >= 0; i--)
 //		for(int i = 0; i < this.curNumInputs; i++)
