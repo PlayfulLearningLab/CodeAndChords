@@ -1,5 +1,6 @@
 package demo_VerticalBars;
 
+import controlP5.ControlP5;
 import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
@@ -133,7 +134,7 @@ public class VerticalBarsDriver extends Module {
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
-//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
@@ -186,8 +187,8 @@ public class VerticalBarsDriver extends Module {
 		.setPosition(700, 20)
 		.setState(false)
 		.setId(99999)
-		.getCaptionLabel()
-		.setVisible(false);
+		.setLabel("Dynamic Bars")
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 
 
