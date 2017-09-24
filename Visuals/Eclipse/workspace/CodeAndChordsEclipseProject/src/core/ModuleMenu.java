@@ -325,6 +325,10 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	pianoThresholdSliderId	= -1;
 	protected	int	forteThresholdSliderId	= -1;
 	protected	int	firstSatBrightThreshSliderId	= -1;
+	
+	
+	private boolean dynamicBars = false;
+	
 
 	/**
 	 * Constructor
@@ -2868,6 +2872,18 @@ public class ModuleMenu extends MenuTemplate  {
 			this.module.setCurNumInputs((int)controlEvent.getValue() + 1);
 			this.module.setSquareValues();
 		} // numInputsList
+		
+		if(controlEvent.getController().getId() == 99999)
+		{
+			if(this.dynamicBars)
+			{
+				this.dynamicBars = false;
+			}
+			else
+			{
+				this.dynamicBars = true;
+			}
+		}
 
 	} // controlEvent
 
@@ -3939,6 +3955,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public int getCurrentMenu()
 	{
 		return (int) this.outsideButtonsCP5.getController("menuList").getValue();
+	}
+	
+	public boolean getDynamicBars()
+	{
+		return this.dynamicBars;
 	}
 
 } // ModuleTemplate

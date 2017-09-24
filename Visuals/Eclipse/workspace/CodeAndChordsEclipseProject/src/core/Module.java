@@ -58,6 +58,7 @@ public abstract class Module extends PApplet {
 	 */
 	public void settings()
 	{
+		//fullscreen();
 		size(925, 520);
 	}
 	

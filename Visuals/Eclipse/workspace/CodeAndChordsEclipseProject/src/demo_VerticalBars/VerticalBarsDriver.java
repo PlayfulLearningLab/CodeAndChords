@@ -1,5 +1,6 @@
 package demo_VerticalBars;
 
+import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
@@ -179,7 +180,15 @@ public class VerticalBarsDriver extends Module {
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
 		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
-
+		
+		this.menu.getControlP5().addToggle("dynamicBars")
+		.setSize(100, 40)
+		.setPosition(700, 20)
+		.setState(false)
+		.setId(99999)
+		.getCaptionLabel()
+		.setVisible(false);
+		
 
 
 
@@ -229,38 +238,47 @@ public class VerticalBarsDriver extends Module {
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 
-			//Value from 0 to 1 to act as a percent of the screen that should be covered
-			float amp = (float) Math.min(1, this.amplitude[i] / 100/*max amp*/);
-			//amp = (float) Math.max(amp, .1);
-
-			if(amp > this.barPos[i])
+			
+			if(this.menu.getDynamicBars())
 			{
-				this.barVel[i] = (float) Math.min(this.barVel[i] + .02, .2);
-				
-				if(this.barVel[i] < 0)
+				//Value from 0 to 1 to act as a percent of the screen that should be covered
+				float amp = (float) Math.min(1, this.amplitude[i] / 100/*max amp*/);
+				//amp = (float) Math.max(amp, .1);
+
+				if(amp > this.barPos[i])
 				{
-					this.barVel[i] = 0;
+					this.barVel[i] = (float) Math.min(this.barVel[i] + .02, .2);
+
+					if(this.barVel[i] < 0)
+					{
+						this.barVel[i] = 0;
+					}
 				}
+				else
+				{
+					this.barVel[i] = (float) Math.max(this.barVel[i] - .02, -.2);
+
+					if(this.barVel[i] > 0)
+					{
+						this.barVel[i] = 0;
+					}
+				}
+
+
+				//this.barPos[i] = Math.max(this.barPos[i] + this.barVel[i], 0);
+				this.barPos[i] = this.barPos[i] + (amp - this.barPos[i])/10;
+
+
+				//System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
+				//System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
+
+				this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
 			}
 			else
 			{
-				this.barVel[i] = (float) Math.max(this.barVel[i] - .02, -.2);
-				
-				if(this.barVel[i] > 0)
-				{
-					this.barVel[i] = 0;
-				}
+				this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 			}
-
-
-			//this.barPos[i] = Math.max(this.barPos[i] + this.barVel[i], 0);
-			this.barPos[i] = this.barPos[i] + (amp - this.barPos[i])/10;
 			
-			
-			//System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
-			//System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
-
-			this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
 
 			//this.stroke(255);
 			//this.strokeWeight(5);
@@ -306,4 +324,5 @@ public class VerticalBarsDriver extends Module {
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
+	
 }
