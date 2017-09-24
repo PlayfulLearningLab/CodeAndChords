@@ -139,7 +139,7 @@ public class Demo_01_VerticalBars extends Module {
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
-//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
