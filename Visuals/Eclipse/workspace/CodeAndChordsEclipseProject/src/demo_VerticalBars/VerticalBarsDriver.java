@@ -230,7 +230,7 @@ public class VerticalBarsDriver extends Module {
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 
 			//Value from 0 to 1 to act as a percent of the screen that should be covered
-			float amp = (float) Math.min(1, this.amplitude[i] / 500/*max amp*/);
+			float amp = (float) Math.min(1, this.amplitude[i] / 100/*max amp*/);
 			//amp = (float) Math.max(amp, .1);
 
 			if(amp > this.barPos[i])
@@ -252,16 +252,18 @@ public class VerticalBarsDriver extends Module {
 				}
 			}
 
-			this.barPos[i] = Math.max(this.barPos[i] + this.barVel[i], 0);
-
-			System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
-			System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
+			//this.barPos[i] = Math.max(this.barPos[i] + this.barVel[i], 0);
+			this.barPos[i] = this.barPos[i] + (amp - this.barPos[i])/10;
+			
+			
+			//System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
+			//System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
 
 			this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
 
-			//this.stroke(255);
-			//this.strokeWeight(5);
-			//this.line(0, (this.height/2)- amp*(this.height/2), this.width, (this.height/2)- amp*(this.height/2));
+			this.stroke(255);
+			this.strokeWeight(5);
+			this.line(0, (this.height/2)- amp*(this.height/2), this.width, (this.height/2)- amp*(this.height/2));
 			
 			if(this.menu.isShowScale())
 			{
