@@ -152,7 +152,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * booleans indicating whether or not the play/stop, pause, and hamburger Buttons
 	 * should be visible; used when another Menu, such as ShapeEditor, is opened and then closed.
 	 */
-	protected	boolean		showPlayStop;
+	private	boolean		showPlayStop;
 	protected	boolean		showPause;
 	protected	boolean		showHamburger;
 
@@ -349,7 +349,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
 		this.outsideButtonsCP5.addListener((ControlListener)this);
 
-		this.showPlayStop	= true;
+		this.setShowPlayStop(true);
 		this.showPause		= false;
 		this.showHamburger	= true;
 
@@ -2411,7 +2411,7 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		this.outsideButtonsCP5.setVisible(true);
 
-		this.outsideButtonsCP5.getController("play").setVisible(this.showPlayStop);
+		this.outsideButtonsCP5.getController("play").setVisible(this.isShowPlayStop());
 		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
 		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
 	} // showOutsideButtons
@@ -2498,7 +2498,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// Set the actual play button to visible/invisible:
 			this.outsideButtonsCP5.getController("play").setVisible(!this.outsideButtonsCP5.getController("play").isVisible());
 			this.outsideButtonsCP5.getController("pause").setVisible(((Toggle)this.outsideButtonsCP5.getController("play")).getBooleanValue() && this.outsideButtonsCP5.getController("play").isVisible());
-			this.showPlayStop	= (this.outsideButtonsCP5.getController("play").isVisible());
+			this.setShowPlayStop((this.outsideButtonsCP5.getController("play").isVisible()));
 			this.showPause		= ((Toggle)this.outsideButtonsCP5.getController("play")).getBooleanValue() && this.outsideButtonsCP5.getController("play").isVisible();
 		} // if - hidePlayButton
 
@@ -3960,6 +3960,16 @@ public class ModuleMenu extends MenuTemplate  {
 	public boolean getDynamicBars()
 	{
 		return this.dynamicBars;
+	}
+
+
+	public boolean isShowPlayStop() {
+		return showPlayStop;
+	}
+
+
+	public void setShowPlayStop(boolean showPlayStop) {
+		this.showPlayStop = showPlayStop;
 	}
 
 } // ModuleTemplate

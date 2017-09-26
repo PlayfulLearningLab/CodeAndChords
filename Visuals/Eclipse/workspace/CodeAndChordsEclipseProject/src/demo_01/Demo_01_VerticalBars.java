@@ -198,7 +198,8 @@ public class Demo_01_VerticalBars extends Module {
 //		.setVisible(false);
 		
 
-
+		this.menu.getOutsideButtonsCP5().getController("play").hide();
+//		this.menu.getOutsideButtonsCP5().getController("play").setVisible(false);
 
 	} // setup()
 

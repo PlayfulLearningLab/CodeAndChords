@@ -151,7 +151,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 			this.menu.setMenuVal();
 		}
 
-		background(this.menu.getCanvasColor()[0][0], this.menu.getCanvasColor()[0][1], this.menu.getCanvasColor()[0][2]);
+		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
