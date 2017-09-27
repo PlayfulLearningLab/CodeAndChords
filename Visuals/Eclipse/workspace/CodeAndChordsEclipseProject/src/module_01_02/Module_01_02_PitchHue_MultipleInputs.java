@@ -46,7 +46,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 	 */
 
-	private RealTimeInput  input;
+//	private RealTimeInput  input;
 	private	RecordedInput	recordedInput;
 /*	private	int		numInputs;
 
@@ -88,9 +88,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 		this.setSquareValues();
 		
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		
-
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];

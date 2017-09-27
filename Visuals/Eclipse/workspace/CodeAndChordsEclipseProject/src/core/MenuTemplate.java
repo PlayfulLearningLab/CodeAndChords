@@ -173,6 +173,7 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public void drawMenu()
 	{
+		
 		this.parent.shape(this.menuBackground, 0, 0);
 		
 //		this.parent.stroke(150);
@@ -636,5 +637,10 @@ public abstract class MenuTemplate implements ControlListener {
 			this.controlP5.hide();
 		}
 	} // runMenu
+	
+	public void setPApplet(PApplet applet)
+	{
+		this.parent = applet;
+	}
 
 } // MenuTemplate

@@ -3,7 +3,7 @@ package core;
 /**
  * This class is meant to be a plugin of sorts into a module.  To use a ShapeEditor object to
  * 		edit your shapes, create a shape editor object and then call runSE() in draw().
- * 		The ShapeEditor is then opened and closed by manipulating the isRunning varibale, 
+ * 		The ShapeEditor is then opened and closed by manipulating the isRunning variable, 
  * 		through the use of the setIsRunning() function.
  */
 
@@ -27,6 +27,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	private	Module	module;
 
 	private boolean	slidersInitialized = false;
+
 	private int 	SIZE_ID;
 	private int		NUM_POINTS_ID;
 	private int		N1_ID;
@@ -212,24 +213,40 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		this.controlP5.addButton("Square")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 10);
 
 		this.controlP5.addButton("Star")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 110);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 235, 10);
 
 		this.controlP5.addButton("Pentagon")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 10);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 345, 10);
 
 		this.controlP5.addButton("Flower")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 60);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 10);
 		
 		this.controlP5.addButton("Splat")
 		.setSize(100, 40)
-		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 110);
+		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
 
+		this.controlP5.addButton("X")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 60);
+
+		this.controlP5.addButton("Snowflake")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 235, 60);
+
+		this.controlP5.addButton("Sun")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 345, 60);
+
+		this.controlP5.addButton("Butterfly")
+		.setSize(100, 40)
+		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 60);
+		
 		this.slidersInitialized = true;
 
 	}
@@ -269,6 +286,22 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			
 		case "Splat":
 			this.shape.setCurrentShape("splat");
+			break;
+			
+		case "Snowflake":
+			this.shape.setCurrentShape("snowflake");
+			break;
+			
+		case "Sun":
+			this.shape.setCurrentShape("sun");
+			break;
+			
+		case "X":
+			this.shape.setCurrentShape("x");
+			break;
+			
+		case "Butterfly":
+			this.shape.setCurrentShape("butterfly");
 			break;
 
 		}

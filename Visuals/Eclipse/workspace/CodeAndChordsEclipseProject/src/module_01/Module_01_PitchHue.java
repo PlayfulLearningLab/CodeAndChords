@@ -61,8 +61,8 @@ public class Module_01_PitchHue extends Module
 		modulateHSBVals	= new int[3];
 		
 //	this.disposeHandler	= new DisposeHandler(this);
-		
-		this.input  = new RealTimeInput(this);
+		this.input = new RealTimeInput(1, new AudioContext(), this);
+	//	this.input  = new RealTimeInput(this);
 //		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_PitchHue", 12);
 		

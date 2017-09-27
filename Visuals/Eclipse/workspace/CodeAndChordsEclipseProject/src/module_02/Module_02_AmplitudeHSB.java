@@ -5,6 +5,8 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+//import core.FullScreenDisplay;
+//import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
@@ -49,8 +51,6 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void setup()
 	{
-		surface.setResizable(true);
-		frame.setResizable(true);
 		
 		//		super.setup();
 		//		this.disposeHandler	= new DisposeHandler(this);
@@ -58,8 +58,8 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
 		this.input    = new RealTimeInput(1, new AudioContext(), this);
-		this.totalNumInputs	= 1;
-		this.curNumInputs	= 1;
+		this.totalNumEvents	= 1;
+		this.curNumEvents	= 1;
 
 		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
@@ -81,6 +81,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
 				this.shapeEditor.setIsRunning(false);
 				this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
+				this.shapeEditor.updateSliders();
 
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 6);
@@ -150,7 +151,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 			this.menu.setMenuVal();
 		}
 
-		background(this.menu.getCanvasColor()[0][0], this.menu.getCanvasColor()[0][1], this.menu.getCanvasColor()[0][2]);
+		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
 		float	curAmp		= this.input.getAmplitude();
@@ -287,6 +288,13 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 	public void mousePressed()
 	{
+/*
+		FullScreenDisplay fsm = new FullScreenDisplay();
+		fsm.startDisplay();
+		this.shapeEditor.setPApplet(fsm);
+		this.menu.setPApplet(fsm);
+*/
+		
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{

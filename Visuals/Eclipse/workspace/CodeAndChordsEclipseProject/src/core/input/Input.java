@@ -169,7 +169,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getAdjustedFund(int)");
 
 		setFund();
-		return this.adjustedFundArray[inputNum - 1];
+		return this.adjustedFundArray[inputNum];
 	} // getAdjustedFund()
 
 	/**
@@ -193,7 +193,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getAdjustedFundAsMidiNote(int)");
 
 		setFund();
-		return Pitch.ftom(this.adjustedFundArray[inputNum - 1]);
+		return Pitch.ftom(this.adjustedFundArray[inputNum]);
 	} // getAdjustedFundAsMidiNote()
 
 	/**
@@ -203,7 +203,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getFund(int)");
 
 		setFund();
-		return this.fundamentalArray[inputNum - 1];
+		return this.fundamentalArray[inputNum];
 	} // getFund()
 
 	/**
@@ -226,7 +226,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getFundAsMidiNote(int)");
 
 		setFund();
-		return Pitch.ftom(this.fundamentalArray[inputNum - 1]);
+		return Pitch.ftom(this.fundamentalArray[inputNum]);
 	} // getFundAsMidiNote()
 
 	/**
@@ -240,35 +240,35 @@ public abstract class Input {
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
 	public float getAdjustedFundAsHz() {
-		return getAdjustedFundAsHz(1);
+		return getAdjustedFundAsHz(0);
 	} // getAdjustedFundAsHz()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
 	public float getAdjustedFundAsMidiNote() {
-		return getAdjustedFundAsMidiNote(1);
+		return getAdjustedFundAsMidiNote(0);
 	} // getAdjustedFundAsMidiNote()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input.
 	 */
 	public float getFund() {
-		return getFund(1);
+		return getFund(0);
 	} // getFund()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input.
 	 */
 	public float getFundAsHz() {
-		return getFundAsHz(1);
+		return getFundAsHz(0);
 	} // getFundAsHz()
 
 	/**
 	 *  @return  pitch of the first Input as a MIDI note.
 	 */
 	public float getFundAsMidiNote() {
-		return getFundAsMidiNote(1);
+		return getFundAsMidiNote(0);
 	} // getFundAsMidiNote()
 
 	/**
@@ -284,7 +284,7 @@ public abstract class Input {
 		this.setFund();
 
 		//		return this.frequencyArray[inputNum - 1].getAmplitude();
-		return this.amplitudeArray[inputNum - 1];
+		return this.amplitudeArray[inputNum];
 	} // getAmplitude
 
 	/**
@@ -325,13 +325,15 @@ public abstract class Input {
 	 *  @param   String    name of the method that called this method, used in the exception message.
 	 */
 	protected void inputNumErrorCheck(int inputNum, String method) {
-		if (inputNum > this.adjustedNumInputs) {
+		if (inputNum >= this.adjustedNumInputs) {
 			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.adjustedNumInputs + ", the number of inputs.");
 			iae.printStackTrace();
+			throw iae;
 		}
 		if (inputNum < 0) {
 			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter is " + inputNum + "; must be 1 or greater.");
 			iae.printStackTrace();
+			throw iae;
 		}
 	} // inputNumErrorCheck
 
