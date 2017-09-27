@@ -1,9 +1,6 @@
 package core;
 
-import java.util.HashMap;
-
 import controlP5.ControlP5;
-import processing.core.PApplet;
 
 /**
  * Sep. 6, 2017
@@ -107,7 +104,8 @@ public class InputMatrix {
 		int	squareWidth	= (this.parent.width - textX) / numInputs;
 		int	squareHeight	= (this.parent.height - topY) / events.length;
 		
-		this.parent.fill(150, 50);
+//		this.parent.fill(150, 50);
+		this.parent.fill(150, 50, 150);
 		this.parent.rect(0, 0, this.parent.width, this.parent.height);
 		this.parent.fill(255);
 		

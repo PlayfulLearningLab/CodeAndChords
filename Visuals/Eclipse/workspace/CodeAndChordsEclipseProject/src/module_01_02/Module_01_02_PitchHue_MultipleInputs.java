@@ -55,7 +55,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	private	int[]	rectWidths;
 	private	int[]	rectHeights;
 */
-	private	InputMatrix	inputMatrix;
+//	private	InputMatrix	inputMatrix;
 	private	int			curInput;
 	
 	public void setup()
@@ -188,10 +188,11 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		int	scaleDegree;
 		
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true && !this.menu.getIsRunning()) 
+/*		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		} // if keyPressed
+*/
 		
 		if(mousePressed)
 		{
@@ -227,7 +228,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 //			System.out.println("this.xVals.length = " + this.xVals.length);
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
-			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
+//			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 			
 			if(this.menu.isShowScale())
 			{

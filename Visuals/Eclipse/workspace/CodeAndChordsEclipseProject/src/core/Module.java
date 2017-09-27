@@ -38,6 +38,7 @@ public abstract class Module extends PApplet {
 	
 	/**	"Sidebar" Menu, where most basic Controllers will be - global HSB and RGB modulation, etc.	*/
 	protected	ModuleMenu		menu;
+	protected	InputMatrix		inputMatrix;
 	
 	protected	int		currentMenu;
 	
