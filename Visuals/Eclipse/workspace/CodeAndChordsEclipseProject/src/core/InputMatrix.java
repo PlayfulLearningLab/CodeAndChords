@@ -98,26 +98,35 @@ public class InputMatrix {
 		int	leftX	= 100;
 		int	topY	= 100;
 
-		System.out.println("parent input = " + (this.parent).input);
 		int	numInputs	= ((Module)this.parent).input.getAdjustedNumInputs();
 		
 		int	squareWidth	= (this.parent.width - textX) / numInputs;
 		int	squareHeight	= (this.parent.height - topY) / events.length;
 		
 //		this.parent.fill(150, 50);
-		this.parent.fill(150, 50, 150);
-		this.parent.rect(0, 0, this.parent.width, this.parent.height);
 		this.parent.fill(255);
+		this.parent.rect(0, 0, this.parent.width, this.parent.height);
+		this.parent.fill(255, 0, 0);
+		this.parent.stroke(150, 50, 150);
+//		this.parent.strokeWeight(20);
 		
+		// Events are along the side (i determines y position):
 		for(int i = 0; i < this.events.length; i++)
 		{
+			// Inputs are along the top (j determines x position):
 			for(int j = 0; j < numInputs; j++)
 			{
 				if(i == 0)
 				{
-					this.parent.line(textX + (squareWidth * j), topY + (squareHeight * j), textX + (squareWidth * j), this.parent.height);
+					this.parent.textSize(12);
+					this.parent.text(("i = " + i + "; j = " + j), textX + (squareWidth * j), topY);
+					this.parent.line(textX + (squareWidth * j), topY, textX + (squareWidth * j), this.parent.height);
 				}
+				
 			} // for - j (inputs)
+			
+			this.parent.line(textX, topY + (squareHeight * i), this.parent.width, topY + (squareHeight * i));
+
 		} // for - i (events)
 	} // drawMatrix
 	
