@@ -45,7 +45,7 @@ public class Module_01_02_WantingMemories extends Module
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 	 */
 
-	private RealTimeInput  input;
+	private RealTimeInput	input;
 	private	RecordedInput	recInput;
 /*	private	int		numInputs;
 
@@ -202,7 +202,7 @@ public class Module_01_02_WantingMemories extends Module
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 			
 //			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			scaleDegree	= (round(this.recInput.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(this.recInput.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 			

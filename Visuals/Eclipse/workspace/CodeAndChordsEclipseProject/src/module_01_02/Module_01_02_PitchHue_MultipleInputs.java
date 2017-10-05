@@ -46,54 +46,54 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
 	 */
 
-//	private RealTimeInput  input;
+	//	private RealTimeInput  input;
 	private	RecordedInput	recordedInput;
-/*	private	int		numInputs;
+	/*	private	int		numInputs;
 
 	private	int[]	xVals;
 	private	int[]	yVals;
 	private	int[]	rectWidths;
 	private	int[]	rectHeights;
-*/
-//	private	InputMatrix	inputMatrix;
+	 */
+	//	private	InputMatrix	inputMatrix;
 	private	int			curInput;
-	
+
 	public void setup()
 	{
 		// TODO: test with more inputs than are supported
-//		this.input	= new Input(2, this);
+		//		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumEvents	= this.input.getAdjustedNumInputs();
 		this.curNumEvents	= 1;
-		
+
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		
+
 		this.inputMatrix	= new InputMatrix(this.totalNumEvents, this);
 		for(int i = 0; i < this.totalNumEvents; i++)
 		{
-			this.inputMatrix.assignInput(i, i);
+			this.inputMatrix.assignInput(i, i, 0);
 		}
-		
+
 		this.inputMatrix.printMatrix();
 
-/*
- * 		this.shapes	= new Shape[12];
+		/*
+		 * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
 		{
 			this.shapes[i]	= new Shape(this);
 			this.shapes[i].setCurrentShape("supershape", 
 					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
 		} // for - i
-*/
-		
+		 */
+
 		this.setSquareValues();
-		
+
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
 		int[]	controllerXVals	= new int[3];
-//		int					colorSelectY;
-		
+		//		int					colorSelectY;
+
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
 		textYVals[0]	=	26;
@@ -116,24 +116,24 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		textYVals[textYVals.length - 3]	= textYVals[textYVals.length - 4] + (int)(yValDif * 1.5);
 		textYVals[textYVals.length - 2]	= textYVals[textYVals.length - 3] + (int)(yValDif * 1);
 		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1);
-		
+
 		controllerXVals	= new int[] {	
 				0, 
 				(this.width / 3) - 20, 
 				((this.width / 3) * 2) - 40	
-			};
+		};
 
 		// call add methods:
-		
+
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
-		
-//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
+
+		//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
 		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
-		
+
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
 		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
@@ -153,14 +153,14 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		String[] noteNames = new String[] {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
-		
+
 		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
-		
+
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
 		// to lock them.
-//		this.addColorSelectButtons(textYVals[14]);
+		//		this.addColorSelectButtons(textYVals[14]);
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
@@ -173,87 +173,99 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
-//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
-		
-		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
+
+		this.menu.setMenuList(new String[] {"Canvas", "Module Menu", "InputMatrix"});
 
 
 	} // setup()
 
-	
+
 	public void draw()
 	{
 		int	scaleDegree;
-		
+
 		// The following line is necessary so that key press shows the menu button
-/*		if (keyPressed == true && !this.menu.getIsRunning()) 
+		/*		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		} // if keyPressed
-*/
-		
-		if(mousePressed)
-		{
-			System.out.println("this.inputMatrix = " + this.inputMatrix);
-			this.inputMatrix.drawMatrix();
-		}
-		
-//		for(int i = 0; i < this.curNumInputs; i++)
-		for(int i = 0; i < this.curNumEvents; i++)
-		{
-//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
-//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
-			
-			curInput	= this.inputMatrix.getInput(i);
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(curInput + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+		 */
 
-			this.menu.fade(scaleDegree, i);
-			
-			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-			
-			int	curX;
-			int	curY;
-			
-/*			if(this.menu.getIsRunning())
+		/*		if(mousePressed)
+		{
+			if(!inputMatrix.isVisible())
 			{
-				curX	= (int)this.menu.mapAdjustedMenuXPos(this.xVals[i]);
-				curY	= (int)this.menu.mapAdjustedMenuYPos(this.yVals[i]);
+				inputMatrix.drawMatrix();
 			} else {
-				curX	= this.xVals[i];
-				curY	= this.yVals[i];
+				this.inputMatrix.assignInputFromLoc(mouseX, mouseY);
 			}
-			*/
-//			System.out.println("this.xVals.length = " + this.xVals.length);
-			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
-			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
-//			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
-			
-			if(this.menu.isShowScale())
-			{
-				this.legend(scaleDegree, i);
-			}
-			
-			if(this.currentMenu != this.menu.getCurrentMenu())
-			{
-				this.currentMenu = this.menu.getCurrentMenu();
-				
-				if(this.currentMenu == 0)
-				{
-					this.menu.setIsRunning(false);
-				}
-				else if(this.currentMenu == 1)
-				{
-					this.menu.setIsRunning(true);
-				}
-			}
-		} // for
+		}
+		 */
+
 		
+			//		for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.curNumEvents; i++)
+			{
+				//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
+				//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
+
+				curInput	= this.inputMatrix.getInput(i)[0];
+				scaleDegree	= (round(input.getFundAsMidiNote(curInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+
+				this.menu.fade(scaleDegree, curInput);
+				this.fill(this.menu.getCurHue()[curInput][0], this.menu.getCurHue()[curInput][1], this.menu.getCurHue()[curInput][2]);
+
+//				this.menu.fade(scaleDegree, i);
+//				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
+
+				int	curX;
+				int	curY;
+
+				//			System.out.println("this.xVals.length = " + this.xVals.length);
+				curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
+				curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
+				this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
+
+				if(this.menu.isShowScale())
+				{
+					this.legend(scaleDegree, i);
+				}
+			} // for
+			
+			if(this.inputMatrix.isVisible())
+			{
+				this.inputMatrix.drawMatrix();
+			}
+
+		// Show the correct Menu:
+		if(this.currentMenu != this.menu.getCurrentMenu())
+		{
+			this.currentMenu = this.menu.getCurrentMenu();
+
+			if(this.currentMenu == 0)
+			{
+				this.menu.setIsRunning(false);
+				this.inputMatrix.setVisible(false);
+			}
+			else if(this.currentMenu == 1)
+			{
+				this.menu.setIsRunning(true);
+				this.inputMatrix.setVisible(false);
+			}
+			else if(this.currentMenu == 2)
+			{
+				this.inputMatrix.setVisible(true);
+				this.menu.setIsRunning(false);
+			}
+		}
+
 		this.menu.runMenu();
 
 		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
 				{
 					for(int i = 0; i < menu.trichromColors.length; i++)
 					{
@@ -261,20 +273,29 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
 					}
 				} // if		
-*/
+		 */
 
 	} // draw()
-	
-	
+
+	public void mousePressed()
+	{
+		if(this.inputMatrix.isVisible())
+		{
+			//			this.inputMatrix.mousePressed();
+			this.inputMatrix.assignInputFromLoc(this.mouseX, this.mouseY);
+		}
+	}
+
+
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-	
+
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
-/*	private void setSquareValues()
+	/*	private void setSquareValues()
 	{
 
 		// Rectangles are always the same height, so will be set in a loop every time:
@@ -450,5 +471,5 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			};
 		} // 12
 	} // set Square Vals
-*/
+	 */
 } // class

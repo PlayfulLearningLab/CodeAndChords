@@ -221,7 +221,7 @@ public class Demo_01_VerticalBars extends Module {
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 

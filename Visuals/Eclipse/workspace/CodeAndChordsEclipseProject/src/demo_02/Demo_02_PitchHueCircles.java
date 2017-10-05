@@ -200,7 +200,7 @@ public class Demo_02_PitchHueCircles extends Module
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + recordedInput.getAdjustedFundAsMidiNote(i) + 
 //					"; input.getAmplitude(" + (i) + ") = " + recordedInput.getAmplitude(i));
 		
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 //			scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 			
 //			System.out.println(i + ": scaleDegree = " + scaleDegree);
