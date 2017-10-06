@@ -169,13 +169,17 @@ public class InputMatrix {
 				if(this.events[i][0] == j)
 				{
 					// Set ellipse position for pitch and amplitude:
-					if(this.events[i][1] == 0)
+					// (Multiplying by events[i][1] will set amplitude over one squareWidth)
+					this.ellipseX	= leftX + (j * 2 * squareWidth) + (squareWidth * this.events[i][1]) + (squareWidth / 2);
+
+					/*					if(this.events[i][1] == 0)
 					{
 						this.ellipseX	= leftX + (j * 2 * squareWidth) + (squareWidth / 2);
 					} else {
 						// The key here is the " + 1 " :
 						this.ellipseX	= leftX + (j * 2 * squareWidth) + squareWidth + (squareWidth / 2);
 					}
+					*/
 					this.parent.ellipse(this.ellipseX, topY + (i * squareHeight) + (squareHeight / 2), 10, 10);
 				}
 				
