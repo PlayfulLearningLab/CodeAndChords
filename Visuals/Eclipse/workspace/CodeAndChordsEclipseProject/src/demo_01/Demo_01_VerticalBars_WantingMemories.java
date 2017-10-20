@@ -8,7 +8,7 @@ import core.input.RealTimeInput;
 import core.input.RecordedInput;
 import processing.core.PApplet;
 
-public class Demo_01_VerticalBars extends Module {
+public class Demo_01_VerticalBars_WantingMemories extends Module {
 	/**
 	 * 
 	 * 
@@ -29,10 +29,21 @@ public class Demo_01_VerticalBars extends Module {
 
 	public static void main(String[] args)
 	{
-		PApplet.main("demo_01.Demo_01_VerticalBars");
+		PApplet.main("demo_01.Demo_01_VerticalBars_WantingMemories");
 	} // main
 
+	/*
+	// Choose input file here:
+	// Raw:
+	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
+	// Tuned:
+	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
+	// Kanye:
+	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
+	 */
+
 	private RealTimeInput  input;
+	private	RecordedInput	recordedInput;
 	/*	private	int		numInputs;
 
 	private	int[]	xVals;
@@ -63,12 +74,33 @@ public class Demo_01_VerticalBars extends Module {
 		// TODO: test with more inputs than are supported
 		//		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(16, true, this);
+		
+		this.recordedInput	= new RecordedInput(this, new String[] { 
+				"WantingMemories_Melody.wav",
+				"WantingMemories_Alto.wav",
+//				"WantingMemories_Bass.wav",
+				"WMBass_Later_Quiet.wav",
+				"WantingMemories_Soprano.wav",
+//				"WantingMemories_Tenor.wav",
+				"WMTenor_Medium.wav"
+		});
 		this.totalNumEvents	= this.input.getAdjustedNumInputs();
 		this.curNumEvents	= 4;
 
-		this.menu	= new ModuleMenu(this, this, this.input, "Demo_01_VerticalBars", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		/*
+		 * 		this.shapes	= new Shape[12];
+		for(int i = 0; i < this.shapes.length; i++)
+		{
+			this.shapes[i]	= new Shape(this);
+			this.shapes[i].setCurrentShape("supershape", 
+					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
+		} // for - i
+		 */
 
 		this.setSquareValues();
+
+		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 
 
 		int[]	textYVals  		= new int[18];
@@ -156,6 +188,8 @@ public class Demo_01_VerticalBars extends Module {
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
+		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
+
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
 		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
@@ -203,6 +237,15 @@ public class Demo_01_VerticalBars extends Module {
 			int	curX;
 			int	curY;
 
+			/*			if(this.menu.getIsRunning())
+			{
+				curX	= (int)this.menu.mapAdjustedMenuXPos(this.xVals[i]);
+				curY	= (int)this.menu.mapAdjustedMenuYPos(this.yVals[i]);
+			} else {
+				curX	= this.xVals[i];
+				curY	= this.yVals[i];
+			}
+			 */
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 
@@ -248,7 +291,10 @@ public class Demo_01_VerticalBars extends Module {
 			}
 			
 
-		
+			//this.stroke(255);
+			//this.strokeWeight(5);
+			//this.line(0, (this.height/2)- amp*(this.height/2), this.width, (this.height/2)- amp*(this.height/2));
+			
 			if(this.menu.isShowScale())
 			{
 				this.legend(scaleDegree, i);
@@ -271,6 +317,16 @@ public class Demo_01_VerticalBars extends Module {
 
 		this.menu.runMenu();
 
+		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
+		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+				{
+					for(int i = 0; i < menu.trichromColors.length; i++)
+					{
+						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
+						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
+					}
+				} // if		
+		 */
 
 	} // draw()
 
