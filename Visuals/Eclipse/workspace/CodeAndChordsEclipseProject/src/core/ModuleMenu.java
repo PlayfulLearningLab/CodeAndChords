@@ -641,7 +641,8 @@ public class ModuleMenu extends MenuTemplate  {
 		.setItemHeight(20)
 		.close();
 
-/*
+
+		// TODO: adds and hides hamburgers to avoid Null Pointer -- should remove them totally.
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
 		this.outsideButtonsCP5.addButton("hamburger")
@@ -663,7 +664,9 @@ public class ModuleMenu extends MenuTemplate  {
 		.updateSize()
 		.bringToFront();
 
-*/
+
+		this.outsideButtonsCP5.getController("hamburger").hide();
+		this.controlP5.getController("menuX").hide();
 
 		//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
 	} // addOutsideButtons
@@ -2413,6 +2416,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.outsideButtonsCP5.getController("play").setVisible(this.isShowPlayStop());
 		this.outsideButtonsCP5.getController("pause").setVisible(this.showPause);
+		// TODO: always hiding hamburger:
+		this.showHamburger = false;
 		this.outsideButtonsCP5.getController("hamburger").setVisible(this.showHamburger);
 	} // showOutsideButtons
 
@@ -2488,7 +2493,9 @@ public class ModuleMenu extends MenuTemplate  {
 			this.controlP5.getGroup("sidebarGroup").setVisible(false);
 			 */
 			//			this.outsideButtonsCP5.getController("hamburger").setVisible(true);
-			this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
+			
+			// TODO: hiding hamburger at all times, for now:
+//			this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
 			this.showHamburger	= false;
 		} // if - menuX
 
@@ -2510,11 +2517,14 @@ public class ModuleMenu extends MenuTemplate  {
 			//Controller; automatically false, but able to be set to true.
 			// A Controller must be visible and/or clickable to respond to click.
 
+			// TODO - hiding hamburger:
+			/*
 			if(!this.getIsRunning())
 			{
 				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
 			}
 			this.showHamburger	= !((Toggle)this.controlP5.getController("menuButton")).getBooleanValue();
+			*/
 		} // if - hidePlayButton
 
 		// Hide legend:
@@ -3921,9 +3931,11 @@ public class ModuleMenu extends MenuTemplate  {
 	 * added 1/26/17 Elena Ryan
 	 */
 	public void setMenuVal() {
-		//this.menuVis = true;	
+		//this.menuVis = true;
+
 		((Toggle)this.controlP5.getController("menuButton")).setState(false);
-		this.outsideButtonsCP5.getController("hamburger").setVisible(true);
+		// TODO -- not doing this any more because currently hiding hamburger always:
+		//		this.outsideButtonsCP5.getController("hamburger").setVisible(true);
 	}//set menu val
 
 
