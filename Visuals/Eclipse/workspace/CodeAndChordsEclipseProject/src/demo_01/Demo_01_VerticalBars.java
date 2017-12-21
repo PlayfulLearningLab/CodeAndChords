@@ -6,6 +6,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
+import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class Demo_01_VerticalBars extends Module {
@@ -74,11 +75,11 @@ public class Demo_01_VerticalBars extends Module {
 			this.barVel[i] = 0;
 		}
 
-		// TODO: test with more inputs than are supported
-		//		this.input	= new Input(2, this);
-		this.input	= new RealTimeInput(16, true, this);
+		this.input	= new RealTimeInput(1, new AudioContext(), false, this);
+//		this.input	= new RealTimeInput(1, this);
+//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 4;
+		this.curNumInputs	= 1;
 
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 		/*
@@ -92,9 +93,6 @@ public class Demo_01_VerticalBars extends Module {
 		 */
 
 		this.setSquareValues();
-
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-
 
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
