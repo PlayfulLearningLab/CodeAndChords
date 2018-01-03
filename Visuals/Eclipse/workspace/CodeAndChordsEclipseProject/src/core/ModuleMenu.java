@@ -336,14 +336,13 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param input		Input for all audio input; will instantiate this.input
 	 * @param sidebarTitle	String designating the title of the module to which this template corresponds
 	 */
-	public ModuleMenu(PApplet parent, Module module, Input input, String sidebarTitle, int totalNumColorItems)
+	public ModuleMenu(PApplet parent, Module module, Input input, int totalNumColorItems)
 	{
 		super(parent, parent.width, parent.height);
 
 		this.parent			= parent;
 		this.module			= module;
 		this.input			= input;
-		this.sidebarTitle	= sidebarTitle;
 
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
 		this.outsideButtonsCP5.addListener((ControlListener)this);

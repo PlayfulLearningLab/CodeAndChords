@@ -57,7 +57,7 @@ public class Demo_01_Flight extends Module {
 		this.input	= new RealTimeInput(this.totalNumInputs, new AudioContext(new PortAudioAudioIO(this.totalNumInputs)), this);
 		this.curNumInputs	= this.totalNumInputs;
 
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
 
 		this.setSquareValues();
