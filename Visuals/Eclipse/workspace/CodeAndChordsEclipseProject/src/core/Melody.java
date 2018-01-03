@@ -105,7 +105,7 @@ public class Melody implements Runnable {
 	 */
 	public Instrument playMelody(String key, float bpm, String scale, int rangeOctave)
 	{
-		this.instrument = new Instrument(parent);
+		this.instrument = new Instrument(parent, this.input.getAudioContext());
 		this.playMelody(key, bpm, scale, rangeOctave, this.instrument);
 		return this.instrument;
 	}

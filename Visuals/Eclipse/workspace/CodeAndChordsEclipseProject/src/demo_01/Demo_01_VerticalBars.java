@@ -75,11 +75,11 @@ public class Demo_01_VerticalBars extends Module {
 			this.barVel[i] = 0;
 		}
 
-		this.input	= new RealTimeInput(1, new AudioContext(), false, this);
+//		this.input	= new RealTimeInput(1, new AudioContext(), false, this);
 //		this.input	= new RealTimeInput(1, this);
-//		this.input	= new RealTimeInput(16, true, this);
+		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
+		this.curNumInputs	= 2;
 
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 		/*

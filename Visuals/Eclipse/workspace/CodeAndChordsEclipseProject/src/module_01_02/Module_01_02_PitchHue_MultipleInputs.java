@@ -35,15 +35,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
-	/*
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-	 */
 
 //	private RealTimeInput  input;
 	private	RecordedInput	recordedInput;
@@ -57,12 +48,10 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	
 	public void setup() 
 	{
-		// TODO: test with more inputs than are supported
-//		this.input	= new Input(2, this);
 		this.input	= new RealTimeInput(16, true, this);
 		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
+		this.curNumInputs	= 2;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 /*

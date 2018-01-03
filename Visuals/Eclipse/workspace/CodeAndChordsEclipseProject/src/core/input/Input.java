@@ -534,6 +534,11 @@ public abstract class Input {
 			} // for
 		} // if
 	} // setAmplitudeArray
+	
+	public AudioContext getAudioContext()
+	{
+		return this.ac;
+	}
 
 	/**
 	 * 08/01/2017

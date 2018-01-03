@@ -16,7 +16,6 @@ import controlP5.ScrollableList;
 import controlP5.Slider;
 import controlP5.Textfield;
 import controlP5.Toggle;
-import core.Archive_ModuleTemplate.ModuleTemplate01;
 import core.input.Input;
 import core.input.RealTimeInput;
 import processing.core.PApplet;
@@ -315,7 +314,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	firstColorSelectCWId	= -1;
 	protected	int	firstSpecialColorsCWId	= -1;
 	protected	int	lastColorSelectId		= -1;
-	protected	int	firstARTSliderId		= -1;
+	private	int	firstARTSliderId		= -1;
 	protected	int	firstHSBSliderId		= -1;
 	protected	int	firstRGBSliderId		= -1;
 	protected	int	bpmSliderId				= -1;
@@ -327,7 +326,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	firstSatBrightThreshSliderId	= -1;
 	
 	
-	private boolean dynamicBars = false;
+	protected boolean dynamicBars = false;
 	
 
 	/**
@@ -370,7 +369,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.currentInput	= 0;
 
 		this.melody			= new Melody(this.parent, this.input);
-		this.instrument		= new Instrument(this.parent);
+		this.instrument		= new Instrument(this.parent, this.input.getAudioContext());
 		this.bpm			= 120;
 		this.rangeOctave	= 3;
 		this.curKey			= "A";
@@ -677,7 +676,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @param hideY	y value at which the row will be displayed
 	 */
-	public void addHideButtons(int xVal, int	hideY)
+	public void addHideButtons(int xVal, int hideY)
 	{
 		int	hideWidth   = ( ( this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / 3 ) - this.spacer;
 		int hideSpace	= 4;
@@ -743,11 +742,11 @@ public class ModuleMenu extends MenuTemplate  {
 				transitionY
 		}; // yVals
 
-		this.firstARTSliderId	= this.nextSliderId;
+		this.setFirstARTSliderId(this.nextSliderId);
 
 		for(int i = 0; i < labels.length; i++)
 		{
-			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 200);
+			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 400);
 		}
 	} // addARTSliders
 
@@ -1256,7 +1255,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
 		//.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate01.CS_RAINBOW);
+		.setInternalValue(MenuTemplate.CS_RAINBOW);
 		this.controlP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.controlP5.addToggle("dichrom")
@@ -1264,7 +1263,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
 		//.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate01.CS_DICHROM);
+		.setInternalValue(MenuTemplate.CS_DICHROM);
 		this.controlP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.controlP5.addToggle("trichrom")
@@ -1272,7 +1271,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
 		//.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate01.CS_TRICHROM);
+		.setInternalValue(MenuTemplate.CS_TRICHROM);
 		this.controlP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.controlP5.addToggle("custom")
@@ -1280,7 +1279,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
 		//.setGroup("sidebarGroup")
-		.setInternalValue(ModuleTemplate01.CS_CUSTOM);
+		.setInternalValue(MenuTemplate.CS_CUSTOM);
 		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		//	this.setColorStyle(ModuleMenu.CS_RAINBOW);
@@ -1557,13 +1556,13 @@ public class ModuleMenu extends MenuTemplate  {
 >>>>>>> recoverMod0103
 	{
 		// Rainbow:
-		if(this.curColorStyle == ModuleTemplate01.CS_RAINBOW)
+		if(this.curColorStyle == MenuTemplate.CS_RAINBOW)
 		{
 			this.rainbow();
 		} // if - rainbow
 
 		// Dichromatic:
-		if(this.curColorStyle == ModuleTemplate01.CS_DICHROM)
+		if(this.curColorStyle == MenuTemplate.CS_DICHROM)
 		{
 
 			// First time to dichromatic, dichromFlag will be false, 
@@ -1588,7 +1587,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // Dichromatic
 
 		// Trichromatic:
-		if(this.curColorStyle == ModuleTemplate01.CS_TRICHROM)
+		if(this.curColorStyle == MenuTemplate.CS_TRICHROM)
 		{			
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
@@ -1869,9 +1868,9 @@ public class ModuleMenu extends MenuTemplate  {
 			color2pos	= this.scaleLength / 3;
 			color3pos	= (this.scaleLength / 3) * 2;
 
-			divideBy1	= color2pos - color1pos;
-			divideBy2	= color3pos - color2pos;
-			divideBy3	= this.scaleLength - color3pos;
+			divideBy1	= Math.max((color2pos - color1pos), 1);
+			divideBy2	= Math.max((color3pos - color2pos), 1);
+			divideBy3	= Math.max((this.scaleLength - color3pos), 1);
 		} else {
 			// These are their positions in trichromColors:
 			color2pos	= 3;	// subdominant
@@ -2049,7 +2048,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curColorStyle[inputNum]	= newColorStyle;
 
 		// Rainbow:
-		if(this.curColorStyle[inputNum] == ModuleTemplate01.CS_RAINBOW)
+		if(this.curColorStyle[inputNum] == MenuTemplate.CS_RAINBOW)
 		{
 			//	if avoids errors during instantiation:
 			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	
@@ -2069,7 +2068,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // if - rainbow
 
 		// Dichromatic:
-		if(this.curColorStyle[inputNum] == ModuleTemplate01.CS_DICHROM)
+		if(this.curColorStyle[inputNum] == MenuTemplate.CS_DICHROM)
 		{
 			for(int i = 0; i < this.module.getTotalNumInputs(); i++)
 			{
@@ -2104,7 +2103,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} // Dichromatic
 
 		// Trichromatic:
-		if(this.curColorStyle[inputNum] == ModuleTemplate01.CS_TRICHROM)
+		if(this.curColorStyle[inputNum] == MenuTemplate.CS_TRICHROM)
 		{
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
@@ -2927,10 +2926,10 @@ public class ModuleMenu extends MenuTemplate  {
 		} // forte threshold Slider
 
 		// Attack, Release, and Transition:
-		if((id >= this.firstARTSliderId && id < (this.firstARTSliderId + 3)) && this.firstARTSliderId != -1)
+		if((id >= this.getFirstARTSliderId() && id < (this.getFirstARTSliderId() + 3)) && this.getFirstARTSliderId() != -1)
 		{
 			//			int	pos	= (id / 2) - 1;
-			int	pos	= id - this.firstARTSliderId;
+			int	pos	= id - this.getFirstARTSliderId();
 			//			this.attackReleaseTransition[pos]	= val;
 
 			if(global)
@@ -3973,6 +3972,10 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.dynamicBars;
 	}
+	
+	public void setDynamicBars(boolean newVal) {
+		this.dynamicBars	= newVal;
+	}
 
 
 	public boolean isShowPlayStop() {
@@ -3983,5 +3986,17 @@ public class ModuleMenu extends MenuTemplate  {
 	public void setShowPlayStop(boolean showPlayStop) {
 		this.showPlayStop = showPlayStop;
 	}
+
+
+	public int getFirstARTSliderId() {
+		return firstARTSliderId;
+	}
+
+
+	public void setFirstARTSliderId(int firstARTSliderId) {
+		this.firstARTSliderId = firstARTSliderId;
+	}
+
+
 
 } // ModuleTemplate

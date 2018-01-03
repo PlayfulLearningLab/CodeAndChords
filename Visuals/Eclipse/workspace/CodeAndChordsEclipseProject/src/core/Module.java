@@ -26,6 +26,8 @@ public abstract class Module extends PApplet {
 	protected	int[]	rectWidths;
 	protected	int[]	rectHeights;
 	
+	protected	boolean	debugLegendColors	= false;
+	
 	protected	Shape			shape;
 	protected	Shape[]			shapes;
 	
@@ -133,6 +135,14 @@ public abstract class Module extends PApplet {
 
 			this.fill(0);
 			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
+		
+			if(debugLegendColors)
+			{
+				this.textSize(12);
+				this.text(("r: " + this.menu.colors[inputNum][scaleDegree][0]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 50);
+				this.text(("g: " + this.menu.colors[inputNum][scaleDegree][1]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 40);
+				this.text(("b: " + this.menu.colors[inputNum][scaleDegree][2]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 30);
+			}
 		} // for - i
 
 	} // legend
