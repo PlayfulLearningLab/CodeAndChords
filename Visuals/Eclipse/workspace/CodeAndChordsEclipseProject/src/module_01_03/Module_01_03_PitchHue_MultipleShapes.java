@@ -6,6 +6,7 @@ import core.Shape;
 import core.ShapeEditor;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
+import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class Module_01_03_PitchHue_MultipleShapes extends Module {
@@ -13,32 +14,8 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public static void main(String[] args)
 	{
-
-		//Says cannot find or load main class???  This should not be an issue
 		PApplet.main("module_01_03.Module_01_03_PitchHue_MultipleShapes");
-		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
-
-	/*
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-	 */
-
-	//	private RealTimeInput  input;
-	private	RecordedInput	recordedInput;
-	/*	private	int		numInputs;
-
-	private	int[]	xVals;
-	private	int[]	yVals;
-	private	int[]	rectWidths;
-	private	int[]	rectHeights;
-	 */
-
 
 	float[][] superShapes = new float[][] {
 		new float[] { 1, 1, 0, 0, 1, 1, 1 },
@@ -52,23 +29,12 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void setup() 
 	{
-		// TODO: test with more inputs than are supported
-		//		this.input	= new Input(2, this);
-		this.input	= new RealTimeInput(16, true, this);
-		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
+		this.input	= new RealTimeInput(1, new AudioContext(), this);
+//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 1;
 
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_03_PitchHue_MultipleShapes", 12);
-		/*
-		 * 		this.shapes	= new Shape[12];
-		for(int i = 0; i < this.shapes.length; i++)
-		{
-			this.shapes[i]	= new Shape(this);
-			this.shapes[i].setCurrentShape("supershape", 
-					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
-		} // for - i
-		 */
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
 		this.setSquareValues();
 
@@ -163,18 +129,19 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		this.menu.setMenuList(new String[] {"Canvas", "Module Menu", "Shape Editor"});
 
+		
 		this.shapes = new Shape[16];
 
 		for(int i = 0; i < this.shapes.length; i++)
 		{
 			this.shapes[i] = new Shape(this);
 
-			for(int i2 = 0; i2 < 5; i2++)
+			for(int j = 0; j < 5; j++)
 			{
-				this.shapes[i].setShapeIndex(i2);
-				this.shapes[i].setCurrentShape("supershape", superShapes[i2]);
-			}
-		}
+				this.shapes[i].setShapeIndex(j);
+				this.shapes[i].setCurrentShape("supershape", superShapes[j]);
+			} // for - j
+		} // for - i
 
 		this.shapeEditor = new ShapeEditor(this, this.shapes, this, 925, 520);
 		this.shapeEditor.setIsRunning(false);
@@ -186,6 +153,8 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void draw()
 	{
+		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
+
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		int	scaleDegree;
@@ -200,10 +169,10 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
-			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
+			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + input.getAdjustedFundAsMidiNote(i) + 
+			//					"; input.getAmplitude(" + (i) + ") = " + input.getAmplitude(1));
 
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 

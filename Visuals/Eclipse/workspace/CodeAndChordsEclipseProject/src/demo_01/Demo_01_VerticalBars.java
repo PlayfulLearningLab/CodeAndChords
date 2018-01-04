@@ -36,25 +36,7 @@ public class Demo_01_VerticalBars extends Module {
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
-	/*
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-	 */
-
-	private RealTimeInput  input;
-	private	RecordedInput	recordedInput;
-	/*	private	int		numInputs;
-
-	private	int[]	xVals;
-	private	int[]	yVals;
-	private	int[]	rectWidths;
-	private	int[]	rectHeights;
-	 */
+//	private RealTimeInput  input;
 
 	public void settings()
 	{
