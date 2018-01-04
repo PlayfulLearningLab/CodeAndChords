@@ -64,7 +64,7 @@ public class Module_01_PitchHue extends Module
 		this.input = new RealTimeInput(1, new AudioContext(), this);
 	//	this.input  = new RealTimeInput(this);
 //		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_PitchHue", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 		
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
@@ -147,7 +147,7 @@ public class Module_01_PitchHue extends Module
 //		curHuePos    = Math.min(round(input.getAdjustedFundAsMidiNote(1) % 12), 11);
 		
 		// Moved the % 12 from the above line out of round() so that we don't have to min() from 12 to 11:
-		curHuePos    = round(input.getAdjustedFundAsMidiNote(1)) % 12;
+		curHuePos    = round(input.getAdjustedFundAsMidiNote(0)) % 12;
 		
 		// TODO - can it run w/out this?
 //		this.menu.setCurHueColorRangeColorAdd(curHuePos);
@@ -164,7 +164,7 @@ public class Module_01_PitchHue extends Module
 			this.menu.setMenuVal();
 		}
 
-		int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+		int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 		this.menu.fade(scaleDegree, 0);
 
 		fill(this.menu.getCurHue()[0][0], this.menu.getCurHue()[0][1], this.menu.getCurHue()[0][2]);

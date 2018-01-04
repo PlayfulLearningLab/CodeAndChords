@@ -169,7 +169,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getAdjustedFund(int)");
 
 		setFund();
-		return this.adjustedFundArray[inputNum - 1];
+		return this.adjustedFundArray[inputNum];
 	} // getAdjustedFund()
 
 	/**
@@ -193,7 +193,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getAdjustedFundAsMidiNote(int)");
 
 		setFund();
-		return Pitch.ftom(this.adjustedFundArray[inputNum - 1]);
+		return Pitch.ftom(this.adjustedFundArray[inputNum]);
 	} // getAdjustedFundAsMidiNote()
 
 	/**
@@ -203,7 +203,7 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getFund(int)");
 
 		setFund();
-		return this.fundamentalArray[inputNum - 1];
+		return this.fundamentalArray[inputNum];
 	} // getFund()
 
 	/**
@@ -226,49 +226,49 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getFundAsMidiNote(int)");
 
 		setFund();
-		return Pitch.ftom(this.fundamentalArray[inputNum - 1]);
+		return Pitch.ftom(this.fundamentalArray[inputNum]);
 	} // getFundAsMidiNote()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
 	public float getAdjustedFund() {
-		return getAdjustedFund(1);
+		return getAdjustedFund(0);
 	} // getAdjustedFund()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
 	public float getAdjustedFundAsHz() {
-		return getAdjustedFundAsHz(1);
+		return getAdjustedFundAsHz(0);
 	} // getAdjustedFundAsHz()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
 	public float getAdjustedFundAsMidiNote() {
-		return getAdjustedFundAsMidiNote(1);
+		return getAdjustedFundAsMidiNote(0);
 	} // getAdjustedFundAsMidiNote()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input.
 	 */
 	public float getFund() {
-		return getFund(1);
+		return getFund(0);
 	} // getFund()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input.
 	 */
 	public float getFundAsHz() {
-		return getFundAsHz(1);
+		return getFundAsHz(0);
 	} // getFundAsHz()
 
 	/**
 	 *  @return  pitch of the first Input as a MIDI note.
 	 */
 	public float getFundAsMidiNote() {
-		return getFundAsMidiNote(1);
+		return getFundAsMidiNote(0);
 	} // getFundAsMidiNote()
 
 	/**
@@ -284,7 +284,7 @@ public abstract class Input {
 		this.setFund();
 
 		//		return this.frequencyArray[inputNum - 1].getAmplitude();
-		return this.amplitudeArray[inputNum - 1];
+		return this.amplitudeArray[inputNum];
 	} // getAmplitude
 
 	/**
@@ -325,13 +325,15 @@ public abstract class Input {
 	 *  @param   String    name of the method that called this method, used in the exception message.
 	 */
 	protected void inputNumErrorCheck(int inputNum, String method) {
-		if (inputNum > this.adjustedNumInputs) {
+		if (inputNum >= this.adjustedNumInputs) {
 			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.adjustedNumInputs + ", the number of inputs.");
 			iae.printStackTrace();
+			throw iae;
 		}
 		if (inputNum < 0) {
 			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter is " + inputNum + "; must be 1 or greater.");
 			iae.printStackTrace();
+			throw iae;
 		}
 	} // inputNumErrorCheck
 
@@ -400,6 +402,10 @@ public abstract class Input {
 
 		/* (non-Javadoc)
 		 * @see com.olliebown.beads.core.PowerSpectrumListener#calculateFeatures(float[])
+		 * 
+		 * This is where the harmonic product spectrum is calculated.
+		 * 
+		 * @param powerSpectrum	frequency-domain spectrum to be analyzed
 		 */
 		public synchronized void process(TimeStamp startTime, TimeStamp endTime, float[] powerSpectrum) {
 			if (bufferSize != powerSpectrum.length) {
@@ -412,8 +418,9 @@ public abstract class Input {
 			features = null;
 			// now pick best peak from linspec
 			double pmax = -1;
-			int maxbin = 0;    
-
+			int maxbin = 0;
+			
+			// This is where the hps squishing happens:
 			for(int i = 0; i < hps.length; i++)
 			{
 				hps[i]  = powerSpectrum[i];
@@ -438,32 +445,33 @@ public abstract class Input {
 				hps[i]  = hps[i] + powerSpectrum[i*4];
 			} // for
 
-			for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
-				double pwr = powerSpectrum[band];
+			// Pick the largest frequency from the hps spectrum:
+			for (int band = FIRSTBAND; band < hps.length; band++) {
+				double pwr = hps[band];
 				if (pwr > pmax) {
 					pmax = pwr;
 					maxbin = band;
 				} // if
 			} // for
 
-			// I added the following line;
+			// I (Emily) added the following line;
 			// 10/5 edits may cause it to be a larger num than it was previously:
 			amplitude  = (float)pmax;
 
 			// cubic interpolation
-			double yz = powerSpectrum[maxbin];
+			double yz = hps[maxbin];
 			double ym;
 			if(maxbin <= 0) {
-				ym = powerSpectrum[maxbin];
+				ym = hps[maxbin];
 			} else {
-				ym = powerSpectrum[maxbin - 1];
+				ym = hps[maxbin - 1];
 			} // else
 
 			double yp;
-			if(maxbin < powerSpectrum.length - 1) {
-				yp  = powerSpectrum[maxbin + 1];
+			if(maxbin < hps.length - 1) {
+				yp  = hps[maxbin + 1];
 			} else {
-				yp  = powerSpectrum[maxbin];
+				yp  = hps[maxbin];
 			} // else
 
 			double k = (yp + ym) / 2 - yz;
@@ -532,6 +540,11 @@ public abstract class Input {
 			} // for
 		} // if
 	} // setAmplitudeArray
+	
+	public AudioContext getAudioContext()
+	{
+		return this.ac;
+	}
 
 	/**
 	 * 08/01/2017

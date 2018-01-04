@@ -27,6 +27,12 @@ import processing.core.PShape;
  *
  */
 public abstract class MenuTemplate implements ControlListener {
+	
+	// Constants to indicate color styles:
+	public	static 	int CS_RAINBOW	= 0;
+	public	static 	int CS_DICHROM	= 1;
+	public	static 	int CS_TRICHROM	= 2;
+	public	static	int	CS_CUSTOM	= 3;
 
 	/**	The current PApplet, passed into the constructor	*/
 	protected PApplet 	parent;
@@ -172,6 +178,7 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public void drawMenu()
 	{
+		
 		this.parent.shape(this.menuBackground, 0, 0);
 		
 //		this.parent.stroke(150);
@@ -635,5 +642,10 @@ public abstract class MenuTemplate implements ControlListener {
 			this.controlP5.hide();
 		}
 	} // runMenu
+	
+	public void setPApplet(PApplet applet)
+	{
+		this.parent = applet;
+	}
 
 } // MenuTemplate

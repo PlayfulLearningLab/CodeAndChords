@@ -35,17 +35,8 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
-	/*
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-	 */
 
-	private RealTimeInput  input;
+//	private RealTimeInput  input;
 	private	RecordedInput	recordedInput;
 /*	private	int		numInputs;
 
@@ -57,16 +48,12 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	
 	public void setup() 
 	{
-		// TODO: test with more inputs than are supported
-//		this.input	= new Input(2, this);
-//		this.input	= new RealTimeInput(16, true, this);
-		
-		this.input = new RealTimeInput(16, new AudioContext(), true, this);
-		
+		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
+		this.curNumInputs	= 2;
 		
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 /*
  * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
@@ -79,9 +66,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		
 		this.setSquareValues();
 		
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		
-
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
