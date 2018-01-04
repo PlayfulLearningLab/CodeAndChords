@@ -418,11 +418,44 @@ public class Shape {
 
 	public float[] getCurrentParameters()
 	{
+		/*
 		System.out.println("------------------------------------------------------------");
 		for(int i = 0; i < 7; i++)
 			System.out.println(this.currentShapeParameters[this.shapeIndex][i]);
+		*/
 		return this.currentShapeParameters[this.shapeIndex];
 	}
+	
+	public void drawShape(ModuleMenu menu)
+	{
+		int[] curHue = menu.getCurHue()[0];
+		
+		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
+		//		this.fill(255);
+
+//		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
+//		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
+
+		//this.shapeMode(CORNER);
+		PShape pShape;
+		/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
+		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
+		 */
+		pShape = this.getPShape();
+
+		pShape.beginShape();
+		pShape.fill(curHue[0], curHue[1], curHue[2]);
+		pShape.stroke(curHue[0], curHue[1], curHue[2]);
+		pShape.rotate(this.getRotation());
+		pShape.scale(menu.getCurrentScale());
+		pShape.endShape();
+
+		this.pApp.shape(pShape, menu.mapCurrentXPos(this.getXPos()), menu.mapCurrentYPos(this.getYPos()));
+		/*		
+		if(this.menu.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
+		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
+		 */
+	} // drawShape
 
 
 }//Shapes

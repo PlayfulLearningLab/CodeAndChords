@@ -222,6 +222,19 @@ public abstract class Module extends PApplet {
 		return this.totalNumInputs;
 	}
 	
+	protected void drawShape(int shapeIndex)
+	{
+		shapes[shapeIndex].drawShape(this.menu);
+	}
+	
+	protected void drawShapes()
+	{
+		for(int i = 0; i < this.curNumInputs; i++)
+		{
+			shapes[i].drawShape(this.menu);
+		}
+	}
+	
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
