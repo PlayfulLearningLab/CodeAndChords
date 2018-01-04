@@ -30,7 +30,7 @@ public class SMM_Demo extends Module {
 		this.curNumInputs	= 1;
 		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
 		
-		this.menu	= new ModuleMenu(this, this, this.input, this.totalNumInputs);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 	} // setup
 	
 	public void draw()

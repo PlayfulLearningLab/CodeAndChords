@@ -81,7 +81,7 @@ public class Demo_01_VerticalBars extends Module {
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 		/*
 		 * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
@@ -156,11 +156,8 @@ public class Demo_01_VerticalBars extends Module {
 		modulateYVals[2]	= textYVals[12];
 
 		// Adding ColorSelect first since everything to do with colors depends on that:
-		String[] noteNames = new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames
 
-		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, this.menu.noteNames, "Custom Pitch\nColor Select", false);
 
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
