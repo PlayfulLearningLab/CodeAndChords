@@ -1,0 +1,14 @@
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.15063.0
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+Release|Win32|C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\bindings\java\c\build\vs2010\PortAudioJNI\|
+=======
+Release|x64|C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\bindings\java\c\build\vs2010\PortAudioJNI\|
+>>>>>>> 253f6a1... 32 and 64 bit dll's
+=======
+Release|Win32|C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\bindings\java\c\build\vs2010\PortAudioJNI\|
+>>>>>>> 542b456... Working PortAudio Java bindings in Eclipse on Windows
+=======
+Release|Win32|C:\Users\emily\Documents\CodeAndChords\Visuals\CommandLine\windowsEmily\portaudio\bindings\java\c\build\vs2010\PortAudioJNI\|
+>>>>>>> d4b45fefb4875773f6f3f2fcfe6ccf11f2d52aa6

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
@@ -10,3 +11,17 @@
 	<classpathentry kind="lib" path="interfascia.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="src/" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/Users/codeandchords/Downloads/beads/library/beads-io.jar"/>
+	<classpathentry kind="lib" path="/Users/codeandchords/Downloads/beads/library/beads.jar"/>
+	<classpathentry kind="lib" path="/Users/codeandchords/Downloads/beads/library/org-jaudiolibs-audioservers.jar"/>
+	<classpathentry kind="lib" path="/Users/codeandchords/Downloads/Processing 4.app/Contents/Java/core/library/core.jar"/>
+	<classpathentry kind="lib" path="interfascia.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
