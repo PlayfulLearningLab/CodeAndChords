@@ -84,7 +84,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shapeEditor.updateSliders();
 
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
-				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 6);
+				this.menu	= new ModuleMenu(this, this, this.input, 6);
 				this.menu.setIsRunning(false);
 
 				this.yVals		= new int[18];
@@ -125,9 +125,11 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
 				//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
 
-				this.textSize(32);		
+				this.textSize(32);
 				
-				this.menu.setMenuList(new String[] {"Canvas", "Module Menu", "Shape Editor"});
+				// Adding this so late so that it comes to the front of the other Controllers:
+				this.menu.addMenuList();
+				this.menu.setMenuList(new String[] {"Module Menu", "Shape Editor"});
 
 
 				//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
@@ -192,18 +194,18 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if(this.currentMenu != this.menu.getCurrentMenu())
 		{
 			this.currentMenu = this.menu.getCurrentMenu();
-			
+			/*
 			if(this.currentMenu == 0)
 			{
 				this.menu.setIsRunning(false);
 				this.shapeEditor.setIsRunning(false);
-			}
-			else if(this.currentMenu == 1)
+			} */
+			if(this.currentMenu == 0)
 			{
 				this.shapeEditor.setIsRunning(false);
 				this.menu.setIsRunning(true);
 			}
-			else if(this.currentMenu == 2)
+			else if(this.currentMenu == 1)
 			{
 				this.menu.setIsRunning(false);
 				this.shapeEditor.setIsRunning(true);
@@ -295,7 +297,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		this.menu.setPApplet(fsm);
 */
 		
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
+		//TODO: Is the hamburger button in a ControlP5 object not in this if statement? -- yes, it's in the menu.getOutsideButtonsCP5().
 		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			// Map if running:

@@ -76,7 +76,7 @@ public class Module_01_02_WantingMemories extends Module
 		this.curNumInputs	= 5;
 		
 //		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		this.menu	= new ModuleMenu(this, this, this.recInput, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.recInput, 12);
 
 		/*
  * 		this.shapes	= new Shape[12];

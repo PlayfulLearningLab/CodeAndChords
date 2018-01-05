@@ -234,14 +234,14 @@ public abstract class Module extends PApplet {
 	
 	protected void drawShape(int shapeIndex)
 	{
-		shapes[shapeIndex].drawShape(this.menu);
+		shapes[shapeIndex].drawShape(this.menu, shapeIndex);
 	}
 	
 	protected void drawShapes()
 	{
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			shapes[i].drawShape(this.menu);
+			shapes[i].drawShape(this.menu, i);
 		}
 	}
 	
