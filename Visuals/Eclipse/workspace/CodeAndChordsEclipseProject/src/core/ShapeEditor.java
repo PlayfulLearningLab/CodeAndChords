@@ -180,7 +180,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 				PShape ps2 = this.shapes[i].getPShape();
 				ps2.beginShape();
 				ps2.noFill();
-				ps2.stroke(255);
+				ps2.stroke(150);
 				ps2.strokeWeight(5);
 				ps2.scale(super.getScale());
 				ps2.rotate(this.shapes[i].getRotation());
@@ -508,6 +508,11 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	public void setNumActiveShapes(int numActiveShapes)
 	{
 		this.numActiveShapes = numActiveShapes;
+	}
+	
+	public int getShapeIndex()
+	{
+		return this.shapeIndex;
 	}
 
 }// ShapeEditor

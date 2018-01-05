@@ -180,7 +180,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		this.shapeEditor.setIsRunning(false);
 		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.shapeEditor.updateSliders();
-		
+
 		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
@@ -224,7 +224,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		if(this.currentMenu != this.menu.getCurrentMenu())
 		{
 			this.currentMenu = this.menu.getCurrentMenu();
-			
+
 			if(this.currentMenu == 0)
 			{
 				this.menu.setIsRunning(false);
@@ -272,6 +272,38 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
 
+	public void mouseDragged()
+	{
+		this.mousePressed();
+	}
 
+	public void mousePressed()
+	{
+		/*
+		FullScreenDisplay fsm = new FullScreenDisplay();
+		fsm.startDisplay();
+		this.shapeEditor.setPApplet(fsm);
+		this.menu.setPApplet(fsm);
+		 */
+
+		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
+		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
+		{
+			// Map if running:
+			if(this.shapeEditor.getIsRunning() || this.menu.getIsRunning())
+			{	
+				this.shapes[this.shapeEditor.getShapeIndex()].setXPos( this.shapeEditor.mapFullAppletXPos( Math.max( this.shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, this.shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				this.shapes[this.shapeEditor.getShapeIndex()].setYPos( this.shapeEditor.mapFullAppletYPos( Math.max( this.shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, this.shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				this.shapeEditor.updateSliders();
+			}
+			else
+			{
+				// If neither are running, just keep w/in bounds:
+				this.shapes[this.shapeEditor.getShapeIndex()].setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				this.shapes[this.shapeEditor.getShapeIndex()].setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
+				this.shapeEditor.updateSliders();
+			}
+		} // if - not over either ControlP5
+	} // mouseClicked
 
 }
