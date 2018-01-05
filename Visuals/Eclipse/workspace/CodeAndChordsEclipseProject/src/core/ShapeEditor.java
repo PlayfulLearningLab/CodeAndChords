@@ -75,7 +75,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) 
 	{
 		this(parent, new Shape[] {shape}, module, fullAppletWidth, fullAppletHeight);
-		
+
 	}// constructor
 
 	/**
@@ -108,7 +108,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			throw new IllegalArgumentException("Shape parameter is null");
 		else
 			this.shapes = shapes;
-		
+
 		this.numActiveShapes = 1;
 		this.shapeIndex = 0;
 
@@ -170,6 +170,24 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		ps.rotate(this.shapes[this.shapeIndex].getRotation());
 		ps.endShape();
 		this.parent.shape(ps, super.mapAdjustedMenuXPos(this.shapes[this.shapeIndex].getXPos()), this.mapAdjustedMenuYPos(this.shapes[this.shapeIndex].getYPos()));
+
+
+
+		for(int i = 0; i < this.numActiveShapes; i++)
+		{
+			if(i != this.shapeIndex)
+			{
+				PShape ps2 = this.shapes[i].getPShape();
+				ps2.beginShape();
+				ps2.noFill();
+				ps2.stroke(255);
+				ps2.strokeWeight(5);
+				ps2.scale(super.getScale());
+				ps2.rotate(this.shapes[i].getRotation());
+				ps2.endShape();
+				this.parent.shape(ps2, super.mapAdjustedMenuXPos(this.shapes[i].getXPos()), this.mapAdjustedMenuYPos(this.shapes[i].getYPos()));
+			}
+		}
 
 		super.drawMenu();
 	}// drawSE
@@ -250,7 +268,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.controlP5.addButton("Flower")
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 10);
-		
+
 		this.controlP5.addButton("Splat")
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
@@ -270,7 +288,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.controlP5.addButton("Butterfly")
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 60);
-		
+
 		this.slidersInitialized = true;
 
 		String[] numList = new String[this.shapes.length];
@@ -278,7 +296,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		{
 			numList[i] = "" + (i + 1);
 		}
-		
+
 		this.controlP5.addScrollableList("shapeIndex", 100, 100, 150, 50)
 		.addItems(numList);
 	}
@@ -295,7 +313,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.updateSliders();
 			System.out.println(theEvent.getValue());
 			break;
-			
+
 		case "shapeIndex":
 			this.shapeIndex = (int) theEvent.getValue();
 			break;
@@ -319,23 +337,23 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		case "Flower":
 			this.shapes[this.shapeIndex].setCurrentShape("flower");
 			break;
-			
+
 		case "Splat":
 			this.shapes[this.shapeIndex].setCurrentShape("splat");
 			break;
-			
+
 		case "Snowflake":
 			this.shapes[this.shapeIndex].setCurrentShape("snowflake");
 			break;
-			
+
 		case "Sun":
 			this.shapes[this.shapeIndex].setCurrentShape("sun");
 			break;
-			
+
 		case "X":
 			this.shapes[this.shapeIndex].setCurrentShape("x");
 			break;
-			
+
 		case "Butterfly":
 			this.shapes[this.shapeIndex].setCurrentShape("butterfly");
 			break;
@@ -486,7 +504,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		}
 	}
-	
+
 	public void setNumActiveShapes(int numActiveShapes)
 	{
 		this.numActiveShapes = numActiveShapes;

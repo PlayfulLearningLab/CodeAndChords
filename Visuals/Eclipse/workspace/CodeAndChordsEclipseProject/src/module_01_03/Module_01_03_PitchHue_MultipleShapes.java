@@ -180,6 +180,8 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		this.shapeEditor.setIsRunning(false);
 		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.shapeEditor.updateSliders();
+		
+		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
 
