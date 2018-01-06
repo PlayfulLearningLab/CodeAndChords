@@ -48,7 +48,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(16, true, this);
+		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
 		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
