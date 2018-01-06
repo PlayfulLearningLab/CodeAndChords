@@ -28,11 +28,11 @@ public abstract class Module extends PApplet {
 	
 	protected	boolean	debugLegendColors	= false;
 	
-	protected	Shape			shape;
-	protected	Shape[]			shapes;
+//	protected	Shape			shape;
+//	protected	Shape[]			shapes;
 	
 	/**	For Modules with a Shape, this ShapeEditor provides Shape customization Controllers	*/
-	protected 	ShapeEditor		shapeEditor;
+//	protected 	ShapeEditor		shapeEditor;
 	
 	/**	"Sidebar" Menu, where most basic Controllers will be - global HSB and RGB modulation, etc.	*/
 	protected	ModuleMenu		menu;
@@ -70,19 +70,19 @@ public abstract class Module extends PApplet {
 	 * 
 	 * @param isRunning	indicates whether or not the ShapeEditor should be open (i.e., running)
 	 */
-	public void setShapeEditorRunning(boolean isRunning)
+/*	public void setShapeEditorRunning(boolean isRunning)
 	{
 		this.shapeEditor.setIsRunning(isRunning);
 	} // setShapeEditorRunning
-
+*/
 	/**
 	 * Getter for Shape instance variable
 	 * @return	this.shape
 	 */
-	public Shape getShape() {
+/*	public Shape getShape() {
 		return this.shape;
 	} // getShape
-	
+*/	
 
 	/**
 	 * Draws the legend at the bottom of the screen.
@@ -125,7 +125,7 @@ public abstract class Module extends PApplet {
 			
 			// colors is filled all the way and only picked at the desired notes:
 			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
-			this.fill(this.menu.colors[inputNum][scaleDegree][0], this.menu.colors[inputNum][scaleDegree][1], this.menu.colors[inputNum][scaleDegree][2]);
+			this.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
 
 			if (i == goalHuePos) {
 				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * 1.5f), sideWidth2, (sideHeight * 1.5f));
@@ -139,9 +139,9 @@ public abstract class Module extends PApplet {
 			if(debugLegendColors)
 			{
 				this.textSize(12);
-				this.text(("r: " + this.menu.colors[inputNum][scaleDegree][0]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 50);
-				this.text(("g: " + this.menu.colors[inputNum][scaleDegree][1]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 40);
-				this.text(("b: " + this.menu.colors[inputNum][scaleDegree][2]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 30);
+				this.text(("r: " + this.menu.getColors()[inputNum][scaleDegree][0]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 50);
+				this.text(("g: " + this.menu.getColors()[inputNum][scaleDegree][1]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 40);
+				this.text(("b: " + this.menu.getColors()[inputNum][scaleDegree][2]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 30);
 			}
 		} // for - i
 
@@ -196,7 +196,7 @@ public abstract class Module extends PApplet {
 			
 			// colors is filled all the way and only picked at the desired notes:
 			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
-			this.fill(this.menu.colors[inputNum][scaleDegree][0], this.menu.colors[inputNum][scaleDegree][1], this.menu.colors[inputNum][scaleDegree][2]);
+			this.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
 
 			if (i == goalHuePos) {
 				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale() * 1.5f), sideWidth2, (sideHeight * this.menu.getCurrentScale() * 1.5f));
@@ -232,6 +232,8 @@ public abstract class Module extends PApplet {
 		return this.totalNumInputs;
 	}
 	
+	// Moved these (drawShape, drawShapes()) to ShapeEditor
+	/*
 	protected void drawShape(int shapeIndex)
 	{
 		shapes[shapeIndex].drawShape(this.menu, shapeIndex);
@@ -244,11 +246,12 @@ public abstract class Module extends PApplet {
 			shapes[i].drawShape(this.menu, i);
 		}
 	}
+	*/
 	
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
-	protected void setSquareValues()
+	public void setSquareValues()
 	{
 		if(this.verticalBarsDemo)
 		{
@@ -450,7 +453,7 @@ public abstract class Module extends PApplet {
 						((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
 				};
 			} // 12
-		}
+		} // else - verticalBars
 		
 	} // set Square Vals
 

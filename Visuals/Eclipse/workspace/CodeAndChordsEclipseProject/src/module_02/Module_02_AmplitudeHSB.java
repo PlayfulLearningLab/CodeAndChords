@@ -20,7 +20,7 @@ import core.Archive_ModuleTemplate.ModuleTemplate02;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
-public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterface {
+public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInterface */{
 
 	//	private	DisposeHandler		disposeHandler;
 
@@ -61,7 +61,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		this.totalNumInputs	= 1;
 		this.curNumInputs	= 1;
 
-		this.shape = new Shape(this);
+/*		this.shape = new Shape(this);
 		float[][] superShapes = new float[][] 
 				{
 			new float[] { 1, 1, 0, 0, 1, 1, 1 },
@@ -79,13 +79,13 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 
 				this.shapeEditor = new ShapeEditor(this, this.shape, this, 925, 520);
-				this.shapeEditor.setIsRunning(false);
-				this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
+//				this.shapeEditor.setIsRunning(false);
+//				this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 				this.shapeEditor.updateSliders();
-
+*/
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
 				this.menu	= new ModuleMenu(this, this, this.input, 6);
-				this.menu.setIsRunning(false);
+//				this.menu.setIsRunning(false);
 
 				this.yVals		= new int[18];
 				// Seemed like a good starting position, related to the text - but pretty arbitrary:
@@ -100,36 +100,40 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				String[]	buttonLabels	= new String[] {
 						"Canvas", "1", "2", "3", "4", "5", "6"
 				};
-				this.menu.addColorSelect(0, new int[] { this.yVals[8] }, buttonLabels, "Color Select", true);
+				this.menu.addColorMenu(buttonLabels, null, false, "Dynamic\nSegments", 6, 6);
+				this.menu.addSensitivityMenu(false);
+				
+//				this.menu.addColorSelect(0, new int[] { this.yVals[8] }, buttonLabels, "Color Select", true);
 
-				this.menu.addHideButtons(0, this.yVals[0]);
+//				this.menu.addHideButtons(0, this.yVals[0]);
 
-				this.menu.addARTSliders(0, this.yVals[1], this.yVals[2], this.yVals[3]);
+//				this.menu.addARTSliders(0, this.yVals[1], this.yVals[2], this.yVals[3]);
 
 				this.menu.addShapeSizeSlider(0, this.yVals[15]);
 
-				this.menu.addRangeSegments(0, this.yVals[7], 6, 6, "Dynamic\nSegments");
+//				this.menu.addRangeSegments(0, this.yVals[7], 6, 6, "Dynamic\nSegments");
 
-				this.menu.addHSBSliders(0, new int[] { this.yVals[4], this.yVals[5], this.yVals[6], });
+//				this.menu.addHSBSliders(0, new int[] { this.yVals[4], this.yVals[5], this.yVals[6], });
 
-				this.menu.addPianoThresholdSlider(0, this.yVals[9]);
+//				this.menu.addPianoThresholdSlider(0, this.yVals[9]);
 
-				this.menu.addForteThresholdSlider(0, this.yVals[10]);
+//				this.menu.addForteThresholdSlider(0, this.yVals[10]);
 
-				int	verticalSpacer	= distance - this.menu.getSliderHeight();
-				this.menu.addThresholdSliders(0, yVals[11], verticalSpacer);
+//				int	verticalSpacer	= distance - this.menu.getSliderHeight();
+//				this.menu.addThresholdSliders(0, yVals[11], verticalSpacer);
 				
 				this.menu.getInstrument().setADSR(1000, 500, 0, 0);
 				this.menu.setBPM(30);
 
-				// TODO - might not be necessary: -- yep, if it's in there, the shape starts gray.
-				//		this.moduleTemplate.setCurHueColorRangeColorAdd(0);
-
 				this.textSize(32);
 				
 				// Adding this so late so that it comes to the front of the other Controllers:
-				this.menu.addMenuList();
-				this.menu.setMenuList(new String[] {"Module Menu", "Shape Editor"});
+//				this.menu.addMenuList();
+//				this.menu.setMenuList(new String[] {"Module Menu", "Shape Editor"});
+				
+
+				this.menu.addShapeMenu(1);
+				
 
 
 				//this.shapeMenuFadedBackground = this.createShape(this.RECT, 0, 0, 925, 520);
@@ -148,7 +152,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 //		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true && !this.menu.getIsRunning() && !this.shapeEditor.getIsRunning()) 
+		if (keyPressed == true && !this.menu.getIsRunning() && !this.menu.getShapeEditor().getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		}
@@ -190,7 +194,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		 * 
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
-		
+	/*	
 		if(this.currentMenu != this.menu.getCurrentMenu())
 		{
 			this.currentMenu = this.menu.getCurrentMenu();
@@ -200,7 +204,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.menu.setIsRunning(false);
 				this.shapeEditor.setIsRunning(false);
 			} */
-			if(this.currentMenu == 0)
+/*			if(this.currentMenu == 0)
 			{
 				this.shapeEditor.setIsRunning(false);
 				this.menu.setIsRunning(true);
@@ -211,26 +215,32 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shapeEditor.setIsRunning(true);
 			}
 		}
+*/
+		// TODO - shape size:
+		System.out.println("shapeEditor = " + this.menu.getShapeEditor());
+		System.out.println("shapeEditor = " + this.menu.getShapeEditor() + "; shape = " + this.menu.getShapeEditor().getShape() + "; getShapeSize() = " + this.menu.getShapeSize());
+		this.menu.getShapeEditor().getShape().setShapeScale(this.menu.getShapeSize());
 
-		this.shape.setShapeScale(this.menu.getShapeSize());
-
-		if(!this.shapeEditor.getIsRunning())
+		if(!this.menu.getShapeEditor().getIsRunning())
 		{
-			this.drawShape();
+			this.menu.getShapeEditor().drawShape(0);
 		}
 
-		if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
+		if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
 		{
 			// draws the legend along the bottom of the screen:
 			this.legend(goalHuePos, 0);
 
 		} // if showScale
 
-		this.shapeEditor.runMenu();
+		// ShapeEditor.runMenu now included in menu.runMenu:
+//		this.menu.shapeEditor.runMenu();
 		this.menu.runMenu();
 
 	} // draw
-
+	
+	// NB - Emily removed this as part of her purge. 1/5/2018
+/*
 	private void drawShape()
 	{
 		int[]	curHue	= this.menu.getCurHue()[0];		
@@ -245,7 +255,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
 		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
 		 */
-		pShape = this.shape.getPShape();
+/*		pShape = this.shape.getPShape();
 
 		pShape.beginShape();
 		pShape.fill(curHue[0], curHue[1], curHue[2]);
@@ -259,7 +269,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 		if(this.menu.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
 		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
 		 */
-	} // drawShape
+//	} // drawShape
 
 	@Override
 	public String[] getLegendText()
@@ -272,7 +282,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 
 		return result;
 	} // fillLegendText
-
+/*
 	public Shape getShape()
 	{
 		return this.shape;
@@ -298,21 +308,24 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 */
 		
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement? -- yes, it's in the menu.getOutsideButtonsCP5().
-		if(!this.shapeEditor.getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
+		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
+			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
+			Shape	shape	= shapeEditor.getShapes()[0];
+			
 			// Map if running:
-			if(this.shapeEditor.getIsRunning() || this.menu.getIsRunning())
-			{	
-				this.shape.setXPos( this.shapeEditor.mapFullAppletXPos( Math.max( this.shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, this.shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
-				this.shape.setYPos( this.shapeEditor.mapFullAppletYPos( Math.max( this.shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, this.shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
-				this.shapeEditor.updateSliders();
+			if(this.menu.getShapeEditor().getIsRunning() || this.menu.getIsRunning())
+			{
+				shape.setXPos( shapeEditor.mapFullAppletXPos( Math.max( shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				shape.setYPos( shapeEditor.mapFullAppletYPos( Math.max( shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				shapeEditor.updateSliders();
 			}
 			else
 			{
 				// If neither are running, just keep w/in bounds:
-				this.shape.setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
-				this.shape.setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
-				this.shapeEditor.updateSliders();
+				shape.setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				shape.setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
+				shapeEditor.updateSliders();
 			}
 		} // if - not over either ControlP5
 	} // mouseClicked

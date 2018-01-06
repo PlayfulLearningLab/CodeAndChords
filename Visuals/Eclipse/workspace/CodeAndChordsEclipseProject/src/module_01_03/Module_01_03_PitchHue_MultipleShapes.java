@@ -127,9 +127,11 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
+		this.menu.addMenuList();
 		this.menu.setMenuList(new String[] {"Canvas", "Module Menu", "Shape Editor"});
 
-		
+		this.menu.addShapeMenu(16);
+	/*	
 		this.shapes = new Shape[16];
 
 		for(int i = 0; i < this.shapes.length; i++)
@@ -144,10 +146,10 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		} // for - i
 
 		this.shapeEditor = new ShapeEditor(this, this.shapes, this, 925, 520);
-		this.shapeEditor.setIsRunning(false);
-		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
+//		this.shapeEditor.setIsRunning(false);
+//		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.shapeEditor.updateSliders();
-
+*/
 	} // setup()
 
 

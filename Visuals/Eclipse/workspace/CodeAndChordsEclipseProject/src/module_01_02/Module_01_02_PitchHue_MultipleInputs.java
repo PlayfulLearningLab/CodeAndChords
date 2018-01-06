@@ -103,21 +103,32 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 
 		// call add methods:
 		
-		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
+//		this.menu.addLandingMenu();
+		this.menu.addSensitivityMenu(true);
 		
-//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
-		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
+
+		String[] noteNames = new String[] {
+				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
+		}; // noteNames
+		String[] specialColors	= new String[] {
+				"Canvas", "Tonic", "2nd Color", "3rd Color"
+		}; // buttonLabels
+		this.menu.addColorMenu(noteNames, specialColors, true, null, 0, 0);
+		
+//		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
+		
+//		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 
 		// Adding inputNumSelect first so that inputSelect can be in front:
-		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
-		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
+//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
+//		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
 		
-		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
+//		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 
-		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
+//		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
 
-		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
-		this.menu.setCurKey("A", 2);
+//		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
+//		this.menu.setCurKey("A", 2);
 
 		modulateHSBVals[0] = textYVals[6];
 		modulateHSBVals[1] = textYVals[7];
@@ -128,28 +139,30 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		modulateYVals[2]	= textYVals[12];
 
 		// Adding ColorSelect first since everything to do with colors depends on that:
-		String[] noteNames = new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames
+//		String[] noteNames = new String[] {
+//				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
+//		}; // noteNames
 		
-		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+//		this.menu.addOutsideButtons();
+		
+//		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
 		
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
 		// to lock them.
 //		this.addColorSelectButtons(textYVals[14]);
-		String[] buttonLabels	= new String[] {
-				"Canvas", "Tonic", "2nd Color", "3rd Color"
-		}; // buttonLabels
-		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
+//		String[] buttonLabels	= new String[] {
+//				"Canvas", "Tonic", "2nd Color", "3rd Color"
+//		}; // buttonLabels
+//		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
+//		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
 
-		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
+//		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
-		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
+//		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
 //		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
@@ -200,6 +213,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 				this.legend(scaleDegree, i);
 			}
 			
+			/*
 			if(this.currentMenu != this.menu.getCurrentMenu())
 			{
 				this.currentMenu = this.menu.getCurrentMenu();
@@ -213,6 +227,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 					this.menu.setIsRunning(true);
 				}
 			}
+			*/
 		} // for
 		
 		this.menu.runMenu();
