@@ -26,6 +26,10 @@ import processing.core.PImage;
  */
 public class ModuleMenu extends MenuTemplate  {
 
+	//this is a temporary fix - actually, I think it's a good idea! Already added it further down!
+//	public ShapeEditor shapeEditor;
+	
+	
 	public int trichromCounts	= 0;
 
 	// TODO - for testing trichromatic bug:
@@ -3124,11 +3128,18 @@ public class ModuleMenu extends MenuTemplate  {
 				this.fillHSBColors();
 				 */
 			} // input select dropdown
-
+	
 			if(controlEvent.getName().equals("numInputsList"))
 			{
 				this.module.setCurNumInputs((int)controlEvent.getValue() + 1);
 				this.module.setSquareValues();
+				
+				//What i did here should probably be done in a better way in the future... -- TODO
+				if(!this.shapeEditor.equals(null))
+				{
+					this.shapeEditor.setNumActiveShapes((int)controlEvent.getValue() + 1);
+				}
+				
 			} // numInputsList
 			
 			if(controlEvent.getController().getId() == 99999)
@@ -3142,8 +3153,8 @@ public class ModuleMenu extends MenuTemplate  {
 					this.dynamicBars = true;
 				}
 			}
+		
 		} // if !Tab
-
 	} // controlEvent
 
 

@@ -43,129 +43,31 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 
 		this.setSquareValues();
 
-		int[]	textYVals  		= new int[18];
-		int[]	modulateYVals	= new int[3];
-		int[]	modulateHSBVals	= new int[3];
-		int[]	controllerXVals	= new int[3];
-		//		int					colorSelectY;
-
-		// calculate y's
-		// set y vals for first set of scrollbar labels:
-		textYVals[0]	=	26;
-		// Given our height = 250 and "hide" (textYVals[0]) starts at [40] - now 26 (1/17),
-		// We want a difference of 27.  This gets that:
-		int	yValDif = (int)((this.height - textYVals[0]) / 18);//(textYVals.length + noteYVals.length + modulateYVals.length));
-		// ... but no smaller than 25:
-		if(yValDif < 25) {
-			yValDif	= 25;
-		}
-
-		yValDif = 26;
-
-		for(int i = 1; i < textYVals.length; i++)
-		{
-			textYVals[i]	= textYVals[i - 1] + yValDif;
-		} // for
-
-		// Add extra space before "Pitch Color Codes":
-		textYVals[textYVals.length - 3]	= textYVals[textYVals.length - 4] + (int)(yValDif * 1.5);
-		textYVals[textYVals.length - 2]	= textYVals[textYVals.length - 3] + (int)(yValDif * 1);
-		textYVals[textYVals.length - 1]	= textYVals[textYVals.length - 2] + (int)(yValDif * 1);
-
-		controllerXVals	= new int[] {	
-				0, 
-				(this.width / 3) - 20, 
-				((this.width / 3) * 2) - 40	
-		};
-
 		// call add methods:
+		this.menu.addSensitivityMenu(true);
+		
 
-		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
-
-		//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
-		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
-
-		// Adding inputNumSelect first so that inputSelect can be in front:
-		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
-		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);
-
-		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
-
-		this.menu.addGuideTonePopout(controllerXVals[2], textYVals[2]);
-
-		this.menu.addKeySelector(controllerXVals[2], textYVals[2]);
-		this.menu.setCurKey("A", 2);
-
-		modulateHSBVals[0] = textYVals[6];
-		modulateHSBVals[1] = textYVals[7];
-		modulateHSBVals[2] = textYVals[8];
-
-		modulateYVals[0]	= textYVals[10];
-		modulateYVals[1]	= textYVals[11];
-		modulateYVals[2]	= textYVals[12];
-
-		// Adding ColorSelect first since everything to do with colors depends on that:
 		String[] noteNames = new String[] {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
-
-		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
-
-
-		// ColorSelect and ColorStyle added out of order so that the 2nd Color
-		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
-		// to lock them.
-		//		this.addColorSelectButtons(textYVals[14]);
-		String[] buttonLabels	= new String[] {
+		String[] specialColors	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
-
-		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
-
-		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
-
-		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
-
-		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
-
+		this.menu.addColorMenu(noteNames, specialColors, true, null, 0, 0);
+		
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
-		this.menu.setMenuList(new String[] {"Canvas", "Module Menu", "Shape Editor"});
+		this.menu.addShapeMenu(16);
 
-		
-		this.shapes = new Shape[16];
-
-		for(int i = 0; i < this.shapes.length; i++)
-		{
-			this.shapes[i] = new Shape(this);
-
-			for(int j = 0; j < 5; j++)
-			{
-				this.shapes[i].setShapeIndex(j);
-				this.shapes[i].setCurrentShape("supershape", superShapes[j]);
-			} // for - j
-		} // for - i
-		
-		this.shapes[0].setXPos(this.width - 250);
-		this.shapes[0].setYPos(this.height - 250);
-		this.shapes[0].setShapeScale(2f);
-		
-		this.shapes[1].setXPos(this.width / 6);
-		this.shapes[1].setYPos(this.height / 4);
-		this.shapes[1].setShapeScale(0.5f);
-
-		this.shapeEditor = new ShapeEditor(this, this.shapes, this, 925, 520);
-		this.shapeEditor.setIsRunning(false);
-		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
-		this.shapeEditor.updateSliders();
+//		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
 
 
 	public void draw()
 	{
+	//	System.out.println("recordedInput.getAdjustedFund() = " + recordedInput.getAdjustedFund());
+
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		int	scaleDegree;
@@ -189,46 +91,34 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 
-			if(!this.shapeEditor.getIsRunning())
+
+			if(!this.menu.getShapeEditor().getIsRunning())
 			{
-				this.drawShape(i);
+				this.menu.getShapeEditor().drawShape(i);
 			}
 
 		} // for
 
-		//this.shape.setShapeScale(this.menu.getShapeSize());
-
-		if(this.currentMenu != this.menu.getCurrentMenu())
-		{
-			this.currentMenu = this.menu.getCurrentMenu();
-			
-			if(this.currentMenu == 0)
-			{
-				this.menu.setIsRunning(false);
-				this.shapeEditor.setIsRunning(false);
-			}
-			else if(this.currentMenu == 1)
-			{
-				this.shapeEditor.setIsRunning(false);
-				this.menu.setIsRunning(true);
-			}
-			else if(this.currentMenu == 2)
-			{
-				this.menu.setIsRunning(false);
-				this.shapeEditor.setIsRunning(true);
-			}
-		}
-
-
-		if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
+		if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
 		{
 			// draws the legend along the bottom of the screen:
 			//this.legend(goalHuePos, 0);
 
 		} // if showScale
 
-		this.shapeEditor.runMenu();
+//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
+
+		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
+		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
+				{
+					for(int i = 0; i < menu.trichromColors.length; i++)
+					{
+						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
+						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
+					}
+				} // if		
+		 */
 
 	} // draw()
 
@@ -238,4 +128,41 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
 
-} // class
+	public void mouseDragged()
+	{
+		this.mousePressed();
+	}
+
+	public void mousePressed()
+	{
+		/*
+		FullScreenDisplay fsm = new FullScreenDisplay();
+		fsm.startDisplay();
+		this.shapeEditor.setPApplet(fsm);
+		this.menu.setPApplet(fsm);
+		 */
+
+		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
+		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
+		{
+			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
+			Shape[]		shapes		= shapeEditor.getShapes();
+			// Map if running:
+			if(shapeEditor.getIsRunning() || this.menu.getIsRunning())
+			{	
+				shapes[shapeEditor.getShapeIndex()].setXPos( shapeEditor.mapFullAppletXPos( Math.max( shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( shapeEditor.mapFullAppletYPos( Math.max( shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				shapeEditor.updateSliders();
+			}
+			else
+			{
+				// If neither are running, just keep w/in bounds:
+				shapes[shapeEditor.getShapeIndex()].setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
+				shapeEditor.updateSliders();
+			}
+		} // if - not over either ControlP5
+	} // mouseClicked
+
+}
+

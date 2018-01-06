@@ -227,6 +227,24 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		ps.endShape();
 		this.parent.shape(ps, super.mapAdjustedMenuXPos(this.shapes[this.shapeIndex].getXPos()), this.mapAdjustedMenuYPos(this.shapes[this.shapeIndex].getYPos()));
 
+
+
+		for(int i = 0; i < this.numActiveShapes; i++)
+		{
+			if(i != this.shapeIndex)
+			{
+				PShape ps2 = this.shapes[i].getPShape();
+				ps2.beginShape();
+				ps2.noFill();
+				ps2.stroke(150);
+				ps2.strokeWeight(5);
+				ps2.scale(super.getScale());
+				ps2.rotate(this.shapes[i].getRotation());
+				ps2.endShape();
+				this.parent.shape(ps2, super.mapAdjustedMenuXPos(this.shapes[i].getXPos()), this.mapAdjustedMenuYPos(this.shapes[i].getYPos()));
+			}
+		}
+
 		super.drawMenu();
 	}// drawSE
 
@@ -313,7 +331,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		.setSize(100, 40)
 		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 10);
-		
+
 		this.controlP5.addButton("Splat")
 		.setSize(100, 40)
 		.moveTo("shape")
@@ -338,7 +356,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		.setSize(100, 40)
 		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 60);
-		
+
 		this.slidersInitialized = true;
 
 		String[] numList = new String[this.shapes.length];
@@ -346,15 +364,15 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		{
 			numList[i] = "" + (i + 1);
 		}
-		
+
 		this.controlP5.addScrollableList("shapeIndex", 100, 100, 150, 50)
 		.addItems(numList)
 		.moveTo("shape");
 	}
 
 	@Override
-	public void controlEvent(ControlEvent theEvent) {
-
+	public void controlEvent(ControlEvent theEvent)
+	{
 		// Can't call getController() on a Tab (which controlEvent() will try to do):
 		if(!theEvent.isTab())
 		{
@@ -416,6 +434,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 			} // switch
 		} // else - not Tab
+
 		this.updateSliders();
 
 	}
@@ -560,7 +579,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		}
 	}
-	
+
 	public void setNumActiveShapes(int numActiveShapes)
 	{
 		this.numActiveShapes = numActiveShapes;
@@ -575,5 +594,10 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	{
 		return this.shapes;
 	} // getShapes
+	
+	public int getShapeIndex()
+	{
+		return this.shapeIndex;
+	}
 
 }// ShapeEditor

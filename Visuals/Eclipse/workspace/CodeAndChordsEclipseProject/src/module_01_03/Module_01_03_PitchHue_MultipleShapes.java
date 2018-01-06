@@ -44,6 +44,8 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		this.menu.addShapeMenu(16);
 
+//		this.menu.shapeEditor = this.shapeEditor;
+
 	} // setup()
 
 
@@ -111,6 +113,40 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
 
+	public void mouseDragged()
+	{
+		this.mousePressed();
+	}
 
+	public void mousePressed()
+	{
+		/*
+		FullScreenDisplay fsm = new FullScreenDisplay();
+		fsm.startDisplay();
+		this.shapeEditor.setPApplet(fsm);
+		this.menu.setPApplet(fsm);
+		 */
+
+		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
+		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
+		{
+			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
+			Shape[]		shapes		= shapeEditor.getShapes();
+			// Map if running:
+			if(shapeEditor.getIsRunning() || this.menu.getIsRunning())
+			{	
+				shapes[shapeEditor.getShapeIndex()].setXPos( shapeEditor.mapFullAppletXPos( Math.max( shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( shapeEditor.mapFullAppletYPos( Math.max( shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				shapeEditor.updateSliders();
+			}
+			else
+			{
+				// If neither are running, just keep w/in bounds:
+				shapes[shapeEditor.getShapeIndex()].setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
+				shapeEditor.updateSliders();
+			}
+		} // if - not over either ControlP5
+	} // mouseClicked
 
 }
