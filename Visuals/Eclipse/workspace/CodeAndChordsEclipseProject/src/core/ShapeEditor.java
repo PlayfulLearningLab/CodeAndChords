@@ -196,17 +196,6 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.drawSE();
 		}
 
-		/*		if (super.getIsRunning()) {
-			this.drawSE();
-			if (!this.cp5.isVisible()) {
-				this.cp5.show();		
-
-			}
-		} else if (this.cp5.isVisible()) {
-			// if cp5 is visible but the ShapeEditor is not running, hide cp5
-			this.cp5.hide();
-		}
-		 */
 	} // runMenu
 	
 	// TODO - moved here from Module:
@@ -367,11 +356,10 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	public void controlEvent(ControlEvent theEvent) {
 
 		// Can't call getController() on a Tab (which controlEvent() will try to do):
-		if(theEvent.isTab())
+		if(!theEvent.isTab())
 		{
-			System.out.println("Hey! Tab! Yay! theEvent.getName() = " + theEvent.getName());
-			this.isRunning	= !this.isRunning;
-		} else {
+			// ModuleMenu is handling setting isRunning (since the other tabs need to be used to indicate this)
+	
 			super.controlEvent(theEvent);
 			
 			switch (theEvent.getName()) {

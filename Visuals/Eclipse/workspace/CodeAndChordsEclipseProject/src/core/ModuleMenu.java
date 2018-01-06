@@ -616,6 +616,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setLabel("Landing\nMenu")
 			.setWidth(50)
 			.setHeight(this.tabHeight)
+			.activateEvent(true)
 			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		this.addHideButtons(this.controllerXVals[0], this.textYVals[1]);
@@ -637,6 +638,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setLabel("Sensitivity\nMenu")
 			.setWidth(50)
 			.setHeight(this.tabHeight)
+			.activateEvent(true)
 			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		this.addARTSliders(this.controllerXVals[0], this.textYVals[1], this.textYVals[2], this.textYVals[3]);
@@ -671,6 +673,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setLabel("Color\nMenu")
 			.setWidth(50)
 			.setHeight(this.tabHeight)
+			.activateEvent(true)
 			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		// Adding ColorSelect first since everything to do with colors depends on that:
@@ -884,7 +887,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.controlP5.addButton("menuX")
 		.setPosition(menuXX, menuXY)
 		.setImage(menuX)
-		//.setGroup("sidebarGroup")
+		.moveTo("global")	// "global" means it will show in all tabs
 		.updateSize()
 		.bringToFront();
 
@@ -2656,8 +2659,19 @@ public class ModuleMenu extends MenuTemplate  {
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		// Can't call getController() on a Tab (which controlEvent() will try to do):
-		if(!controlEvent.isTab())
+		if(controlEvent.isTab())
 		{
+			if(!controlEvent.getName().equals("shape"))
+			{
+				if(this.shapeEditor != null)
+				{
+					this.shapeEditor.isRunning	= false;
+				}
+			} else {
+				this.shapeEditor.isRunning	= true;
+				
+			}
+		} else {
 			super.controlEvent(controlEvent);
 
 			//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
@@ -2724,7 +2738,10 @@ public class ModuleMenu extends MenuTemplate  {
 				//			this.outsideButtonsCP5.getController("hamburger").setVisible(true);
 				
 				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
-				
+				if(this.shapeEditor != null)
+				{
+					this.shapeEditor.isRunning	= false;	// In case it gets clicked from within the ShapeEditor Tab
+				}
 			} // if - menuX
 
 			// Hide play button button:
