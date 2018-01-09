@@ -1,7 +1,10 @@
 package core;
 
 import processing.core.PApplet;
+<<<<<<< HEAD
+=======
 import processing.sound.*;
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 
 //import org.jaudiolibs.beads.AudioServerIO;
 //import org.jaudiolibs.beads.*;
@@ -13,10 +16,15 @@ import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
+<<<<<<< HEAD
+import net.beadsproject.beads.analysis.*;
+import net.beadsproject.beads.analysis.featureextractors.*;
+=======
 import net.beadsproject.beads.ugens.Throughput;
 import net.beadsproject.beads.analysis.*;
 import net.beadsproject.beads.analysis.featureextractors.*;
 import net.beadsproject.beads.analysis.featureextractors.FFT;
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 
 import org.jaudiolibs.beads.AudioServerIO;
 
@@ -149,6 +157,9 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 
 		initInput(getuGenArray());
 	} // constructor(int)
+<<<<<<< HEAD
+
+=======
 	
 	/**
 	 * Constructor for creating an Input object with 2 lines, 
@@ -201,6 +212,7 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		*/
 	} // constructor(boolean, boolean)
 	
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 	/**
 	 * Constructor for creating a one (or two?)-channel Input object 
 	 * from the machine's default audio input device;
@@ -236,7 +248,11 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Moved this from the constructor:
 		this.numInputs  = sampleFilenames.length;
 		this.sampleManager  = new SampleManager();
+<<<<<<< HEAD
+		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initiated in a try/catch in order to determine whether or not the operation was successful.
+=======
 		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 		int  semaphore      = 1;
 
 		try {
@@ -291,8 +307,11 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 			uGenArray[i]  = new SamplePlayer(ac, SampleManager.getGroup("group").get(i));
 			((SamplePlayer) uGenArray[i]).setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 		} // for
+<<<<<<< HEAD
+=======
 		
 		SampleManager.destroyGroup("group");
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 
 		initInput(uGenArray);
 	} // uGenArrayFromSample(String[])
@@ -353,7 +372,11 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 		// Do the following in a method that can be passed a Gain, UGen[], and AudioContext.
 		for (int i = 0; i < this.numInputs; i++)
 		{
+<<<<<<< HEAD
+			g.addInput(uGenArray[i]);
+=======
 			g.addInput(this.uGenArray[i]);
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 		} // for
 		ac.out.addInput(g);
 
@@ -428,9 +451,14 @@ Using the Harmonic Product Spectrum to better locate the pitch.
 	} // initInput(UGen[])
 
 	/**
+<<<<<<< HEAD
+	 * Subtracts 4 from the numInputs variable because I added 4
+	 * to account for the fact that the two interfaces together skip lines 5-8.l
+=======
 	 * As of 6/5/2017, the following was not applicable:
 	 * Subtracts 4 from the numInputs variable because I added 4
 	 * to account for the fact that the two interfaces together skip lines 5-8.
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
 	 *
 	 * @return  int  number of input channels.
 	 */

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 "JRELoadError" = "Unable to load Java Runtime Environment.";
 "MainClassNameRequired" = "Main class name is required.";
 "JavaDirectoryNotFound" = "Unable to enumerate Java directory contents.";
+=======
+"JRELoadError" = "Unable to load Java Runtime Environment.";
+"MainClassNameRequired" = "Main class name is required.";
+"JavaDirectoryNotFound" = "Unable to enumerate Java directory contents.";
+>>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
