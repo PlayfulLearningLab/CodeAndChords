@@ -22,6 +22,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	//	private PApplet parent;
 
+//	public	Shape	shape;
 	private Shape[]	shapes;
 	private int		shapeIndex;
 	private int		numActiveShapes;
@@ -59,6 +60,12 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 * 
 	 */
 
+
+	// TODO: I don't think we need a PApplet since we have a Module, which extends PApplet.
+	// Anything that needs a PApplet can instead call the Module
+	// (and that goes for fullAppletWidth/Height, too, since they can be accessed via the Module).
+	//		- Emily
+	
 	/**
 	 * 
 	 * This constructor should be used to create a scaled version of the shaper
@@ -74,8 +81,24 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 */
 	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) 
 	{
-		this(parent, new Shape[] {shape}, module, fullAppletWidth, fullAppletHeight);
-		
+		this(parent, new Shape[] {shape}, module, fullAppletWidth, fullAppletHeight, new ControlP5(parent));
+	}
+	
+
+	/**
+	 * Same constructor as above, but with a ControlP5.
+	 * This allows the ShapeEditor be another tab in the ModuleMenu.
+	 * 
+	 * @param parent
+	 * @param shape
+	 * @param module
+	 * @param fullAppletWidth
+	 * @param fullAppletHeight
+	 * @param controlP5
+	 */
+	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight, ControlP5 controlP5) 
+	{
+		this(parent, new Shape[] {shape}, module, fullAppletWidth, fullAppletHeight, controlP5);
 	}// constructor
 
 	/**
@@ -92,6 +115,21 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 *            height of the window that this shape will be displayed in
 	 */
 	public ShapeEditor(PApplet parent, Shape[] shapes, Module module, float fullAppletWidth, float fullAppletHeight) {
+		this(parent, shapes, module, fullAppletWidth, fullAppletHeight, new ControlP5(parent));
+	}
+	
+	/**
+	 * Almost the same as previous constructor, but with a ControlP5.
+	 * This allows the ShapeEditor be another tab in the ModuleMenu.
+	 * 
+	 * @param parent
+	 * @param shapes
+	 * @param module
+	 * @param fullAppletWidth
+	 * @param fullAppletHeight
+	 * @param controlP5
+	 */
+	public ShapeEditor(PApplet parent, Shape[] shapes, Module module, float fullAppletWidth, float fullAppletHeight, ControlP5 controlP5) {
 
 		super(parent, fullAppletWidth, fullAppletHeight);
 
@@ -105,12 +143,25 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		// make sure the shape object isn't null and then initialize
 		if (shapes == null || shapes.length == 0)
+		{
 			throw new IllegalArgumentException("Shape parameter is null");
-		else
-			this.shapes = shapes;
+		} else {
+			this.shapes = shapes;			
+		}
 		
 		this.numActiveShapes = 1;
 		this.shapeIndex = 0;
+		
+		this.isRunning	= false;
+		this.controlP5	= controlP5;
+		this.controlP5.addListener(this);
+		// Have to update the nextId's so that these Controllers don't overwrite the existing Menu ones:
+		this.nextButtonId	= this.module.menu.nextButtonId;
+		this.nextSliderId	= this.module.menu.nextSliderId;
+		this.nextSTextfieldId	= this.module.menu.nextSTextfieldId;
+		this.nextColorWheelId	= this.module.menu.nextColorWheelId;
+		this.nextCWTextfieldId	= this.module.menu.nextCWTextfieldId;
+		this.nextToggleId	= this.module.menu.nextToggleId;
 
 		// create a new ControlP5 object to use
 		/*		this.cp5 = new ControlP5(parent);
@@ -138,23 +189,28 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	{
 		super.runMenu();
 
-		if(super.getIsRunning()) 
+//		System.out.println("is this what's happening? super.getIsRunning = " + super.getIsRunning() + "; this.isRunning = " + this.isRunning);
+//		if(super.getIsRunning()) 
+		if(this.isRunning)
 		{
 			this.drawSE();
 		}
 
-		/*		if (super.getIsRunning()) {
-			this.drawSE();
-			if (!this.cp5.isVisible()) {
-				this.cp5.show();		
-
-			}
-		} else if (this.cp5.isVisible()) {
-			// if cp5 is visible but the ShapeEditor is not running, hide cp5
-			this.cp5.hide();
-		}
-		 */
 	} // runMenu
+	
+	// TODO - moved here from Module:
+	public void drawShape(int shapeIndex)
+	{
+		shapes[shapeIndex].drawShape(this.module.menu, shapeIndex);
+	}
+	
+	public void drawShapes()
+	{
+		for(int i = 0; i < this.module.curNumInputs; i++)
+		{
+			shapes[i].drawShape(this.module.menu, i);
+		}
+	}
 
 	/**
 	 * This function is called repeatedly when the ShapeEditor isRunning to draw all
@@ -170,6 +226,24 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		ps.rotate(this.shapes[this.shapeIndex].getRotation());
 		ps.endShape();
 		this.parent.shape(ps, super.mapAdjustedMenuXPos(this.shapes[this.shapeIndex].getXPos()), this.mapAdjustedMenuYPos(this.shapes[this.shapeIndex].getYPos()));
+
+
+
+		for(int i = 0; i < this.numActiveShapes; i++)
+		{
+			if(i != this.shapeIndex)
+			{
+				PShape ps2 = this.shapes[i].getPShape();
+				ps2.beginShape();
+				ps2.noFill();
+				ps2.stroke(150);
+				ps2.strokeWeight(5);
+				ps2.scale(super.getScale());
+				ps2.rotate(this.shapes[i].getRotation());
+				ps2.endShape();
+				this.parent.shape(ps2, super.mapAdjustedMenuXPos(this.shapes[i].getXPos()), this.mapAdjustedMenuYPos(this.shapes[i].getYPos()));
+			}
+		}
 
 		super.drawMenu();
 	}// drawSE
@@ -194,34 +268,34 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.parent.text("Shape Editor", 10, yVals[0]);
 
 		this.SIZE_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[1], "Size", .01f, 3, 1);
+		this.addSliderGroup(0, (int) yVals[1], "Size", .01f, 3, 1, "shape");
 
 		this.NUM_POINTS_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[2], "Number of\nPoints", 0, 15, 1);
+		this.addSliderGroup(0, (int) yVals[2], "Number of\nPoints", 0, 15, 1, "shape");
 
 		this.N1_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[3], "Shape\nFullness", .01f, 10, 1);
+		this.addSliderGroup(0, (int) yVals[3], "Shape\nFullness", .01f, 10, 1, "shape");
 
 		this.N2_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[4], "Vertex 1\nExageration", .01f, 10, 1);
+		this.addSliderGroup(0, (int) yVals[4], "Vertex 1\nExageration", .01f, 10, 1, "shape");
 
 		this.N3_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[5], "Vertex 2\nExageration", .01f, 10, 1);
+		this.addSliderGroup(0, (int) yVals[5], "Vertex 2\nExageration", .01f, 10, 1, "shape");
 
 		this.XPOS_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[6], "X-Axis\nLocation", -500, 1500, 0);
+		this.addSliderGroup(0, (int) yVals[6], "X-Axis\nLocation", -500, 1500, 0, "shape");
 
 		this.YPOS_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[7], "Y-Axis\nLocation", -500, 1000, 0);
+		this.addSliderGroup(0, (int) yVals[7], "Y-Axis\nLocation", -500, 1000, 0, "shape");
 
 		this.ROTATION_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[8], "Rotation", -2*(float)Math.PI, 2 * (float)Math.PI, 0);
+		this.addSliderGroup(0, (int) yVals[8], "Rotation", -2*(float)Math.PI, 2 * (float)Math.PI, 0, "shape");
 
 		this.XSTRETCH_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[9], "Width", .01f, 5, 1);
+		this.addSliderGroup(0, (int) yVals[9], "Width", .01f, 5, 1, "shape");
 
 		this.YSTRETCH_ID = this.nextSliderId;
-		this.addSliderGroup((int) yVals[10], "Height", .01f, 5, 1);
+		this.addSliderGroup(0, (int) yVals[10], "Height", .01f, 5, 1, "shape");
 
 
 		this.controlP5.addScrollableList("shapeSelect")
@@ -229,48 +303,60 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		.setBarHeight(40).addItems(new String[] { "shape1", "shape2", "shape3", "shape4", "shape5" })
 		.setValue(0)
 		.setItemHeight(25)
-		.close();
+		.close()
+		.moveTo("shape")
+		.setVisible(false);
 
 		this.controlP5.addButton("Circle")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 10);
 
 		this.controlP5.addButton("Square")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 10);
 
 		this.controlP5.addButton("Star")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 235, 10);
 
 		this.controlP5.addButton("Pentagon")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 345, 10);
 
 		this.controlP5.addButton("Flower")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 10);
-		
+
 		this.controlP5.addButton("Splat")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
 
 		this.controlP5.addButton("X")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 125, 60);
 
 		this.controlP5.addButton("Snowflake")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 235, 60);
 
 		this.controlP5.addButton("Sun")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 345, 60);
 
 		this.controlP5.addButton("Butterfly")
 		.setSize(100, 40)
+		.moveTo("shape")
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 60);
-		
+
 		this.slidersInitialized = true;
 
 		String[] numList = new String[this.shapes.length];
@@ -278,69 +364,76 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		{
 			numList[i] = "" + (i + 1);
 		}
-		
+
 		this.controlP5.addScrollableList("shapeIndex", 100, 100, 150, 50)
-		.addItems(numList);
+		.addItems(numList)
+		.moveTo("shape");
 	}
 
 	@Override
-	public void controlEvent(ControlEvent theEvent) {
-
-		super.controlEvent(theEvent);
-
-		switch (theEvent.getName()) {
-
-		case "shapeSelect":
-			this.shapes[this.shapeIndex].setShapeIndex((int) theEvent.getValue());
-			this.updateSliders();
-			System.out.println(theEvent.getValue());
-			break;
+	public void controlEvent(ControlEvent theEvent)
+	{
+		// Can't call getController() on a Tab (which controlEvent() will try to do):
+		if(!theEvent.isTab())
+		{
+			// ModuleMenu is handling setting isRunning (since the other tabs need to be used to indicate this)
+	
+			super.controlEvent(theEvent);
 			
-		case "shapeIndex":
-			this.shapeIndex = (int) theEvent.getValue();
-			break;
+			switch (theEvent.getName()) {
 
-		case "Square":
-			this.shapes[this.shapeIndex].setCurrentShape("square");
-			break;
+			case "shapeSelect":
+				this.shapes[this.shapeIndex].setShapeIndex((int) theEvent.getValue());
+				this.updateSliders();
+				System.out.println(theEvent.getValue());
+				break;
+				
+			case "shapeIndex":
+				this.shapeIndex = (int) theEvent.getValue();
+				break;
 
-		case "Circle":
-			this.shapes[this.shapeIndex].setCurrentShape("circle");
-			break;
+			case "Square":
+				this.shapes[this.shapeIndex].setCurrentShape("square");
+				break;
 
-		case "Pentagon":
-			this.shapes[this.shapeIndex].setCurrentShape("pentagon");
-			break;
+			case "Circle":
+				this.shapes[this.shapeIndex].setCurrentShape("circle");
+				break;
 
-		case "Star":
-			this.shapes[this.shapeIndex].setCurrentShape("star");
-			break;
+			case "Pentagon":
+				this.shapes[this.shapeIndex].setCurrentShape("pentagon");
+				break;
 
-		case "Flower":
-			this.shapes[this.shapeIndex].setCurrentShape("flower");
-			break;
-			
-		case "Splat":
-			this.shapes[this.shapeIndex].setCurrentShape("splat");
-			break;
-			
-		case "Snowflake":
-			this.shapes[this.shapeIndex].setCurrentShape("snowflake");
-			break;
-			
-		case "Sun":
-			this.shapes[this.shapeIndex].setCurrentShape("sun");
-			break;
-			
-		case "X":
-			this.shapes[this.shapeIndex].setCurrentShape("x");
-			break;
-			
-		case "Butterfly":
-			this.shapes[this.shapeIndex].setCurrentShape("butterfly");
-			break;
+			case "Star":
+				this.shapes[this.shapeIndex].setCurrentShape("star");
+				break;
 
-		}
+			case "Flower":
+				this.shapes[this.shapeIndex].setCurrentShape("flower");
+				break;
+				
+			case "Splat":
+				this.shapes[this.shapeIndex].setCurrentShape("splat");
+				break;
+				
+			case "Snowflake":
+				this.shapes[this.shapeIndex].setCurrentShape("snowflake");
+				break;
+				
+			case "Sun":
+				this.shapes[this.shapeIndex].setCurrentShape("sun");
+				break;
+				
+			case "X":
+				this.shapes[this.shapeIndex].setCurrentShape("x");
+				break;
+				
+			case "Butterfly":
+				this.shapes[this.shapeIndex].setCurrentShape("butterfly");
+				break;
+
+			} // switch
+		} // else - not Tab
 
 		this.updateSliders();
 
@@ -486,10 +579,25 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		}
 	}
-	
+
 	public void setNumActiveShapes(int numActiveShapes)
 	{
 		this.numActiveShapes = numActiveShapes;
+	}
+	
+	public Shape getShape()
+	{
+		return this.shapes[0];
+	} // getShape
+	
+	public Shape[] getShapes()
+	{
+		return this.shapes;
+	} // getShapes
+	
+	public int getShapeIndex()
+	{
+		return this.shapeIndex;
 	}
 
 }// ShapeEditor

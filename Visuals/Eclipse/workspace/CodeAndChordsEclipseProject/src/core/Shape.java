@@ -17,7 +17,7 @@ public class Shape {
 	private PApplet 	pApp;
 
 	private int 		steps;
-	private float 		incrament;
+	private float 		increment;
 
 	private int   		numShapes;
 	private int 		shapeIndex;
@@ -72,7 +72,7 @@ public class Shape {
 
 	private void initializeVariables()
 	{
-		this.incrament = (float)(2*Math.PI)/this.steps;
+		this.increment = (float)(2*Math.PI)/this.steps;
 
 		this.numShapes = 5;
 		this.shapeIndex = 0;
@@ -150,7 +150,7 @@ public class Shape {
 
 		int i = 0;
 
-		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 		{
 			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
 			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
@@ -184,7 +184,7 @@ public class Shape {
 
 		int i = 0;
 
-		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 		{
 			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
 			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
@@ -239,7 +239,7 @@ public class Shape {
 			float n2 = parameters[5];
 			float n3 = parameters[6];
 
-			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
@@ -290,7 +290,7 @@ public class Shape {
 			float n2 = parameters[5];
 			float n3 = parameters[6];
 
-			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
@@ -426,9 +426,14 @@ public class Shape {
 		return this.currentShapeParameters[this.shapeIndex];
 	}
 	
-	public void drawShape(ModuleMenu menu)
+	public void drawShape(ModuleMenu menu, int curHueNum)
 	{
-		int[] curHue = menu.getCurHue()[0];
+		if(curHueNum < 0 || curHueNum > menu.getCurHue().length)
+		{
+			throw new IllegalArgumentException("Shape.drawShape: curHueNum " + curHueNum + " is out of bounds; must be between 0 and " + menu.getCurHue().length);
+		} // error checking
+		
+		int[] curHue = menu.getCurHue()[curHueNum];
 		
 //		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
 		//		this.fill(255);

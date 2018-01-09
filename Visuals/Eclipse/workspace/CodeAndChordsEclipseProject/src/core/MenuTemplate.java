@@ -41,7 +41,7 @@ public abstract class MenuTemplate implements ControlListener {
 	protected	ControlP5	controlP5;
 	
 	/**	Indicates whether or not the Menu is open	*/
-	private boolean 	isRunning;
+	protected boolean 	isRunning;
 
 	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
 	 * by the Module when the Menu is open	*/
@@ -381,7 +381,7 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**
 	 * Adds a Label with given text, Slider of given x value, lowest value, highest value, and starting value, with default 
-	 * width, and Textfield with default width at given y value; group == "groupPlaceholder".
+	 * width, and Textfield with default width at given y value; tab == "default".
 	 * 
 	 * @param xVal	x value for the leftmost edge of the group (i.e., label will be at xVal + this.labelX)
 	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
@@ -392,9 +392,24 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected void addSliderGroup(int xVal, int yVal, String labelText, float lowRange, float highRange, float startingVals)
 	{
-		this.addSliderGroup(xVal, yVal, labelText, (xVal + this.leftAlign), this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "groupPlaceholder");
+		this.addSliderGroup(xVal, yVal, labelText, (xVal + this.leftAlign), this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, "default");
 	} // addSliderGroup - use default width
-	
+
+	/**
+	 * Adds a Label with given text, Slider of given x value, lowest value, highest value, starting value, and tab, with default 
+	 * width, and Textfield with default width at given y value.
+	 * 
+	 * @param xVal	x value for the leftmost edge of the group (i.e., label will be at xVal + this.labelX)
+	 * @param yVal	y value for the whole group (Label will, of course, be 4 pixels higher in order to look centered)
+	 * @param labelText	text for the Label
+	 * @param lowRange	Slider lowest value
+	 * @param highRange	Slider highest value
+	 * @param startingVals	Slider default/starting value
+	 */
+	protected void addSliderGroup(int xVal, int yVal, String labelText, float lowRange, float highRange, float startingVals, String tab)
+	{
+		this.addSliderGroup(xVal, yVal, labelText, (xVal + this.leftAlign), this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, tab);
+	} // addSliderGroup - specify tab but use default width
 	
 	
 	/**	 
@@ -412,12 +427,12 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param textfieldWidth	Textfield width
 	 * @param group	String indicating to which group these Sliders and Textfields should belong
 	 */
-	protected void addSliderGroup(int xVal, int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String group)
+	protected void addSliderGroup(int xVal, int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String tab)
 	{
 		this.controlP5.addLabel("label" + this.nextSliderId)
 		.setPosition(xVal + this.labelX, yVal + 4)
 		.setWidth(labelWidth)
-		.setGroup(group)
+		.moveTo(tab)
 		.setValue(labelText);
 
 		this.controlP5.addSlider("slider" + this.nextSliderId)
@@ -427,7 +442,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setValue(startingVals)
 		.setSliderMode(Slider.FLEXIBLE)
 		.setLabelVisible(false)
-		.setGroup(group)
+		.moveTo(tab)
 		.setId(this.nextSliderId);
 
 		this.nextSliderId	= this.nextSliderId + 1;
@@ -437,7 +452,7 @@ public abstract class MenuTemplate implements ControlListener {
 		.setSize(this.textfieldWidth, this.sliderHeight)
 		.setText(this.controlP5.getController("slider" + (this.nextSTextfieldId - 100)).getValue() + "")
 		.setAutoClear(false)
-		.setGroup(group)
+		.moveTo(tab)
 		.setId(this.nextSTextfieldId)
 		.getCaptionLabel().setVisible(false);
 
@@ -445,16 +460,17 @@ public abstract class MenuTemplate implements ControlListener {
 	} // addSliderGroup - define width
 
 	/**
-	 * Adds a connected Button, ColorWheel, and Textfield to this.controlP5
+	 * Adds a connected Button, ColorWheel, and Textfield to this.controlP5 in the "default" tab
 	 * by making a color from the int[] and calling addColorWheelGroup(int, int, int, String, Color)
 	 * 
 	 * @param x	x value of Button and ColorWheel
 	 * @param y	y value of Button
 	 * @param buttonWidth	width of Button
 	 * @param buttonLabel	text to put on the Button
-	 * @param colo	int[] with the red, green, blue values for the desired Color
+	 * @param rgbColor	int[] with the red, green, blue values for the desired Color
+	 * @param tab	String indicating the tab to which this ColorWheel group will belong
 	 */
-	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, int[] rgbColor)
+	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, int[] rgbColor, String tab)
 	{
 		if(rgbColor == null) {
 			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter is null.");
@@ -464,7 +480,7 @@ public abstract class MenuTemplate implements ControlListener {
 					"; must be length 3.");
 		} // error checking
 
-		return this.addColorWheelGroup(x, y, buttonWidth, buttonLabel, new Color(rgbColor[0], rgbColor[1], rgbColor[2]));
+		return this.addColorWheelGroup(x, y, buttonWidth, buttonLabel, new Color(rgbColor[0], rgbColor[1], rgbColor[2]), tab);
 	} // addColorWheelGroup
 
 	/**
@@ -475,8 +491,9 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param buttonWidth	width of Button
 	 * @param buttonLabel	text to put on the Button
 	 * @param color	Color to set the ColorWheel and Textfield ("rgb([red], [green], [blue])")
+	 * @param tab	String indicating the tab to which this ColorWheel group will belong
 	 */
-	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color)
+	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color, String tab)
 	{
 		Button		button;
 		ColorWheel	colorWheel;
@@ -490,8 +507,8 @@ public abstract class MenuTemplate implements ControlListener {
 				.setPosition(x, y)
 				.setWidth(buttonWidth)
 				.setLabel(buttonLabel)
-				.setId(this.nextButtonId);
-//				.setGroup("sidebarGroup");
+				.setId(this.nextButtonId)
+				.moveTo(tab);
 		button.getCaptionLabel().toUpperCase(false);
 
 		this.nextButtonId = this.nextButtonId + 1;
@@ -501,8 +518,8 @@ public abstract class MenuTemplate implements ControlListener {
 				.setRGB(color.getRGB())
 				.setLabelVisible(false)
 				.setVisible(false)
-//				.setGroup("sidebarGroup")
-				.setId(this.nextColorWheelId);
+				.setId(this.nextColorWheelId)
+				.moveTo(tab);
 
 		this.nextColorWheelId = this.nextColorWheelId + 1;					
 
@@ -511,8 +528,8 @@ public abstract class MenuTemplate implements ControlListener {
 				.setAutoClear(false)
 				.setVisible(false)
 				.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")")
-//				.setGroup("sidebarGroup")
-				.setId(this.nextCWTextfieldId);
+				.setId(this.nextCWTextfieldId)
+				.moveTo(tab);
 		textfield.getCaptionLabel().setVisible(false);
 
 		this.nextCWTextfieldId = this.nextCWTextfieldId + 1;
