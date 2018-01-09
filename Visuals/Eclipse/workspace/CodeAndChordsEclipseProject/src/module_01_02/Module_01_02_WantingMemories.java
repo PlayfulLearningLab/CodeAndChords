@@ -47,6 +47,9 @@ public class Module_01_02_WantingMemories extends Module
 
 	private RealTimeInput  input;
 	private	RecordedInput	recInput;
+	
+	private	int[]	canvasColor;
+	
 /*	private	int		numInputs;
 
 	private	int[]	xVals;
@@ -76,7 +79,7 @@ public class Module_01_02_WantingMemories extends Module
 		this.curNumInputs	= 5;
 		
 //		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		this.menu	= new ModuleMenu(this, this, this.recInput, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.recInput, 12);
 
 		/*
  * 		this.shapes	= new Shape[12];
@@ -175,6 +178,8 @@ public class Module_01_02_WantingMemories extends Module
 		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
+		
+		this.menu.addAlphaSlider(controllerXVals[2], textYVals[1]);
 
 //		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
@@ -182,12 +187,14 @@ public class Module_01_02_WantingMemories extends Module
 		
 		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
 
-
+		this.canvasColor	= this.menu.getCanvasColor();
 	} // setup()
 
 	
 	public void draw()
 	{
+		this.canvasColor	= this.menu.getCanvasColor();
+		this.background(canvasColor[0], canvasColor[1], canvasColor[2]);
 		int	scaleDegree;
 		
 		// The following line is necessary so that key press shows the menu button
@@ -202,11 +209,11 @@ public class Module_01_02_WantingMemories extends Module
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 			
 //			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			scaleDegree	= (round(this.recInput.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(this.recInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 			
-			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
+			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 			
 			int	curX;
 			int	curY;

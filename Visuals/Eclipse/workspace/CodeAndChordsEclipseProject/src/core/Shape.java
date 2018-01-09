@@ -430,7 +430,7 @@ public class Shape {
 	{
 		int[] curHue = menu.getCurHue()[0];
 		
-		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
+//		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
 		//		this.fill(255);
 
 //		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
@@ -444,8 +444,8 @@ public class Shape {
 		pShape = this.getPShape();
 
 		pShape.beginShape();
-		pShape.fill(curHue[0], curHue[1], curHue[2]);
-		pShape.stroke(curHue[0], curHue[1], curHue[2]);
+		pShape.fill(curHue[0], curHue[1], curHue[2], menu.getAlphaVal());
+		pShape.stroke(curHue[0], curHue[1], curHue[2], menu.getAlphaVal());
 		pShape.rotate(this.getRotation());
 		pShape.scale(menu.getCurrentScale());
 		pShape.endShape();

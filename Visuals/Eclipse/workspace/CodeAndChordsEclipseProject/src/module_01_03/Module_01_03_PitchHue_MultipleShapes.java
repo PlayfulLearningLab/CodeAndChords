@@ -29,10 +29,10 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(1, new AudioContext(), this);
+		this.input	= new RealTimeInput(2, new AudioContext(), this);
 //		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
+		this.curNumInputs	= 2;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
@@ -122,6 +122,8 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
+		
+		this.menu.addAlphaSlider(controllerXVals[2], textYVals[1]);
 
 		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
@@ -153,7 +155,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void draw()
 	{
-		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
+//		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
 
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
@@ -176,13 +178,21 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 			this.menu.fade(scaleDegree, i);
 
-			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
+//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
 
 			if(!this.shapeEditor.getIsRunning())
 			{
 				this.drawShape(i);
 			}
+			
+
+			if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
+			{
+				// draws the legend along the bottom of the screen:
+				this.okGoLegend(scaleDegree, i);
+
+			} // if showScale
 
 		} // for
 
@@ -209,13 +219,6 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 			}
 		}
 
-
-		if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
-		{
-			// draws the legend along the bottom of the screen:
-			//this.legend(goalHuePos, 0);
-
-		} // if showScale
 
 		this.shapeEditor.runMenu();
 		this.menu.runMenu();

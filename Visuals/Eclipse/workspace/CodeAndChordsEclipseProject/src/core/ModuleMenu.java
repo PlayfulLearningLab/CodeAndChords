@@ -245,6 +245,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	True if all values in the colorReachedArray are true; used to determine fade speed (whether this is attack, release, or transition)	*/
 	private	boolean[]		colorReached;
+	
+	/**	Holds an alpha value (i.e., opacity) for each Input, when first initialized, or for each Shape, if a Shape Menu is created	*/
+	private	int			alphaVal;
 
 	/**	Input from which the class will get all its audio data	*/
 	protected	Input	input;
@@ -379,6 +382,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	pianoThresholdSliderId	= -1;
 	protected	int	forteThresholdSliderId	= -1;
 	protected	int	firstSatBrightThreshSliderId	= -1;
+	protected	int	alphaSliderId			= -1;
 	
 	
 	protected boolean dynamicBars = false;
@@ -464,7 +468,8 @@ public class ModuleMenu extends MenuTemplate  {
 			// Getting ready for trichromatic:
 			this.specialColorsPos[i]	= new int[] { 0, 4, 8 };
 		}
-
+		
+		this.alphaVal	= 255;
 
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
@@ -1390,6 +1395,13 @@ public class ModuleMenu extends MenuTemplate  {
 		.setCaptionLabel("Select number of inputs")
 		.getCaptionLabel().toUpperCase(false);
 	} // addInputNumSelect
+	
+	
+	public void addAlphaSlider(int xVal, int yVal)
+	{
+		this.alphaSliderId	= this.nextSliderId;
+		this.addSliderGroup(xVal, yVal, "Alpha", 0, 255, 255);
+	} // addAlphaSlider
 
 
 	/**
@@ -1769,6 +1781,8 @@ public class ModuleMenu extends MenuTemplate  {
 		} else {
 			startHere		= this.currentInput;
 			endBeforeThis	= this.currentInput + 1;
+			
+			System.out.println("not global; startHere = " + startHere + "; endBeforeThis = " + endBeforeThis);
 		}
 
 		for(int i = startHere; i < endBeforeThis; i++)
@@ -2941,6 +2955,12 @@ public class ModuleMenu extends MenuTemplate  {
 			this.module.setSquareValues();
 		} // numInputsList
 		
+		// Alpha Slider:
+		if(id > 0 && id == this.alphaSliderId)
+		{
+			this.alphaVal	= (int)controlEvent.getValue();
+		} // alpha Slider
+		
 		if(controlEvent.getController().getId() == 99999)
 		{
 			if(this.dynamicBars)
@@ -3220,10 +3240,6 @@ public class ModuleMenu extends MenuTemplate  {
 	// Put them each in little arrays of { colorPosStartHere, colorPosEndHere }
 		 */
 		
-		colorPosStartHere		= colorPosStartEnd[this.majMinChrom][colorPos][0];
-		colorPosEndHere	= colorPosStartEnd[this.majMinChrom][colorPos][1];
-		System.out.println("colorPos = " + colorPos + "; colorPosStartHere = " + colorPosStartHere + "; colorPosEndHere = " + colorPosEndHere);
-
 		// Set the appropriate colors:
 		for(int i = startHere; i < endBeforeThis; i++)
 		{
@@ -3242,7 +3258,10 @@ public class ModuleMenu extends MenuTemplate  {
 					this.curHue[i][2]	= color.getBlue();
 				}
 			} else {
-				// colors that are not canvasColor:
+				// colors that are not canvasColor:		
+				colorPosStartHere		= colorPosStartEnd[this.majMinChrom][colorPos][0];
+				colorPosEndHere	= colorPosStartEnd[this.majMinChrom][colorPos][1];
+				
 				
 				for(int j = colorPosStartHere; j < (colorPosEndHere + 1); j++)
 				{
@@ -4072,6 +4091,11 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public int getFirstARTSliderId() {
 		return firstARTSliderId;
+	}
+	
+	public int getAlphaVal()
+	{
+		return this.alphaVal;
 	}
 
 
