@@ -361,6 +361,13 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	The input line currently affected by Controllers; only applies if !global	*/
 	protected	int		currentInput;
+	
+	/**	Used to implement global vs. single input actions: 
+	 * if global, startHere = 0 and endBeforeThis = module.totalNumInputs;
+	 * if particular input, startHere = currentInput and endBeforeThis = (currentInput + 1).
+	 */
+	private	int	startHere;
+	private	int	endBeforeThis;
 
 	/**	
 	 * All of the following are id's that have the potential to be used in controlEvent;
@@ -425,6 +432,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.global			= true;
 		this.currentInput	= 0;
+		this.startHere		= 0;
+		this.endBeforeThis	= this.module.getTotalNumInputs();
 
 		this.melody			= new Melody(this.parent, this.input);
 		this.instrument		= new Instrument(this.parent, this.input.getAudioContext());
@@ -1771,21 +1780,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		int[]	curColor;
 		int[]	newColor	= new int[3];
-		int	startHere;
-		int	endBeforeThis;
 
-		if(global)
-		{
-			startHere		= 0;
-			endBeforeThis	= this.colors.length;
-		} else {
-			startHere		= this.currentInput;
-			endBeforeThis	= this.currentInput + 1;
-			
-			System.out.println("not global; startHere = " + startHere + "; endBeforeThis = " + endBeforeThis);
-		}
 
-		for(int i = startHere; i < endBeforeThis; i++)
+		for(int i = this.startHere; i < this.endBeforeThis; i++)
 		{
 			curColor	= this.colors[i][0];
 
@@ -2021,19 +2018,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
-		int	startHere;
-		int	endBeforeThis;
 
-		if(global)
-		{
-			startHere		= 0;
-			endBeforeThis	= this.colors.length;
-		} else {
-			startHere		= this.currentInput;
-			endBeforeThis	= this.currentInput + 1;
-		}
-
-		for(int i = startHere; i < endBeforeThis; i++)
+		for(int i = this.startHere; i < this.endBeforeThis; i++)
 		{
 			for(int j = 0; j < this.colors[i].length && trichromColorPos < trichromColors.length; j++)
 			{
@@ -2059,22 +2045,9 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	protected void rainbow()
 	{
-		int	startHere;
-		int	endBeforeThis;
-		
+		System.out.println("rainbow: this.endBeforeThis = " + this.endBeforeThis + "; global = " + global);
 
-		if(global)
-		{
-			startHere		= 0;
-			endBeforeThis	= this.colors.length;
-		} else {
-			startHere		= this.currentInput;
-			endBeforeThis	= this.currentInput + 1;
-		}
-		
-		System.out.println("rainbow: endBeforeThis = " + endBeforeThis + "; global = " + global);
-
-		for(int i = startHere; i < endBeforeThis; i++)
+		for(int i = this.startHere; i < this.endBeforeThis; i++)
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
@@ -2176,19 +2149,7 @@ public class ModuleMenu extends MenuTemplate  {
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
 
-			int	startHere;
-			int	endBeforeThis;
-
-			if(global)
-			{
-				startHere		= 0;
-				endBeforeThis	= this.colors.length;
-			} else {
-				startHere		= this.currentInput;
-				endBeforeThis	= this.currentInput + 1;
-			}
-
-			for(int i = startHere; i < endBeforeThis; i++)
+			for(int i = this.startHere; i < this.endBeforeThis; i++)
 			{
 
 				// Turned off the "first time/remaining times" because it's still pretty interesting
@@ -2669,17 +2630,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.setCurKey(this.curKey, (int) curToggle.internalValue());
 			//			this.majMinChrom	= (int) curToggle.internalValue();
 
-			int	startHere;
-			int	endBeforeThis;
-			if(global)
-			{
-				startHere	= 0;
-				endBeforeThis	= this.module.getTotalNumInputs();
-			} else {
-				startHere	= this.currentInput;
-				endBeforeThis	= this.currentInput + 1;
-			}
-			for(int i = startHere; i < endBeforeThis; i++)
+			for(int i = this.startHere; i < this.endBeforeThis; i++)
 			{
 				this.setColorStyle(this.curColorStyle[i], i);
 			}
@@ -2732,17 +2683,7 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			Toggle	curToggle	= (Toggle) controlEvent.getController();
 
-			int	startHere;
-			int	endBeforeThis;
-			if(global)
-			{
-				startHere	= 0;
-				endBeforeThis	= this.module.getTotalNumInputs();
-			} else {
-				startHere	= this.currentInput;
-				endBeforeThis	= this.currentInput + 1;
-			}
-			for(int i = startHere; i < endBeforeThis; i++)
+			for(int i = this.startHere; i < this.endBeforeThis; i++)
 			{
 				this.setColorStyle((int)curToggle.internalValue(), i);
 			}
@@ -2933,6 +2874,9 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				this.controlP5.getController("custom").update();
 			}
+			
+			this.startHere		= this.currentInput;
+			this.endBeforeThis	= this.currentInput + 1;
 
 			// Set the colorWheels to our new current input:
 			/*			for(int i = 0; i < this.specialColorsPos[this.currentInput].length; i++)
@@ -2948,6 +2892,12 @@ public class ModuleMenu extends MenuTemplate  {
 			this.fillHSBColors();
 			 */
 		} // input select dropdown
+		
+		if(controlEvent.getName().equals("global"))
+		{
+			this.startHere		= 0;
+			this.endBeforeThis	= this.module.getTotalNumInputs();
+		} // global
 
 		if(controlEvent.getName().equals("numInputsList"))
 		{
@@ -3065,22 +3015,11 @@ public class ModuleMenu extends MenuTemplate  {
 		if( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) 
 				&& this.firstSatBrightThreshSliderId != -1)
 		{
-			int	startHere;
-			int	endBeforeThis;
-
-			if(global)
-			{
-				startHere		= 0;
-				endBeforeThis	= this.colors.length;
-			} else {
-				startHere		= this.currentInput;
-				endBeforeThis	= this.currentInput + 1;
-			}
 
 			int		arrayPos	= (id - this.firstSatBrightThreshSliderId /*- 1*/) / 2;
 			float	forteThreshPercent;
 
-			for(int i = startHere; i < endBeforeThis; i++)
+			for(int i = this.startHere; i < this.endBeforeThis; i++)
 			{
 				// Percent Sliders
 				if((id - this.firstSatBrightThreshSliderId) % 2 == 0)
@@ -3192,20 +3131,10 @@ public class ModuleMenu extends MenuTemplate  {
 		//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
 
 		// Either do everything once for the currentInput or do it for all inputs:
-		int	startHere;
-		int	endBeforeThis;
+
 		int	colorPos;
 		int	colorPosStartHere;
 		int	colorPosEndHere;
-
-		if(global)	
-		{	
-			startHere		= 0;
-			endBeforeThis	= this.module.getTotalNumInputs();
-		} else {
-			startHere		= this.currentInput;
-			endBeforeThis	= this.currentInput + 1;
-		}
 
 		// if from ColorSelect or canvasColorSelect:
 		if(( id >= this.firstColorSelectCWId && id < (this.firstColorSelectCWId + this.colorSelect.length ) ) 
@@ -3217,7 +3146,7 @@ public class ModuleMenu extends MenuTemplate  {
 			// if from specialColors:
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
 
-			for(int i = startHere; i < endBeforeThis; i++)
+			for(int i = this.startHere; i < this.endBeforeThis; i++)
 			{
 				this.setColorStyle(this.curColorStyle[i], i);
 			}
@@ -3241,7 +3170,7 @@ public class ModuleMenu extends MenuTemplate  {
 		 */
 		
 		// Set the appropriate colors:
-		for(int i = startHere; i < endBeforeThis; i++)
+		for(int i = this.startHere; i < this.endBeforeThis; i++)
 		{
 			// canvas color (does not affect notes):
 			if( ( id % 100 ) == ( this.canvasColorSelectId % 100 ) )
