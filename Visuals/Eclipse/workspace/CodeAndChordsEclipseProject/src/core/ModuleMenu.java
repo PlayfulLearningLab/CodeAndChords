@@ -4321,6 +4321,13 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.alphaVal;
 	}
+	
+	public void setAlphaSlider(int newAlphaVal)
+	{
+		newAlphaVal	= Math.min(Math.max(0, newAlphaVal), 255);
+		
+		this.controlP5.getController("slider" + this.alphaSliderId).setValue(newAlphaVal);
+	}
 
 	public ShapeEditor getShapeEditor() {
 		return shapeEditor;
