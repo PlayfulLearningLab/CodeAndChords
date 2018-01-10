@@ -4163,7 +4163,6 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			}
 			
-			System.out.println("File written successfully?");
 			out.close();
 			
 			

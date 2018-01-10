@@ -347,10 +347,9 @@ public class SMM_Demo extends Module {
 		}
 		else if(this.curScene == SMM_Demo.SCENE_SOLOIST)
 		{
+			this.curNumInputs	= 1;
 			this.menu.hideShapeMenu();
 			this.menu.showColorMenu();
-			
-			this.curNumInputs	= 1;
 			
 			// TODO - whatever colors we decide here...
 		}
@@ -400,8 +399,8 @@ public class SMM_Demo extends Module {
 			shape0.setCurrentShape("circle");
 			shape1.setCurrentShape("circle");
 			
-			shape0.setShapeScale(3);
-			shape1.setShapeScale(3);
+			shape0.setShapeScale(5);
+			shape1.setShapeScale(5);
 			
 			shape0.setXPos(this.width / 3);
 			shape1.setXPos((this.width / 3) * 2);
@@ -418,6 +417,7 @@ public class SMM_Demo extends Module {
 		} else if(this.curScene == SMM_Demo.SCENE_QUARTET)
 		{
 			this.curNumInputs	= 4;
+			this.menu.showColorMenu();
 			this.menu.setGlobal(true);
 			this.menu.getControlP5().getController("rainbow").update();
 			
