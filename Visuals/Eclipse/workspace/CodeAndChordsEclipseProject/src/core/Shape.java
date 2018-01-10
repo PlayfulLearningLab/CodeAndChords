@@ -434,8 +434,6 @@ public class Shape {
 		} // error checking
 		
 		int[] curHue = menu.getCurHue()[curHueNum];
-		System.out.println("drawShape: curHueNum = " + curHueNum + 
-				"; curHue = (" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
 		
 		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
 		//		this.fill(255);

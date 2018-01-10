@@ -428,7 +428,12 @@ public class SMM_Demo extends Module {
 		}else {
 			this.menu.showColorMenu();
 		}
-	}
+		
+		if(key == 'f')
+		{
+			this.menu.saveColorState("hello");
+		}
+	} // keyPressed
 	
 	public String[] getLegendText()
 	{

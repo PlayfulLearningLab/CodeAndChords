@@ -1,6 +1,11 @@
 package core;
 
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import controlP5.Button;
@@ -425,6 +430,8 @@ public class ModuleMenu extends MenuTemplate  {
 	
 	private	int	tabHeight	= 30;
 	
+	private	PrintWriter out;
+	
 
 	/**
 	 * Constructor
@@ -623,6 +630,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.addLandingMenu();
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
+		
 	} // constructor
 	
 	public void addLandingMenu()
@@ -4127,6 +4135,43 @@ public class ModuleMenu extends MenuTemplate  {
 		//			System.err.println("ModuleTemplate.setColor: firstColorSelectCWId == " + this.firstColorSelectCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
 		//		} // if/else
 	} // setColor
+	
+	public void saveColorState(String filename)
+	{
+		if(!filename.substring(filename.length() - 4).equals(".txt"))
+		{
+			// TODO - different for Windows environment?
+			filename = ("savedColors/" + filename + ".txt");
+		}
+		
+		File	file	= new File(filename);
+		try 
+		{
+			if(!file.exists())
+			{
+				file.createNewFile();
+			}
+			
+			BufferedWriter	out	= new BufferedWriter(new FileWriter(file));
+			out.write("*** *** ***\n");
+			
+			for(int i = 0; i < this.colors.length; i++)
+			{
+				for(int j = 0; j < this.colors[i].length; j++)
+				{
+					out.write(this.colors[i][j][0] + "\t" + this.colors[i][j][1] + "\t" + this.colors[i][j][2] + "\n");
+				}
+			}
+			
+			System.out.println("File written successfully?");
+			out.close();
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	} // saveColorState
 
 	public int[][] getCurHue()				{	return this.curHue;	}
 
