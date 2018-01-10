@@ -31,15 +31,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		// call add methods:
 		this.menu.addSensitivityMenu(true);
 		
-
-		String[] noteNames = new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames
-		String[] specialColors	= new String[] {
-				"Canvas", "Tonic", "2nd Color", "3rd Color"
-		}; // buttonLabels
-
-		this.menu.addColorMenu(noteNames, specialColors, true, null, 0, 0);
+		this.menu.addColorMenu();
 		
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 

@@ -63,7 +63,6 @@ public abstract class Module extends PApplet {
 		//fullscreen();
 		size(925, 520);
 	}
-	
 
 	/**
 	 * Setter for the shapeEditor.isRunning variable
@@ -312,7 +311,6 @@ public abstract class Module extends PApplet {
 					int	yPos	= i / (this.curNumInputs / 2);
 					int	yVal	= yPos * this.rectHeights[i];
 					yVals[i]	= yVal;
-					System.out.println(i + ": yPos = " + yPos + "; yVal = " + yVal);
 				} // for - yVals
 			} // even number of inputs
 			else if(this.curNumInputs == 1)
