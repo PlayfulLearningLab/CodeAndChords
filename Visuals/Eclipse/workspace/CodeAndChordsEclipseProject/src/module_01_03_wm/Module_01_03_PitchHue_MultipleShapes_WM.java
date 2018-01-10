@@ -53,7 +53,7 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 		String[] specialColors	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addColorMenu(noteNames, specialColors, true, null, 0, 0);
+		this.menu.addColorMenu();
 		
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 

@@ -590,8 +590,6 @@ public class ModuleMenu extends MenuTemplate  {
 			yValDif	= 25;
 		}
 
-		yValDif = 26;
-
 		for(int i = 1; i < textYVals.length; i++)
 		{
 			textYVals[i]	= textYVals[i - 1] + yValDif;
@@ -660,28 +658,54 @@ public class ModuleMenu extends MenuTemplate  {
 	} // addSensitivityMenu
 	
 	/**
+	 * Adds the normal, 12-note Color Menu, with "Canvas"/"Tonic"/etc. special colors and no range segments.
+	 */
+	public void addColorMenu()
+	{
+		String[] specialColors	= new String[] {
+			"Canvas", "Tonic", "2nd Color", "3rd Color"
+		}; // buttonLabels
+		this.addColorMenu(this.noteNames, 3, specialColors, true, null, 0, 0, "color");
+	} // addColorMenu()
+	
+	/**
 	 * Adds the Color Select CWs, Special Colors CWs (optional), Color Style Buttons (optional),
 	 * and Hue/Saturation/Brightness and Red/Green/Blue modulate Sliders
 	 * 
 	 * @param colorSelectLabels	String[] with text for each of the color select Buttons' labels
+	 * @param numColorSelectRows	int indicating the number of rows of ColorSelect Buttons
 	 * @param specialColorLabels	String[] with text for each of the special colors Buttons' labels;
 	 * 								if null, special colors Buttons will not be added
 	 * @param colorStyles	boolean indicating whether or not to include the color style Buttons
 	 * @param rangeSegmentsLabel	label text for range segments group; if null, range segments will not be added
 	 * @param maxRangeSegments	the maximum number of range segments (will be ignored if previous String param is null)
 	 * @param defaultRangeSegments the default number of range segments (will be ignored if previous String param is null)
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
 	 */
-	public void addColorMenu(String[] colorSelectLabels, String[] specialColorLabels, boolean colorStyles, String rangeSegmentsLabel, int maxRangeSegments, int defaultRangeSegments)
+	public void addColorMenu(String[] colorSelectLabels, int numColorSelectRows, String[] specialColorLabels, boolean colorStyles, String rangeSegmentsLabel, int maxRangeSegments, int defaultRangeSegments, String tabName)
 	{
-		this.controlP5.addTab("color")
-			.setLabel("Color\nMenu")
+		if(numColorSelectRows == 0)
+		{
+			numColorSelectRows	= 1;
+			System.err.print("ModuleMenu.addColorMenu: numColorSelectRows param was 0; changed to 1.");
+		}
+		
+		this.controlP5.addTab(tabName)
+			.setLabel(tabName + "\nMenu")
 			.setWidth(50)
 			.setHeight(this.tabHeight)
 			.activateEvent(true)
 			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
+		int[]	colorSelectYVals	= new int[numColorSelectRows];
+		for(int i = 0; i < numColorSelectRows; i++)
+		{
+			colorSelectYVals[i]	= this.textYVals[(10 + i)];
+		}
+		
 		// Adding ColorSelect first since everything to do with colors depends on that:
-		this.addColorSelect(this.controllerXVals[0], new int[] { this.textYVals[10], this.textYVals[11], this.textYVals[12] }, colorSelectLabels, "Custom Pitch\nColor Select", false);
+		this.addColorSelect(this.controllerXVals[0], colorSelectYVals, colorSelectLabels, "Custom Pitch\nColor Select", false, tabName);
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
 		// and 3rd Color select buttons will exist for the Rainbow ColorStyle
@@ -690,23 +714,23 @@ public class ModuleMenu extends MenuTemplate  {
 		
 		if(specialColorLabels != null)
 		{
-			this.addSpecialColors(this.controllerXVals[0], this.textYVals[8], specialColorLabels, "Color Select", true);
+			this.addSpecialColors(this.controllerXVals[0], this.textYVals[8], specialColorLabels, "Color Select", true, tabName);
 		}
 
 		if(colorStyles)
 		{
 			// addColorStyleButtons will set the colorStyle to rainbow() first:
-			this.addColorStyleButtons(this.controllerXVals[0], this.textYVals[6]);			
+			this.addColorStyleButtons(this.controllerXVals[0], this.textYVals[6], tabName);			
 		}
 		
 		if(rangeSegmentsLabel != null)
 		{
-			this.addRangeSegments(this.controllerXVals[0], this.textYVals[14], maxRangeSegments, defaultRangeSegments, rangeSegmentsLabel);
+			this.addRangeSegments(this.controllerXVals[0], this.textYVals[14], maxRangeSegments, defaultRangeSegments, rangeSegmentsLabel, tabName);
 		}
 
 		// Add Hue/Saturation/Brightness and Red/Green/Blue modulate Sliders:
-		this.addHSBSliders(this.controllerXVals[1], new int[] { this.textYVals[1], this.textYVals[2], this.textYVals[3] });
-		this.addModulateSliders(this.controllerXVals[2], new int[] { this.textYVals[1], this.textYVals[2], this.textYVals[3] });
+		this.addHSBSliders(this.controllerXVals[1], new int[] { this.textYVals[1], this.textYVals[2], this.textYVals[3] }, tabName);
+		this.addModulateSliders(this.controllerXVals[2], new int[] { this.textYVals[1], this.textYVals[2], this.textYVals[3] }, tabName);
 
 	} // addColorMenu
 	
@@ -740,6 +764,49 @@ public class ModuleMenu extends MenuTemplate  {
 		this.getShapeEditor().updateSliders();
 	} // addShapeMenu
 	
+	public void hideSensitivityMenu()
+	{
+		this.controlP5.getTab("sensitivity").hide();
+	} // hideSensitivityMenu
+	
+	public void hideColorMenu()
+	{
+		this.controlP5.getTab("color").hide();
+	} // hideColorMenu
+	
+	public void hideColorMenu(String tabName)
+	{
+		if(this.controlP5.getTab(tabName) == null)
+		{
+			throw new IllegalArgumentException("ModuleMenu.hideColorMenu: no Tab with the name " + tabName);
+		}
+		this.controlP5.getTab(tabName).hide();
+	} // hideColorMenu(String)
+	
+	public void hideShapeMenu()
+	{
+		this.controlP5.getTab("shape").hide();
+	}
+	
+	public void showColorMenu()
+	{
+		this.controlP5.getTab("color").show();
+	} // showColorMenu
+	
+	public void showColorMenu(String tabName)
+	{
+		if(this.controlP5.getTab(tabName) == null)
+		{
+			throw new IllegalArgumentException("ModuleMenu.showColorMenu: no Tab with the name " + tabName);
+		}
+		this.controlP5.getTab(tabName).show();
+	} // hideColorMenu(String)
+	
+	public void showShapeMenu()
+	{
+		this.controlP5.getTab("shape").hide();
+	}
+	
 	/**
 	 * Adds the ScrollableList that will let the user choose between Menu's
 	 */
@@ -761,8 +828,10 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param buttonLabels	String[] of labels for the color select Buttons; 
 	 * 						length of this array determines the number of colorSelect Buttons;
 	 * 						if including canvas in this row, the first element of this array must be "Canvas"
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
 	 */
-	public void addColorSelect(int xVal, int[] yVals, String[] buttonLabels, String labelText, boolean canvas)
+	public void addColorSelect(int xVal, int[] yVals, String[] buttonLabels, String labelText, boolean canvas, String tabName)
 	{
 		// error checking
 		if(yVals == null)	{
@@ -777,7 +846,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(labelText == null)	{
 			throw new IllegalArgumentException("ModuleTemplate.addColorSelect: String parameter (labelText) is null.");
 		}
-		// Warn the use that the first String in buttonLabels will be canvas color (but only if the didn't title it "canvas"):
+		// Warn the user that the first String in buttonLabels will be canvas color (but only if they didn't title it "canvas"):
 		if(canvas && !buttonLabels[0].equalsIgnoreCase("canvas"))
 		{
 			System.err.println("ModuleTemplate.addColorSelect: colorSelect Button with label text '" + buttonLabels[0] + "' will control the canvas color.");
@@ -797,7 +866,8 @@ public class ModuleMenu extends MenuTemplate  {
 			this.firstColorSelectCWId	= this.nextColorWheelId;
 		}
 
-		int		buttonsPerRow	= (buttonLabels.length) / yVals.length;
+		int		buttonsPerRow	= Math.max((buttonLabels.length) / yVals.length, 1);	// Math.max keeps it from being 0
+		System.out.println("buttonsPerRow = " + buttonsPerRow);
 		// the "- (10 / buttonsPerRow)" adds [this.rightEdgeSpacer pixels] at the end of the row:
 		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
 
@@ -810,7 +880,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("colorSelectLabel")
 		.setPosition(xVal + labelX, yVals[0] + 4)
-		.moveTo("color")
+		.moveTo(tabName)
 		.setValue(labelText);
 
 		// Loop through all
@@ -821,9 +891,10 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				if(i == 0 && j == 0 && canvas)
 				{
-					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor, "color");
+					this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.canvasColor, tabName);
 				} else {
-					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.colors[this.currentInput][colorSelectPos], "color"))[1];
+					System.out.println("j = " + j + "; xVals.length = " + xVals.length + "; i = " + i + "; yVals.length = " + yVals.length + "; buttonLabelPos = " + buttonLabelPos + "; buttonLabels.length = " + buttonLabels.length);
+					this.colorSelect[colorSelectPos]	= (ColorWheel)(this.addColorWheelGroup(xVals[j], yVals[i], buttonWidth, buttonLabels[buttonLabelPos], this.colors[this.currentInput][colorSelectPos], tabName))[1];
 					colorSelectPos	= colorSelectPos + 1;
 				}
 
@@ -1215,7 +1286,26 @@ public class ModuleMenu extends MenuTemplate  {
 			this.addSliderGroup(xVal, hsb[i], values[i], -1, 1, 0, "color");
 		} // for   
 	} // addHSBSliders
+	
+	/**
+	 * Adds the hue, saturation, and brightness modulate sliders
+	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
+	 * @param hsb	array of y values for each slider
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
+	 */
+	public void addHSBSliders(int xVal, int[] hsb, String tabName)
+	{
+		String[]	values	= new String[] { "Hue", "Saturation", "Brightness" };
 
+		this.firstHSBSliderId	= this.nextSliderId;
+
+		for(int i = 0; i < hsb.length; i++)
+		{
+			this.addSliderGroup(xVal, hsb[i], values[i], -1, 1, 0, tabName);
+		} // for   
+	} // addHSBSliders
 
 	/**
 	 * Method called during instantiation, to initialize the RGB color modulate sliders.
@@ -1233,6 +1323,27 @@ public class ModuleMenu extends MenuTemplate  {
 		for(int i = 0; i < modulateYVals.length; i++)
 		{
 			this.addSliderGroup(xVal, modulateYVals[i], values[i], -255, 255, 0, "color");
+		} // for
+	} // addModulateSliders
+	
+	/**
+	 * Method called during instantiation, to initialize the RGB color modulate sliders.
+	 * 
+	 * @param xVal 	x value for the leftmost edge of this group
+	 * @param modulateYVals	int[] of the y values of the red, green, and blue sliders, respectively.
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
+	 */
+	public void addModulateSliders(int xVal, int[] modulateYVals, String tabName)
+	{
+		this.redGreenBlueMod		 	= new float[3];
+
+		String[]	values	= new String[] { "Red Modulate", "Green Mod.", "Blue Modulate" };
+
+		this.firstRGBSliderId	= this.nextSliderId;
+		for(int i = 0; i < modulateYVals.length; i++)
+		{
+			this.addSliderGroup(xVal, modulateYVals[i], values[i], -255, 255, 0, tabName);
 		} // for
 	} // addModulateSliders
 
@@ -1259,10 +1370,12 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param yVal	y value for the row of Buttons
 	 * @param numSegments	total number of segments (current number of segments will be set to this total)
 	 * @param label	text to display on the label at the beginning of the row
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
 	 */
-	public void addRangeSegments(int xVal, int yVal, int numSegments, String label)
+	public void addRangeSegments(int xVal, int yVal, int numSegments, String label, String tabName)
 	{
-		this.addRangeSegments(xVal, yVal, numSegments, numSegments, label);
+		this.addRangeSegments(xVal, yVal, numSegments, numSegments, label, tabName);
 	}  // addRangeSegments(int, int, String)
 
 
@@ -1273,8 +1386,10 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param numSegments	total number of range segments
 	 * @param defaultNumSegments	number of segments that are set as current at the beginning
 	 * @param label	text to display on the label at the beginning of the row
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
 	 */
-	public void addRangeSegments(int xVal, int yVal, int numSegments, int defaultNumSegments, String label)
+	public void addRangeSegments(int xVal, int yVal, int numSegments, int defaultNumSegments, String label, String tabName)
 	{
 		if(defaultNumSegments > numSegments) {
 			throw new IllegalArgumentException("ModuleTemplate.addRangeSegments: defaultNumSegments " + defaultNumSegments + " is greater than total segments, " + numSegments);
@@ -1296,7 +1411,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.controlP5.addLabel("rangeSegments")
 		.setPosition(xVal + this.labelX, yVal)
 		.setValue(label)
-		.moveTo("color");
+		.moveTo(tabName);
 
 		this.firstRangeSegmentsId	= this.nextToggleId;
 
@@ -1306,7 +1421,7 @@ public class ModuleMenu extends MenuTemplate  {
 			.setPosition(xVals[i], yVal)
 			.setWidth(toggleWidth)
 			.setLabel((i + 1) + "")
-			.moveTo("color")
+			.moveTo(tabName)
 			.setId(this.nextToggleId)
 			.setInternalValue(i + 1);
 			this.controlP5.getController("toggle" + this.nextToggleId).getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
@@ -1398,8 +1513,10 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param buttonLabels	String[] of text for the buttons; if canvas color in this row of Buttons, first item should be "Canvas"
 	 * @param labelText	text of the Label on the far left of the row
 	 * @param canvas	boolean indicating whether or not the Canvas color Button is included in this row
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
 	 */
-	public void addSpecialColors(int xVal, int yVal, String[] buttonLabels, String labelText, boolean canvas)
+	public void addSpecialColors(int xVal, int yVal, String[] buttonLabels, String labelText, boolean canvas, String tabName)
 	{
 		// error checking
 		if(buttonLabels == null)	{
@@ -1433,7 +1550,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("specialColorsLabel")
 		.setPosition(xVal + this.labelX, yVal + 4)
-		.moveTo("color")
+		.moveTo(tabName)
 		.setValue(labelText);
 
 		// Loop through all
@@ -1441,10 +1558,10 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			if(canvas && i == 0)
 			{
-				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], this.canvasColor, "color");
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], this.canvasColor, tabName);
 			} else {
 				int	thisColorPos	= this.specialColorsPos[0][i - 1];
-				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], new Color(this.colorSelect[thisColorPos].getRGB()), "color");
+				this.addColorWheelGroup(xVals[i], yVal, buttonWidth, buttonLabels[i], new Color(this.colorSelect[thisColorPos].getRGB()), tabName);
 			}
 		} // for - i
 
@@ -1458,8 +1575,10 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @param xVal 	x value for the leftmost edge of this group
 	 * @param colorStyleY	y value of the colorStyle Toggles
+	 * @param tabName	String indicating to which Tab this group of Controllers should be added
+	 * 					(for no Tab, use "default")
 	 */
-	public void addColorStyleButtons(int xVal, int colorStyleY)
+	public void addColorStyleButtons(int xVal, int colorStyleY, String tabName)
 	{
 		//		int		buttonWidth		= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / buttonsPerRow) - this.spacer;
 		int	colorStyleWidth	= ((this.sidebarWidth - this.leftAlign - this.rightEdgeSpacer) / 4) - this.spacer;
@@ -1474,14 +1593,14 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.controlP5.addTextlabel("colorStyle")
 		.setPosition(xVal + this.labelX, colorStyleY + 4)
-		.moveTo("color")
+		.moveTo(tabName)
 		.setValue("Color Style");
 
 		this.controlP5.addToggle("rainbow")
 		.setPosition(rainbowX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Rainbow")
-		.moveTo("color")
+		.moveTo(tabName)
 		.setInternalValue(MenuTemplate.CS_RAINBOW);
 		this.controlP5.getController("rainbow").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1489,7 +1608,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(dichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Dichrom.")
-		.moveTo("color")
+		.moveTo(tabName)
 		.setInternalValue(MenuTemplate.CS_DICHROM);
 		this.controlP5.getController("dichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1497,7 +1616,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(trichromaticX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Trichrom.")
-		.moveTo("color")
+		.moveTo(tabName)
 		.setInternalValue(MenuTemplate.CS_TRICHROM);
 		this.controlP5.getController("trichrom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1505,7 +1624,7 @@ public class ModuleMenu extends MenuTemplate  {
 		.setPosition(customX, colorStyleY)
 		.setWidth(colorStyleWidth)
 		.setCaptionLabel("Custom")
-		.moveTo("color")
+		.moveTo(tabName)
 		.setInternalValue(MenuTemplate.CS_CUSTOM);
 		this.controlP5.getController("custom").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
@@ -1681,21 +1800,21 @@ public class ModuleMenu extends MenuTemplate  {
 			this.checkpoint[inputNum] = (this.parent.millis() + 50);
 		} // if - adding every 50 millis
 
-		/*	
-		System.out.println("curHue: " + this.curHue[0] + ", " + 
-				+ this.curHue[1] + ", "
-				+ this.curHue[2]);
-		System.out.println("goalHue: " + this.goalHue[0] + ", " + 
-						+ this.goalHue[1] + ", "
-						+ this.goalHue[2]);
+/*
+		System.out.println("curHue: " + this.curHue[0][0] + ", "
+				+ this.curHue[0][1] + ", "
+				+ this.curHue[0][2]);
+		System.out.println("goalHue: " + this.goalHue[0][0] + ", "
+						+ this.goalHue[0][1] + ", "
+						+ this.goalHue[0][2]);
 
 		System.out.println("input.getAmplitude() = " + input.getAmplitude());
 
-		System.out.println("colorAdd: " + this.colorAdd[0] + ", " + 
-				+ this.colorAdd[1] + ", "
-				+ this.colorAdd[2]);
-		 */ 
-
+		System.out.println("colorAdd: " + this.colorAdd[0][0] + ", "
+				+ this.colorAdd[0][1] + ", "
+				+ this.colorAdd[0][2]);
+*/
+		
 		float	lowBound;
 		float	highBound;
 
@@ -2243,7 +2362,7 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			for(int j = 0; j < this.colors[i].length; j++)
 			{
-				System.out.println("colors[i].length = " + colors[i].length + "; rainbowColors[" + this.majMinChrom + "].length = " + this.rainbowColors[this.majMinChrom].length);
+//				System.out.println("colors[i].length = " + colors[i].length + "; rainbowColors[" + this.majMinChrom + "].length = " + this.rainbowColors[this.majMinChrom].length);
 				this.colors[i][j][0]	= this.rainbowColors[this.majMinChrom][j][0];
 				this.colors[i][j][1]	= this.rainbowColors[this.majMinChrom][j][1];
 				this.colors[i][j][2]	= this.rainbowColors[this.majMinChrom][j][2];
@@ -2636,6 +2755,12 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		super.runMenu();
+/*		
+		for(int i = 0; i < this.colors[0].length; i++)
+		{
+			System.out.println("\tcolors[0][" + i + "][0] = " + colors[0][i][0] + "\tcolors[0][" + i + "][1] = " + colors[0][i][1] + "\tcolors[0][" + i + "][2] = " + colors[0][i][2]);
+		}
+		*/
 	} // runMenu
 
 	/**
@@ -4278,6 +4403,16 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public ShapeEditor getShapeEditor() {
 		return shapeEditor;
+	}
+	
+	public void setCurrentInput(int newCurrentInput)
+	{
+		this.currentInput	= newCurrentInput;
+	} // setCurrentInput
+	
+	public void setGlobal(boolean newGlobal)
+	{
+		this.global	= newGlobal;
 	}
 
 
