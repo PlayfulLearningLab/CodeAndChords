@@ -14,7 +14,7 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 	{
 		PApplet.main("module_01_03_wm.Module_01_03_PitchHue_MultipleShapes_WM");
 	} // main
-
+/*
 	float[][] superShapes = new float[][] {
 		new float[] { 1, 1, 0, 0, 1, 1, 1 },
 		new float[] { 1, 1, 5, 5, 1, 1, 1 },
@@ -22,7 +22,7 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 		new float[] { .7f, .7f, 8, 8, 1, 1, 1},
 		new float[] { 1.4f, 1.4f, 4, 4, .3f, .5f, .7f }
 	};
-	
+	*/
 	private	RecordedInput	recordedInput;
 
 
@@ -32,12 +32,12 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 		this.recordedInput	= new RecordedInput(this, new String[] {
 				"WantingMemories_Melody.wav",
 				"WMBass_Later_Quiet.wav",
-//				"WantingMemories_Alto.wav",
-//				"WantingMemories_Soprano.wav",
-//				"WMTenor_Medium.wav"
+				"WantingMemories_Alto.wav",
+				"WantingMemories_Soprano.wav",
+				"WMTenor_Medium.wav"
 		});
 		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
-		this.curNumInputs	= this.totalNumInputs;
+		this.curNumInputs	= 5;
 
 		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
 
@@ -68,7 +68,7 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 	{
 	//	System.out.println("recordedInput.getAdjustedFund() = " + recordedInput.getAdjustedFund());
 
-		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
+		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		int	scaleDegree;
 
@@ -88,8 +88,9 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 			scaleDegree	= (round(recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
+			System.out.println("\ti = " + i + "; scaleDegree = " + scaleDegree);
 
-			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
+//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 
 
 			if(!this.menu.getShapeEditor().getIsRunning())

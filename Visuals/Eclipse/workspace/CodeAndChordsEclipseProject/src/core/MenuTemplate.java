@@ -27,12 +27,6 @@ import processing.core.PShape;
  *
  */
 public abstract class MenuTemplate implements ControlListener {
-	
-	// Constants to indicate color styles:
-	public	static 	int CS_RAINBOW	= 0;
-	public	static 	int CS_DICHROM	= 1;
-	public	static 	int CS_TRICHROM	= 2;
-	public	static	int	CS_CUSTOM	= 3;
 
 	/**	The current PApplet, passed into the constructor	*/
 	protected PApplet 	parent;

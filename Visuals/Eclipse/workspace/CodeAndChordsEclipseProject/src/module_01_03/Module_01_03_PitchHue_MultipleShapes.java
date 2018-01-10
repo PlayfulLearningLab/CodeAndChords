@@ -83,14 +83,14 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 				this.menu.getShapeEditor().drawShape(i);
 			}
 			
-
+/*
 			if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
 			{
 				// draws the legend along the bottom of the screen:
 				this.okGoLegend(scaleDegree, i);
 
 			} // if showScale
-
+*/
 		} // for
 
 

@@ -185,7 +185,7 @@ public class Module_01_02_WantingMemories extends Module
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 		
-		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
+//		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
 
 		this.canvasColor	= this.menu.getCanvasColor();
 	} // setup()
@@ -236,6 +236,7 @@ public class Module_01_02_WantingMemories extends Module
 				this.legend(scaleDegree, i);
 			}
 			
+			/*
 			if(this.currentMenu != this.menu.getCurrentMenu())
 			{
 				this.currentMenu = this.menu.getCurrentMenu();
@@ -249,6 +250,7 @@ public class Module_01_02_WantingMemories extends Module
 					this.menu.setIsRunning(true);
 				}
 			}
+			*/
 		} // for
 		
 		this.menu.runMenu();
