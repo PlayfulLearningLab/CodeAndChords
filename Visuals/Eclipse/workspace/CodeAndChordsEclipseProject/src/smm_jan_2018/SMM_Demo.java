@@ -380,10 +380,16 @@ public class SMM_Demo extends Module {
 			this.shapeEditor.getShapes()[this.rainbowRoundShape1].setShapeScale(2);
 			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setShapeScale(1);
 			
-			for(int i = this.rainbowRoundShape0; i < 3; i++)
-			{
-				this.shapeEditor.getShapes()[i].setCurrentShape("circle");
-			}
+			this.shapeEditor.getShapes()[this.rainbowRoundShape0].setCurrentShape("circle");
+			this.shapeEditor.getShapes()[this.rainbowRoundShape1].setCurrentShape("circle");
+			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setCurrentShape("circle");
+			
+			this.shapeEditor.getShapes()[this.rainbowRoundShape0].setXPos(this.width / 2);
+			this.shapeEditor.getShapes()[this.rainbowRoundShape0].setYPos(this.height / 2);
+			this.shapeEditor.getShapes()[this.rainbowRoundShape1].setXPos(this.width / 2);
+			this.shapeEditor.getShapes()[this.rainbowRoundShape1].setYPos(this.height / 2);
+			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setXPos(this.width / 2);
+			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setYPos(this.height / 2);
 			
 		}
 		else if(this.curScene == SMM_Demo.SCENE_SOLOIST)
@@ -403,9 +409,12 @@ public class SMM_Demo extends Module {
 			this.setSquareValues();
 			
 			this.menu.showColorMenu();
+			this.menu.setAlphaSlider(255);
 		
 			// Set the size of the drum shape (fullscreen?)
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setCurrentShape("square");
+			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setXPos(this.width / 2);
+			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setYPos(this.height / 2);
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setShapeScale(1);
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setXStretch(4.5f);
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setYStretch(4);
@@ -417,7 +426,9 @@ public class SMM_Demo extends Module {
 			
 			// Set the size of the input shape (prob. relative to the drum shape)
 			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setCurrentShape("square");
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setShapeScale(1);
+			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setXPos(this.width / 2);
+			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setYPos(this.height / 2);
+			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setShapeScale(1);
 			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setXStretch(4);
 			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setYStretch(3.5f);
 			
