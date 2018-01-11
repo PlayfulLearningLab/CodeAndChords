@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
@@ -827,7 +829,7 @@ public class ModuleMenu extends MenuTemplate  {
 	
 	public void showShapeMenu()
 	{
-		this.controlP5.getTab("shape").hide();
+		this.controlP5.getTab("shape").show();
 	}
 	
 	/**
@@ -1700,7 +1702,7 @@ public class ModuleMenu extends MenuTemplate  {
 		String[]	numInputItems	= new String[this.module.getTotalNumInputs()];
 		for(int i = 0; i < numInputItems.length; i++)
 		{
-			numInputItems[i]	= (i + "");
+			numInputItems[i]	= ((i + 1) + "");
 		} // for
 		
 		this.controlP5.addScrollableList("numInputsList")
@@ -2078,6 +2080,11 @@ public class ModuleMenu extends MenuTemplate  {
 		float	gDif	= rgbVals1[1] - rgbVals2[1];
 		float	bDif	= rgbVals1[2] - rgbVals2[2];
 		
+		System.out.println("Here we are in dichromatic!  rgbVals1 = rgb(" + rgbVals1[0] + ", "
+				+ rgbVals1[1] + ", " + rgbVals1[2] + "); rgbVals2 = rgb(" + rgbVals2[0] + ", "
+				+ rgbVals2[1] + ", " + rgbVals2[2] + "); "
+				+ "\n\trDif = " + rDif + "; gDif = " + gDif + "; bDif = " + bDif);
+		
 		int	redHalf		= Math.round(rgbVals1[0] + (rDif / 2));
 		int	greenHalf	= Math.round(rgbVals1[1] + (gDif / 2));
 		int	blueHalf	= Math.round(rgbVals1[2] + (bDif / 2));
@@ -2113,6 +2120,8 @@ public class ModuleMenu extends MenuTemplate  {
 				this.colors[i][j][0]	= newColor[0];
 				this.colors[i][j][1]	= newColor[1];
 				this.colors[i][j][2]	= newColor[2];
+				
+		//		System.out.println("\tthis.colors[" + i + "][" + j + "] = rgb(" + this.colors[i][j][0] + ", " + this.colors[i][j][1] + ", " + this.colors[i][j][2] + ")");
 				//			this.setColor(i, newColor, false);
 				/*			this.setColorSelectCW(i, newColor);
 			int	specialColorsPos	= this.arrayContains(this.specialColorsPos[this.currentInput], i);
@@ -2419,9 +2428,10 @@ public class ModuleMenu extends MenuTemplate  {
 		// Dichromatic:
 		if(this.curColorStyle[inputNum] == ModuleMenu.CS_DICHROM)
 		{
+			System.out.println(" --- setting colorStyle to dichrom; this.startHere = " + this.startHere + "; this.endBeforeThis = " + this.endBeforeThis);
+			
 			for(int i = this.startHere; i < this.endBeforeThis; i++)
 			{
-
 				this.specialColorsPos[i][0]	= 0;
 
 				// For minor keys, choose the 2nd to last note; else choose the last note:
@@ -2444,7 +2454,8 @@ public class ModuleMenu extends MenuTemplate  {
 				// (allows selection of 2nd color):
 				else
 				{
-					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.colors[i].length - 1]);
+					this.dichromatic_TwoRGB(this.colors[i][0], this.colors[i][this.specialColorsPos[i][1]]);
+//					this.dichromatic_TwoRGB(this.special, this.colors[i][this.specialColorsPos[i][1]]);
 					//					this.dichromatic_TwoRGB(this.getColor(0), this.getColor(this.colorSelect.length - 1), true);
 				}
 			} // for
@@ -2690,6 +2701,8 @@ public class ModuleMenu extends MenuTemplate  {
 					this.hsbColors[i][j]	= this.colors[i][j];
 				} // for - j
 			} // for - i
+			
+			System.out.println("(Filled hsbColors)");
 		} else {
 			// Let the user know what we skipped this:
 			System.err.println("ModuleTemplate.fillHSBColors: firstColorSelectCWId == " + this.firstColorSelectCWId + 
@@ -3038,10 +3051,10 @@ public class ModuleMenu extends MenuTemplate  {
 					// switch off the ones that weren't just clicked, but keep the current one on:
 					if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
 					{
-						System.out.println("setting " + toggleArray[i] + " to false");
+//						System.out.println("setting " + toggleArray[i] + " to false");
 						toggleArray[i].setState(false);
 					} else {
-						System.out.println("setting " + toggleArray[i] + " to true");
+//						System.out.println("setting " + toggleArray[i] + " to true");
 						toggleArray[i].setState(true);
 					}
 
@@ -3427,7 +3440,7 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void colorWheelEvent(int id, Color color)
 	{
-		//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
+		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
 
 		// Either do everything once for the currentInput or do it for all inputs:
 
@@ -3445,13 +3458,9 @@ public class ModuleMenu extends MenuTemplate  {
 			// if from specialColors:
 			colorPos	= this.specialColorsPos[this.currentInput][id - this.firstSpecialColorsCWId];
 			
-			System.out.println("specialColors: colorPos = " + colorPos);
+			System.out.println(" - ColorWheel event: colorPos = " + colorPos);
 
-			for(int i = this.startHere; i < this.endBeforeThis; i++)
-			{
-				this.setColorStyle(this.curColorStyle[i], i);
-				System.out.println("specialColors: set the color style for input i - " + i);
-			}
+			
 
 		} else {
 			throw new IllegalArgumentException("ModuleMenu.colorWheelEvent: CW with id " + id + " is not from colorSelect or specialColors;" + 
@@ -3500,9 +3509,19 @@ public class ModuleMenu extends MenuTemplate  {
 					this.colors[i][j][1]	= color.getGreen();
 					this.colors[i][j][2]	= color.getBlue();
 				}
-			} // else - not canvas
+			} // else - not canvas// Set the colorStyle if we got something from specialColors:
 
 		} // for
+		
+		// If from specialColors CW, make sure that colorStyle gets updated:
+		if(id >= this.firstSpecialColorsCWId && id < (this.firstSpecialColorsCWId + this.specialColorsPos[0].length))
+		{
+			// if from specialColors:
+			for(int i = this.startHere; i < this.endBeforeThis; i++)
+			{
+				this.setColorStyle(this.curColorStyle[i], i);
+			}
+		} // specialColors
 
 	} // colorWheelEvent
 
@@ -4013,6 +4032,13 @@ public class ModuleMenu extends MenuTemplate  {
 		} // if/else
 	} // setCSColorWheel
 
+	/**
+	 * Method to set a specialColors ColorWheel; used when switching to a new curInputNum,
+	 * because it updates the ColorWheel without affecting this.colors.
+	 * 
+	 * @param colorPos
+	 * @param color
+	 */
 	public void setSpecialColorsCW(int colorPos, int[] color)
 	{
 		// Error checking:
@@ -4049,6 +4075,7 @@ public class ModuleMenu extends MenuTemplate  {
 		} else {
 			System.err.println("ModuleTemplate.setSpecialColorsCW: firstSpecialColorsCWId == " + this.firstSpecialColorsCWId + "; did not attempt to set the ColorWheel at " + colorPos + ".");
 		} // if/else
+		
 	} // setSpecialColorsCW
 
 	/**
@@ -4147,13 +4174,28 @@ public class ModuleMenu extends MenuTemplate  {
 		File	file	= new File(filename);
 		try 
 		{
-			if(!file.exists())
+			if(file.exists())
+			{
+				// Did not go into here:
+				final JOptionPane optionPane = new JOptionPane(
+					    "The only way to close this dialog is by\n"
+					    + "pressing one of the following buttons.\n"
+					    + "Do you understand?",
+					    JOptionPane.QUESTION_MESSAGE,
+					    JOptionPane.OK_CANCEL_OPTION);
+			}
+			else
 			{
 				file.createNewFile();
 			}
 			
 			BufferedWriter	out	= new BufferedWriter(new FileWriter(file));
 			out.write("*** *** ***\n");
+			
+			// Need these (colors.length, colors[0].length) in order to correctly interpret the data when loading it
+			// and to notify the user if the numbers do not match his colors:
+			out.write(this.colors.length + "\n");	// Number of inputs
+			out.write(this.colors[0].length + "\n");	// Number of color items
 			
 			for(int i = 0; i < this.colors.length; i++)
 			{
@@ -4377,14 +4419,53 @@ public class ModuleMenu extends MenuTemplate  {
 		return shapeEditor;
 	}
 	
+	public int getCurrentInput()
+	{
+		return this.currentInput;
+	}
+	
 	public void setCurrentInput(int newCurrentInput)
 	{
 		this.currentInput	= newCurrentInput;
+		
+		if(!global)
+		{
+			this.startHere	= this.currentInput;
+			this.endBeforeThis	= (this.currentInput + 1);
+		}
 	} // setCurrentInput
 	
 	public void setGlobal(boolean newGlobal)
 	{
-		this.global	= newGlobal;
+//		this.global	= newGlobal;
+		((Toggle)this.controlP5.getController("global")).setState(false);
+		
+		if(!newGlobal)
+		{
+			this.startHere	= this.currentInput;
+			this.endBeforeThis	= (this.currentInput + 1);
+		} else {
+			this.startHere	= 0;
+			this.endBeforeThis	= this.module.getTotalNumInputs();
+		}
+	}
+	
+	/**
+	 * Use when you don't want the first call to trichrom to trigger auto-generated colors (Red-Green-Blue).
+	 * @param newVal
+	 */
+	public void setTrichromFlag(boolean newVal)
+	{
+		this.trichromFlag	= newVal;
+	}
+	
+	/**
+	 * Use when you don't want the first call to dichrom to trigger auto-generated colors (Red-Pink).
+	 * @param newVal
+	 */
+	public void setDichromFlag(boolean newVal)
+	{
+		this.dichromFlag	= newVal;
 	}
 
 

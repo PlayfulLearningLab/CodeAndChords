@@ -13,12 +13,13 @@ public class SMM_Demo extends Module {
 	// TODO: multi-input guide tones for this? :D
 	
 	// These are the ASCII codes for 0-5:
-	private	static final int	SCENE_CLAP			= 48;
-	private	static final int	SCENE_RAINBOW_ROUND	= 49;
-	private	static final int	SCENE_SOLOIST		= 50;
-	private	static final int	SCENE_DRUM_VOCAL	= 51;
-	private	static final int	SCENE_DUET			= 52;
-	private	static final int	SCENE_QUARTET		= 53;
+	private	static final int	SCENE_CLAP			= 48;	// 0
+	private	static final int	SCENE_SOLOIST		= 49;	// 1
+	private	static final int	SCENE_DUET			= 50;	// 2
+	private	static final int	SCENE_RAINBOW_ROUND	= 51;	// 3
+	private	static final int	SCENE_QUARTET		= 52;	// 4
+	private	static final int	SCENE_DRUM_VOCAL	= 57;	// 9	
+	private	static final int	SCENE_TRIO			= 56;	// 8
 	private	int	curScene							= SMM_Demo.SCENE_CLAP;
 	
 	private	int	clapInput0	= 0;
@@ -44,6 +45,10 @@ public class SMM_Demo extends Module {
 	private	int	duetInput0	= 0;
 	private	int	duetShape1	= 1;
 	private	int	duetInput1	= 1;
+	
+	private	int	trioShape0	= 0;
+	private	int	trioShape1	= 1;
+	private	int	trioShape2	= 2;
 	
 	private	int	quartet0	= 0;
 	private	int	quartet1	= 1;
@@ -95,6 +100,10 @@ public class SMM_Demo extends Module {
 		this.shapeEditor.getShape().setCurrentShape("square");
 		this.shapeEditor.getShape().setShapeScale(3);
 		
+		// I want to define all values, even on the first calls to di- and trichrom:
+		this.menu.setDichromFlag(true);
+		this.menu.setTrichromFlag(true);
+		
 		this.verticalBarsDemo = true;
 		this.amplitude = new float[16];
 		this.barPos = new float[16];
@@ -134,7 +143,6 @@ public class SMM_Demo extends Module {
 			case SMM_Demo.SCENE_CLAP :
 				this.menu.fade(0, this.clapInput0);
 				
-				this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 				if(!this.menu.getShapeEditor().getIsRunning())
 				{
 					this.menu.getShapeEditor().drawShape(clapShape0);
@@ -207,11 +215,16 @@ public class SMM_Demo extends Module {
 				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.drumVocalVocalInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 				this.menu.fade(this.scaleDegree, this.drumVocalVocalInput);
 				
+		//		System.out.println("curHue = rgb(" );
+				
 				if(!this.menu.getShapeEditor().getIsRunning())
 				{
 					// TODO - drum shape so huge! Why is that?
-					this.menu.getShapeEditor().drawShape(this.drumVocalDrumShape);
-					this.menu.getShapeEditor().drawShape(this.drumVocalVocalShape);
+					this.menu.getShapeEditor().drawShape(this.drumVocalDrumInput);
+				}
+				if(!this.menu.getShapeEditor().getIsRunning())
+				{
+					this.menu.getShapeEditor().drawShape(this.drumVocalVocalInput);
 				}
 				
 				this.legend(this.scaleDegree, this.drumVocalVocalInput);
@@ -234,7 +247,30 @@ public class SMM_Demo extends Module {
 					
 					if(this.menu.isShowScale())
 					{
-						this.legend(this.scaleDegree, 0);
+						this.legend(this.scaleDegree, i);
+					}
+				} // for
+				
+				break;
+				
+			case SMM_Demo.SCENE_TRIO :
+				for(int i = 0; i < 3; i++)
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+
+					this.menu.fade(this.scaleDegree, i);
+
+//					this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
+
+
+					if(!this.menu.getShapeEditor().getIsRunning())
+					{
+						this.menu.getShapeEditor().drawShape(i);
+					}
+					
+					if(this.menu.isShowScale())
+					{
+						this.legend(this.scaleDegree, i);
 					}
 				} // for
 				
@@ -312,7 +348,9 @@ public class SMM_Demo extends Module {
 	{
 		int	key	= (int)this.key;
 		
-		if(key > 47 && key < 54)
+		System.out.println("key = " + key);
+		
+		if(key > 47 && key < 58)
 		{
 			this.curScene	= key;
 			System.out.println("curScene = " + this.curScene);
@@ -321,6 +359,8 @@ public class SMM_Demo extends Module {
 		if(this.curScene == SMM_Demo.SCENE_CLAP)
 		{
 			this.curNumInputs	= 1;
+			this.setSquareValues();
+			
 			this.menu.hideColorMenu();
 //			this.menu.showColorMenu("OneColor");
 			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);			
@@ -328,6 +368,7 @@ public class SMM_Demo extends Module {
 		else if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
 		{
 			this.curNumInputs	= 3;
+			this.setSquareValues();
 			
 //			this.menu.hideColorMenu("OneColor");
 			this.menu.showShapeMenu();
@@ -348,19 +389,24 @@ public class SMM_Demo extends Module {
 		else if(this.curScene == SMM_Demo.SCENE_SOLOIST)
 		{
 			this.curNumInputs	= 1;
+			this.setSquareValues();
+			
 			this.menu.hideShapeMenu();
 			this.menu.showColorMenu();
 			
 			// TODO - whatever colors we decide here...
+			this.menu.getControlP5().getController("rainbow").update();
 		}
 		else if(this.curScene == SMM_Demo.SCENE_DRUM_VOCAL)
 		{
 			this.curNumInputs	= 2;
+			this.setSquareValues();
 			
 			this.menu.showColorMenu();
 		
 			// Set the size of the drum shape (fullscreen?)
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setCurrentShape("square");
+			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setShapeScale(1);
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setXStretch(4.5f);
 			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setYStretch(4);
 			
@@ -371,25 +417,36 @@ public class SMM_Demo extends Module {
 			
 			// Set the size of the input shape (prob. relative to the drum shape)
 			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setCurrentShape("square");
+			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setShapeScale(1);
 			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setXStretch(4);
 			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setYStretch(3.5f);
-			
-			// TODO - pick up here: got ArrayIndexOutOfBoundsException from Canvas Color...
-			// (Button id = 213 - but exception was from ColorWheel)
 			
 			// Set the input colors
 			this.menu.setCurrentInput(this.drumVocalVocalInput);
 			
-			// TODO - ummm.... Not the colors I entered! The white seems to be persisting. :/
-			// Purple - rgb(150, 0, 150) - to Deep Purple - rgb(92, 16, 118) - to Light Blue - rgb(0, 163, 255)
 			this.menu.setColor(0, new int[] { 150, 0, 150 }, true);
-			this.menu.setColor(4, new int[] { 92, 16, 118 }, true);
-			this.menu.setColor(8, new int[] { 0, 163, 255 }, true);
-			this.menu.getControlP5().getController("trichrom").update();
+			this.menu.setColor(11, new int[] { 255, 255, 0 }, true);	// TODO - this will be a little off if I do a minor key
+			this.menu.getControlP5().getController("dichrom").update();
+			
+			/*
+			for(int i = 0; i < this.menu.getColors().length; i++)
+			{
+				for(int j = 0; j < this.menu.getColors()[i].length; j++)
+				{
+					System.out.println("\tmenu.colors[" + i + "][" + j + "] = rgb(" + this.menu.getColors()[i][j][0] + ", " + this.menu.getColors()[i][j][1] + ", " + this.menu.getColors()[i][j][2] + ")");
+				}
+			}
+			*/
 //			this.menu.dichromatic_TwoRGB(new int[] { 255, 255, 0 }, new int[] { 255, 100, 255 } );
-		} else if(this.curScene == SMM_Demo.SCENE_DUET)
+			
+			/*
+			 * When a SpecialColors CW is opened and a key pressed, the CW (whichever was/were opened) updates.
+			 */
+		} 
+		else if(this.curScene == SMM_Demo.SCENE_DUET)
 		{
 			this.curNumInputs	= 2;
+			this.setSquareValues();
 			
 			this.menu.showColorMenu();
 			
@@ -407,26 +464,73 @@ public class SMM_Demo extends Module {
 			
 			this.menu.setAlphaSlider(150);
 			
-			// Salmon - rgb(212, 68, 94) - to Light Orange - rgb(254, 183, 78)
 			this.menu.setGlobal(true);
 			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+			
+			this.menu.setColor(0, new int[] { 150, 0, 150 }, true);
+			this.menu.setColor(4, new int[] { 92, 16, 118 }, true);
+			this.menu.setColor(8, new int[] { 0, 163, 255 }, true);
+			
+			this.menu.getControlP5().getController("trichrom").update();
+			
+			/*
+			// Salmon - rgb(212, 68, 94) - to Light Orange - rgb(254, 183, 78)
 			this.menu.setColor(0, new int[] { 179, 41, 65 }, true);
 			this.menu.setColor(11, new int[] { 254, 183, 78 }, true);
 			this.menu.getControlP5().getController("dichrom").update();
+			*/
+		}
+		
+		else if(this.curScene == SMM_Demo.SCENE_TRIO)
+		{
+			this.curNumInputs	= 3;
+			this.setSquareValues();
 			
-		} else if(this.curScene == SMM_Demo.SCENE_QUARTET)
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+			
+			Shape	shape0	= this.shapeEditor.getShapes()[this.trioShape0];
+			Shape	shape1	= this.shapeEditor.getShapes()[this.trioShape1];
+			Shape	shape2	= this.shapeEditor.getShapes()[this.trioShape2];
+			
+			shape0.setCurrentShape("circle");
+			shape1.setCurrentShape("circle");
+			shape2.setCurrentShape("circle");
+			
+			shape0.setShapeScale(4);
+			shape1.setShapeScale(4);
+			shape2.setShapeScale(4);
+			
+			shape0.setXPos(this.width / 4);
+			shape1.setXPos((this.width / 4) * 2);
+			shape2.setXPos((this.width / 4) * 3);
+			
+			this.menu.setAlphaSlider(150);
+			
+			this.menu.setGlobal(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+			
+			this.menu.setColor(0, new int[] { 150, 0, 150 }, true);
+			this.menu.setColor(4, new int[] { 92, 16, 118 }, true);
+			this.menu.setColor(8, new int[] { 0, 163, 255 }, true);
+			
+			this.menu.getControlP5().getController("trichrom").update();
+			
+			/*
+			// Salmon - rgb(212, 68, 94) - to Light Orange - rgb(254, 183, 78)
+			this.menu.setColor(0, new int[] { 179, 41, 65 }, true);
+			this.menu.setColor(11, new int[] { 254, 183, 78 }, true);
+			this.menu.getControlP5().getController("dichrom").update();
+			*/
+		}
+		else if(this.curScene == SMM_Demo.SCENE_QUARTET)
 		{
 			this.curNumInputs	= 4;
+			this.setSquareValues();
+			
 			this.menu.showColorMenu();
 			this.menu.setGlobal(true);
 			this.menu.getControlP5().getController("rainbow").update();
-			
-			if(this.xVals == null)
-			{
-				this.setSquareValues();
-			}
-		}else {
-			this.menu.showColorMenu();
 		}
 		
 		if(key == 'f')
