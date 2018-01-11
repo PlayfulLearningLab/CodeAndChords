@@ -535,7 +535,7 @@ public class SMM_Demo extends Module {
 		
 		if(key == 'f')
 		{
-			this.menu.saveColorState("hello");
+			this.menu.saveColorState();
 		}
 	} // keyPressed
 	

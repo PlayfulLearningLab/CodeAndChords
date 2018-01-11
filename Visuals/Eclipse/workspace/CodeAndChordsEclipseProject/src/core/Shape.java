@@ -434,7 +434,7 @@ public class Shape {
 		} // error checking
 		
 		int[] curHue = menu.getCurHue()[curHueNum];
-		System.out.println(" - Shape " + curHueNum + ": curHue = rgb(" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
+//		System.out.println(" - Shape " + curHueNum + ": curHue = rgb(" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
 		
 		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
 		//		this.fill(255);
