@@ -128,7 +128,7 @@ public class Demo_01_Flight extends Module {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
 
-		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false, "default");
 
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
@@ -138,10 +138,10 @@ public class Demo_01_Flight extends Module {
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
+		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true, "default");
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
+		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3], "default");
 
 		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
@@ -149,7 +149,7 @@ public class Demo_01_Flight extends Module {
 
 //		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
-		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
+//		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
 		
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
@@ -177,13 +177,13 @@ public class Demo_01_Flight extends Module {
 		*/
 		
 		// Purple - Yellow - Blue "Trichrom" (lots of other colors!)
-		this.menu.setColorStyle(MenuTemplate.CS_RAINBOW, 0);
-		this.menu.setColorStyle(MenuTemplate.CS_RAINBOW, 1);
+		this.menu.setColorStyle(ModuleMenu.CS_RAINBOW, 0);
+		this.menu.setColorStyle(ModuleMenu.CS_RAINBOW, 1);
 		this.menu.setColor(0, new int[] {150, 0, 150 }, false);
 		this.menu.setColor(4, new int[] { 92, 16, 118 }, false);
 		this.menu.setColor(8, new int[] { 0, 163, 255 }, false);
-		this.menu.setColorStyle(MenuTemplate.CS_TRICHROM, 0);
-		this.menu.setColorStyle(MenuTemplate.CS_TRICHROM, 1);
+		this.menu.setColorStyle(ModuleMenu.CS_TRICHROM, 0);
+		this.menu.setColorStyle(ModuleMenu.CS_TRICHROM, 1);
 	/*
 		// Purple - Dark Purple - Blue Trichrom
 		this.menu.setColorStyle(MenuTemplate.CS_TRICHROM, 0);
@@ -259,12 +259,12 @@ public class Demo_01_Flight extends Module {
 				this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
 			
 
-			
+
+				this.legend(scaleDegree, i);
 			if(this.menu.isShowScale())
 			{
-				this.legend(scaleDegree, i);
 			}
-
+/*
 			if(this.currentMenu != this.menu.getCurrentMenu())
 			{
 				this.currentMenu = this.menu.getCurrentMenu();
@@ -278,7 +278,7 @@ public class Demo_01_Flight extends Module {
 					this.menu.setIsRunning(true);
 				}
 			}
-			
+			*/
 		} // for
 
 		this.menu.runMenu();

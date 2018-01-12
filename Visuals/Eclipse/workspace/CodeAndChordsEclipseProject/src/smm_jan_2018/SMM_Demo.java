@@ -390,7 +390,6 @@ public class SMM_Demo extends Module {
 			this.shapeEditor.getShapes()[this.rainbowRoundShape1].setYPos(this.height / 2);
 			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setXPos(this.width / 2);
 			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setYPos(this.height / 2);
-			
 		}
 		else if(this.curScene == SMM_Demo.SCENE_SOLOIST)
 		{

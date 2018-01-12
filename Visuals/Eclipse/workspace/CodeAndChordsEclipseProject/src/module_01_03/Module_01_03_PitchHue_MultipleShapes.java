@@ -19,10 +19,10 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(2, new AudioContext(), this);
+		this.input	= new RealTimeInput(1, new AudioContext(), this);
 //		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 2;
+		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
@@ -75,14 +75,14 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 				this.menu.getShapeEditor().drawShape(i);
 			}
 			
-/*
+
 			if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
 			{
 				// draws the legend along the bottom of the screen:
-				this.okGoLegend(scaleDegree, i);
+				this.legend(scaleDegree, i);
 
 			} // if showScale
-*/
+
 		} // for
 
 
