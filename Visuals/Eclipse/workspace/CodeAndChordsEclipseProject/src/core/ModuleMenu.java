@@ -496,7 +496,7 @@ public class ModuleMenu extends MenuTemplate  {
 				"6_Part_Scale4.wav",
 				"6_Part_Scale5.wav",
 				"6_Part_Scale6.wav",
-//				"6_Part_Scale7.wav"
+				"6_Part_Scale7.wav"
 		});
 		this.recInput.pause(true);
 		this.useRecInput		= false;

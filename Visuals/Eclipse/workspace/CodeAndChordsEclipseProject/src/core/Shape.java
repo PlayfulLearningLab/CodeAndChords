@@ -40,6 +40,7 @@ public class Shape {
 	private float[]		SQUARE= new float[] {1, 1, 4, 4, 1, 1, 1};
 	private float[]		STAR= new float[] {1, 1, 5, 5, .35f, 1, 1};
 	private float[]		PENTAGON= new float[] {1, 1, 5, 5, 1.5f, 1, 1};
+	private float[]		HEXAGON= new float[] {1, 1, 6, 6, 1.5f, 1, 1};
 	private float[]		FLOWER= new float[] {.8f, .8f, 14, 14, 2.5f, 9, 1};
 	private float[]		SPLAT= new float[] {2, 2, 14, 14, 2.85f, 3.6f, 2};
 	private float[]		X= new float[] {1, 1, 4, 4, (float).3, 1, 1};
@@ -342,6 +343,10 @@ public class Shape {
 
 		case "pentagon":
 			this.setCurrentShape("supershape", this.PENTAGON);
+			break;
+			
+		case "hexagon":
+			this.setCurrentShape("supershape", this.HEXAGON);
 			break;
 
 		case "star":

@@ -1,6 +1,7 @@
 package smm_jan_2018;
 
 import controlP5.ControlP5;
+import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
 import core.Shape;
@@ -356,6 +357,7 @@ public class SMM_Demo extends Module {
 				} // for - curNumInputs
 
 				break;
+				
 			case SMM_Demo.SCENE_MAN:
 				for(int i = 0; i < this.curNumInputs; i++)
 				{
@@ -378,11 +380,31 @@ public class SMM_Demo extends Module {
 					{
 						this.legend(this.scaleDegree, i);
 					}
-					
-					this.textSize(32);
-					this.fill(255);
-					this.text(i, (this.width / 4) * ((i  % 3) + 1), ((this.height / 3) * ((i + 3) / 3)));
+				} // for
+				break;
+				
+			case SMM_Demo.SCENE_KALEIDESCOPE:
+				for(int i = 0; i < this.curNumInputs; i++)
+				{
+					if(!this.menu.getRecInputPlaying())
+					{
+						this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+					} else {
+						this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+					}
 
+//					this.menu.fade(this.scaleDegree, i);
+					this.menu.fade(this.scaleDegree, i);
+
+					if(!this.menu.getShapeEditor().getIsRunning())
+					{
+						this.menu.getShapeEditor().drawShape(i);
+					}
+					
+					if(this.menu.isShowScale())
+					{
+						this.legend(this.scaleDegree, i);
+					}
 				} // for
 				break;
 		
@@ -626,7 +648,7 @@ public class SMM_Demo extends Module {
 		}
 		else if(this.curScene == SMM_Demo.SCENE_MAN)
 		{
-			this.curNumInputs	= 6;
+			this.curNumInputs	= 7;
 			this.setSquareValues();
 			
 			this.menu.showColorMenu();
@@ -638,13 +660,22 @@ public class SMM_Demo extends Module {
 			{
 				curShape	= this.shapeEditor.getShapes()[i];
 				curShape.setCurrentShape("circle");
-				curShape.setShapeScale(1);
+				curShape.setShapeScale(3);
 				System.out.println("i = " + i + "; xPos = " + (this.width / 4) * ((i  % 3) + 1));
-				curShape.setXPos((this.width / 4) * ((i  % 3) + 1));	// i.e., width/4, (width/4) * 2, or (width/4) * 3
-				curShape.setYPos((this.height / 3) * ((i + 3) / 3));	// i.e., height/3 or (height/3) * 2
+				
+				// Three circle on the top row, four on the bottom:
+				if(i < 3)
+				{
+					curShape.setXPos((this.width / 4) * (i + 1));	// i.e., width/4, (width/4) * 2, or (width/4) * 3
+					curShape.setYPos(this.height / 3);
+				} else {
+					curShape.setXPos((this.width / 5) * (i - 2));	// i.e., width/5, (width/5) * 2, (width/5) * 3, or (width/5) * 4
+					curShape.setYPos((this.height / 3) * 2);
+				}			
+
 			}
 			
-			this.menu.setAlphaSlider(250);
+			this.menu.setAlphaSlider(150);
 			
 			this.menu.setGlobal(true);
 			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
@@ -655,11 +686,65 @@ public class SMM_Demo extends Module {
 				this.menu.setColor(11, new int[] { 210, 210, 210 }, i, true);			
 			}
 			
-			this.menu.getControlP5().getController("dichrom").update();	
+			this.menu.getControlP5().getController("dichrom").update();
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
 		}
 		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE)
 		{
+			this.menu.showShapeMenu();
+			this.menu.showColorMenu();
 			
+			this.curNumInputs	= 7;
+			this.setSquareValues();
+			
+			Shape	curShape;
+			int		radius	= this.width / 4;	// width / 8 is best for shape."x"
+			int[]	xVals	= new int[] {
+					(this.width / 2),
+					(this.width / 2) + (radius / 2),
+					(this.width / 2) + radius,
+					(this.width / 2) + (radius / 2),
+					(this.width / 2) - (radius / 2),
+					(this.width / 2) - radius,
+					(this.width / 2) - (radius / 2)
+			};
+			int[]	yVals	= new int[] {
+					(this.height / 2),
+					(this.height / 2) - radius,
+					(this.height / 2),
+					(this.height / 2) + radius,
+					(this.height / 2) + radius,
+					(this.height / 2),
+					(this.height / 2) - radius
+			};
+			
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+//				curShape.setCurrentShape("x");
+//				curShape.setCurrentShape("pentagon");
+				curShape.setCurrentShape("hexagon");
+//				curShape.setRotation(300);
+				curShape.setShapeScale(3);
+				
+				curShape.setXPos(xVals[i]);
+				curShape.setYPos(yVals[i]);
+			}
+			
+			this.menu.setAlphaSlider(150);
+			
+			this.menu.setGlobal(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+			
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
+				this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);
+				this.menu.setColor(8, new int[] { 9, 187, 193 }, i, true);
+			}
+			
+			this.menu.getControlP5().getController("trichrom").update();
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(false);
 		}
 
 	} // keyPressed
