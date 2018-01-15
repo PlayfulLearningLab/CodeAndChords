@@ -6,13 +6,14 @@ import core.ModuleMenu;
 import core.Shape;
 import core.ShapeEditor;
 import core.input.RealTimeInput;
+import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class SMM_Demo extends Module {
 	// TODO: multi-input guide tones for this? :D
 	
-	// These are the ASCII codes for 0-5:
+	// Initial demos:
 	private	static final int	SCENE_CLAP			= 48;	// 0
 	private	static final int	SCENE_SOLOIST		= 49;	// 1
 	private	static final int	SCENE_DUET			= 50;	// 2
@@ -20,6 +21,19 @@ public class SMM_Demo extends Module {
 	private	static final int	SCENE_QUARTET		= 52;	// 4
 	private	static final int	SCENE_DRUM_VOCAL	= 57;	// 9	
 	private	static final int	SCENE_TRIO			= 56;	// 8
+	
+	// Cadenza:
+	private	static final int	SCENE_WINGS			= 113;	// q
+	private	static final int	SCENE_KILLING		= 119;	// w
+	private	static final int	SCENE_MAN			= 101;	// e
+	private	static final int	SCENE_KALEIDESCOPE	= 114;	// r
+	
+	// Taylor and Betsie
+	// TODO
+	
+	// Shazore
+	// TODO
+	
 	private	int	curScene							= SMM_Demo.SCENE_CLAP;
 	
 	private	int	clapInput0	= 0;
@@ -125,6 +139,8 @@ public class SMM_Demo extends Module {
 		.setLabel("Dynamic Bar Height")
 		.getCaptionLabel()
 		.align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.menu.setUseRecInput(true);
 	} // setup
 	
 	public void draw()
@@ -184,13 +200,13 @@ public class SMM_Demo extends Module {
 					this.menu.getShapeEditor().drawShape(rainbowRoundShape2);
 				}
 
-				/*
+				
 				if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
 				{
 					// draws the legend along the bottom of the screen:
 					this.legend(scaleDegree, 0);
 				} // if showScale
-				*/
+				
 				break;
 				
 			case SMM_Demo.SCENE_SOLOIST :
@@ -340,6 +356,35 @@ public class SMM_Demo extends Module {
 				} // for - curNumInputs
 
 				break;
+			case SMM_Demo.SCENE_MAN:
+				for(int i = 0; i < this.curNumInputs; i++)
+				{
+					if(!this.menu.getRecInputPlaying())
+					{
+						this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+					} else {
+						this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+					}
+
+//					this.menu.fade(this.scaleDegree, i);
+					this.menu.fade(this.scaleDegree, i);
+
+					if(!this.menu.getShapeEditor().getIsRunning())
+					{
+						this.menu.getShapeEditor().drawShape(i);
+					}
+					
+					if(this.menu.isShowScale())
+					{
+						this.legend(this.scaleDegree, i);
+					}
+					
+					this.textSize(32);
+					this.fill(255);
+					this.text(i, (this.width / 4) * ((i  % 3) + 1), ((this.height / 3) * ((i + 3) / 3)));
+
+				} // for
+				break;
 		
 		} // switch
 	} // drawScene
@@ -350,11 +395,11 @@ public class SMM_Demo extends Module {
 		
 		System.out.println("key = " + key);
 		
-		if(key > 47 && key < 58)
-		{
+//		if(key > 47 && key < 58)
+//		{
 			this.curScene	= key;
 			System.out.println("curScene = " + this.curScene);
-		}
+//		}
 		
 		if(this.curScene == SMM_Demo.SCENE_CLAP)
 		{
@@ -373,7 +418,27 @@ public class SMM_Demo extends Module {
 //			this.menu.hideColorMenu("OneColor");
 			this.menu.showShapeMenu();
 			this.menu.showColorMenu();
-			this.menu.setColorStyle(0, 0);
+//			this.menu.setColorStyle(0, 0);
+			
+			// Set "rainbow" colors:
+			int[][]	singARainbowColors	= new int[][] {
+				new int[] { 255, 0, 0 }, // RED
+				new int[] { 0, 0, 255 }, // BLUE
+				new int[] { 255, 255, 0 }, // YELLOW
+				new int[] { 255, 125, 0 }, // orange
+				new int[] { 0, 255, 0 }, // GREEN
+				new int[] { 136, 0, 170 }, // PURPLE
+				new int[] { 80, 0, 170 } // (indigo)
+			};
+			
+			for(int i = 0; i < this.menu.getColors()[0].length; i++)
+			{
+				this.menu.setColor(i, singARainbowColors[this.menu.getScaleDegreeColors()[0][i]], false);
+				
+				this.menu.setColorSelectCW(i, singARainbowColors[this.menu.getScaleDegreeColors()[0][i]]);
+			} // for - i
+
+			this.menu.setCurKey("C", 0);
 	
 			// First input goes furthest back:
 			this.shapeEditor.getShapes()[this.rainbowRoundShape0].setShapeScale(3);
@@ -435,7 +500,7 @@ public class SMM_Demo extends Module {
 			this.menu.setCurrentInput(this.drumVocalVocalInput);
 			
 			this.menu.setColor(0, new int[] { 150, 0, 150 }, true);
-			this.menu.setColor(11, new int[] { 255, 255, 0 }, true);	// TODO - this will be a little off if I do a minor key
+			this.menu.setColor(11, new int[] { 255, 255, 0 }, true);
 			this.menu.getControlP5().getController("dichrom").update();
 			
 			/*
@@ -519,10 +584,17 @@ public class SMM_Demo extends Module {
 			
 			this.menu.setGlobal(true);
 			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+
+			// Calling trichrom.update sets ensures that specialColorsPos will be correct for this key,
+			// since the second call to update will set trichrom with whatever colors are at the previous specialColorsPos:
+			this.menu.getControlP5().getController("trichrom").update();
 			
-			this.menu.setColor(0, new int[] { 150, 0, 150 }, true);
-			this.menu.setColor(4, new int[] { 92, 16, 118 }, true);
-			this.menu.setColor(8, new int[] { 0, 163, 255 }, true);
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
+				this.menu.setColor(4, new int[] { 92, 16, 118 }, i, true);
+				this.menu.setColor(8, new int[] { 0, 163, 255 }, i, true);
+			}
 			
 			this.menu.getControlP5().getController("trichrom").update();
 			
@@ -543,10 +615,53 @@ public class SMM_Demo extends Module {
 			this.menu.getControlP5().getController("rainbow").update();
 		}
 		
-		if(key == 'f')
+		// Cadenza:
+		else if(this.curScene == SMM_Demo.SCENE_WINGS)
 		{
-			this.menu.saveColorState();
+
 		}
+		else if(this.curScene == SMM_Demo.SCENE_KILLING)
+		{
+			
+		}
+		else if(this.curScene == SMM_Demo.SCENE_MAN)
+		{
+			this.curNumInputs	= 6;
+			this.setSquareValues();
+			
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+			
+			Shape	curShape;
+			
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+				curShape.setCurrentShape("circle");
+				curShape.setShapeScale(1);
+				System.out.println("i = " + i + "; xPos = " + (this.width / 4) * ((i  % 3) + 1));
+				curShape.setXPos((this.width / 4) * ((i  % 3) + 1));	// i.e., width/4, (width/4) * 2, or (width/4) * 3
+				curShape.setYPos((this.height / 3) * ((i + 3) / 3));	// i.e., height/3 or (height/3) * 2
+			}
+			
+			this.menu.setAlphaSlider(250);
+			
+			this.menu.setGlobal(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+			
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.menu.setColor(0, new int[] { 0, 10, 150 }, i, true);
+				this.menu.setColor(11, new int[] { 210, 210, 210 }, i, true);			
+			}
+			
+			this.menu.getControlP5().getController("dichrom").update();	
+		}
+		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE)
+		{
+			
+		}
+
 	} // keyPressed
 	
 	public String[] getLegendText()

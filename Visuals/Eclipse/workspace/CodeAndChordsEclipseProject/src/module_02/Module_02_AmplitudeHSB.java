@@ -59,7 +59,8 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 				String[]	buttonLabels	= new String[] {
 						"Canvas", "1", "2", "3", "4", "5", "6"
 				};
-				this.menu.addColorMenu(buttonLabels, null, false, "Dynamic\nSegments", 6, 6);
+
+				this.menu.addColorMenu(buttonLabels, 1, true, null, false, false, "Dynamic\nSegments", 6, 6, "color");
 				this.menu.addSensitivityMenu(false);
 
 				this.menu.addShapeSizeSlider(0, this.yVals[15]);
