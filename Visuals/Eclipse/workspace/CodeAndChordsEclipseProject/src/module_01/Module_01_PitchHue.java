@@ -64,7 +64,7 @@ public class Module_01_PitchHue extends Module
 		this.input = new RealTimeInput(1, new AudioContext(), this);
 	//	this.input  = new RealTimeInput(this);
 //		this.moduleTemplate	= new ModuleTemplate01(this, this.input, "Module_01_PitchHue");
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_PitchHue", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 		
 		// calculate y's
 		// set y vals for first set of scrollbar labels:

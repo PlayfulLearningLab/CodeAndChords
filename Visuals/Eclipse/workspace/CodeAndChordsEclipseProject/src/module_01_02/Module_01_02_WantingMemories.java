@@ -76,7 +76,7 @@ public class Module_01_02_WantingMemories extends Module
 		this.curNumInputs	= 5;
 		
 //		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-		this.menu	= new ModuleMenu(this, this, this.recInput, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.recInput, 12);
 
 		/*
  * 		this.shapes	= new Shape[12];
@@ -202,7 +202,7 @@ public class Module_01_02_WantingMemories extends Module
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 			
 //			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			scaleDegree	= (round(this.recInput.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(this.recInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 			

@@ -84,7 +84,7 @@ public class Module_02_AmplitudeHSB extends Module implements ShapeEditorInterfa
 				this.shapeEditor.updateSliders();
 
 				//				this.moduleTemplate	= new ModuleTemplate02(this, this.input, "Module_02_AmplitudeHSB");
-				this.menu	= new ModuleMenu(this, this, this.input, "Module_02_AmplitudeHSB", 6);
+				this.menu	= new ModuleMenu(this, this, this.input, 6);
 				this.menu.setIsRunning(false);
 
 				this.yVals		= new int[18];
