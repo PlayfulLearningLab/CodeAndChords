@@ -22,7 +22,9 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 	//	private PApplet parent;
 
-	private Shape	shape;
+	private Shape[]	shapes;
+	private int		shapeIndex;
+	private int		numActiveShapes;
 
 	private	Module	module;
 
@@ -70,7 +72,26 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 * @param fullAppletHeight
 	 *            height of the window that this shape will be displayed in
 	 */
-	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) {
+	public ShapeEditor(PApplet parent, Shape shape, Module module, float fullAppletWidth, float fullAppletHeight) 
+	{
+		this(parent, new Shape[] {shape}, module, fullAppletWidth, fullAppletHeight);
+
+	}// constructor
+
+	/**
+	 * 
+	 * This constructor should be used to create a scaled version of the shaper
+	 * editor that is scaled based off of the window that the shape is displayed in
+	 * 
+	 * THIS IS THE PREFERED CONSTRUCOR
+	 * 
+	 * @param parent
+	 * @param fullAppletWidth
+	 *            width of the window that this shape will be displayed in
+	 * @param fullAppletHeight
+	 *            height of the window that this shape will be displayed in
+	 */
+	public ShapeEditor(PApplet parent, Shape[] shapes, Module module, float fullAppletWidth, float fullAppletHeight) {
 
 		super(parent, fullAppletWidth, fullAppletHeight);
 
@@ -83,10 +104,13 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 			this.parent = parent;
 
 		// make sure the shape object isn't null and then initialize
-		if (shape == null)
+		if (shapes == null || shapes.length == 0)
 			throw new IllegalArgumentException("Shape parameter is null");
 		else
-			this.shape = shape;
+			this.shapes = shapes;
+
+		this.numActiveShapes = 1;
+		this.shapeIndex = 0;
 
 		// create a new ControlP5 object to use
 		/*		this.cp5 = new ControlP5(parent);
@@ -138,14 +162,32 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 */
 	private void drawSE() 
 	{
-		PShape ps = this.shape.getPShape();
+		PShape ps = this.shapes[this.shapeIndex].getPShape();
 		ps.beginShape();
 		ps.stroke(255);
 		ps.fill(255);
 		ps.scale(super.getScale());
-		ps.rotate(this.shape.getRotation());
+		ps.rotate(this.shapes[this.shapeIndex].getRotation());
 		ps.endShape();
-		this.parent.shape(ps, super.mapAdjustedMenuXPos(this.shape.getXPos()), this.mapAdjustedMenuYPos(this.shape.getYPos()));
+		this.parent.shape(ps, super.mapAdjustedMenuXPos(this.shapes[this.shapeIndex].getXPos()), this.mapAdjustedMenuYPos(this.shapes[this.shapeIndex].getYPos()));
+
+
+
+		for(int i = 0; i < this.numActiveShapes; i++)
+		{
+			if(i != this.shapeIndex)
+			{
+				PShape ps2 = this.shapes[i].getPShape();
+				ps2.beginShape();
+				ps2.noFill();
+				ps2.stroke(150);
+				ps2.strokeWeight(5);
+				ps2.scale(super.getScale());
+				ps2.rotate(this.shapes[i].getRotation());
+				ps2.endShape();
+				this.parent.shape(ps2, super.mapAdjustedMenuXPos(this.shapes[i].getXPos()), this.mapAdjustedMenuYPos(this.shapes[i].getYPos()));
+			}
+		}
 
 		super.drawMenu();
 	}// drawSE
@@ -226,7 +268,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.controlP5.addButton("Flower")
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 10);
-		
+
 		this.controlP5.addButton("Splat")
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 15, 60);
@@ -246,9 +288,17 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		this.controlP5.addButton("Butterfly")
 		.setSize(100, 40)
 		.setPosition(this.parent.width*(1 - this.getScale()) + 455, 60);
-		
+
 		this.slidersInitialized = true;
 
+		String[] numList = new String[this.shapes.length];
+		for(int i = 0; i < numList.length; i++)
+		{
+			numList[i] = "" + (i + 1);
+		}
+
+		this.controlP5.addScrollableList("shapeIndex", 100, 100, 150, 50)
+		.addItems(numList);
 	}
 
 	@Override
@@ -259,49 +309,53 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		switch (theEvent.getName()) {
 
 		case "shapeSelect":
-			this.shape.setShapeIndex((int) theEvent.getValue());
+			this.shapes[this.shapeIndex].setShapeIndex((int) theEvent.getValue());
 			this.updateSliders();
 			System.out.println(theEvent.getValue());
 			break;
 
+		case "shapeIndex":
+			this.shapeIndex = (int) theEvent.getValue();
+			break;
+
 		case "Square":
-			this.shape.setCurrentShape("square");
+			this.shapes[this.shapeIndex].setCurrentShape("square");
 			break;
 
 		case "Circle":
-			this.shape.setCurrentShape("circle");
+			this.shapes[this.shapeIndex].setCurrentShape("circle");
 			break;
 
 		case "Pentagon":
-			this.shape.setCurrentShape("pentagon");
+			this.shapes[this.shapeIndex].setCurrentShape("pentagon");
 			break;
 
 		case "Star":
-			this.shape.setCurrentShape("star");
+			this.shapes[this.shapeIndex].setCurrentShape("star");
 			break;
 
 		case "Flower":
-			this.shape.setCurrentShape("flower");
+			this.shapes[this.shapeIndex].setCurrentShape("flower");
 			break;
-			
+
 		case "Splat":
-			this.shape.setCurrentShape("splat");
+			this.shapes[this.shapeIndex].setCurrentShape("splat");
 			break;
-			
+
 		case "Snowflake":
-			this.shape.setCurrentShape("snowflake");
+			this.shapes[this.shapeIndex].setCurrentShape("snowflake");
 			break;
-			
+
 		case "Sun":
-			this.shape.setCurrentShape("sun");
+			this.shapes[this.shapeIndex].setCurrentShape("sun");
 			break;
-			
+
 		case "X":
-			this.shape.setCurrentShape("x");
+			this.shapes[this.shapeIndex].setCurrentShape("x");
 			break;
-			
+
 		case "Butterfly":
-			this.shape.setCurrentShape("butterfly");
+			this.shapes[this.shapeIndex].setCurrentShape("butterfly");
 			break;
 
 		}
@@ -321,58 +375,58 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 
 		if(id == this.SIZE_ID)
 		{
-			this.shape.setCurrentShape("supershape", 
+			this.shapes[this.shapeIndex].setCurrentShape("supershape", 
 					new float[] { val, val, -1, -1, -1, -1, -1 });
 		}
 
 		if(id == this.NUM_POINTS_ID)
 		{
 			val = (float) Math.floor(val);
-			this.shape.setCurrentShape("supershape", 
+			this.shapes[this.shapeIndex].setCurrentShape("supershape", 
 					new float[] { -1, -1, val, val, -1, -1, -1 });
 		}
 
 		if(id == this.N1_ID)
 		{
-			this.shape.setCurrentShape("supershape", 
+			this.shapes[this.shapeIndex].setCurrentShape("supershape", 
 					new float[] { -1, -1, -1, -1, val, -1, -1 });
 		}
 
 		if(id == this.N2_ID)
 		{
-			this.shape.setCurrentShape("supershape", 
+			this.shapes[this.shapeIndex].setCurrentShape("supershape", 
 					new float[] { -1, -1, -1, -1, -1, val, -1 });
 		}
 
 		if(id == this.N3_ID)
 		{
-			this.shape.setCurrentShape("supershape", 
+			this.shapes[this.shapeIndex].setCurrentShape("supershape", 
 					new float[] { -1, -1, -1, -1, -1, -1, val });
 		}
 
 		if(id == this.XPOS_ID)
 		{
-			this.shape.setXPos(val);
+			this.shapes[this.shapeIndex].setXPos(val);
 		}
 
 		if(id == this.YPOS_ID)
 		{
-			this.shape.setYPos(val);
+			this.shapes[this.shapeIndex].setYPos(val);
 		}
 
 		if(id == this.ROTATION_ID)
 		{
-			this.shape.setRotation(val);
+			this.shapes[this.shapeIndex].setRotation(val);
 		}
 
 		if(id == this.XSTRETCH_ID)
 		{
-			this.shape.setXStretch(val);
+			this.shapes[this.shapeIndex].setXStretch(val);
 		}
 
 		if(id == this.YSTRETCH_ID)
 		{
-			this.shape.setYStretch(val);
+			this.shapes[this.shapeIndex].setYStretch(val);
 		}
 
 		this.updateSliders();
@@ -396,7 +450,7 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		if(this.slidersInitialized)
 		{
 
-			float[] param = this.shape.getCurrentParameters();
+			float[] param = this.shapes[this.shapeIndex].getCurrentParameters();
 
 			if(param[0] != this.controlP5.getController("slider" + this.SIZE_ID).getValue())
 			{
@@ -423,32 +477,42 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 				this.controlP5.getController("slider" + this.N3_ID).setValue(param[6]);
 			}
 
-			if(this.shape.getXPos() != this.controlP5.getController("slider" + this.XPOS_ID).getValue())
+			if(this.shapes[this.shapeIndex].getXPos() != this.controlP5.getController("slider" + this.XPOS_ID).getValue())
 			{
-				this.controlP5.getController("slider" + this.XPOS_ID).setValue(this.shape.getXPos());
+				this.controlP5.getController("slider" + this.XPOS_ID).setValue(this.shapes[this.shapeIndex].getXPos());
 			}
 
-			if(this.shape.getYPos() != this.controlP5.getController("slider" + this.YPOS_ID).getValue())
+			if(this.shapes[this.shapeIndex].getYPos() != this.controlP5.getController("slider" + this.YPOS_ID).getValue())
 			{
-				this.controlP5.getController("slider" + this.YPOS_ID).setValue(this.shape.getYPos());
+				this.controlP5.getController("slider" + this.YPOS_ID).setValue(this.shapes[this.shapeIndex].getYPos());
 			}
 
-			if(this.shape.getRotation() != this.controlP5.getController("slider" + this.ROTATION_ID).getValue())
+			if(this.shapes[this.shapeIndex].getRotation() != this.controlP5.getController("slider" + this.ROTATION_ID).getValue())
 			{
-				this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shape.getRotation());
+				this.controlP5.getController("slider" + this.ROTATION_ID).setValue(this.shapes[this.shapeIndex].getRotation());
 			}
 
-			if(this.shape.getXStretch() != this.controlP5.getController("slider" + this.XSTRETCH_ID).getValue())
+			if(this.shapes[this.shapeIndex].getXStretch() != this.controlP5.getController("slider" + this.XSTRETCH_ID).getValue())
 			{
-				this.controlP5.getController("slider" + this.XSTRETCH_ID).setValue(this.shape.getXStretch());
+				this.controlP5.getController("slider" + this.XSTRETCH_ID).setValue(this.shapes[this.shapeIndex].getXStretch());
 			}
 
-			if(this.shape.getYStretch() != this.controlP5.getController("slider" + this.YSTRETCH_ID).getValue())
+			if(this.shapes[this.shapeIndex].getYStretch() != this.controlP5.getController("slider" + this.YSTRETCH_ID).getValue())
 			{
-				this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shape.getYStretch());
+				this.controlP5.getController("slider" + this.YSTRETCH_ID).setValue(this.shapes[this.shapeIndex].getYStretch());
 			}
 
 		}
+	}
+
+	public void setNumActiveShapes(int numActiveShapes)
+	{
+		this.numActiveShapes = numActiveShapes;
+	}
+	
+	public int getShapeIndex()
+	{
+		return this.shapeIndex;
 	}
 
 }// ShapeEditor
