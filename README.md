@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CodeAndChords
 
 Live music visualization project (in-progress) using the Processing language and Java Sound API; [here's a 3-minute overview.] (https://youtu.be/Y1x6bk8nvog)
@@ -36,4 +35,3 @@ Runnable .jar files for Module_01 and Module_02 can be found in the CodeAndChord
 The bulk of the project resides in CodeAndChords/Visuals/Eclipse/workspace and requires that  portaudio be installed on your machine.  (However, Modules can be run with JavaSound by replacing the line that initalizes `this.input` [usually ```this.input	= new RealTimeInput(16, true, this);``` for multi-input Modules] with ```this.input	= new RealTimeInput(1, new AudioContext(), this);``` .)
 
 To get the project into Eclipse, go to File -> Import -> “Existing Projects into Workspace,” and select CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject as the root directory.
->>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
