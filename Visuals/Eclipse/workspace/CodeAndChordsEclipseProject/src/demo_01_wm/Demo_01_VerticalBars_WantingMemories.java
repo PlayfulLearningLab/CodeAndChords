@@ -76,7 +76,7 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 
-		this.menu	= new ModuleMenu(this, this, this.recordedInput, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
 		/*
 		 * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
