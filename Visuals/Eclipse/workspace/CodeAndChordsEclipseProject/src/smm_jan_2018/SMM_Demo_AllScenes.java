@@ -12,7 +12,7 @@ import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
-public class SMM_Demo extends Module {
+public class SMM_Demo_AllScenes extends Module {
 	// TODO: multi-input guide tones for this? :D
 
 	// Initial demos:
@@ -47,7 +47,7 @@ public class SMM_Demo extends Module {
 	private	static final int	SCENE_MAN			= 101;	// e
 	private	static final int	SCENE_KALEIDESCOPE	= 114;	// r
 
-	private	int	curScene							= SMM_Demo.SCENE_OPEN;
+	private	int	curScene							= SMM_Demo_AllScenes.SCENE_OPEN;
 
 	private	int	betsieInput	= 0;
 	private	int	taylorInput	= 0;
@@ -102,7 +102,7 @@ public class SMM_Demo extends Module {
 
 
 	public static void main(String[] args) {
-		PApplet.main("smm_jan_2018.SMM_Demo");
+		PApplet.main("smm_jan_2018.SMM_Demo_AllScenes");
 	}
 
 	public void settings()
@@ -185,10 +185,10 @@ public class SMM_Demo extends Module {
 
 		this.menu.setUseRecInput(true);
 
-		this.ampHist	= new int[SMM_Demo.NUM_AMPS];
-		this.ampHist1	= new int[SMM_Demo.NUM_AMPS];
-		this.ampWidth	= (this.width / 3 * 2) / SMM_Demo.NUM_AMPS;
-//		this.ampWidth	= (this.width ) / SMM_Demo.NUM_AMPS;
+		this.ampHist	= new int[SMM_Demo_AllScenes.NUM_AMPS];
+		this.ampHist1	= new int[SMM_Demo_AllScenes.NUM_AMPS];
+		this.ampWidth	= (this.width / 3 * 2) / SMM_Demo_AllScenes.NUM_AMPS;
+//		this.ampWidth	= (this.width ) / SMM_Demo_AllScenes.NUM_AMPS;
 	} // setup
 
 	public void draw()
@@ -202,7 +202,7 @@ public class SMM_Demo extends Module {
 
 	private void drawScene()
 	{
-		if(this.curScene == SMM_Demo.SCENE_OPEN)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_OPEN)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.betsieInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 			this.menu.fade(this.scaleDegree, this.betsieInput);
@@ -213,7 +213,7 @@ public class SMM_Demo extends Module {
 			}
 		} // SCENE_OPEN
 		
-		else if(this.curScene == SMM_Demo.SCENE_CLAP)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_CLAP)
 		{
 			this.menu.fade(0, this.clapInput0);
 
@@ -223,7 +223,7 @@ public class SMM_Demo extends Module {
 			}
 		} // SCENE_CLAP
 		
-		else if(this.curScene == SMM_Demo.SCENE_CLAP_1)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_CLAP_1)
 		{
 			// Amplitude bars:
 			this.fill(255);
@@ -250,7 +250,7 @@ public class SMM_Demo extends Module {
 			*/
 		} // SCENE_CLAP_1
 		
-		else if(this.curScene == SMM_Demo.SCENE_CLAP_2)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_CLAP_2)
 		{
 			this.menu.fade(0, this.clapInput0);
 
@@ -298,7 +298,7 @@ public class SMM_Demo extends Module {
 			*/
 		} // SCENE_CLAP_2
 
-		if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_RAINBOW_ROUND)
 		{
 
 			// First:
@@ -342,11 +342,11 @@ public class SMM_Demo extends Module {
 			} // if showScale
 		} // SCENE_RAINBOW_ROUND
 
-		if(this.curScene == SMM_Demo.SCENE_SOLOIST ||
-				this.curScene == SMM_Demo.SCENE_SHAH_0 || 
-				this.curScene == SMM_Demo.SCENE_SHAH_1 ||
-				this.curScene == SMM_Demo.SCENE_SHAH_2 ||
-				this.curScene == SMM_Demo.SCENE_SHAH_3)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_SOLOIST ||
+				this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_0 || 
+				this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_1 ||
+				this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_2 ||
+				this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_3)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloist)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
@@ -363,7 +363,7 @@ public class SMM_Demo extends Module {
 			} // if showScale
 		} // SCENE_SOLOIST et alia
 
-		if(this.curScene == SMM_Demo.SCENE_DRUM_VOCAL)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_DRUM_VOCAL)
 		{
 			this.menu.fade(0, this.drumVocalDrumInput);
 
@@ -385,7 +385,7 @@ public class SMM_Demo extends Module {
 			this.legend(this.scaleDegree, this.drumVocalVocalInput);
 		} // SCENE_DRUM_VOCAL
 
-		else if(this.curScene == SMM_Demo.SCENE_DUET || this.curScene == SMM_Demo.SCENE_TBDUET_SHAPES)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_DUET || this.curScene == SMM_Demo_AllScenes.SCENE_TBDUET_SHAPES)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{
@@ -409,7 +409,7 @@ public class SMM_Demo extends Module {
 		}
 
 
-		if(this.curScene == SMM_Demo.SCENE_TRIO )
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_TRIO )
 		{
 			for(int i = 0; i < 3; i++)
 			{
@@ -432,8 +432,8 @@ public class SMM_Demo extends Module {
 			} // for
 		}
 
-		if(this.curScene == SMM_Demo.SCENE_QUARTET || this.curScene == SMM_Demo.SCENE_TBDUET_DYNBARS || 
-				this.curScene == SMM_Demo.SCENE_TBDUET_RECTS)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_QUARTET || this.curScene == SMM_Demo_AllScenes.SCENE_TBDUET_DYNBARS || 
+				this.curScene == SMM_Demo_AllScenes.SCENE_TBDUET_RECTS)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{					
@@ -499,7 +499,7 @@ public class SMM_Demo extends Module {
 			} // for - curNumInputs
 		}
 
-		else if(this.curScene == SMM_Demo.SCENE_TAYLOR || this.curScene == SMM_Demo.SCENE_BETSIE)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_TAYLOR || this.curScene == SMM_Demo_AllScenes.SCENE_BETSIE)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
@@ -520,7 +520,7 @@ public class SMM_Demo extends Module {
 		}
 
 		// Cadenza:
-		else if(this.curScene == SMM_Demo.SCENE_WINGS)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_WINGS)
 		{
 			// Draw the shapes:
 			for(int i = 1; i < this.curNumInputs; i++)
@@ -558,7 +558,7 @@ public class SMM_Demo extends Module {
 		} // SCENE_WINGS
 
 		
-		else if(this.curScene == SMM_Demo.SCENE_KILLING)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_KILLING)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{					
@@ -629,7 +629,7 @@ public class SMM_Demo extends Module {
 			} // for - curNumInputs
 		} // SCENE_KILLING
 
-		else if(this.curScene == SMM_Demo.SCENE_MAN)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_MAN)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{
@@ -655,7 +655,7 @@ public class SMM_Demo extends Module {
 			} // for
 		}
 
-		if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_KALEIDESCOPE)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{
@@ -697,7 +697,7 @@ public class SMM_Demo extends Module {
 			System.out.println("curScene = " + this.curScene);			
 		}
 
-		if(this.curScene == SMM_Demo.SCENE_OPEN)
+		if(this.curScene == SMM_Demo_AllScenes.SCENE_OPEN)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -716,7 +716,7 @@ public class SMM_Demo extends Module {
 			this.menu.getOutsideButtonsCP5().getController("hamburger").hide();	
 			this.menu.getOutsideButtonsCP5().getController("play").hide();	
 		} // SCENE_OPEN
-		else if(this.curScene == SMM_Demo.SCENE_CLAP)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_CLAP)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -731,7 +731,7 @@ public class SMM_Demo extends Module {
 			//			this.menu.showColorMenu("OneColor");
 			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);			
 		}
-		else if(this.curScene == SMM_Demo.SCENE_CLAP_2)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_CLAP_2)
 		{
 			this.curNumInputs	= 2;
 			this.setSquareValues();
@@ -752,7 +752,7 @@ public class SMM_Demo extends Module {
 			//			this.menu.showColorMenu("OneColor");
 			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);			
 		}
-		else if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_RAINBOW_ROUND)
 		{
 			this.curNumInputs	= 3;
 			this.setSquareValues();
@@ -800,7 +800,7 @@ public class SMM_Demo extends Module {
 			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setXPos(this.width / 2);
 			this.shapeEditor.getShapes()[this.rainbowRoundShape2].setYPos(this.height / 2);
 		}
-		else if(this.curScene == SMM_Demo.SCENE_SOLOIST)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_SOLOIST)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -811,7 +811,7 @@ public class SMM_Demo extends Module {
 			// TODO - whatever colors we decide here...
 			this.menu.getControlP5().getController("rainbow").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_DRUM_VOCAL)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_DRUM_VOCAL)
 		{
 			this.curNumInputs	= 2;
 			this.setSquareValues();
@@ -851,7 +851,7 @@ public class SMM_Demo extends Module {
 			((Toggle)this.menu.getControlP5().getController("legend")).setValue(true);
 
 		} 
-		else if(this.curScene == SMM_Demo.SCENE_DUET)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_DUET)
 		{
 			this.curNumInputs	= 2;
 			this.setSquareValues();
@@ -893,7 +893,7 @@ public class SMM_Demo extends Module {
 			 */
 		}
 
-		else if(this.curScene == SMM_Demo.SCENE_TRIO)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_TRIO)
 		{
 			this.curNumInputs	= 3;
 			this.setSquareValues();
@@ -943,7 +943,7 @@ public class SMM_Demo extends Module {
 			this.menu.getControlP5().getController("dichrom").update();
 			 */
 		}
-		else if(this.curScene == SMM_Demo.SCENE_QUARTET)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_QUARTET)
 		{
 			this.curNumInputs	= 4;
 			this.setSquareValues();
@@ -955,7 +955,7 @@ public class SMM_Demo extends Module {
 		}
 
 		// Shahzore:
-		else if(this.curScene == SMM_Demo.SCENE_SHAH_0)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_0)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -971,7 +971,7 @@ public class SMM_Demo extends Module {
 			this.menu.setColor(11, new int[] { 0, 0, 150 }, 0, true);
 			this.menu.getControlP5().getController("dichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_SHAH_1)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_1)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -984,7 +984,7 @@ public class SMM_Demo extends Module {
 			this.menu.setColor(11, new int[] { 255, 255, 0 }, 0, true);
 			this.menu.getControlP5().getController("dichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_SHAH_2)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_2)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -1006,7 +1006,7 @@ public class SMM_Demo extends Module {
 			
 			this.menu.getControlP5().getController("trichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_SHAH_3)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_SHAH_3)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -1030,7 +1030,7 @@ public class SMM_Demo extends Module {
 		}
 
 		// Taylor & Betsie:
-		else if(this.curScene == SMM_Demo.SCENE_TAYLOR)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_TAYLOR)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -1045,7 +1045,7 @@ public class SMM_Demo extends Module {
 			this.menu.setColor(11, new int[] { 254, 183, 78 }, true);
 			this.menu.getControlP5().getController("dichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_BETSIE)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_BETSIE)
 		{
 			this.curNumInputs	= 1;
 			this.setSquareValues();
@@ -1059,7 +1059,7 @@ public class SMM_Demo extends Module {
 			this.menu.setColor(11, new int[] { 0, 85, 125 }, true);
 			this.menu.getControlP5().getController("dichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_TBDUET_SHAPES)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_TBDUET_SHAPES)
 		{
 			this.curNumInputs	= 2;
 			this.setSquareValues();
@@ -1095,7 +1095,7 @@ public class SMM_Demo extends Module {
 			this.menu.setColor(11, new int[] { 0, 85, 125 }, true);
 			this.menu.getControlP5().getController("dichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_TBDUET_RECTS)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_TBDUET_RECTS)
 		{
 			this.curNumInputs	= 2;
 			this.setSquareValues();
@@ -1121,7 +1121,7 @@ public class SMM_Demo extends Module {
 			this.menu.setColor(11, new int[] { 0, 85, 125 }, true);
 			this.menu.getControlP5().getController("dichrom").update();
 		}
-		else if(this.curScene == SMM_Demo.SCENE_TBDUET_DYNBARS)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_TBDUET_DYNBARS)
 		{
 			this.curNumInputs	= 2;
 			this.setSquareValues();
@@ -1149,7 +1149,7 @@ public class SMM_Demo extends Module {
 		}
 
 		// Cadenza:
-		else if(this.curScene == SMM_Demo.SCENE_WINGS)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_WINGS)
 		{
 			this.curNumInputs	= 7;
 			this.setSquareValues();
@@ -1191,7 +1191,7 @@ public class SMM_Demo extends Module {
 			this.menu.getControlP5().getController("dichrom").update();
 			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
 		}
-		else if(this.curScene == SMM_Demo.SCENE_KILLING)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_KILLING)
 		{
 			this.curNumInputs	= 7;
 			this.setSquareValues();
@@ -1218,7 +1218,7 @@ public class SMM_Demo extends Module {
 			this.menu.getControlP5().getController("trichrom").update();
 			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
 		}
-		else if(this.curScene == SMM_Demo.SCENE_MAN)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_MAN)
 		{
 			this.curNumInputs	= 7;
 			this.setSquareValues();
@@ -1262,7 +1262,7 @@ public class SMM_Demo extends Module {
 			this.menu.getControlP5().getController("dichrom").update();
 			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
 		}
-		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE)
+		else if(this.curScene == SMM_Demo_AllScenes.SCENE_KALEIDESCOPE)
 		{
 			this.menu.showShapeMenu();
 			this.menu.showColorMenu();
