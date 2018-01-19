@@ -288,6 +288,17 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	Hodls the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
 	protected	float[][]	satBrightPercentVals;
+	
+	/**	
+	 * A number between 0 and 1 indicating the percent at which a Shape should be scaled
+	 * given the current amplitude to allow a smooth growing or shrinking.
+	 */
+	protected	float[]	curAmpScale;
+	
+	/**	Used in smoothAmpScale to calculate curAmpScale */
+	protected	float[]	goalAmpScale;
+	
+	protected	int[]	ampCheckpoint;
 
 	/**	Flag denoting whether or not the current volume is below the threshold	*/
 	private boolean[]	nowBelow;
@@ -464,19 +475,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.showPause		= false;
 		this.showHamburger	= true;
 
-		/*
-		this.leftAlign	= (this.parent.width / 3) / 4;
-		this.leftEdgeX	= 0;
-
-		this.labelX			= 10;
-		this.labelWidth		= 70;
-		this.spacer			= 5;
-		this.textfieldWidth	= 40;
-		this.sliderWidth	= 170;
-		this.sliderHeight	= 20;
-		 */
-		//		this.numInputs		= this.input.getAdjustedNumInputs();
-
 		this.global			= true;
 		this.currentInput	= 0;
 		this.startHere		= 0;
@@ -546,12 +544,18 @@ public class ModuleMenu extends MenuTemplate  {
 		this.attRelTranPos	= new int[this.module.getTotalNumInputs()];
 		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
 		this.checkpoint		= new int[this.module.getTotalNumInputs()];
+		
+		this.curAmpScale	= new float[this.module.getTotalNumInputs()];
+		this.ampCheckpoint	= new int[this.module.getTotalNumInputs()];
 
 		for(int i = 0; i < this.attRelTranPos.length; i++)
 		{
 			this.attRelTranPos[i]	= 0;	// 0 = attack, 1 = release, 2 = transition
 			this.attRelTranVals[i]	= new float[] {		200, 200, 200	};	// attack, release, transition all begin at 200 millis
 			this.checkpoint[i]		= this.parent.millis() + 100;
+			
+			this.curAmpScale[i]	= 1;
+			this.ampCheckpoint[i]	= this.parent.millis() + 100;
 		}
 
 		this.hueSatBrightnessMod        = new float[3];
@@ -1841,7 +1845,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.inputNumErrorCheck(inputNum);
 
 		if(position > this.colorSelect.length || position < -1) {
-			throw new IllegalArgumentException("ModuleTemplate.getGoalHue: position " + position + 
+			throw new IllegalArgumentException("ModuleTemplate.fade: position " + position + 
 					" is out of bounds; must be between -1 (signifying canvas color) or " + (this.colorSelect.length - 1));
 		} // error checking
 
@@ -1951,6 +1955,109 @@ public class ModuleMenu extends MenuTemplate  {
 		} // for
 
 	} // fade
+	
+	public void smoothAmpScale(/*int curAmp,*/int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum);
+
+		float	curAmp;
+		if(!this.recInputPlaying)
+		{
+			curAmp = this.input.getAmplitude(inputNum);
+		} else {
+			curAmp	= this.recInput.getAmplitude(inputNum);
+		}
+
+		if(curAmp < this.pianoThreshold[inputNum])	
+		{
+			this.goalAmpScale[inputNum]	= 0;
+		} else {
+			this.goalAmpScale[inputNum]	= curAmp / this.forteThreshold[inputNum];
+		} // else
+
+		if(this.ampCheckpoint[inputNum] < this.parent.millis())
+		{
+			for(int i = 0; i < 3; i++)
+			{				
+				// if the current hue is less than the goalHue - the colorAdd, then add colorAdd:
+				if(this.curHue[inputNum][i] < this.goalHue[inputNum][i] - (this.colorAdd[inputNum][i] / 2))
+				{
+					this.curHue[inputNum][i]	=	this.curHue[inputNum][i] + this.colorAdd[inputNum][i];
+				} else 
+					// otherwise, if it's more than the goal Hue, even after adding half of colorAdd, then subtract:
+					if(this.curHue[inputNum][i] > this.goalHue[inputNum][i] + (this.colorAdd[inputNum][i] / 2))
+					{
+						this.curHue[inputNum][i]	=	this.curHue[inputNum][i] - this.colorAdd[inputNum][i];
+					}
+			} // for - i
+
+			this.ampCheckpoint[inputNum] = (this.parent.millis() + 50);
+		} // if - adding every 50 millis
+
+		/*
+		System.out.println("curHue: " + this.curHue[0][0] + ", "
+				+ this.curHue[0][1] + ", "
+				+ this.curHue[0][2]);
+		System.out.println("goalHue: " + this.goalHue[0][0] + ", "
+						+ this.goalHue[0][1] + ", "
+						+ this.goalHue[0][2]);
+
+		System.out.println("input.getAmplitude() = " + input.getAmplitude());
+
+		System.out.println("colorAdd: " + this.colorAdd[0][0] + ", "
+				+ this.colorAdd[0][1] + ", "
+				+ this.colorAdd[0][2]);
+		 */
+
+		float	lowBound;
+		float	highBound;
+
+		for (int i = 0; i < 3; i++)
+		{
+			lowBound	= this.goalHue[inputNum][i] - 5;
+			highBound	= this.goalHue[inputNum][i] + 5;
+
+			// Now check colors for whether they have moved into the boundaries:
+			if(this.curHue[inputNum][i] < highBound && this.curHue[inputNum][i] > lowBound) {
+				// if here, color has been reached.
+				this.colorReachedArray[inputNum][i]	= true;
+			} else {
+				this.colorReachedArray[inputNum][i]	= false;
+			}
+		} // for
+
+		// If all elements of the color are in range, then the color has been reached:
+		this.colorReached[inputNum]	= this.colorReachedArray[inputNum][0] && this.colorReachedArray[inputNum][1] && this.colorReachedArray[inputNum][2];
+
+		// If coming from a low amplitude note and not yet reaching a color,
+		// use the attack value to control the color change:
+		if(!this.nowBelow[inputNum] && !colorReached[inputNum]) 
+		{	
+			this.attRelTranPos[inputNum]	= 0;
+			//			System.out.println("	attack!!!!");
+		} else if(!this.nowBelow[inputNum] && colorReached[inputNum]) {
+			// Or, if coming from one super-threshold note to another, use the transition value:
+			this.attRelTranPos[inputNum]	= 2;
+			//			System.out.println("	transition.... transition [doooooo do dooo do do ] - transition!");
+		} else if(this.nowBelow[inputNum]) {
+			// Or, if volume fell below the threshold, switch to release value:
+			this.attRelTranPos[inputNum]	= 1;
+			//			System.out.println("	re....lent! re...coil! re...verse!");
+		}
+
+		// Calculate color ranges:
+		for(int i = 0; i < this.curHue[inputNum].length; i++)
+		{
+			this.colorRange[inputNum][i]	= Math.abs(this.goalHue[inputNum][i] - this.curHue[inputNum][i]);
+
+			// divide the attack/release/transition value by 50
+			// and divide colorRange by that value to find the amount to add each 50 millis.
+			float addThis = (int)(this.colorRange[inputNum][i] / (this.attRelTranVals[inputNum][this.attRelTranPos[inputNum]] / 50));
+
+			this.colorAdd[inputNum][i]	= (int)addThis;	
+		} // for
+
+	} // smoothAmpScale
 
 
 	/**
