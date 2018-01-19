@@ -204,6 +204,11 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 		shapes[shapeIndex].drawShape(this.module.menu, shapeIndex);
 	}
 	
+	public void drawShape(int shapeIndex, int curHueNum)
+	{
+		shapes[shapeIndex].drawShape(this.module.menu, curHueNum);
+	}
+	
 	public void drawShapes()
 	{
 		for(int i = 0; i < this.module.curNumInputs; i++)

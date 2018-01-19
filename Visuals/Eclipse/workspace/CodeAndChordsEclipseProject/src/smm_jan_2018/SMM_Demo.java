@@ -16,39 +16,45 @@ public class SMM_Demo extends Module {
 	// TODO: multi-input guide tones for this? :D
 
 	// Initial demos:
-	private	static final int	SCENE_OPEN			= 105;	// i
+	private	static final int	SCENE_OPEN			= 57;	// 9
 	private	static final int	SCENE_CLAP			= 48;	// 0
-	private	static final int	SCENE_CLAP_1		= 111;	// o
-	private	static final int	SCENE_CLAP_2		= 57;	// 9
 	private	static final int	SCENE_SOLOIST		= 49;	// 1
 	private	static final int	SCENE_DUET			= 50;	// 2
 	private	static final int	SCENE_RAINBOW_ROUND	= 51;	// 3
 	private	static final int	SCENE_QUARTET		= 52;	// 4
-	private	static final int	SCENE_DRUM_VOCAL	= 112;	// p	
+//	private	static final int	SCENE_DRUM_VOCAL	= 112;	// p	
 	private	static final int	SCENE_TRIO			= 56;	// 8
 
 	// Shahzore:
-	private	static final int	SCENE_SHAH_0			= 122;	// z
-	private	static final int	SCENE_SHAH_1			= 120;	// x
+	private	static final int	SCENE_SHAH_HAL			= 122;	// z
+	private	static final int	SCENE_SHAH_GIFTS		= 120;	// x
 	private	static final int	SCENE_SHAH_2			= 99;	// c
 	private	static final int	SCENE_SHAH_3			= 118;	// v
 
-
 	// Taylor and Betsie:
-	private	static final int	SCENE_TAYLOR			= 116;	// t
-	private	static final int	SCENE_BETSIE			= 98;	// b
+	private	static final int	SCENE_TAYLOR			= 97;	// a
+	private	static final int	SCENE_BETSIE			= 115;	// s
 	private	static final int	SCENE_TBDUET_SHAPES		= 100;	// d
 	private	static final int	SCENE_TBDUET_RECTS		= 102;	// f
 	private	static final int	SCENE_TBDUET_DYNBARS	= 103;	// g
 
 	// Cadenza:
-	private	static final int	SCENE_WINGS			= 113;	// q
-	private	static final int	SCENE_KILLING		= 119;	// w
-	private	static final int	SCENE_MAN			= 101;	// e
-	private	static final int	SCENE_KALEIDESCOPE	= 114;	// r
+	private	static final int	SCENE_KALEIDESCOPE		= 113;	// q
+	private	static final int	SCENE_KALEIDESCOPE_SPIN	= 119;	// w
+	private	static final int	SCENE_MAN				= 101;	// e
+	private	static final int	SCENE_KILLING			= 114;	// r
+	private	static final int	SCENE_WINGS_NO_BB		= 116;	// t
+	private	static final int	SCENE_WINGS_BB_CENTER	= 121;	// y
+	private	static final int	SCENE_WINGS_BB_BOTTOM	= 117;	// u
+	private	static final int	SCENE_WINGS_LARGESHAPES	= 105;	// i
+	private	static final int	SCENE_WINGS_RAINBOW		= 111;	// o
+	private	static final int	SCENE_WINGS_DYNAMIC		= 112;	// p
 
 	private	int	curScene							= SMM_Demo.SCENE_OPEN;
 
+	private	int	shahInput0	= 0;
+	private	int	shahInput1	= 1; // 7
+	
 	private	int	betsieInput	= 0;
 	private	int	taylorInput	= 0;
 	
@@ -98,7 +104,7 @@ public class SMM_Demo extends Module {
 	private	int[]	ampHist;
 	private	int[]	ampHist1;
 	private	int		ampWidth;
-	private	static final int NUM_AMPS	= 200;
+	private	static final int NUM_AMPS	= 350;
 
 
 	public static void main(String[] args) {
@@ -187,8 +193,10 @@ public class SMM_Demo extends Module {
 
 		this.ampHist	= new int[SMM_Demo.NUM_AMPS];
 		this.ampHist1	= new int[SMM_Demo.NUM_AMPS];
-		this.ampWidth	= (this.width / 3 * 2) / SMM_Demo.NUM_AMPS;
-//		this.ampWidth	= (this.width ) / SMM_Demo.NUM_AMPS;
+//		this.ampWidth	= (this.width / 3 * 2) / SMM_Demo.NUM_AMPS;
+		this.ampWidth	= (this.width) / SMM_Demo.NUM_AMPS;
+		
+		this.noStroke();
 	} // setup
 
 	public void draw()
@@ -207,9 +215,9 @@ public class SMM_Demo extends Module {
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.betsieInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 			this.menu.fade(this.scaleDegree, this.betsieInput);
 
-			if(!this.menu.getShapeEditor().getIsRunning())
+			if(!this.shapeEditor.getIsRunning())
 			{
-				this.menu.getShapeEditor().drawShape(this.betsieInput);
+				this.shapeEditor.drawShape(this.betsieInput);
 			}
 		} // SCENE_OPEN
 		
@@ -217,86 +225,12 @@ public class SMM_Demo extends Module {
 		{
 			this.menu.fade(0, this.clapInput0);
 
-			if(!this.menu.getShapeEditor().getIsRunning())
+			if(!this.shapeEditor.getIsRunning())
 			{
-				this.menu.getShapeEditor().drawShape(clapShape0);
+				this.shapeEditor.drawShape(clapShape0);
 			}
 		} // SCENE_CLAP
 		
-		else if(this.curScene == SMM_Demo.SCENE_CLAP_1)
-		{
-			// Amplitude bars:
-			this.fill(255);
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				ampHist[i]	= ampHist[i+1];
-				
-				this.rect((i * this.ampWidth), (this.height / 2), this.ampWidth, Math.min(this.ampHist[i], 400) );
-				this.rect((i * this.ampWidth), (this.height / 2), this.ampWidth, (Math.min(this.ampHist[i], 400) * (-1)) );
-//				this.rect((i * this.ampWidth), (this.height / 2), this.ampWidth, (this.ampHist[i] * 200) + 2 );
-//				this.rect((i * this.ampWidth), (this.height / 2), this.ampWidth, (this.ampHist[i] * -200) + 2);
-
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0) * 10;
-	
-/*			if(this.input.getAmplitude(0) > this.menu.getThresholds()[0][0])
-			{
-				this.ampHist[this.ampHist.length - 1]	= 1;
-			} else {
-				this.ampHist[this.ampHist.length - 1]	= 0;
-			}
-			*/
-		} // SCENE_CLAP_1
-		
-		else if(this.curScene == SMM_Demo.SCENE_CLAP_2)
-		{
-			this.menu.fade(0, this.clapInput0);
-
-			if(!this.menu.getShapeEditor().getIsRunning())
-			{
-				this.menu.getShapeEditor().drawShape(clapShape0);
-			}
-			
-			this.menu.fade(0, this.clapInput1);
-
-			if(!this.menu.getShapeEditor().getIsRunning())
-			{
-				this.menu.getShapeEditor().drawShape(clapShape1);
-			}
-			
-			/*
-			// Amplitude bars:
-			this.fill(255);
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				this.ampHist[i]	= this.ampHist[i+1];
-				this.ampHist1[i]	= this.ampHist1[i+1];
-				
-				
-				this.rect((i * this.ampWidth), (this.height / 3), this.ampWidth, Math.min(this.ampHist[i], 100) );
-				this.rect((i * this.ampWidth), (this.height / 3), this.ampWidth, (Math.min(this.ampHist[i], 100) * (-1)) );
-//				this.rect((i * this.ampWidth), (this.height / 2), this.ampWidth, (this.ampHist[i] * 200) + 2 );
-//				this.rect((i * this.ampWidth), (this.height / 2), this.ampWidth, (this.ampHist[i] * -200) + 2);
-
-				this.rect((i * this.ampWidth), (this.height / 3) * 2, this.ampWidth, Math.min(this.ampHist1[i], 100) );
-				this.rect((i * this.ampWidth), (this.height / 3) * 2, this.ampWidth, (Math.min(this.ampHist1[i], 100) * (-1)) );
-
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
-			this.ampHist1[this.ampHist.length - 1]	= (int)this.input.getAmplitude(1);
-	
-/*			if(this.input.getAmplitude(0) > this.menu.getThresholds()[0][0])
-			{
-				this.ampHist[this.ampHist.length - 1]	= 1;
-			} else {
-				this.ampHist[this.ampHist.length - 1]	= 0;
-			}
-			*/
-		} // SCENE_CLAP_2
 
 		if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
 		{
@@ -307,9 +241,9 @@ public class SMM_Demo extends Module {
 
 			this.fill(this.menu.getCurHue()[rainbowRoundInput0][0], this.menu.getCurHue()[rainbowRoundInput0][1], this.menu.getCurHue()[rainbowRoundInput0][2]);
 
-			if(!this.menu.getShapeEditor().getIsRunning())
+			if(!this.shapeEditor.getIsRunning())
 			{
-				this.menu.getShapeEditor().drawShape(rainbowRoundShape0);
+				this.shapeEditor.drawShape(rainbowRoundShape0);
 			}
 
 			// Second:
@@ -318,9 +252,9 @@ public class SMM_Demo extends Module {
 
 			this.fill(this.menu.getCurHue()[rainbowRoundInput1][0], this.menu.getCurHue()[rainbowRoundInput1][1], this.menu.getCurHue()[rainbowRoundInput1][2]);
 
-			if(!this.menu.getShapeEditor().getIsRunning())
+			if(!this.shapeEditor.getIsRunning())
 			{
-				this.menu.getShapeEditor().drawShape(rainbowRoundShape1);
+				this.shapeEditor.drawShape(rainbowRoundShape1);
 			}
 
 			// Third:
@@ -329,22 +263,21 @@ public class SMM_Demo extends Module {
 
 			this.fill(this.menu.getCurHue()[rainbowRoundInput2][0], this.menu.getCurHue()[rainbowRoundInput2][1], this.menu.getCurHue()[rainbowRoundInput2][2]);
 
-			if(!this.menu.getShapeEditor().getIsRunning())
+			if(!this.shapeEditor.getIsRunning())
 			{
-				this.menu.getShapeEditor().drawShape(rainbowRoundShape2);
+				this.shapeEditor.drawShape(rainbowRoundShape2);
 			}
 
 
-			if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
+			if(this.menu.isShowScale() && !this.shapeEditor.getIsRunning())
 			{
 				// draws the legend along the bottom of the screen:
 				this.legend(scaleDegree, 0);
 			} // if showScale
 		} // SCENE_RAINBOW_ROUND
 
-		if(this.curScene == SMM_Demo.SCENE_SOLOIST ||
-				this.curScene == SMM_Demo.SCENE_SHAH_0 || 
-				this.curScene == SMM_Demo.SCENE_SHAH_1 ||
+		if(this.curScene == SMM_Demo.SCENE_SOLOIST || 
+//				this.curScene == SMM_Demo.SCENE_SHAH_1 ||
 				this.curScene == SMM_Demo.SCENE_SHAH_2 ||
 				this.curScene == SMM_Demo.SCENE_SHAH_3)
 		{
@@ -363,29 +296,8 @@ public class SMM_Demo extends Module {
 			} // if showScale
 		} // SCENE_SOLOIST et alia
 
-		if(this.curScene == SMM_Demo.SCENE_DRUM_VOCAL)
-		{
-			this.menu.fade(0, this.drumVocalDrumInput);
 
-			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.drumVocalVocalInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.drumVocalVocalInput);
-
-			//		System.out.println("curHue = rgb(" );
-
-			if(!this.menu.getShapeEditor().getIsRunning())
-			{
-				// TODO - drum shape so huge! Why is that?
-				this.menu.getShapeEditor().drawShape(this.drumVocalDrumInput);
-			}
-			if(!this.menu.getShapeEditor().getIsRunning())
-			{
-				this.menu.getShapeEditor().drawShape(this.drumVocalVocalInput);
-			}
-
-			this.legend(this.scaleDegree, this.drumVocalVocalInput);
-		} // SCENE_DRUM_VOCAL
-
-		else if(this.curScene == SMM_Demo.SCENE_DUET || this.curScene == SMM_Demo.SCENE_TBDUET_SHAPES)
+		else if(this.curScene == SMM_Demo.SCENE_DUET)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{
@@ -396,9 +308,9 @@ public class SMM_Demo extends Module {
 				//					this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
 
-				if(!this.menu.getShapeEditor().getIsRunning())
+				if(!this.shapeEditor.getIsRunning())
 				{
-					this.menu.getShapeEditor().drawShape(i);
+					this.shapeEditor.drawShape(i);
 				}
 
 				if(this.menu.isShowScale())
@@ -406,8 +318,33 @@ public class SMM_Demo extends Module {
 					this.legend(this.scaleDegree, i);
 				}
 			} // for
-		}
+		} // SCENE_DUET
+		
+		else if(this.curScene == SMM_Demo.SCENE_TBDUET_SHAPES)
+		{
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
+				this.menu.fade(this.scaleDegree, i);
+
+				//					this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
+
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+
+				if(this.menu.isShowScale())
+				{
+					this.legend(this.scaleDegree, i);
+				}
+			} // for
+			
+			this.shapeEditor.getShapes()[0].setShapeScale(this.input.getAmplitude(0) / 10000);
+//			this.shapeEditor.getShapes()[1].setShapeScale(this.input.getAmplitude(1) / 10000);
+		} // SCENE_TBDUET_SHAPES
 
 		if(this.curScene == SMM_Demo.SCENE_TRIO )
 		{
@@ -420,9 +357,9 @@ public class SMM_Demo extends Module {
 				//					this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
 
-				if(!this.menu.getShapeEditor().getIsRunning())
+				if(!this.shapeEditor.getIsRunning())
 				{
-					this.menu.getShapeEditor().drawShape(i);
+					this.shapeEditor.drawShape(i);
 				}
 
 				if(this.menu.isShowScale())
@@ -498,6 +435,64 @@ public class SMM_Demo extends Module {
 				}
 			} // for - curNumInputs
 		}
+		
+		else if(this.curScene == SMM_Demo.SCENE_SHAH_HAL)
+		{
+			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.shahInput0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			this.menu.fade(this.scaleDegree, this.shahInput0);
+
+			//				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
+
+
+			if(!this.shapeEditor.getIsRunning())
+			{
+				this.shapeEditor.drawShape(this.shahInput0);
+			}
+
+			if(this.menu.isShowScale())
+			{
+				this.legend(this.scaleDegree, this.shahInput0);
+			}
+			
+			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.shahInput1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			this.menu.fade(this.scaleDegree, this.shahInput1);
+
+			if(!this.shapeEditor.getIsRunning())
+			{
+				this.shapeEditor.drawShape(this.shahInput1);
+			}
+
+			if(this.menu.isShowScale())
+			{
+				this.legend(this.scaleDegree, this.shahInput1);
+			}
+		} // SCENE_SHAH_HAL
+		
+		else if(this.curScene == SMM_Demo.SCENE_SHAH_GIFTS)
+		{
+			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.shahInput0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			this.menu.fade(this.scaleDegree, this.shahInput0);
+
+			this.fill(this.menu.getCurHue()[this.shahInput0][0], this.menu.getCurHue()[this.shahInput0][1], this.menu.getCurHue()[this.shahInput0][2]);
+			this.rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0),this.width, this.height);
+
+			this.menu.fade(this.scaleDegree, 4);
+			if(!this.shapeEditor.getIsRunning())
+			{
+				this.shapeEditor.drawShape(4);
+			}
+
+			if(!this.shapeEditor.getIsRunning())
+			{
+				this.shapeEditor.drawShape(this.shahInput0);
+			}
+
+			if(this.menu.isShowScale())
+			{
+				this.legend(this.scaleDegree, this.shahInput0);
+			}
+
+		} // SCENE_SHAH_GIFTS
 
 		else if(this.curScene == SMM_Demo.SCENE_TAYLOR || this.curScene == SMM_Demo.SCENE_BETSIE)
 		{
@@ -508,9 +503,9 @@ public class SMM_Demo extends Module {
 			//				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
 
-			if(!this.menu.getShapeEditor().getIsRunning())
+			if(!this.shapeEditor.getIsRunning())
 			{
-				this.menu.getShapeEditor().drawShape(0);
+				this.shapeEditor.drawShape(0);
 			}
 
 			if(this.menu.isShowScale())
@@ -520,8 +515,9 @@ public class SMM_Demo extends Module {
 		}
 
 		// Cadenza:
-		else if(this.curScene == SMM_Demo.SCENE_WINGS)
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_NO_BB)
 		{
+			System.out.println("curNumInputs = " + this.curNumInputs);
 			// Draw the shapes:
 			for(int i = 1; i < this.curNumInputs; i++)
 			{
@@ -532,16 +528,15 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				// TODO - fade some shapes behind them (makes a border) that are white and depend on their amplitude?
 				this.menu.fade(this.scaleDegree, i);
 
-				if(!this.menu.getShapeEditor().getIsRunning())
+				if(!this.shapeEditor.getIsRunning())
 				{
-					this.menu.getShapeEditor().drawShape(i);
+					this.shapeEditor.drawShape(i);
 				}
 			} // for
 
-			// Amplitude bars:
+	/*		// Amplitude bars:
 			this.fill(255);
 
 			for(int i = 0; i < (this.ampHist.length - 1); i++)
@@ -554,9 +549,185 @@ public class SMM_Demo extends Module {
 			}
 
 			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
+*/
+		} // SCENE_WINGS_NO_BB
 
-		} // SCENE_WINGS
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_BB_CENTER)
+		{
+			// Draw the shapes:
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				if(!this.menu.getRecInputPlaying())
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+				} else {
+					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+				}
 
+				this.menu.fade(this.scaleDegree, i);
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+			} // for
+
+			// Amplitude bars:
+			this.fill(255, this.menu.getAlphaVal());
+
+			for(int i = 0; i < (this.ampHist.length - 1); i++)
+			{
+				ampHist[i]	= ampHist[i+1];
+
+				this.rect((i * (this.ampWidth + 1)), (this.height / 2), this.ampWidth, this.ampHist[i] / 3);
+				this.rect((i * (this.ampWidth + 1)), (this.height / 2), this.ampWidth, (this.ampHist[i] / 3) * (-1));
+
+			}
+
+			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
+
+		} // SCENE_WINGS_BB_CENTER
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_BB_BOTTOM)
+		{
+			// Draw the shapes:
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				if(!this.menu.getRecInputPlaying())
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+				} else {
+					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+				}
+
+				this.menu.fade(this.scaleDegree, i);
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+			} // for
+
+			// Amplitude bars:
+			this.fill(255, this.menu.getAlphaVal());
+
+			for(int i = 0; i < (this.ampHist.length - 1); i++)
+			{
+				ampHist[i]	= ampHist[i+1];
+
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
+
+			}
+
+			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
+		} // SCENE_WINGS_BB_BOTTOM
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_LARGESHAPES)
+		{
+			// Draw the shapes:
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				if(!this.menu.getRecInputPlaying())
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+				} else {
+					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+				}
+
+				this.menu.fade(this.scaleDegree, i);
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+			} // for
+
+			// Amplitude bars:
+			this.fill(255, this.menu.getAlphaVal());
+
+			for(int i = 0; i < (this.ampHist.length - 1); i++)
+			{
+				ampHist[i]	= ampHist[i+1];
+
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
+
+			}
+
+			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
+		} // SCENE_WINGS_LARGESHAPES
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_RAINBOW)
+		{
+			// Draw the shapes:
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				if(!this.menu.getRecInputPlaying())
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+				} else {
+					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+				}
+
+				this.menu.fade(this.scaleDegree, i);
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+			} // for
+
+			// Amplitude bars:
+			this.fill(255, this.menu.getAlphaVal());
+
+			for(int i = 0; i < (this.ampHist.length - 1); i++)
+			{
+				ampHist[i]	= ampHist[i+1];
+
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
+
+			}
+
+			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
+		} // SCENE_WINGS_RAINBOW
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_DYNAMIC)
+		{
+			// Draw the shapes:
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				if(!this.menu.getRecInputPlaying())
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+				} else {
+					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+				}
+
+				this.menu.fade(this.scaleDegree, i);
+				
+				this.shapeEditor.getShapes()[i].setShapeScale(5 * ( Math.min((this.input.getAmplitude(i) / 1000), 1) ) );
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+			} // for
+
+			// Amplitude bars:
+			this.fill(255, this.menu.getAlphaVal());
+
+			for(int i = 0; i < (this.ampHist.length - 1); i++)
+			{
+				ampHist[i]	= ampHist[i+1];
+
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
+				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
+			}
+
+			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(0);
+		} // SCENE_WINGS_DYNAMIC
 		
 		else if(this.curScene == SMM_Demo.SCENE_KILLING)
 		{
@@ -643,9 +814,9 @@ public class SMM_Demo extends Module {
 				//					this.menu.fade(this.scaleDegree, i);
 				this.menu.fade(this.scaleDegree, i);
 
-				if(!this.menu.getShapeEditor().getIsRunning())
+				if(!this.shapeEditor.getIsRunning())
 				{
-					this.menu.getShapeEditor().drawShape(i);
+					this.shapeEditor.drawShape(i);
 				}
 
 				if(this.menu.isShowScale())
@@ -669,9 +840,9 @@ public class SMM_Demo extends Module {
 				//					this.menu.fade(this.scaleDegree, i);
 				this.menu.fade(this.scaleDegree, i);
 
-				if(!this.menu.getShapeEditor().getIsRunning())
+				if(!this.shapeEditor.getIsRunning())
 				{
-					this.menu.getShapeEditor().drawShape(i);
+					this.shapeEditor.drawShape(i);
 				}
 
 				if(this.menu.isShowScale())
@@ -679,7 +850,35 @@ public class SMM_Demo extends Module {
 					this.legend(this.scaleDegree, i);
 				}
 			} // for
-		}
+		} // SCENE_KALEIDESCOPE
+		
+		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE_SPIN)
+		{
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				if(!this.menu.getRecInputPlaying())
+				{
+					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
+				} else {
+					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
+				}
+
+				//					this.menu.fade(this.scaleDegree, i);
+				this.menu.fade(this.scaleDegree, i);
+				
+				this.shapeEditor.getShapes()[i].setRotation(this.shapeEditor.getShapes()[i].getRotation() + (this.input.getAmplitude(i) / 100000));
+
+				if(!this.shapeEditor.getIsRunning())
+				{
+					this.shapeEditor.drawShape(i);
+				}
+
+				if(this.menu.isShowScale())
+				{
+					this.legend(this.scaleDegree, i);
+				}
+			} // for
+		} // SCENE_KALEIDESCOPE_SPIN
 	} // drawScene
 
 	public void keyPressed()
@@ -702,7 +901,7 @@ public class SMM_Demo extends Module {
 			this.curNumInputs	= 1;
 			this.setSquareValues();
 			
-			Shape	curShape	= this.menu.getShapeEditor().getShapes()[this.betsieInput];
+			Shape	curShape	= this.shapeEditor.getShapes()[this.betsieInput];
 			curShape.setCurrentShape("circle");
 			curShape.setShapeScale(2);
 			
@@ -731,27 +930,7 @@ public class SMM_Demo extends Module {
 			//			this.menu.showColorMenu("OneColor");
 			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);			
 		}
-		else if(this.curScene == SMM_Demo.SCENE_CLAP_2)
-		{
-			this.curNumInputs	= 2;
-			this.setSquareValues();
-			
-			Shape	curShape	= this.shapeEditor.getShapes()[this.clapShape0];
-			curShape.setCurrentShape("square");
-			curShape.setShapeScale(2);
-			curShape.setXPos(this.width / 3);
-			curShape.setYPos(this.height / 2);
-			
-			curShape	= this.shapeEditor.getShapes()[this.clapShape1];
-			curShape.setCurrentShape("square");
-			curShape.setShapeScale(2);
-			curShape.setXPos((this.width / 3) * 2);
-			curShape.setYPos(this.height / 2);
 
-			this.menu.hideColorMenu();
-			//			this.menu.showColorMenu("OneColor");
-			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);			
-		}
 		else if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
 		{
 			this.curNumInputs	= 3;
@@ -808,49 +987,11 @@ public class SMM_Demo extends Module {
 			this.menu.hideShapeMenu();
 			this.menu.showColorMenu();
 
-			// TODO - whatever colors we decide here...
+			this.menu.setCurKey("A", 2);
 			this.menu.getControlP5().getController("rainbow").update();
+			((Toggle)this.menu.getControlP5().getController("legend")).setValue(false);
 		}
-		else if(this.curScene == SMM_Demo.SCENE_DRUM_VOCAL)
-		{
-			this.curNumInputs	= 2;
-			this.setSquareValues();
 
-			this.menu.showColorMenu();
-			this.menu.setAlphaSlider(255);
-
-			// Set the size of the drum shape (fullscreen?)
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setCurrentShape("square");
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setXPos(this.width / 2);
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setYPos(this.height / 2);
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setShapeScale(1);
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setXStretch(4.5f);
-			this.shapeEditor.getShapes()[this.drumVocalDrumShape].setYStretch(4);
-
-			// Set the drum input color (white)
-//			this.menu.setGlobal(false);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(false);
-			this.menu.setCurrentInput(this.drumVocalDrumInput);
-			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);
-
-			// Set the size of the input shape (prob. relative to the drum shape)
-			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setCurrentShape("square");
-			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setXPos(this.width / 2);
-			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setYPos(this.height / 2);
-			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setShapeScale(1);
-			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setXStretch(4);
-			this.shapeEditor.getShapes()[this.drumVocalVocalShape].setYStretch(3.5f);
-
-			// Set the input colors
-			this.menu.setCurrentInput(this.drumVocalVocalInput);
-
-			this.menu.setColor(0, new int[] { 150, 0, 150 }, true);
-			this.menu.setColor(11, new int[] { 255, 255, 0 }, true);
-			this.menu.getControlP5().getController("dichrom").update();
-
-			((Toggle)this.menu.getControlP5().getController("legend")).setValue(true);
-
-		} 
 		else if(this.curScene == SMM_Demo.SCENE_DUET)
 		{
 			this.curNumInputs	= 2;
@@ -955,34 +1096,66 @@ public class SMM_Demo extends Module {
 		}
 
 		// Shahzore:
-		else if(this.curScene == SMM_Demo.SCENE_SHAH_0)
+		else if(this.curScene == SMM_Demo.SCENE_SHAH_HAL)
 		{
-			this.curNumInputs	= 1;
+			this.curNumInputs	= 2;
 			this.setSquareValues();
-			this.menu.setCurrentInput(0);
-
-			// TODO - add shapes just to be on the safe side;
-			// then give them their own draw scenes
+			
+			Shape	curShape	= this.shapeEditor.getShapes()[this.shahInput0];
+			curShape.setCurrentShape("square");
+			curShape.setShapeScale(7);
+			curShape.setXPos(this.width / 2);
+			curShape.setYPos(this.height / 2);
+			
+			curShape	= this.shapeEditor.getShapes()[this.shahInput1];
+			curShape.setCurrentShape("square");
+			curShape.setShapeScale(5);
+			curShape.setXPos(this.width / 2);
+			curShape.setYPos(this.height / 2);
 
 			this.menu.showColorMenu();
 			this.menu.showShapeMenu();
 
-			this.menu.setColor(0, new int[] { 100, 0, 100 }, 0, true);
-			this.menu.setColor(11, new int[] { 0, 0, 150 }, 0, true);
-			this.menu.getControlP5().getController("dichrom").update();
-		}
-		else if(this.curScene == SMM_Demo.SCENE_SHAH_1)
-		{
-			this.curNumInputs	= 1;
-			this.setSquareValues();
-			this.menu.setCurrentInput(0);
+			// Set the color for all inputs:
+			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
+			((Toggle)this.menu.getControlP5().getController("legend")).setValue(true);
 
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
+			this.menu.getControlP5().getController("trichrom").update();
 			this.menu.setColor(0, new int[] { 255, 0, 0 }, 0, true);
-			this.menu.setColor(11, new int[] { 255, 255, 0 }, 0, true);
-			this.menu.getControlP5().getController("dichrom").update();
+			this.menu.setColor(4, new int[] { 255, 255, 0 }, 0, true);
+			this.menu.setColor(8, new int[] { 143, 130, 5 }, 0, true);
+			this.menu.getControlP5().getController("trichrom").update();
+			
+//			this.menu.setCurrentInput(1);
+			this.menu.setAttRelTranVal(0, this.shahInput0, 800);
+			this.menu.setAttRelTranVal(1, this.shahInput0, 1000);
+		}
+		else if(this.curScene == SMM_Demo.SCENE_SHAH_GIFTS)
+		{
+			this.curNumInputs	= 1;
+			this.setSquareValues();
+			this.menu.setCurrentInput(0);
+
+			Shape	curShape	= this.shapeEditor.getShapes()[4];
+			curShape.setCurrentShape("circle");
+			curShape.setShapeScale(6);
+			
+			curShape	= this.shapeEditor.getShapes()[this.shahInput0];
+			curShape.setCurrentShape("circle");
+			curShape.setShapeScale(4);
+
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+
+			this.menu.getControlP5().getController("trichrom").update();
+			
+			this.menu.setColor(0, new int[] { 204, 102, 0 }, 0, true);
+			this.menu.setColor(4, new int[] { 0, 153, 0 }, 0, true);
+			this.menu.setColor(8, new int[] { 255, 255, 153 }, 0, true);
+
+			this.menu.getControlP5().getController("trichrom").update();
+			
+			this.menu.setCanvasColor(new int[] { 242, 216, 115 });
 		}
 		else if(this.curScene == SMM_Demo.SCENE_SHAH_2)
 		{
@@ -990,8 +1163,7 @@ public class SMM_Demo extends Module {
 			this.setSquareValues();
 			this.menu.setCurrentInput(0);
 
-			Shape	curShape	= this.menu.getShapeEditor().getShapes()[0];
-			
+			Shape	curShape	= this.shapeEditor.getShapes()[0];
 			curShape.setCurrentShape("circle");
 			curShape.setShapeScale(1);
 
@@ -1016,7 +1188,7 @@ public class SMM_Demo extends Module {
 			this.menu.showShapeMenu();
 			
 
-			Shape	curShape	= this.menu.getShapeEditor().getShapes()[0];
+			Shape	curShape	= this.shapeEditor.getShapes()[0];
 			
 			curShape.setCurrentShape("circle");
 			curShape.setShapeScale(1);
@@ -1064,20 +1236,27 @@ public class SMM_Demo extends Module {
 			this.curNumInputs	= 2;
 			this.setSquareValues();
 			this.menu.setCurKey(this.menu.getCurKey(), 2);
+			this.menu.showColorMenu();
 
 			Shape	shape0	= this.shapeEditor.getShapes()[0];
 			Shape	shape1	= this.shapeEditor.getShapes()[1];
 
-			shape0.setCurrentShape("square");
-			shape1.setCurrentShape("square");
+			shape0.setCurrentShape("splat");
+			shape1.setCurrentShape("circle");
 
-			shape0.setShapeScale(5);
-			shape1.setShapeScale(5);
+			shape0.setShapeScale(3.5f);
+			shape1.setShapeScale(1.5f);
 
-			shape0.setXPos(this.width / 3);
+/*
+ * 			shape0.setXPos(this.width / 3);
 			shape1.setXPos((this.width / 3) * 2);
+*/
+			shape0.setXPos(this.width / 2 + 10);
+			shape1.setXPos(this.width / 2 - 10);
+			shape0.setYPos(this.height / 2);
+			shape1.setYPos(this.height / 2);
 
-			this.menu.setAlphaSlider(150);
+			this.menu.setAlphaSlider(255);
 
 //			this.menu.setGlobal(false);
 			((Toggle)this.menu.getControlP5().getController("global")).setValue(false);
@@ -1148,8 +1327,17 @@ public class SMM_Demo extends Module {
 			this.menu.getControlP5().getController("dichrom").update();
 		}
 
+		/*
+		 * 
+	private	static final int	SCENE_WINGS_NO_BB		= 116;	// t
+	private	static final int	SCENE_WINGS_BB_CENTER	= 121;	// y
+	private	static final int	SCENE_WINGS_BB_BOTTOM	= 117;	// u
+	private	static final int	SCENE_WINGS_LARGESHAPES	= 105;	// i
+	private	static final int	SCENE_WINGS_RAINBOW		= 111;	// o
+	private	static final int	SCENE_WINGS_DYNAMIC		= 112;	// p
+		 */
 		// Cadenza:
-		else if(this.curScene == SMM_Demo.SCENE_WINGS)
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_NO_BB || this.curScene == SMM_Demo.SCENE_WINGS_BB_CENTER)
 		{
 			this.curNumInputs	= 7;
 			this.setSquareValues();
@@ -1163,7 +1351,7 @@ public class SMM_Demo extends Module {
 			{
 				curShape	= this.shapeEditor.getShapes()[i];
 				curShape.setCurrentShape("butterfly");
-				curShape.setShapeScale(1.5f);
+				curShape.setShapeScale(1);
 				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
@@ -1190,7 +1378,170 @@ public class SMM_Demo extends Module {
 
 			this.menu.getControlP5().getController("dichrom").update();
 			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		}
+		} // WINGS_NO_BB || WINGS_BB_CENTER
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_BB_BOTTOM)
+		{
+			this.curNumInputs	= 7;
+			this.setSquareValues();
+
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+
+			Shape	curShape;
+
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+				curShape.setCurrentShape("butterfly");
+				curShape.setShapeScale(2);
+				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
+
+				curShape.setRotation(0.3f + (-0.6f * (i%2)));
+				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
+				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+
+				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
+
+				curShape.setXPos((this.width / 7) * i);
+				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
+			} // for
+
+			this.menu.setAlphaSlider(150);
+
+//			this.menu.setGlobal(true);
+			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.menu.setColor(0, new int[] { 255, 155, 50 }, i, true);
+				this.menu.setColor(11, new int[] { 150, 0, 150 }, i, true);			
+			}
+
+			this.menu.getControlP5().getController("dichrom").update();
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
+		} // WINGS_BB_BOTTOM
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_LARGESHAPES)
+		{
+			this.curNumInputs	= 7;
+			this.setSquareValues();
+
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+
+			Shape	curShape;
+
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+				curShape.setCurrentShape("butterfly");
+				curShape.setShapeScale(4);
+				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
+
+				curShape.setRotation(0.3f + (-0.6f * (i%2)));
+				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
+				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+
+				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
+
+				curShape.setXPos((this.width / 7) * i);
+				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
+			} // for
+
+			this.menu.setAlphaSlider(150);
+
+//			this.menu.setGlobal(true);
+			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.menu.setColor(0, new int[] { 255, 155, 50 }, i, true);
+				this.menu.setColor(11, new int[] { 150, 0, 150 }, i, true);			
+			}
+
+			this.menu.getControlP5().getController("dichrom").update();
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
+		} // WINGS_LARGESHAPES
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_RAINBOW)
+		{
+			this.curNumInputs	= 7;
+			this.setSquareValues();
+
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+
+			Shape	curShape;
+
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+				curShape.setCurrentShape("butterfly");
+				curShape.setShapeScale(4);
+				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
+
+				curShape.setRotation(0.3f + (-0.6f * (i%2)));
+				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
+				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+
+				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
+
+				curShape.setXPos((this.width / 7) * i);
+				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
+			} // for
+
+			this.menu.setAlphaSlider(150);
+
+//			this.menu.setGlobal(true);
+			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+
+			this.menu.getControlP5().getController("rainbow").update();
+			
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
+		} // WINGS_RAINBOW
+		
+		else if(this.curScene == SMM_Demo.SCENE_WINGS_DYNAMIC)
+		{
+			this.curNumInputs	= 7;
+			this.setSquareValues();
+
+			this.menu.showColorMenu();
+			this.menu.showShapeMenu();
+
+			Shape	curShape;
+
+			for(int i = 1; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+				curShape.setCurrentShape("butterfly");
+				curShape.setShapeScale(4);
+				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
+
+				curShape.setRotation(0.3f + (-0.6f * (i%2)));
+				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
+				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+
+				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
+
+				curShape.setXPos((this.width / 7) * i);
+				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
+			} // for
+
+			this.menu.setAlphaSlider(150);
+
+//			this.menu.setGlobal(true);
+			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+
+			this.menu.getControlP5().getController("rainbow").update();
+
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
+		} // WINGS_DYNAMIC
+		
 		else if(this.curScene == SMM_Demo.SCENE_KILLING)
 		{
 			this.curNumInputs	= 7;
@@ -1321,7 +1672,68 @@ public class SMM_Demo extends Module {
 
 			this.menu.getControlP5().getController("trichrom").update();
 			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		}
+		} // SCENE_KALEIDESCOPE
+		
+		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE_SPIN)
+		{
+			this.menu.showShapeMenu();
+			this.menu.showColorMenu();
+
+			this.curNumInputs	= 7;
+			this.setSquareValues();
+
+			Shape	curShape;
+			int		radius	= this.width / 4;	// width / 8 is best for shape."x"
+			int[]	xVals	= new int[] {
+					(this.width / 2),
+					(this.width / 2) + (radius / 2),
+					(this.width / 2) + radius,
+					(this.width / 2) + (radius / 2),
+					(this.width / 2) - (radius / 2),
+					(this.width / 2) - radius,
+					(this.width / 2) - (radius / 2)
+			};
+			int[]	yVals	= new int[] {
+					(this.height / 2),
+					(this.height / 2) - radius,
+					(this.height / 2),
+					(this.height / 2) + radius,
+					(this.height / 2) + radius,
+					(this.height / 2),
+					(this.height / 2) - radius
+			};
+
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				curShape	= this.shapeEditor.getShapes()[i];
+				//				curShape.setCurrentShape("x");
+				//				curShape.setCurrentShape("pentagon");
+				curShape.setCurrentShape("hexagon");
+				//				curShape.setRotation(300);
+				curShape.setShapeScale(4);
+
+				curShape.setXPos(xVals[i]);
+				curShape.setYPos(yVals[i]);
+			}
+
+			this.menu.setAlphaSlider(150);
+
+//			this.menu.setGlobal(true);
+			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
+			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
+
+			this.menu.getControlP5().getController("trichrom").update();
+			
+			for(int i = 0; i < this.curNumInputs; i++)
+			{
+				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
+				this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);
+				this.menu.setColor(8, new int[] { 9, 187, 193 }, i, true);
+			}
+
+			this.menu.getControlP5().getController("trichrom").update();
+			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
+		} // SCENE_KALEIDESCOPE_SPIN
 
 	} // keyPressed
 

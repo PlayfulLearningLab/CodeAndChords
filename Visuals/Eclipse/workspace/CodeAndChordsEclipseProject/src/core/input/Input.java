@@ -456,7 +456,8 @@ public abstract class Input {
 
 			// I (Emily) added the following line;
 			// 10/5 edits may cause it to be a larger num than it was previously:
-			amplitude  = (float)pmax;
+//			amplitude  = (float)pmax;
+			amplitude	= powerSpectrum[maxbin];
 
 			// cubic interpolation
 			double yz = hps[maxbin];

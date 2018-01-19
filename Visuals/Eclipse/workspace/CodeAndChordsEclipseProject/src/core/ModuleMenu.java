@@ -4298,6 +4298,18 @@ public class ModuleMenu extends MenuTemplate  {
 	public int[] getCanvasColor() {
 		return this.canvasColor;
 	}
+	
+	public void setCanvasColor(int[] newCanvasColor)
+	{
+		if(this.canvasColor.length != newCanvasColor.length) {
+			throw new IllegalArgumentException("ModuleMenu.setCanvasColor: int[] parameter is of wrong length (" + newCanvasColor.length + ") - should be length 3.");
+		}
+
+		for(int i = 0; i < this.canvasColor.length; i++)
+		{
+			this.canvasColor[i]	= newCanvasColor[i];
+		}
+	} // setCanvasColor
 
 	public float getRedModulate() {
 		return this.redGreenBlueMod[0];
