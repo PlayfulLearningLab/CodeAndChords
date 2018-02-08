@@ -1,6 +1,7 @@
 package module_01_02;
 
 import processing.core.*;
+import core.InputMatrix;
 import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
@@ -27,7 +28,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	{
 		PApplet.main("module_01_02.Module_01_02_PitchHue_MultipleInputs");
 	} // main
-
 	
 	public void setup() 
 	{
@@ -46,23 +46,17 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.menu.addColorMenu();
 	} // setup()
 
-	
+
 	public void draw()
 	{
 		int	scaleDegree;
-		
+
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true && !this.menu.getIsRunning()) 
+		/*		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		} // if keyPressed
-		
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
-//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
-//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
-			
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+		 */
 
 			this.menu.fade(scaleDegree, i);
 			
@@ -75,9 +69,9 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 			
-			if(this.menu.isShowScale())
+			if(this.inputMatrix.isVisible())
 			{
-				this.legend(scaleDegree, i);
+				this.inputMatrix.drawMatrix();
 			}
 	
 		} // for
@@ -85,8 +79,17 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.menu.runMenu();
 
 	} // draw()
-	
-	
+
+	public void mousePressed()
+	{
+		if(this.inputMatrix.isVisible())
+		{
+			//			this.inputMatrix.mousePressed();
+			this.inputMatrix.assignInputFromLoc(this.mouseX, this.mouseY);
+		}
+	}
+
+
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());

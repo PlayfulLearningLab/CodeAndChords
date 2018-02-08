@@ -262,12 +262,14 @@ public class RealTimeInput extends Input {
 					if (this.frequencyArray[i].getFeatures() != null) {
 						//       println("i = " + i);
 						//       println("setFund(); this.fundamentalArray[i] = " + this.fundamentalArray[i] + "this.frequencyArray[i].getFeatures() = " + this.frequencyArray[i].getFeatures());
-						this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
-						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude(); // * 100;
+						this.dataArray[1][i]	= this.frequencyArray[i].getAmplitude();
+						//						this.amplitudeArray[i]	= this.frequencyArray[i].getAmplitude(); // * 100;
 	
 						// ignores pitches with amplitude lower than "sensitivity":
 						if (this.frequencyArray[i].getAmplitude() > this.sensitivity) {
-							this.adjustedFundArray[i]  = this.fundamentalArray[i];
+							this.dataArray[0][i] = this.frequencyArray[i].getFeatures();
+//							this.fundamentalArray[i] = this.frequencyArray[i].getFeatures();
+//							this.adjustedFundArray[i]  = this.fundamentalArray[i];
 						} // if: amp > sensitivity
 					} // if: features() != null
 				} // if: > numInputs
@@ -297,7 +299,7 @@ public class RealTimeInput extends Input {
 		// adds the freqencies of the specified inputs:
 		for (int i = 0; i < inputsToAverage.length; i++)
 		{
-			result  += this.getAdjustedFund(inputsToAverage[i]);
+			result  += this.getFund(inputsToAverage[i]);
 		} // for
 
 		// divides to find the average:

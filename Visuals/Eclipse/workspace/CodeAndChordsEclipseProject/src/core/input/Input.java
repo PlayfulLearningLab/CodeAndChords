@@ -28,15 +28,16 @@ public abstract class Input {
 	protected PApplet pa;
 	protected AudioContext ac;
 
-	protected float[] adjustedFundArray;
+//	protected float[] adjustedFundArray;
 	protected Compressor compressor;
 	protected	UGen[]                 uGenArray;
 	// TODO: make private after testing
 	protected	Gain[]		   gainArray;
 	protected FFT[] fftArray;
 	protected FrequencyEMM[] frequencyArray;
-	protected float[] fundamentalArray;
-	protected float[] amplitudeArray;
+//	protected float[] fundamentalArray;
+//	protected float[] amplitudeArray;
+	protected float[][]	dataArray;		// holds the fundamental and amplitude info for each input
 	protected int numInputs;
 	protected int adjustedNumInputs;
 	protected PowerSpectrum[] psArray;
@@ -148,10 +149,11 @@ public abstract class Input {
 		// Pitches with amplitudes below this number will be ignored by adjustedFreq:
 		this.sensitivity  = 10;
 
-		// Initializes the arrays that will hold the pitches:
-		this.fundamentalArray = new float[this.adjustedNumInputs];
-		this.adjustedFundArray = new float[this.adjustedNumInputs];
-		this.amplitudeArray	= new float[this.adjustedNumInputs];
+		// Initializes the arrays that will hold the pitches and corresponding amplitudes:
+		this.dataArray	= new float[2][this.adjustedNumInputs];
+//		this.fundamentalArray = new float[this.adjustedNumInputs];
+//		this.adjustedFundArray = new float[this.adjustedNumInputs];
+//		this.amplitudeArray	= new float[this.adjustedNumInputs];
 
 		// Gets the ball rolling on analysis:
 		this.setFund();
@@ -161,11 +163,30 @@ public abstract class Input {
 	 *  Fills the fundamentalArray and adjustedFundArray with the current pitches of each input line:
 	 */
 	public abstract void setFund();
+	
+	/**
+	 * Returns either pitch or amplitude of the given input.
+	 * 
+	 * @param dataType	0 for pitch, 1 for amplitude
+	 * @param inputNum	input whose data is sought
+	 * @return	float indicating either pitch or amplitude of given input
+	 */
+	public float getData(int dataType, int inputNum)
+	{
+		// Error checking:
+		this.inputNumErrorCheck(inputNum, "getData(int, int)");
+		if(dataType < 0 || dataType > 1) {
+			throw new IllegalArgumentException("Input.getData: first parameter " + dataType + " is out of bounds; must be either 0 (pitch) or 1 (amplitude).");
+		}
+		
+		this.setFund();
+		return this.dataArray[dataType][inputNum];
+	} // getData
 
 	/**
 	 *  @return  pitch (in Hertz) of the Input, adjusted to ignore frequencies below a certain volume.
 	 */
-	public float getAdjustedFund(int inputNum) {
+/*	public float getAdjustedFund(int inputNum) {
 		inputNumErrorCheck(inputNum, "getAdjustedFund(int)");
 
 		setFund();
@@ -175,7 +196,7 @@ public abstract class Input {
 	/**
 	 *  @return  pitch (in Hertz) of the Input, adjusted to ignore frequencies below a certain volume.
 	 */
-	public float getAdjustedFundAsHz(int inputNum) {
+/*	public float getAdjustedFundAsHz(int inputNum) {
 		inputNumErrorCheck(inputNum, "getAdjustedFundAsHz(int)");
 
 		return getAdjustedFund(inputNum);
@@ -183,13 +204,13 @@ public abstract class Input {
 	  setFund();
 	  return this.adjustedFundArray[inputNum - 1];
 		 */
-	} // getAdjustedFundAsHz()
+//	} // getAdjustedFundAsHz()
 
 	/**
 	 *  @return  pitch of the Input as a MIDI note, 
 	 * adjusted to ignore sounds below a certain volume.
 	 */
-	public float getAdjustedFundAsMidiNote(int inputNum) {
+/*	public float getAdjustedFundAsMidiNote(int inputNum) {
 		inputNumErrorCheck(inputNum, "getAdjustedFundAsMidiNote(int)");
 
 		setFund();
@@ -202,8 +223,9 @@ public abstract class Input {
 	public float getFund(int inputNum) {
 		inputNumErrorCheck(inputNum, "getFund(int)");
 
-		setFund();
-		return this.fundamentalArray[inputNum];
+		this.setFund();
+		return this.getData(0, inputNum);
+//		return this.fundamentalArray[inputNum];
 	} // getFund()
 
 	/**
@@ -225,8 +247,9 @@ public abstract class Input {
 	public float getFundAsMidiNote(int inputNum) {
 		inputNumErrorCheck(inputNum, "getFundAsMidiNote(int)");
 
-		setFund();
-		return Pitch.ftom(this.fundamentalArray[inputNum]);
+		this.setFund();
+		return Pitch.ftom(this.getData(0, inputNum));
+//		return Pitch.ftom(this.fundamentalArray[inputNum]);
 	} // getFundAsMidiNote()
 
 	/**
@@ -235,18 +258,18 @@ public abstract class Input {
 	public float getAdjustedFund() {
 		return getAdjustedFund(0);
 	} // getAdjustedFund()
-
+*/
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
-	public float getAdjustedFundAsHz() {
+/*	public float getAdjustedFundAsHz() {
 		return getAdjustedFundAsHz(0);
 	} // getAdjustedFundAsHz()
 
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
-	public float getAdjustedFundAsMidiNote() {
+/*	public float getAdjustedFundAsMidiNote() {
 		return getAdjustedFundAsMidiNote(0);
 	} // getAdjustedFundAsMidiNote()
 
@@ -282,9 +305,8 @@ public abstract class Input {
 		inputNumErrorCheck(inputNum, "getAmplitude(int)");
 
 		this.setFund();
-
-		//		return this.frequencyArray[inputNum - 1].getAmplitude();
-		return this.amplitudeArray[inputNum];
+		return this.getData(1, inputNum);
+//		return this.amplitudeArray[inputNum];
 	} // getAmplitude
 
 	/**
@@ -298,7 +320,8 @@ public abstract class Input {
 		//		return amp;
 
 		this.setFund();
-		return this.amplitudeArray[0];
+		return this.getAmplitude(0);
+//		return this.amplitudeArray[0];
 	} // getAmplitude()
 
 
@@ -496,7 +519,7 @@ public abstract class Input {
 			return this.amplitude;
 		}
 	} // FrequencyEMM
-
+/*
 	public void setFundamentalArray(float[] newVal) {
 		if(newVal == null)
 		{
@@ -511,21 +534,23 @@ public abstract class Input {
 			} // for
 		} // if
 	} // setFundamentalArray
+*/
 
-	public void setAdjustedFundArray(float[] newVal) {
+	public void setFundamentalArray(float[] newVal) {
 		if(newVal == null)
 		{
 			throw new IllegalArgumentException("Input.setAdjustedFundArray: float[] parameter is null.");
 		}
 
-		if(newVal.length <= this.adjustedFundArray.length)
+		if(newVal.length <= this.dataArray[0].length)
 		{
 			for(int i = 0; i < newVal.length; i++)
 			{
-				this.adjustedFundArray[i]	= newVal[i];
+				this.dataArray[0][i]	= newVal[i];
 			} // for
 		} // if
 	} // setAdjustedFundArray
+
 
 	public void setAmplitudeArray(float[] newVal) {
 		if(newVal == null)
@@ -533,11 +558,11 @@ public abstract class Input {
 			throw new IllegalArgumentException("Input.setAmplitudeArray: float[] parameter is null.");
 		}
 
-		if(newVal.length <= this.amplitudeArray.length)
+		if(newVal.length <= this.dataArray[1].length)
 		{
 			for(int i = 0; i < newVal.length; i++)
 			{
-				this.amplitudeArray[i]	= newVal[i];
+				this.dataArray[1][i]	= newVal[i];
 			} // for
 		} // if
 	} // setAmplitudeArray
@@ -547,6 +572,7 @@ public abstract class Input {
 		return this.ac;
 	}
 
+	
 	/**
 	 * 08/01/2017
 	 * Emily Meuer
