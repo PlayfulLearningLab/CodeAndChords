@@ -17,7 +17,7 @@ public class Shape {
 	private PApplet 	pApp;
 
 	private int 		steps;
-	private float 		incrament;
+	private float 		increment;
 
 	private int   		numShapes;
 	private int 		shapeIndex;
@@ -40,6 +40,7 @@ public class Shape {
 	private float[]		SQUARE= new float[] {1, 1, 4, 4, 1, 1, 1};
 	private float[]		STAR= new float[] {1, 1, 5, 5, .35f, 1, 1};
 	private float[]		PENTAGON= new float[] {1, 1, 5, 5, 1.5f, 1, 1};
+	private float[]		HEXAGON= new float[] {1, 1, 6, 6, 1.5f, 1, 1};
 	private float[]		FLOWER= new float[] {.8f, .8f, 14, 14, 2.5f, 9, 1};
 	private float[]		SPLAT= new float[] {2, 2, 14, 14, 2.85f, 3.6f, 2};
 	private float[]		X= new float[] {1, 1, 4, 4, (float).3, 1, 1};
@@ -72,7 +73,7 @@ public class Shape {
 
 	private void initializeVariables()
 	{
-		this.incrament = (float)(2*Math.PI)/this.steps;
+		this.increment = (float)(2*Math.PI)/this.steps;
 
 		this.numShapes = 5;
 		this.shapeIndex = 0;
@@ -150,7 +151,7 @@ public class Shape {
 
 		int i = 0;
 
-		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 		{
 			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
 			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
@@ -184,7 +185,7 @@ public class Shape {
 
 		int i = 0;
 
-		for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+		for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 		{
 			x = (float) (this.currentShape[this.shapeIndex][i]*Math.cos(theta));
 			y = (float) (this.currentShape[this.shapeIndex][i]*Math.sin(theta));
@@ -239,7 +240,7 @@ public class Shape {
 			float n2 = parameters[5];
 			float n3 = parameters[6];
 
-			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
@@ -290,7 +291,7 @@ public class Shape {
 			float n2 = parameters[5];
 			float n3 = parameters[6];
 
-			for(float theta = 0; theta < 2*Math.PI; theta += this.incrament)
+			for(float theta = 0; theta < 2*Math.PI; theta += this.increment)
 			{
 				float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
 				part1 = Math.abs(part1);
@@ -342,6 +343,10 @@ public class Shape {
 
 		case "pentagon":
 			this.setCurrentShape("supershape", this.PENTAGON);
+			break;
+			
+		case "hexagon":
+			this.setCurrentShape("supershape", this.HEXAGON);
 			break;
 
 		case "star":
@@ -418,11 +423,50 @@ public class Shape {
 
 	public float[] getCurrentParameters()
 	{
+		/*
 		System.out.println("------------------------------------------------------------");
 		for(int i = 0; i < 7; i++)
 			System.out.println(this.currentShapeParameters[this.shapeIndex][i]);
+		*/
 		return this.currentShapeParameters[this.shapeIndex];
 	}
+	
+	public void drawShape(ModuleMenu menu, int curHueNum)
+	{
+		if(curHueNum < 0 || curHueNum > menu.getCurHue().length)
+		{
+			throw new IllegalArgumentException("Shape.drawShape: curHueNum " + curHueNum + " is out of bounds; must be between 0 and " + menu.getCurHue().length);
+		} // error checking
+		
+		int[] curHue = menu.getCurHue()[curHueNum];
+//		System.out.println(" - Shape " + curHueNum + ": curHue = rgb(" + curHue[0] + ", " + curHue[1] + ", " + curHue[2] + ")");
+		
+		this.pApp.fill(curHue[0], curHue[1], curHue[2]);
+		//		this.fill(255);
+
+//		float	shapeWidth	= (this.width - this.menu.getLeftEdgeX()) * (this.menu.getShapeSize() / 100);
+//		float	shapeHeight	= this.height * (this.menu.getShapeSize() / 100);
+
+		//this.shapeMode(CORNER);
+		PShape pShape;
+		/*		if(this.menu.getLeftEdgeX() == 0) pShape = this.shape.getPShape();
+		else pShape = this.shape.getScaledPShape(new float[] {925, (925 - this.menu.getLeftEdgeX()), 1, 1});
+		 */
+		pShape = this.getPShape();
+
+		pShape.beginShape();
+		pShape.fill(curHue[0], curHue[1], curHue[2], menu.getAlphaVal());
+		pShape.stroke(curHue[0], curHue[1], curHue[2], menu.getAlphaVal());
+		pShape.rotate(this.getRotation());
+		pShape.scale(menu.getCurrentScale());
+		pShape.endShape();
+
+		this.pApp.shape(pShape, menu.mapCurrentXPos(this.getXPos()), menu.mapCurrentYPos(this.getYPos()));
+		/*		
+		if(this.menu.getLeftEdgeX() == 0) this.shape(pShape, this.shapeEditor.getXPos(), this.shapeEditor.getYPos());
+		else this.shape(pShape, PApplet.map(this.shapeEditor.getXPos(), 0, 925, this.menu.getLeftEdgeX(), 925), this.shapeEditor.getYPos());
+		 */
+	} // drawShape
 
 
 }//Shapes

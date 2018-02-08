@@ -1,6 +1,7 @@
 # CodeAndChords
 
-Live music visualization project (in-progress) using Java, the Processing language, and PortAudio API's.
+Live music visualization project (in-progress) using Java, the Processing language, and PortAudio API's;
+see this video for a 3-minute overview:
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=Y1x6bk8nvog/
 " target="_blank"><img src="http://img.youtube.com/vi/Y1x6bk8nvog/0.jpg" 

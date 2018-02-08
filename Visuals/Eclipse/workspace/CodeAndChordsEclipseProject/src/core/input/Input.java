@@ -255,8 +255,8 @@ public abstract class Input {
 	/**
 	 *  @return  pitch (in Hertz) of the first Input, adjusted to ignore frequencies below a certain volume.
 	 */
-/*	public float getAdjustedFund() {
-		return getAdjustedFund(1);
+	public float getAdjustedFund() {
+		return getAdjustedFund(0);
 	} // getAdjustedFund()
 */
 	/**
@@ -425,6 +425,10 @@ public abstract class Input {
 
 		/* (non-Javadoc)
 		 * @see com.olliebown.beads.core.PowerSpectrumListener#calculateFeatures(float[])
+		 * 
+		 * This is where the harmonic product spectrum is calculated.
+		 * 
+		 * @param powerSpectrum	frequency-domain spectrum to be analyzed
 		 */
 		public synchronized void process(TimeStamp startTime, TimeStamp endTime, float[] powerSpectrum) {
 			if (bufferSize != powerSpectrum.length) {
@@ -437,8 +441,9 @@ public abstract class Input {
 			features = null;
 			// now pick best peak from linspec
 			double pmax = -1;
-			int maxbin = 0;    
-
+			int maxbin = 0;
+			
+			// This is where the hps squishing happens:
 			for(int i = 0; i < hps.length; i++)
 			{
 				hps[i]  = powerSpectrum[i];
@@ -463,32 +468,34 @@ public abstract class Input {
 				hps[i]  = hps[i] + powerSpectrum[i*4];
 			} // for
 
-			for (int band = FIRSTBAND; band < powerSpectrum.length; band++) {
-				double pwr = powerSpectrum[band];
+			// Pick the largest frequency from the hps spectrum:
+			for (int band = FIRSTBAND; band < hps.length; band++) {
+				double pwr = hps[band];
 				if (pwr > pmax) {
 					pmax = pwr;
 					maxbin = band;
 				} // if
 			} // for
 
-			// I added the following line;
+			// I (Emily) added the following line;
 			// 10/5 edits may cause it to be a larger num than it was previously:
-			amplitude  = (float)pmax;
+//			amplitude  = (float)pmax;
+			amplitude	= powerSpectrum[maxbin];
 
 			// cubic interpolation
-			double yz = powerSpectrum[maxbin];
+			double yz = hps[maxbin];
 			double ym;
 			if(maxbin <= 0) {
-				ym = powerSpectrum[maxbin];
+				ym = hps[maxbin];
 			} else {
-				ym = powerSpectrum[maxbin - 1];
+				ym = hps[maxbin - 1];
 			} // else
 
 			double yp;
-			if(maxbin < powerSpectrum.length - 1) {
-				yp  = powerSpectrum[maxbin + 1];
+			if(maxbin < hps.length - 1) {
+				yp  = hps[maxbin + 1];
 			} else {
-				yp  = powerSpectrum[maxbin];
+				yp  = hps[maxbin];
 			} // else
 
 			double k = (yp + ym) / 2 - yz;
@@ -559,6 +566,11 @@ public abstract class Input {
 			} // for
 		} // if
 	} // setAmplitudeArray
+	
+	public AudioContext getAudioContext()
+	{
+		return this.ac;
+	}
 
 	
 	/**

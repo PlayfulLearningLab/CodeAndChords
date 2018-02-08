@@ -65,10 +65,10 @@ public class Instrument {
 	 * Constructor
 	 * @param parent
 	 */
-	public Instrument(PApplet parent)
+	public Instrument(PApplet parent, AudioContext audioContext)
 	{
 		this.parent		     	= parent;
-		this.audioContext       = new AudioContext();
+		this.audioContext       = audioContext;
 		
 		this.setADSR(0);
 
