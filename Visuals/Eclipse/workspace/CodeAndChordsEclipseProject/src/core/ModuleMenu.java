@@ -4456,6 +4456,13 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
+	
+	public int getPianoThreshold(int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum);
+		
+		return this.pianoThreshold[inputNum];
+	}
 
 	/**
 	 * Sets the percent slider to the given value
@@ -4510,12 +4517,14 @@ public class ModuleMenu extends MenuTemplate  {
 		this.bpm = bpm;
 	}
 
+	/*
 	public void setMenuList(String[] list)
 	{
 		((ScrollableList)this.controlP5.getController("menuList"))
 		.addItems(list);
 	}
-
+*/
+	
 	public int getCurrentMenu()
 	{
 		return (int) this.controlP5.getController("menuList").getValue();

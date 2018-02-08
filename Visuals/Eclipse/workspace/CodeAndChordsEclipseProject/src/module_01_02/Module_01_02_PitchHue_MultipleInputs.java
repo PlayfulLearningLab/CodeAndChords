@@ -3,6 +3,7 @@ package module_01_02;
 import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
+import core.archive.InputMatrix;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
@@ -27,7 +28,6 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	{
 		PApplet.main("module_01_02.Module_01_02_PitchHue_MultipleInputs");
 	} // main
-
 	
 	public void setup() 
 	{
@@ -46,16 +46,17 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.menu.addColorMenu();
 	} // setup()
 
-	
+
 	public void draw()
 	{
 		int	scaleDegree;
-		
+
 		// The following line is necessary so that key press shows the menu button
-		if (keyPressed == true && !this.menu.getIsRunning()) 
+		/*		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
 		} // if keyPressed
+		 */
 		
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
@@ -85,8 +86,9 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 		this.menu.runMenu();
 
 	} // draw()
-	
-	
+
+
+
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());

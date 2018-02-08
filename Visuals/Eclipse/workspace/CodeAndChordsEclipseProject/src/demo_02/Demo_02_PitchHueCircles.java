@@ -67,8 +67,8 @@ public class Demo_02_PitchHueCircles extends Module
 		});
 		*/
 		
-		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= this.totalNumInputs;
+		this.totalNumEvents	= this.input.getAdjustedNumInputs();
+		this.curNumEvents	= this.totalNumEvents;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
 /*
@@ -194,13 +194,13 @@ public class Demo_02_PitchHueCircles extends Module
 		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 		
 		
-		for(int i = (this.curNumInputs - 1); i >= 0; i--)
+		for(int i = (this.curNumEvents - 1); i >= 0; i--)
 //		for(int i = 0; i < this.curNumInputs; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + recordedInput.getAdjustedFundAsMidiNote(i) + 
 //					"; input.getAmplitude(" + (i) + ") = " + recordedInput.getAmplitude(i));
 		
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 //			scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 			
 //			System.out.println(i + ": scaleDegree = " + scaleDegree);

@@ -31,8 +31,6 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
 		this.input    = new RealTimeInput(1, new AudioContext(), this);
-		this.totalNumInputs	= 1;
-		this.curNumInputs	= 1;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 6);
 
