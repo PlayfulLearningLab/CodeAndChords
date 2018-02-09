@@ -125,7 +125,7 @@ public class Melody implements Runnable {
 
 		if(instrument == null)
 		{
-			throw new IllegalArgumentException("Melody constructor(PApplet, Input, Instrument): Instrument parameter is null.");
+			throw new IllegalArgumentException("Melody.playMelody: Instrument parameter is null.");
 		}
 
 		this.key = key;
