@@ -127,13 +127,13 @@ public abstract class Module extends PApplet {
 			this.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
 
 			if (i == goalHuePos) {
-				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * 1.5f) - 40, sideWidth2, (sideHeight * 1.5f));
+				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * 1.5f), sideWidth2, (sideHeight * 1.5f));
 			} else {
-				this.rect(xVal + (sideWidth1 * i), yVal - sideHeight - 40, sideWidth2, sideHeight);
+				this.rect(xVal + (sideWidth1 * i), yVal - sideHeight, sideWidth2, sideHeight);
 			}
 
-			this.fill(0);
-			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f) - 45);
+			this.fill(0);			
+			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
 		
 			if(debugLegendColors)
 			{
