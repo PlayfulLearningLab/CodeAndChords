@@ -173,7 +173,12 @@ public class EdgeDemo extends Module {
 
 		this.drawScene();
 		this.menu.runMenu();
+		
+		int	fadeThis	= 0;
 
+		this.menu.universalFade(fadeThis);
+		
+		System.out.println("fadeThis = " + fadeThis);
 	} // draw
 
 	private void drawScene()

@@ -1833,6 +1833,13 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // setGoalHue
 
+	public void universalFade(int fadeThis)
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			fadeThis++;
+		} // for
+	} // universalFade
 
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
