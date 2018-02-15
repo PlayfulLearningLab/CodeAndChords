@@ -60,7 +60,7 @@ public class Demo_01_Flight_Backing extends Module {
 		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 
-		this.menu	= new ModuleMenu(this, this, this.recordedInput, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
 
 
 		this.setSquareValues();
@@ -131,7 +131,7 @@ public class Demo_01_Flight_Backing extends Module {
 				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
 		}; // noteNames
 
-		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false, "color");
 
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
@@ -141,10 +141,10 @@ public class Demo_01_Flight_Backing extends Module {
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
+		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true, "color");
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
+		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3], "color");
 
 		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
@@ -153,8 +153,6 @@ public class Demo_01_Flight_Backing extends Module {
 		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
-
-		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
 		
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
@@ -262,19 +260,6 @@ public class Demo_01_Flight_Backing extends Module {
 				this.legend(scaleDegree, i);
 			}
 
-			if(this.currentMenu != this.menu.getCurrentMenu())
-			{
-				this.currentMenu = this.menu.getCurrentMenu();
-
-				if(this.currentMenu == 0)
-				{
-					this.menu.setIsRunning(false);
-				}
-				else if(this.currentMenu == 1)
-				{
-					this.menu.setIsRunning(true);
-				}
-			}
 		} // for
 
 		this.menu.runMenu();
