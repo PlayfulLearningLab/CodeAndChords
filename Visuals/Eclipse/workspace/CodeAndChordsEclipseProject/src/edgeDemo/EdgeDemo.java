@@ -33,9 +33,9 @@ public class EdgeDemo extends Module {
 	public void setup()
 	{
 		// Giving it 13 so that it will skip 5-8 and end up with 9 total:
-		this.totalNumInputs	= 13;
+		this.totalNumInputs	= 4;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, true, this);
+		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
 		this.curNumInputs	= this.input.getAdjustedNumInputs();
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
