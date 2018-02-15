@@ -4,43 +4,21 @@ import controlP5.ControlP5;
 import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.Shape;
-import core.ShapeEditor;
 import core.input.RealTimeInput;
-import core.input.RecordedInput;
-import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
-import processing.core.PConstants;
 
 public class EdgeDemo extends Module {
 
-	private	static final int	SCENE_KALEIDESCOPE		= 113;	// q
-	private	static final int	SCENE_KALEIDESCOPE_SPIN	= 119;	// w
-	private	static final int	SCENE_MAN				= 101;	// e
-	private	static final int	SCENE_KILLING			= 114;	// r
-	private	static final int	SCENE_KILLING_DYNAMIC	= 116;	// t
-	private	static final int	SCENE_WINGS_NO_BB		= 121;	// y
-	private	static final int	SCENE_WINGS_BB_CENTER	= 117;	// u
-	private	static final int	SCENE_WINGS_BB_BOTTOM	= 105;	// i
-	private	static final int	SCENE_WINGS_LARGESHAPES	= 111;	// o
-	private	static final int	SCENE_WINGS_RAINBOW		= 112;	// p
-	private	static final int	SCENE_WINGS_DYNAMIC		= 91;	// [
+	private	static final int	SCENE_BOY			= 49;	// 1
+	private	static final int	SCENE_BOY_DYNAMIC	= 50;	// 2
 
-	private	int	curScene							= EdgeDemo.SCENE_KALEIDESCOPE;
-
-	private	int	beatBoxInput	= 0;
-
-	private	ShapeEditor	shapeEditor;
+	private	int	curScene							= EdgeDemo.SCENE_BOY;
 
 	private int	scaleDegree	= 0;
 
 	// These are for the dynamic bars:
 	private float[]	barVel;
 	private float[] barPos;
-
-	private	int[]	ampHist;
-	private	int		ampWidth;
-	private	static final int NUM_AMPS	= 350;
 
 
 	public static void main(String[] args) {
@@ -49,75 +27,31 @@ public class EdgeDemo extends Module {
 
 	public void settings()
 	{
-		this.fullScreen(2);
+		this.fullScreen();
 	} // settings
 
 	public void setup()
 	{
-		this.totalNumInputs	= 16;
-		this.curNumInputs	= 8;
+		// Giving it 13 so that it will skip 5-8 and end up with 9 total:
+		this.totalNumInputs	= 13;
 
 		this.input			= new RealTimeInput(this.totalNumInputs, true, this);
+		this.curNumInputs	= this.input.getAdjustedNumInputs();
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 		this.menu.addSensitivityMenu(true);
 
 		this.menu.addColorMenu();
-		this.menu.hideColorMenu();
 
 		// I want to define all values, even on the first calls to di- and trichrom:
 		this.menu.setDichromFlag(true);
 		this.menu.setTrichromFlag(true);
 
-		//		this.menu.addColorMenu(new String[] { "white" }, 1, null, false, null, 0, 0, "OneColor");
+		this.menu.setAlphaSlider(255);
 
-		// Have to add this last, else it overwrites Controllers and causes an infinite loop:
-		this.menu.addShapeMenu(8);
-		this.shapeEditor	= this.menu.getShapeEditor();	// for convenience/speed
-
-		// Starts on Kaleidescope:
-		this.menu.showShapeMenu();
+		// Starts on "If I Were A Boy":
 		this.menu.showColorMenu();
-
-		this.curNumInputs	= 7;
-		//this.setSquareValues();
-
-		Shape	curShape;
-		int		radius	= this.width / 4;	// width / 8 is best for shape."x"
-		int[]	xVals	= new int[] {
-				(this.width / 2),
-				(this.width / 2) + (radius / 2),
-				(this.width / 2) + radius,
-				(this.width / 2) + (radius / 2),
-				(this.width / 2) - (radius / 2),
-				(this.width / 2) - radius,
-				(this.width / 2) - (radius / 2)
-		};
-		int[]	yVals	= new int[] {
-				(this.height / 2),
-				(this.height / 2) - radius,
-				(this.height / 2),
-				(this.height / 2) + radius,
-				(this.height / 2) + radius,
-				(this.height / 2),
-				(this.height / 2) - radius
-		};
-
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
-			curShape	= this.shapeEditor.getShapes()[i];
-			//				curShape.setCurrentShape("x");
-			//				curShape.setCurrentShape("pentagon");
-			curShape.setCurrentShape("hexagon");
-			//				curShape.setRotation(300);
-			curShape.setShapeScale(2.5f);
-
-			curShape.setXPos(xVals[i]);
-			curShape.setYPos(yVals[i]);
-		}
-
-		this.menu.setAlphaSlider(150);
 
 		//			this.menu.setGlobal(true);
 		((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
@@ -127,14 +61,13 @@ public class EdgeDemo extends Module {
 
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
-			this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);
-			this.menu.setColor(8, new int[] { 9, 187, 193 }, i, true);
+			this.menu.setColor(0, new int[] { 5, 0, 234 }, i, true);
+			this.menu.setColor(4, new int[] { 250, 130, 25 }, i, true);
+			this.menu.setColor(8, new int[] { 98, 153, 247 }, i, true);
 		}
 
 		this.menu.getControlP5().getController("trichrom").update();
-		((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		
+
 
 		this.verticalBarsDemo = true;
 		this.amplitude = new float[16];
@@ -148,6 +81,8 @@ public class EdgeDemo extends Module {
 			this.barVel[i] = 0;
 		}
 
+		this.setSquareValues();
+
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
 		.setPosition(700, 20)
@@ -158,13 +93,15 @@ public class EdgeDemo extends Module {
 		.getCaptionLabel()
 		.align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.menu.setUseRecInput(true);
-
-		this.ampHist	= new int[EdgeDemo.NUM_AMPS];
-		//		this.ampWidth	= (this.width / 3 * 2) / EdgeDemo.NUM_AMPS;
-		this.ampWidth	= (this.width) / EdgeDemo.NUM_AMPS;
+		this.menu.setUseRecInput(false);
 
 		this.noStroke();
+		
+		// Hide all the buttons:
+		((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
+		this.menu.getOutsideButtonsCP5().getController("hamburger").hide();
+		this.menu.getOutsideButtonsCP5().getController("hamburger").setClickable(false);
+		this.menu.getOutsideButtonsCP5().getController("play").hide();
 	} // setup
 
 	public void draw()
@@ -178,97 +115,12 @@ public class EdgeDemo extends Module {
 
 	private void drawScene()
 	{
-		if(this.curScene == EdgeDemo.SCENE_KALEIDESCOPE)
-		{
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				//					this.menu.fade(this.scaleDegree, i);
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-				
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-
-			} // for
-		} // SCENE_KALEIDESCOPE
-
-		else if(this.curScene == EdgeDemo.SCENE_KALEIDESCOPE_SPIN)
-		{
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				//					this.menu.fade(this.scaleDegree, i);
-				this.menu.fade(this.scaleDegree, i);
-
-				this.shapeEditor.getShapes()[i].setRotation(this.shapeEditor.getShapes()[i].getRotation() + (this.input.getAmplitude(i) / 100000));
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-		} // SCENE_KALEIDESCOPE_SPIN
-
-		else if(this.curScene == EdgeDemo.SCENE_MAN)
-		{
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				//					this.menu.fade(this.scaleDegree, i);
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-		} // SCENE_MAN
-
-		else if(this.curScene == EdgeDemo.SCENE_KILLING)
+		if(this.curScene == EdgeDemo.SCENE_BOY)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{					
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
+
+				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
 				this.menu.fade(scaleDegree, i);
 
@@ -284,18 +136,13 @@ public class EdgeDemo extends Module {
 					this.legend(this.scaleDegree, i);
 				}
 			} // for - curNumInputs
-		} // SCENE_KILLING
+		} // SCENE_BOY
 
-		else if(this.curScene == EdgeDemo.SCENE_KILLING_DYNAMIC)
+		else if(this.curScene == EdgeDemo.SCENE_BOY_DYNAMIC)
 		{
 			for(int i = 0; i < this.curNumInputs; i++)
 			{					
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
+				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
 				this.menu.fade(scaleDegree, i);
 
@@ -335,380 +182,22 @@ public class EdgeDemo extends Module {
 					this.legend(this.scaleDegree, i);
 				}
 			} // for - curNumInputs
-		} // SCENE_KILLING_DYNAMIC
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_NO_BB)
-		{
-			// Draw the shapes:
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-				
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-
-		} // SCENE_WINGS_NO_BB
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_BB_CENTER)
-		{
-			// Draw the shapes:
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-				
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-
-			// Amplitude bars:
-			this.fill(255, this.menu.getAlphaVal());
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				ampHist[i]	= ampHist[i+1];
-
-				this.rect((i * (this.ampWidth + 1)), (this.height / 2), this.ampWidth, this.ampHist[i] / 3);
-				this.rect((i * (this.ampWidth + 1)), (this.height / 2), this.ampWidth, (this.ampHist[i] / 3) * (-1));
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(this.beatBoxInput);
-
-		} // SCENE_WINGS_BB_CENTER
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_BB_BOTTOM)
-		{
-			// Draw the shapes:
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-
-			// Amplitude bars:
-			this.fill(255, this.menu.getAlphaVal());
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				ampHist[i]	= ampHist[i+1];
-
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
-
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(this.beatBoxInput);
-		} // SCENE_WINGS_BB_BOTTOM
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_LARGESHAPES)
-		{
-			// Draw the shapes:
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-
-			// Amplitude bars:
-			this.fill(255, this.menu.getAlphaVal());
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				ampHist[i]	= ampHist[i+1];
-
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
-
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(this.beatBoxInput);
-		} // SCENE_WINGS_LARGESHAPES
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_RAINBOW)
-		{
-			// Draw the shapes:
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				this.menu.fade(this.scaleDegree, i);
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-
-			// Amplitude bars:
-			this.fill(255, this.menu.getAlphaVal());
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				ampHist[i]	= ampHist[i+1];
-
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
-
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(this.beatBoxInput);
-		} // SCENE_WINGS_RAINBOW
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_DYNAMIC)
-		{
-			// Draw the shapes:
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				if(!this.menu.getRecInputPlaying())
-				{
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
-				} else {
-					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
-				}
-
-				this.menu.fade(this.scaleDegree, i);
-
-				this.shapeEditor.getShapes()[i].setShapeScale(5 * ( Math.min((this.input.getAmplitude(i) / 1000), 1) ) );
-
-				if(!this.shapeEditor.getIsRunning())
-				{
-					this.shapeEditor.drawShape(i);
-				}
-
-				if(this.menu.isShowScale())
-				{
-					this.legend(this.scaleDegree, i);
-				}
-			} // for
-
-			// Amplitude bars:
-			this.fill(255, this.menu.getAlphaVal());
-
-			for(int i = 0; i < (this.ampHist.length - 1); i++)
-			{
-				ampHist[i]	= ampHist[i+1];
-
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min(this.ampHist[i] / 3, 150));
-				this.rect((i * (this.ampWidth + 1)), (this.height - 150), this.ampWidth, Math.min((this.ampHist[i] / 3), 150) * (-1));
-			}
-
-			this.ampHist[this.ampHist.length - 1]	= (int)this.input.getAmplitude(this.beatBoxInput);
-		} // SCENE_WINGS_DYNAMIC
+		} // SCENE_BOY_DYNAMIC
 
 	} // drawScene
 
-	
+
 	public void keyPressed()
 	{
 		int	key	= (int)this.key;
 
-		this.menu.getOutsideButtonsCP5().getController("hamburger").hide();
 		this.menu.setCanvasColor(new int[] { 0, 0, 0 });
 
-		if(key == 107)
+		this.curScene	= key;
+		System.out.println("curScene = " + this.curScene);			
+
+		if(this.curScene == EdgeDemo.SCENE_BOY)
 		{
-			//			this.menu.setDynamicBars(!this.menu.getDynamicBars());
-			this.menu.setDynamicBars(true);
-		} else {
-			this.curScene	= key;
-			System.out.println("curScene = " + this.curScene);			
-		}
-
-		if(this.curScene == EdgeDemo.SCENE_KALEIDESCOPE)
-		{
-			this.menu.showShapeMenu();
-			this.menu.showColorMenu();
-
-			this.curNumInputs	= 7;
-			//this.setSquareValues();
-
-			Shape	curShape;
-			int		radius	= this.width / 4;	// width / 8 is best for shape."x"
-			int[]	xVals	= new int[] {
-					(this.width / 2),
-					(this.width / 2) + (radius / 2),
-					(this.width / 2) + radius,
-					(this.width / 2) + (radius / 2),
-					(this.width / 2) - (radius / 2),
-					(this.width / 2) - radius,
-					(this.width / 2) - (radius / 2)
-			};
-			int[]	yVals	= new int[] {
-					(this.height / 2),
-					(this.height / 2) - radius,
-					(this.height / 2),
-					(this.height / 2) + radius,
-					(this.height / 2) + radius,
-					(this.height / 2),
-					(this.height / 2) - radius
-			};
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				//				curShape.setCurrentShape("x");
-				//				curShape.setCurrentShape("pentagon");
-				curShape.setCurrentShape("hexagon");
-				//				curShape.setRotation(300);
-				curShape.setShapeScale(2.5f);
-
-				curShape.setXPos(xVals[i]);
-				curShape.setYPos(yVals[i]);
-			}
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			this.menu.getControlP5().getController("trichrom").update();
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
-				this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);
-				this.menu.setColor(8, new int[] { 9, 187, 193 }, i, true);
-			}
-
-			this.menu.getControlP5().getController("trichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // SCENE_KALEIDESCOPE
-
-		else if(this.curScene == EdgeDemo.SCENE_KALEIDESCOPE_SPIN)
-		{
-			this.menu.showShapeMenu();
-			this.menu.showColorMenu();
-
-			this.curNumInputs	= 7;
-			//this.setSquareValues();
-
-			Shape	curShape;
-			int		radius	= this.width / 4;	// width / 8 is best for shape."x"
-			int[]	xVals	= new int[] {
-					(this.width / 2),
-					(this.width / 2) + (radius / 2),
-					(this.width / 2) + radius,
-					(this.width / 2) + (radius / 2),
-					(this.width / 2) - (radius / 2),
-					(this.width / 2) - radius,
-					(this.width / 2) - (radius / 2)
-			};
-			int[]	yVals	= new int[] {
-					(this.height / 2),
-					(this.height / 2) - radius,
-					(this.height / 2),
-					(this.height / 2) + radius,
-					(this.height / 2) + radius,
-					(this.height / 2),
-					(this.height / 2) - radius
-			};
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				//				curShape.setCurrentShape("x");
-				//				curShape.setCurrentShape("pentagon");
-				curShape.setCurrentShape("hexagon");
-				//				curShape.setRotation(300);
-				curShape.setShapeScale(2.51f);
-
-				curShape.setXPos(xVals[i]);
-				curShape.setYPos(yVals[i]);
-			}
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			this.menu.getControlP5().getController("trichrom").update();
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
-				this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);
-				this.menu.setColor(8, new int[] { 9, 187, 193 }, i, true);
-			}
-
-			this.menu.getControlP5().getController("trichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // SCENE_KALEIDESCOPE_SPIN
-		
-		else if(this.curScene == EdgeDemo.SCENE_KILLING)
-		{
-			this.curNumInputs	= 7;
 			this.setSquareValues();
 
 			this.menu.showColorMenu();
@@ -719,7 +208,7 @@ public class EdgeDemo extends Module {
 			//			this.menu.setGlobal(true);
 			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
 			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
+/*
 			this.menu.getControlP5().getController("trichrom").update();
 
 			for(int i = 0; i < this.curNumInputs; i++)
@@ -730,15 +219,13 @@ public class EdgeDemo extends Module {
 			}
 
 			this.menu.getControlP5().getController("trichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // SCENE_KILLING
+			*/
+		} // SCENE_BOY
 
-		else if (this.curScene == EdgeDemo.SCENE_KILLING_DYNAMIC)
+		else if (this.curScene == EdgeDemo.SCENE_BOY_DYNAMIC)
 		{
-			this.curNumInputs	= 7;
 			this.menu.setDynamicBars(true);
 			this.setSquareValues();
-
 
 			this.menu.showColorMenu();
 			this.menu.hideShapeMenu();
@@ -748,7 +235,7 @@ public class EdgeDemo extends Module {
 			//			this.menu.setGlobal(true);
 			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
 			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
+/*
 			this.menu.getControlP5().getController("trichrom").update();
 
 			for(int i = 0; i < this.curNumInputs; i++)
@@ -760,260 +247,8 @@ public class EdgeDemo extends Module {
 			}
 
 			this.menu.getControlP5().getController("trichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-
-		} // SCENE_KILLING_DYNAMIC
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_NO_BB || this.curScene == EdgeDemo.SCENE_WINGS_BB_CENTER)
-		{
-			this.curNumInputs	= 7;
-			//			this.setSquareValues();
-
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
-			Shape	curShape;
-
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				curShape.setCurrentShape("butterfly");
-				curShape.setShapeScale(1);
-				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
-
-				curShape.setRotation(0.3f + (-0.6f * (i%2)));
-				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
-
-				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
-
-				curShape.setXPos((this.width / 7) * i);
-				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
-			} // for
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				this.menu.setColor(0, new int[] { 255, 155, 50 }, i, true);
-				this.menu.setColor(11, new int[] { 150, 0, 150 }, i, true);			
-			}
-
-			this.menu.getControlP5().getController("dichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // WINGS_NO_BB || WINGS_BB_CENTER
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_BB_BOTTOM)
-		{
-			this.curNumInputs	= 7;
-			//			this.setSquareValues();
-
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
-			Shape	curShape;
-
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				curShape.setCurrentShape("butterfly");
-				curShape.setShapeScale(1);
-				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
-
-				curShape.setRotation(0.3f + (-0.6f * (i%2)));
-				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
-
-				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
-
-				curShape.setXPos((this.width / 7) * i);
-				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
-			} // for
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				this.menu.setColor(0, new int[] { 255, 155, 50 }, i, true);
-				this.menu.setColor(11, new int[] { 150, 0, 150 }, i, true);			
-			}
-
-			this.menu.getControlP5().getController("dichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // WINGS_BB_BOTTOM
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_LARGESHAPES)
-		{
-			this.curNumInputs	= 7;
-			//			this.setSquareValues();
-
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
-			Shape	curShape;
-
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				curShape.setCurrentShape("butterfly");
-				curShape.setShapeScale(2);
-				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
-
-				curShape.setRotation(0.3f + (-0.6f * (i%2)));
-				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
-
-				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
-
-				curShape.setXPos((this.width / 7) * i);
-				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
-			} // for
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				this.menu.setColor(0, new int[] { 255, 155, 50 }, i, true);
-				this.menu.setColor(11, new int[] { 150, 0, 150 }, i, true);			
-			}
-
-			this.menu.getControlP5().getController("dichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // WINGS_LARGESHAPES
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_RAINBOW)
-		{
-			this.curNumInputs	= 7;
-			//			this.setSquareValues();
-
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
-			Shape	curShape;
-
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				curShape.setCurrentShape("butterfly");
-				curShape.setShapeScale(2);
-				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
-
-				curShape.setRotation(0.3f + (-0.6f * (i%2)));
-				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
-
-				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
-
-				curShape.setXPos((this.width / 7) * i);
-				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
-			} // for
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			this.menu.getControlP5().getController("rainbow").update();
-
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // WINGS_RAINBOW
-
-		else if(this.curScene == EdgeDemo.SCENE_WINGS_DYNAMIC)
-		{
-			this.curNumInputs	= 7;
-			//			this.setSquareValues();
-
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
-			Shape	curShape;
-
-			for(int i = 1; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				curShape.setCurrentShape("butterfly");
-				curShape.setShapeScale(2);
-				//curShape.setRotation( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) );
-
-				curShape.setRotation(0.3f + (-0.6f * (i%2)));
-				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
-
-				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
-
-				curShape.setXPos((this.width / 7) * i);
-				curShape.setYPos((this.height / 3) * ((i % 2) + 1)); // (i % 2) + 1 : want either 1 or 2
-			} // for
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			this.menu.getControlP5().getController("rainbow").update();
-
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // WINGS_DYNAMIC
-
-
-		else if(this.curScene == EdgeDemo.SCENE_MAN)
-		{
-			this.curNumInputs	= 7;
-			//			this.setSquareValues();
-
-			this.menu.showColorMenu();
-			this.menu.showShapeMenu();
-
-			Shape	curShape;
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				curShape	= this.shapeEditor.getShapes()[i];
-				curShape.setCurrentShape("circle");
-				curShape.setShapeScale(3);
-				System.out.println("i = " + i + "; xPos = " + (this.width / 4) * ((i  % 3) + 1));
-
-				// Three circle on the top row, four on the bottom:
-				if(i < 3)
-				{
-					curShape.setXPos((this.width / 4) * (i + 1));	// i.e., width/4, (width/4) * 2, or (width/4) * 3
-					curShape.setYPos(this.height / 3);
-				} else {
-					curShape.setXPos((this.width / 5) * (i - 2));	// i.e., width/5, (width/5) * 2, (width/5) * 3, or (width/5) * 4
-					curShape.setYPos((this.height / 3) * 2);
-				}			
-
-			}
-
-			this.menu.setAlphaSlider(150);
-
-			//			this.menu.setGlobal(true);
-			((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
-			this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
-
-			for(int i = 0; i < this.curNumInputs; i++)
-			{
-				this.menu.setColor(0, new int[] { 0, 10, 150 }, i, true);
-				this.menu.setColor(11, new int[] { 210, 210, 210 }, i, true);			
-			}
-
-			this.menu.getControlP5().getController("dichrom").update();
-			((Toggle)(this.menu.getControlP5().getController("legend"))).setValue(true);
-		} // SCENE_MAN
+*/
+		} // SCENE_BOY_DYNAMIC
 
 	} // keyPressed
 

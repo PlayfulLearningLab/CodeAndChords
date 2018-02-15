@@ -254,6 +254,7 @@ public abstract class Module extends PApplet {
 	{
 		if(this.verticalBarsDemo)
 		{
+			System.out.println(" ------ Module.setSquareValues: verticalBarsDemo = true");
 			int barWidth = this.width/this.curNumInputs;
 			int val = this.height/2;
 						
@@ -280,6 +281,7 @@ public abstract class Module extends PApplet {
 		}
 		else
 		{
+			System.out.println(" ------ Module.setSquareValues: verticalBarsDemo = false");
 			// Rectangles are always the same height, so will be set in a loop every time:
 			this.rectHeights	= new int[this.curNumInputs];
  
