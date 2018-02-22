@@ -60,13 +60,13 @@ public class SMM_Demo extends Module {
 
 	private	int	trioInput0	= 0;	// Shahzore
 	private	int	trioInput1	= 1;	// Taylor
-	private	int	trioInput2	= 7;	// Betsie
+	private	int	trioInput2	= 2;	// Betsie
 
 	private	int	shahInput0	= 0;
 	private	int	shahInput1	= 1;
 
-	private	int	betsieInput	= 7;
-	private	int	taylorInput	= 0;
+	private	int	betsieInput	= 0;
+	private	int	taylorInput	= 1;
 
 	private	int	rainbowRoundInput0	= 0;
 	//	private	int	rainbowRoundShape0	= 0;
