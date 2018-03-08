@@ -105,7 +105,7 @@ public class Melody implements Runnable {
 	 */
 	public Instrument playMelody(String key, float bpm, String scale, int rangeOctave)
 	{
-		this.instrument = new Instrument(parent);
+		this.instrument = new Instrument(parent, this.input.getAudioContext());
 		this.playMelody(key, bpm, scale, rangeOctave, this.instrument);
 		return this.instrument;
 	}
@@ -125,7 +125,7 @@ public class Melody implements Runnable {
 
 		if(instrument == null)
 		{
-			throw new IllegalArgumentException("Melody constructor(PApplet, Input, Instrument): Instrument parameter is null.");
+			throw new IllegalArgumentException("Melody.playMelody: Instrument parameter is null.");
 		}
 
 		this.key = key;
@@ -241,7 +241,7 @@ public class Melody implements Runnable {
 				if(this.input != null)
 				{
 					this.input.setFundamentalArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
-					this.input.setAdjustedFundArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
+//					this.input.setAdjustedFundArray(new float[] { Pitch.mtof(notes[i].getMidiNum()) });
 					this.input.setAmplitudeArray(new float[] { this.instrument.getGain() * multiplyer });
 				}
 

@@ -6,6 +6,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
+import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class Demo_01_VerticalBars extends Module {
@@ -29,31 +30,10 @@ public class Demo_01_VerticalBars extends Module {
 
 	public static void main(String[] args)
 	{
-
-		//Says cannot find or load main class???  This should not be an issue
 		PApplet.main("demo_01.Demo_01_VerticalBars");
-		//PApplet.main("module_01_PitchHueBackground.module_01_02_PitchHueBackground_ModuleTemplate_EMM.Module_01_02_PitchHueBackground_ModuleTemplate");
 	} // main
 
-	/*
-	// Choose input file here:
-	// Raw:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Raw.wav";
-	// Tuned:
-	String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Tuned.wav";
-	// Kanye:
-	//String  inputFile  = "src/module_01_PitchHueBackground/module_01_02_PitchHueBackground_ModuleTemplate_EMM/Emily_CMajor-2016_09_2-16bit-44.1K Kanye.wav";
-	 */
-
-	private RealTimeInput  input;
-	private	RecordedInput	recordedInput;
-	/*	private	int		numInputs;
-
-	private	int[]	xVals;
-	private	int[]	yVals;
-	private	int[]	rectWidths;
-	private	int[]	rectHeights;
-	 */
+//	private RealTimeInput  input;
 
 	public void settings()
 	{
@@ -74,13 +54,13 @@ public class Demo_01_VerticalBars extends Module {
 			this.barVel[i] = 0;
 		}
 
-		// TODO: test with more inputs than are supported
-		//		this.input	= new Input(2, this);
+//		this.input	= new RealTimeInput(1, new AudioContext(), false, this);
+//		this.input	= new RealTimeInput(1, this);
 		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 4;
+		this.curNumInputs	= 2;
 
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
+		this.menu	= new ModuleMenu(this, this, this.input, 12);
 		/*
 		 * 		this.shapes	= new Shape[12];
 		for(int i = 0; i < this.shapes.length; i++)
@@ -92,9 +72,6 @@ public class Demo_01_VerticalBars extends Module {
 		 */
 
 		this.setSquareValues();
-
-		this.menu	= new ModuleMenu(this, this, this.input, "Module_01_02_PitchHueBackground", 12);
-
 
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
@@ -158,11 +135,8 @@ public class Demo_01_VerticalBars extends Module {
 		modulateYVals[2]	= textYVals[12];
 
 		// Adding ColorSelect first since everything to do with colors depends on that:
-		String[] noteNames = new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames
 
-		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, noteNames, "Custom Pitch\nColor Select", false);
+		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, this.menu.noteNames, "Custom Pitch\nColor Select", false, "color");
 
 
 		// ColorSelect and ColorStyle added out of order so that the 2nd Color
@@ -172,20 +146,18 @@ public class Demo_01_VerticalBars extends Module {
 		String[] buttonLabels	= new String[] {
 				"Canvas", "Tonic", "2nd Color", "3rd Color"
 		}; // buttonLabels
-		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true);
+		this.menu.addSpecialColors(controllerXVals[0], textYVals[14], buttonLabels, "Color Select", true, "color");
 
 		// addColorStyleButtons will set the colorStyle to rainbow() first:
-		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3]);
+		this.menu.addColorStyleButtons(controllerXVals[2], textYVals[3], "color");
 
 		this.menu.addHSBSliders(controllerXVals[0], modulateHSBVals);
 
 		this.menu.addModulateSliders(controllerXVals[0], modulateYVals);
 
-		//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
-
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
-		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
+//		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
 		
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
@@ -221,7 +193,7 @@ public class Demo_01_VerticalBars extends Module {
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fade(scaleDegree, i);
 
@@ -230,15 +202,6 @@ public class Demo_01_VerticalBars extends Module {
 			int	curX;
 			int	curY;
 
-			/*			if(this.menu.getIsRunning())
-			{
-				curX	= (int)this.menu.mapAdjustedMenuXPos(this.xVals[i]);
-				curY	= (int)this.menu.mapAdjustedMenuYPos(this.yVals[i]);
-			} else {
-				curX	= this.xVals[i];
-				curY	= this.yVals[i];
-			}
-			 */
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 
@@ -284,42 +247,16 @@ public class Demo_01_VerticalBars extends Module {
 			}
 			
 
-			//this.stroke(255);
-			//this.strokeWeight(5);
-			//this.line(0, (this.height/2)- amp*(this.height/2), this.width, (this.height/2)- amp*(this.height/2));
-			
+		
 			if(this.menu.isShowScale())
 			{
 				this.legend(scaleDegree, i);
 			}
 
-			if(this.currentMenu != this.menu.getCurrentMenu())
-			{
-				this.currentMenu = this.menu.getCurrentMenu();
-
-				if(this.currentMenu == 0)
-				{
-					this.menu.setIsRunning(false);
-				}
-				else if(this.currentMenu == 1)
-				{
-					this.menu.setIsRunning(true);
-				}
-			}
 		} // for
 
 		this.menu.runMenu();
 
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
 
 	} // draw()
 
