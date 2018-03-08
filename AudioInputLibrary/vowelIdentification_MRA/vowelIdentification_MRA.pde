@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 /*
   08/16/2016
   Michaela Andrews
@@ -88,6 +91,7 @@ void draw() {
       line(x, height, x, height - barHeight); // draw a vertical line corresponding to the frequency represented by this x-position
     } // for
   } // if
+<<<<<<< HEAD
 =======
 /*
   08/16/2016
@@ -179,4 +183,6 @@ void draw() {
     } // for
   } // if
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 } // draw()

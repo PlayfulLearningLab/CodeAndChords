@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 import interfascia.*; //<>// //<>// //<>//
 
 /**
@@ -550,6 +553,7 @@ void actionPerformed(GUIEvent e)
       saturationButton.setLookAndFeel(defaultLAF);
     } // else
   } // if  - saturationButton
+<<<<<<< HEAD
 =======
 import interfascia.*; //<>// //<>// //<>//
 
@@ -1103,4 +1107,6 @@ void actionPerformed(GUIEvent e)
     } // else
   } // if  - saturationButton
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 } // actionPerformed

@@ -1,3 +1,4 @@
+<<<<<<< HEAD:Visuals/Eclipse/_Archive/EclipseModules/src/interfascia/IFTextField.java
 <<<<<<< HEAD
 // Interfascia ALPHA 004 -- http://interfascia.plusminusfive.com/
 // GUI Library for Processing -- http://www.processing.org/
@@ -807,6 +808,8 @@ public class IFTextField extends GUIComponent {
 	}
 }
 =======
+=======
+>>>>>>> RachelPractice:Visuals/Eclipse/EclipseModules/src/interfascia/IFTextField.java
 // Interfascia ALPHA 004 -- http://interfascia.plusminusfive.com/
 // GUI Library for Processing -- http://www.processing.org/
 //
@@ -1622,4 +1625,7 @@ public class IFTextField extends GUIComponent {
 		}
 	}
 }
+<<<<<<< HEAD:Visuals/Eclipse/_Archive/EclipseModules/src/interfascia/IFTextField.java
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice:Visuals/Eclipse/EclipseModules/src/interfascia/IFTextField.java

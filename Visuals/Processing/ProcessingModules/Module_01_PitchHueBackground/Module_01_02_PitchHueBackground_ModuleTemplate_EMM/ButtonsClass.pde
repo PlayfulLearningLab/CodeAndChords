@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 import interfascia.*;
 /*
   10/24/2016
@@ -51,6 +54,7 @@ class Buttons
      }
      */
   } // actionPerformed
+<<<<<<< HEAD
 =======
 import interfascia.*;
 /*
@@ -105,4 +109,6 @@ class Buttons
      */
   } // actionPerformed
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 } // Buttons class
