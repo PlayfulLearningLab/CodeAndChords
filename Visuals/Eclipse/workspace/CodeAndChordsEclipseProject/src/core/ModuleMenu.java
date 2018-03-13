@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
@@ -435,7 +436,15 @@ public class ModuleMenu extends MenuTemplate  {
 	private	int	tabHeight	= 30;
 
 	/**	For saving and loading saved color states */
-	final JFileChooser fc = new JFileChooser();
+	private JFileChooser colorFileChooser;
+	
+	/**	For loading lyrics from a file */
+	private	JFileChooser	lyricsFileChooser;
+	
+	/**	The current song lyrics	*/
+	private ArrayList<String>	curLyrics;
+	
+	private	boolean	showLyrics;
 	
 	/**	For now, adding this so that the play Button can either start the guide tones or these tracks */
 	private	RecordedInput recInput;
@@ -646,12 +655,22 @@ public class ModuleMenu extends MenuTemplate  {
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
 
-		this.fc.setCurrentDirectory(new File("./savedColors/"));
+		this.curLyrics	= new ArrayList<String>();
+		this.colorFileChooser	= new JFileChooser();
+		this.colorFileChooser.setCurrentDirectory(new File("./savedColors/"));
 
 		// Filter out all but .txt files:
 		FileFilter filter = new FileNameExtensionFilter(".txt", "txt");
-		this.fc.addChoosableFileFilter(filter);
-		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
+		this.colorFileChooser.addChoosableFileFilter(filter);
+		this.colorFileChooser.removeChoosableFileFilter(this.colorFileChooser.getAcceptAllFileFilter());
+		
+		this.lyricsFileChooser	= new JFileChooser();
+//		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/lyrics/"));
+		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/"));
+
+		// Filter out all but .txt files:
+		this.lyricsFileChooser.addChoosableFileFilter(filter);
+		this.lyricsFileChooser.removeChoosableFileFilter(this.lyricsFileChooser.getAcceptAllFileFilter());
 	} // constructor
 
 	/**
@@ -813,6 +832,36 @@ public class ModuleMenu extends MenuTemplate  {
 		//		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.getShapeEditor().updateSliders();
 	} // addShapeMenu
+	
+	/**
+	 * Adds the Landing Menu by setting the label of the default tab.
+	 */
+	public void addLyricMenu()
+	{
+		this.controlP5.addTab("lyrics")
+		.setLabel("Lyrics\nMenu")
+		.setWidth(50)
+		.setHeight(this.tabHeight)
+		.activateEvent(true)
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		// Add lyric Toggle:
+		this.controlP5.addToggle("showLyrics")
+			.setPosition(this.leftAlign, this.textYVals[4])
+			.setWidth(60)
+			.setState(false)
+			.setTab("lyrics")
+			.plugTo(this)
+			.setLabel("Show Lyrics")
+			.getCaptionLabel()
+			.align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.controlP5.addButton("loadLyrics")
+		.setPosition(this.leftAlign, this.textYVals[5])
+		.setWidth(60)
+		.moveTo("lyrics")
+		.setLabel("Load Lyrics");
+	} // addLandingMenu
 
 	public void hideSensitivityMenu()
 	{
@@ -3265,6 +3314,11 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				this.loadColorState();
 			}
+			
+			if(controlEvent.getName().equals("loadLyrics"))
+			{
+				this.loadLyrics();
+			}
 
 			// Dynamic Bars:
 			if(controlEvent.getController().getId() == 99999)
@@ -4151,10 +4205,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public void saveColorState()
 	{
-		int returnVal = fc.showSaveDialog(null);
+		int returnVal = colorFileChooser.showSaveDialog(null);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
+			File file = colorFileChooser.getSelectedFile();
 			String	filename	= file.getName();
 			if( (filename.length() < 4) || !(filename.substring(filename.length() - 4).equalsIgnoreCase(".txt")) )
 			{
@@ -4214,11 +4268,11 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		String[]	splitResults;	// Use this to hold the color values while they are being parsed to ints
 		
-		int returnVal = fc.showOpenDialog(null);
+		int returnVal = colorFileChooser.showOpenDialog(null);
 		
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			File file	= fc.getSelectedFile();
+			File file	= colorFileChooser.getSelectedFile();
 			
 			try
 			{
@@ -4270,6 +4324,41 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 		}
 	} // loadColorState
+	
+	/**
+	 * Opens the lyric File Chooser and allows the user to choose a file from which to 
+	 * load lyrics (each line of the file will be displayed individually on keypress).
+	 */
+	private void loadLyrics() 
+	{
+		int 	returnVal = this.lyricsFileChooser.showOpenDialog(null);
+		String	curLine;
+		// Remove the current lyrics:
+		this.curLyrics.clear();
+		
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			File file	= this.lyricsFileChooser.getSelectedFile();
+			
+			try
+			{
+				BufferedReader in	= new BufferedReader(new FileReader(file));
+				
+				curLine	= in.readLine();
+
+				while(curLine != null)
+				{
+					this.curLyrics.add(curLine);
+					curLine	= in.readLine();
+				} // while - read through file
+				
+				in.close();
+			} catch (IOException ioe) {
+				System.out.println("ModuleMenu.loadColorState: caught IOException " + ioe);
+				ioe.printStackTrace();
+			} // try/catch
+		}
+	} // loadLyrics
 
 	public int[][] getCurHue()				{	return this.curHue;	}
 
@@ -4563,6 +4652,16 @@ public class ModuleMenu extends MenuTemplate  {
 	public RecordedInput getRecInput()
 	{
 		return this.recInput;
+	}
+	
+	public boolean getShowLyrics()
+	{
+		return this.showLyrics;
+	}
+	
+	public ArrayList<String> getCurLyrics()
+	{
+		return this.curLyrics;
 	}
 
 
