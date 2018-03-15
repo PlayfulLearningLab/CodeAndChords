@@ -252,6 +252,15 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	ShapeSize that corresponds to the current amplitude, but to which curShapeSize may not yet have faded	*/
 	private	int[]			goalShapeSize;
+	
+	/**	The amount that must be added each iteration through the fadeShapeSize loop to reach the goalShapeSize */
+	private	int[]			shapeSizeAdd;
+	
+	/**	Indicates whether or not each shape has reached its goalSize */
+	private	boolean[]		shapeSizeReached;
+	
+	/**	The distance between the current and goal size for each Shape */
+	private	int[]			shapeSizeRange;
 
 	/**	The color when sound is below the threshold	*/
 	protected	int[]		canvasColor;
@@ -2022,14 +2031,14 @@ public class ModuleMenu extends MenuTemplate  {
 			for(int i = 0; i < 3; i++)
 			{				
 				// if the current hue is less than the goalHue - the colorAdd, then add colorAdd:
-				if(this.curHue[inputNum][i] < this.goalHue[inputNum][i] - (this.colorAdd[inputNum][i] / 2))
+				if(this.curShapeSize[inputNum] < this.goalShapeSize[inputNum] - (this.shapeSizeAdd[inputNum] / 2))
 				{
-					this.curHue[inputNum][i]	=	this.curHue[inputNum][i] + this.colorAdd[inputNum][i];
+					this.curShapeSize[inputNum]	=	this.curShapeSize[inputNum] + this.shapeSizeAdd[inputNum];
 				} else 
 					// otherwise, if it's more than the goal Hue, even after adding half of colorAdd, then subtract:
-					if(this.curHue[inputNum][i] > this.goalHue[inputNum][i] + (this.colorAdd[inputNum][i] / 2))
+					if(this.curShapeSize[inputNum] > this.goalShapeSize[inputNum] + (this.shapeSizeAdd[inputNum] / 2))
 					{
-						this.curHue[inputNum][i]	=	this.curHue[inputNum][i] - this.colorAdd[inputNum][i];
+						this.curShapeSize[inputNum]	=	this.curShapeSize[inputNum] - this.shapeSizeAdd[inputNum];
 					}
 			} // for - i
 
@@ -2056,28 +2065,28 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for (int i = 0; i < 3; i++)
 		{
-			lowBound	= this.goalHue[inputNum][i] - 5;
-			highBound	= this.goalHue[inputNum][i] + 5;
+			lowBound	= this.goalShapeSize[inputNum] - 5;
+			highBound	= this.goalShapeSize[inputNum] + 5;
 
 			// Now check colors for whether they have moved into the boundaries:
-			if(this.curHue[inputNum][i] < highBound && this.curHue[inputNum][i] > lowBound) {
+			if(this.curShapeSize[inputNum] < highBound && this.curShapeSize[inputNum] > lowBound) {
 				// if here, color has been reached.
-				this.colorReachedArray[inputNum][i]	= true;
+				this.shapeSizeReached[inputNum]	= true;
 			} else {
-				this.colorReachedArray[inputNum][i]	= false;
+				this.shapeSizeReached[inputNum]	= false;
 			}
 		} // for
 
 		// If all elements of the color are in range, then the color has been reached:
-		this.colorReached[inputNum]	= this.colorReachedArray[inputNum][0] && this.colorReachedArray[inputNum][1] && this.colorReachedArray[inputNum][2];
+//		this.colorReached[inputNum]	= this.colorReachedArray[inputNum][0] && this.colorReachedArray[inputNum][1] && this.colorReachedArray[inputNum][2];
 
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
-		if(!this.nowBelow[inputNum] && !colorReached[inputNum]) 
+		if(!this.nowBelow[inputNum] && !shapeSizeReached[inputNum]) 
 		{	
 			this.attRelTranPos[inputNum]	= 0;
 			//			System.out.println("	attack!!!!");
-		} else if(!this.nowBelow[inputNum] && colorReached[inputNum]) {
+		} else if(!this.nowBelow[inputNum] && shapeSizeReached[inputNum]) {
 			// Or, if coming from one super-threshold note to another, use the transition value:
 			this.attRelTranPos[inputNum]	= 2;
 			//			System.out.println("	transition.... transition [doooooo do dooo do do ] - transition!");
@@ -2088,16 +2097,16 @@ public class ModuleMenu extends MenuTemplate  {
 		}
 
 		// Calculate color ranges:
-		for(int i = 0; i < this.curHue[inputNum].length; i++)
-		{
-			this.colorRange[inputNum][i]	= Math.abs(this.goalHue[inputNum][i] - this.curHue[inputNum][i]);
+//		for(int i = 0; i < this.curShapeSize[inputNum].length; i++)
+//		{
+			this.shapeSizeRange[inputNum]	= Math.abs(this.goalShapeSize[inputNum] - this.curShapeSize[inputNum]);
 
 			// divide the attack/release/transition value by 50
 			// and divide colorRange by that value to find the amount to add each 50 millis.
-			float addThis = (int)(this.colorRange[inputNum][i] / (this.attRelTranVals[inputNum][this.attRelTranPos[inputNum]] / 50));
+			float addThis = (int)(this.shapeSizeRange[inputNum] / (this.attRelTranVals[inputNum][this.attRelTranPos[inputNum]] / 50));
 
-			this.colorAdd[inputNum][i]	= (int)addThis;	
-		} // for
+			this.shapeSizeAdd[inputNum]	= (int)addThis;	
+//		} // for
 
 	} // fadeAmp
 	

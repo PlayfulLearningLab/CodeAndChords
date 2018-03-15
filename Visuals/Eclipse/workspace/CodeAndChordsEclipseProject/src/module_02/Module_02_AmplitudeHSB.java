@@ -88,7 +88,7 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
-		this.menu.fade(goalHuePos, 0);
+		this.menu.fadeColor(goalHuePos, 0);
 
 		/*
 		 * need:
@@ -99,7 +99,7 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
 
-		this.menu.getShapeEditor().getShape().setShapeScale(this.menu.getShapeSize());
+		this.menu.getShapeEditor().getShape().setShapeScale(this.menu.getShapeSize()[0]);
 
 		if(!this.menu.getShapeEditor().getIsRunning())
 		{
