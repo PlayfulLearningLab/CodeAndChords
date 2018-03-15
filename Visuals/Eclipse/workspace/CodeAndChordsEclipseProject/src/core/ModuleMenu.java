@@ -25,6 +25,7 @@ import controlP5.Toggle;
 import core.input.Input;
 import core.input.RecordedInput;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 /**
@@ -443,6 +444,9 @@ public class ModuleMenu extends MenuTemplate  {
 	
 	/**	The current song lyrics	*/
 	private ArrayList<String>	curLyrics;
+	
+	/**	The current lyric position	*/
+	private	int	curLyricsLine	= 0;
 	
 	private	boolean	showLyrics;
 	
@@ -3586,6 +3590,17 @@ public class ModuleMenu extends MenuTemplate  {
 		} // specialColors
 
 	} // colorWheelEvent
+	
+	public void cycleLyrics(int keyCode)
+	{
+		if(keyCode == PConstants.RIGHT)
+		{
+			this.curLyricsLine	= (this.curLyricsLine + 1) % this.curLyrics.size();
+		} else if(keyCode == PConstants.LEFT)
+		{
+			this.curLyricsLine	= (this.curLyricsLine - 1 + this.curLyrics.size()) % this.curLyrics.size();
+		}
+	} // mousePressed
 
 
 	/**
@@ -4335,6 +4350,7 @@ public class ModuleMenu extends MenuTemplate  {
 		String	curLine;
 		// Remove the current lyrics:
 		this.curLyrics.clear();
+		this.curLyricsLine	= 0;
 		
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -4662,6 +4678,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public ArrayList<String> getCurLyrics()
 	{
 		return this.curLyrics;
+	}
+	
+	public int getCurLyricsLine()
+	{
+		return this.curLyricsLine;
 	}
 
 

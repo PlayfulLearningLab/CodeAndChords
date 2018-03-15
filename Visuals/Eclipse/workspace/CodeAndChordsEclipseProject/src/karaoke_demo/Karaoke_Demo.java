@@ -45,6 +45,11 @@ public class Karaoke_Demo extends Module {
 	// Start of Something New/Breaking Free
 	// First Time in Forever!
 	// City of Stars/alia La La Land
+	
+	// Actually have:
+	// - Lion Sleeps Tonight
+	// - Proud Mary
+	// - California Dreamin'
 
 	// Initial demos:
 	private	static final int	SCENE_OPEN			= 57;	// 9
@@ -124,8 +129,6 @@ public class Karaoke_Demo extends Module {
 	private	int[]	ampHist1;
 	private	int		ampWidth;
 	private	static final int NUM_AMPS	= 350;
-	
-	private	int	curLyricsLine	= 0;
 
 
 	public static void main(String[] args) {
@@ -234,7 +237,8 @@ public class Karaoke_Demo extends Module {
 			this.stroke(0);
 			this.fill(255);
 			this.textSize(32);
-			this.text(this.menu.getCurLyrics().get(curLyricsLine), this.menu.mapCurrentXPos(100), this.menu.mapCurrentYPos(100));
+			// TODO - one get could get both of these at once:
+			this.text(this.menu.getCurLyrics().get(this.menu.getCurLyricsLine()), this.menu.mapCurrentXPos(100), this.menu.mapCurrentYPos(100));
 		}
 	} // draw
 
@@ -910,13 +914,8 @@ public class Karaoke_Demo extends Module {
 
 		if(this.key == PConstants.CODED)
 		{
-			if(this.keyCode == PConstants.RIGHT)
-			{
-				this.curLyricsLine	= (this.curLyricsLine + 1) % this.menu.getCurLyrics().size();
-			} else if(this.keyCode == PConstants.LEFT)
-			{
-				this.curLyricsLine	= (this.curLyricsLine - 1 + this.menu.getCurLyrics().size()) % this.menu.getCurLyrics().size();
-			}
+			// TODO - this should all happen in ModuleMenu:
+			this.menu.cycleLyrics(this.keyCode);
 		} else {
 			key	= (int)this.key;
 		}
