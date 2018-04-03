@@ -72,7 +72,7 @@ public class SMM_Demo extends Module {
 	//	private	int	rainbowRoundShape0	= 0;
 	private	int	rainbowRoundInput1	= 1;
 	//	private	int	rainbowRoundShape1	= 1;
-	private	int	rainbowRoundInput2	= this.betsieInput;
+	private	int	rainbowRoundInput2	= 2;
 	//	private	int	rainbowRoundShape2	= 2;
 
 	private	int	beatBoxInput	= 0;
@@ -105,7 +105,7 @@ public class SMM_Demo extends Module {
 
 	public void setup()
 	{
-		this.totalNumInputs	= 16;
+		this.totalNumInputs	= 26;
 		this.curNumInputs	= 1;
 
 		this.input			= new RealTimeInput(this.totalNumInputs, true, this);
@@ -193,6 +193,8 @@ public class SMM_Demo extends Module {
 
 		this.drawScene();
 		this.menu.runMenu();
+		
+		System.out.println("input.getAmplitude(3) = " + this.input.getAmplitude(3));
 
 	} // draw
 
