@@ -105,7 +105,7 @@ public class SMM_Demo extends Module {
 
 	public void setup()
 	{
-		this.totalNumInputs	= 16;
+		this.totalNumInputs	= 28;
 		this.curNumInputs	= 1;
 
 		this.input			= new RealTimeInput(this.totalNumInputs, true, this);
