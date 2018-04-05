@@ -76,7 +76,7 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		// pick the appropriate color by checking amplitude threshold
-		float	curAmp		= this.input.getAmplitude();
+		float	curAmp		= this.menu.getAmplitudeFollower(0);
 		int		goalHuePos	= 0;
 
 		for(int i = 0; i < this.menu.getCurRangeSegments(); i++)
@@ -88,7 +88,9 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
-		this.menu.fade(goalHuePos, 0);
+		this.menu.fadeColor(goalHuePos, 0);
+		
+		this.menu.updateAmplitudeFollower(0, 1);
 
 		/*
 		 * need:
@@ -99,7 +101,7 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		 * 	if(this.moduleTemplate.isShowScale()
 		 */
 
-		this.menu.getShapeEditor().getShape().setShapeScale(this.menu.getShapeSize());
+		this.menu.getShapeEditor().getShape().setShapeScale(this.menu.getShapeSize()[0]);
 
 		if(!this.menu.getShapeEditor().getIsRunning())
 		{
