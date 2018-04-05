@@ -469,6 +469,8 @@ public class ModuleMenu extends MenuTemplate  {
 	private	boolean	useRecInput;
 	
 	private	boolean	recInputPlaying;
+	
+	private float 	amplitudeFollower;
 
 
 	/**
@@ -1985,6 +1987,49 @@ public class ModuleMenu extends MenuTemplate  {
 		} // for
 
 	} // fadeColor
+	
+	/**
+	 * 
+	 * 
+	 * @param numInput
+	 */
+	@SuppressWarnings("unused")
+	public void updateAmplitudeFollower(int numInput)
+	{
+		//this variation of the amplitude follower always moves the follower half way from the
+		//current amplitudeFollower value, to the value returned by input.getAmplitude
+		if(true)
+		{
+			this.amplitudeFollower = (this.amplitudeFollower + this.input.getAmplitude()) / 2;
+		}
+		
+		//this variation of the amplitude follower always moves the follower half way from the
+		//current amplitudeFollower value, to the value returned by input.getAmplitude
+		//but there is also a maxIncrament value that puts a limit on how much the amplitudeFollower
+		//value can change in one increment
+		if(false)
+		{
+			float maxAmplitude = 5000; // What does this actually equal???
+			float maxIncrament = maxAmplitude/30;
+			
+			float incrament = (this.input.getAmplitude() - this.amplitudeFollower)/2;
+			
+			if(Math.abs(incrament) < maxIncrament)
+			{
+				this.amplitudeFollower = this.amplitudeFollower + incrament;
+			}
+			else
+			{
+				this.amplitudeFollower = this.amplitudeFollower + (maxIncrament * (incrament/Math.abs(incrament)));
+			}
+		}
+	}
+	
+	public float getAmplitudeFollower()
+	{
+		return this.amplitudeFollower;
+	}
+	
 	
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
