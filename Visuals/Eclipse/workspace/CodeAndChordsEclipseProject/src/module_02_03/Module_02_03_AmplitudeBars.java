@@ -102,6 +102,11 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 		float	curAmp		= this.input.getAmplitude();
 		
 		 renderWave();
+		 
+		 for(int i=0;i<curNumInputs;i++)
+		 {
+			 this.menu.updateAmplitudeFollower(i,1);
+		 }
 
 	} // draw
 
@@ -124,84 +129,84 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 			  ellipse(x*xspacing, 15*(height)/16+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>50)
+			  if( this.menu.getAmplitudeFollower(0)/q>50)
 			  {
 			  fill(255,127,0);
 			  ellipse(x*xspacing, 7*(height)/8+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>100)
+			  if(this.menu.getAmplitudeFollower(0)/q>100)
 			  {
 				  fill(255,127,0);
 			  ellipse(x*xspacing, 13*(height)/16+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>125)
+			  if(this.menu.getAmplitudeFollower(0)/q>125)
 			  {
 				  fill(255,255,0);
 			  ellipse(x*xspacing, 6*(height)/8+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>150)
+			  if(this.menu.getAmplitudeFollower(0)/q>150)
 			  {
 				  fill(255,255,0);
 			  ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>175)
+			  if(this.menu.getAmplitudeFollower(0)/q>175)
 			  {
 				  fill(0,255,0);
 			  ellipse(x*xspacing, 5*(height)/8+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>200)
+			  if(this.menu.getAmplitudeFollower(0)/q>200)
 			  {
 				  fill(0,255,0);
 			  ellipse(x*xspacing, 9*(height)/16+yvalues[x], 16, 16);
 			  }			  
 			  
-			  if( this.input.getAmplitude()/q>225)
+			  if(this.menu.getAmplitudeFollower(0)/q>225)
 			  {
 				  fill(0,255,0);
 			  ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>250)
+			  if(this.menu.getAmplitudeFollower(0)/q>250)
 			  {
 				  fill(0,0,255);
 			  ellipse(x*xspacing, 7*(height)/16+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>275)
+			  if(this.menu.getAmplitudeFollower(0)/q>275)
 			  {
 				  fill(0,0,255);
 			  ellipse(x*xspacing, 3*(height)/8+yvalues[x], 16, 16);
 			  }			  
 			  		
-			  if( this.input.getAmplitude()/q>300)
+			  if(this.menu.getAmplitudeFollower(0)/q>300)
 			  {
 				  fill(0,0,255);
 			  ellipse(x*xspacing, 5*(height)/16+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>325)
+			  if(this.menu.getAmplitudeFollower(0)/q>325)
 			  {
 				  fill(75,0,130);
 			  ellipse(x*xspacing, (height)/4+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>350)
+			  if(this.menu.getAmplitudeFollower(0)/q>350)
 			  {
 				  fill(75,0,130);
 			  ellipse(x*xspacing, 3*(height)/16+yvalues[x], 16, 16);
 			  }
-			  if( this.input.getAmplitude()/q>375)
+			  if(this.menu.getAmplitudeFollower(0)/q>375)
 			  {
 				  fill(148,0,211);
 			  ellipse(x*xspacing, (height)/8+yvalues[x], 16, 16);
 			  }
 			  
-			  if( this.input.getAmplitude()/q>400)
+			  if(this.menu.getAmplitudeFollower(0)/q>400)
 			  {
 				  fill(148,0,211);
 			  ellipse(x*xspacing, (height)/16+yvalues[x], 16, 16);

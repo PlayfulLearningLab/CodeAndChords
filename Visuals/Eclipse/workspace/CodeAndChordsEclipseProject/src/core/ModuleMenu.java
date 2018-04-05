@@ -691,9 +691,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fc.addChoosableFileFilter(filter);
 		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
 		
-		for(int i = 0; i < this.input.getNumInputs(); i++)
+		this.maxAmplitude = new float[16];
+		this.amplitudeFollower = new float[16];
+		
+		for(int i = 0; i < 16; i++)
 		{
 			this.maxAmplitude[i] = 100;
+			this.amplitudeFollower[i] = 0;
 		}
 	} // constructor
 
