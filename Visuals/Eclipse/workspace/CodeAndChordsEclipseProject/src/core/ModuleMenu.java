@@ -4628,6 +4628,11 @@ public class ModuleMenu extends MenuTemplate  {
 		this.useRecInput	= newVal;
 	}
 	
+	public boolean getUseRecInput()
+	{
+		return this.useRecInput;
+	}
+	
 	public boolean getRecInputPlaying()
 	{
 		return this.recInputPlaying;
