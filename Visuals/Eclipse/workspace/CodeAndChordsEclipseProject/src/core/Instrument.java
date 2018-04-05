@@ -69,17 +69,10 @@ public class Instrument {
 	 * Constructor
 	 * @param parent
 	 */
-<<<<<<< HEAD
 	public Instrument(PApplet parent, AudioContext audioContext)
 	{
 		this.parent		     	= parent;
 		this.audioContext       = audioContext;
-=======
-	public Instrument(PApplet parent)
-	{
-		this.parent		     	= parent;
-		this.audioContext       = new AudioContext();
->>>>>>> RachelPractice
 		
 		this.setADSR(0);
 
