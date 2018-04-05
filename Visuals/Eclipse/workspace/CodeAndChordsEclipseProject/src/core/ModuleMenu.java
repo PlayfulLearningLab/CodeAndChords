@@ -246,6 +246,12 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	Hue that corresponds to the current sound, but to which curHue may not yet have faded	*/
 	private	int[][]			goalHue;
+	
+	/**	Current shapeSize (as opposed to the goal shapeSize, which may not have been reached)	 */
+	private	int[]			curShapeSize;
+
+	/**	ShapeSize that corresponds to the current amplitude, but to which curShapeSize may not yet have faded	*/
+	private	int[]			goalShapeSize;
 
 	/**	The color when sound is below the threshold	*/
 	protected	int[]		canvasColor;
@@ -307,7 +313,10 @@ public class ModuleMenu extends MenuTemplate  {
 	private	int[]		attRelTranPos;
 
 	/**	For a timer that allows attack/release/transition sliders to be time-based	*/
-	private int[]	checkpoint;
+	private int[]	colorCheckpoint;
+	
+	/**	For a timer that allows shape size to change smoothly based on amplitude input	*/
+	private int[]	shapeSizeCheckpoint;
 
 	/**	Stores the values of the attack, release, and transition sliders	*/
 	private	float[][]	attRelTranVals;
@@ -358,7 +367,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	Size of the shape (if there is one) from 1-100, designating the diameter in relation to the sketch canvas
 	 * (e.g., shapeSize of 50 means that the shape diameter will be 50% of the sketch size)	*/
-	protected	float	shapeSize;
+	protected	float[]	shapeSize;
 
 
 	//	private boolean shapeMenuIsOpen;
@@ -512,6 +521,8 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curColorStyle		= new int[this.module.getTotalNumInputs()];
 		this.rainbow();
 
+		this.curShapeSize		= new int[this.module.getTotalNumInputs()];
+		this.goalShapeSize		= new int[this.module.getTotalNumInputs()];
 
 		this.colorAdd			= new int[this.module.getTotalNumInputs()][3];
 		this.colorRange			= new int[this.module.getTotalNumInputs()][3];
@@ -543,7 +554,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.attRelTranPos	= new int[this.module.getTotalNumInputs()];
 		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
-		this.checkpoint		= new int[this.module.getTotalNumInputs()];
+		this.colorCheckpoint		= new int[this.module.getTotalNumInputs()];
+		this.shapeSizeCheckpoint	= new int[this.module.getTotalNumInputs()];
 		
 		this.curAmpScale	= new float[this.module.getTotalNumInputs()];
 		this.ampCheckpoint	= new int[this.module.getTotalNumInputs()];
@@ -552,7 +564,8 @@ public class ModuleMenu extends MenuTemplate  {
 		{
 			this.attRelTranPos[i]	= 0;	// 0 = attack, 1 = release, 2 = transition
 			this.attRelTranVals[i]	= new float[] {		200, 200, 200	};	// attack, release, transition all begin at 200 millis
-			this.checkpoint[i]		= this.parent.millis() + 100;
+			this.colorCheckpoint[i]		= this.parent.millis() + 100;
+			this.shapeSizeCheckpoint[i]	= this.parent.millis() + 100;
 			
 			this.curAmpScale[i]	= 1;
 			this.ampCheckpoint[i]	= this.parent.millis() + 100;
@@ -1418,10 +1431,11 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addShapeSizeSlider(int xVal, int yVal)
 	{
-		this.shapeSize			= 1;
+		// TODO - does this Slider affect everyone or just the first Shape size?
+		this.shapeSize[0]			= 1;
 		this.shapeSizeSliderId	= this.nextSliderId;
 
-		this.addSliderGroup(xVal, yVal, "Shape Size", 0.01f, 10, this.shapeSize);
+		this.addSliderGroup(xVal, yVal, "Shape Size", 0.01f, 10, this.shapeSize[0]);
 	} // addShapeSizeSlider
 
 
@@ -1833,6 +1847,13 @@ public class ModuleMenu extends MenuTemplate  {
 
 	} // setGoalHue
 
+	public void universalFade(int fadeThis)
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			fadeThis++;
+		} // for
+	} // universalFade
 
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
@@ -1840,12 +1861,12 @@ public class ModuleMenu extends MenuTemplate  {
 	 * 
 	 * @param position	position in colors to which curHue should fade
 	 */
-	public void fade(int position, int inputNum)
+	public void fadeColor(int position, int inputNum)
 	{
 		this.inputNumErrorCheck(inputNum);
 
 		if(position > this.colorSelect.length || position < -1) {
-			throw new IllegalArgumentException("ModuleTemplate.fade: position " + position + 
+			throw new IllegalArgumentException("ModuleTemplate.fadeColor: position " + position + 
 					" is out of bounds; must be between -1 (signifying canvas color) or " + (this.colorSelect.length - 1));
 		} // error checking
 
@@ -1872,7 +1893,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.goalHue[inputNum]	= this.applyThresholdSBModulate(curAmp, inputNum, position);
 		} // else
 
-		if(this.checkpoint[inputNum] < this.parent.millis())
+		if(this.colorCheckpoint[inputNum] < this.parent.millis())
 		{
 			for(int i = 0; i < 3; i++)
 			{				
@@ -1888,7 +1909,7 @@ public class ModuleMenu extends MenuTemplate  {
 					}
 			} // for - i
 
-			this.checkpoint[inputNum] = (this.parent.millis() + 50);
+			this.colorCheckpoint[inputNum] = (this.parent.millis() + 50);
 		} // if - adding every 50 millis
 
 		/*
@@ -1954,7 +1975,131 @@ public class ModuleMenu extends MenuTemplate  {
 			this.colorAdd[inputNum][i]	= (int)addThis;	
 		} // for
 
-	} // fade
+	} // fadeColor
+	
+	/**
+	 * Takes the values of curHue from its current values to the values in goalHue
+	 * over the time that is designated by the attack, release, and transition sliders
+	 * 
+	 * @param position	position in colors to which curHue should fade
+	 */
+	public void fadeShapeSize(int position, int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum);
+
+		if(position > this.colorSelect.length || position < -1) {
+			throw new IllegalArgumentException("ModuleTemplate.fadeColor: position " + position + 
+					" is out of bounds; must be between -1 (signifying canvas color) or " + (this.colorSelect.length - 1));
+		} // error checking
+
+		float	curAmp;
+		if(!this.recInputPlaying)
+		{
+			curAmp = this.input.getAmplitude(inputNum);
+		} else {
+			curAmp	= this.recInput.getAmplitude(inputNum);
+		}
+
+		if(curAmp < this.pianoThreshold[inputNum])	
+		{
+			this.nowBelow[inputNum]	= true;
+
+			/*
+			for(int i = 0; i < this.goalHue[inputNum].length; i++)
+			{
+				this.goalHue[inputNum][i]	= this.canvasColor[i];
+			} // for - canvas
+*/
+		} else {
+			this.nowBelow[inputNum]	= false;
+/*
+			this.goalHue[inputNum]	= this.applyThresholdSBModulate(curAmp, inputNum, position);
+			*/
+		} // else
+
+		if(this.shapeSizeCheckpoint[inputNum] < this.parent.millis())
+		{
+			for(int i = 0; i < 3; i++)
+			{				
+				// if the current hue is less than the goalHue - the colorAdd, then add colorAdd:
+				if(this.curHue[inputNum][i] < this.goalHue[inputNum][i] - (this.colorAdd[inputNum][i] / 2))
+				{
+					this.curHue[inputNum][i]	=	this.curHue[inputNum][i] + this.colorAdd[inputNum][i];
+				} else 
+					// otherwise, if it's more than the goal Hue, even after adding half of colorAdd, then subtract:
+					if(this.curHue[inputNum][i] > this.goalHue[inputNum][i] + (this.colorAdd[inputNum][i] / 2))
+					{
+						this.curHue[inputNum][i]	=	this.curHue[inputNum][i] - this.colorAdd[inputNum][i];
+					}
+			} // for - i
+
+			this.shapeSizeCheckpoint[inputNum] = (this.parent.millis() + 50);
+		} // if - adding every 50 millis
+
+		/*
+		System.out.println("curHue: " + this.curHue[0][0] + ", "
+				+ this.curHue[0][1] + ", "
+				+ this.curHue[0][2]);
+		System.out.println("goalHue: " + this.goalHue[0][0] + ", "
+						+ this.goalHue[0][1] + ", "
+						+ this.goalHue[0][2]);
+
+		System.out.println("input.getAmplitude() = " + input.getAmplitude());
+
+		System.out.println("colorAdd: " + this.colorAdd[0][0] + ", "
+				+ this.colorAdd[0][1] + ", "
+				+ this.colorAdd[0][2]);
+		 */
+
+		float	lowBound;
+		float	highBound;
+
+		for (int i = 0; i < 3; i++)
+		{
+			lowBound	= this.goalHue[inputNum][i] - 5;
+			highBound	= this.goalHue[inputNum][i] + 5;
+
+			// Now check colors for whether they have moved into the boundaries:
+			if(this.curHue[inputNum][i] < highBound && this.curHue[inputNum][i] > lowBound) {
+				// if here, color has been reached.
+				this.colorReachedArray[inputNum][i]	= true;
+			} else {
+				this.colorReachedArray[inputNum][i]	= false;
+			}
+		} // for
+
+		// If all elements of the color are in range, then the color has been reached:
+		this.colorReached[inputNum]	= this.colorReachedArray[inputNum][0] && this.colorReachedArray[inputNum][1] && this.colorReachedArray[inputNum][2];
+
+		// If coming from a low amplitude note and not yet reaching a color,
+		// use the attack value to control the color change:
+		if(!this.nowBelow[inputNum] && !colorReached[inputNum]) 
+		{	
+			this.attRelTranPos[inputNum]	= 0;
+			//			System.out.println("	attack!!!!");
+		} else if(!this.nowBelow[inputNum] && colorReached[inputNum]) {
+			// Or, if coming from one super-threshold note to another, use the transition value:
+			this.attRelTranPos[inputNum]	= 2;
+			//			System.out.println("	transition.... transition [doooooo do dooo do do ] - transition!");
+		} else if(this.nowBelow[inputNum]) {
+			// Or, if volume fell below the threshold, switch to release value:
+			this.attRelTranPos[inputNum]	= 1;
+			//			System.out.println("	re....lent! re...coil! re...verse!");
+		}
+
+		// Calculate color ranges:
+		for(int i = 0; i < this.curHue[inputNum].length; i++)
+		{
+			this.colorRange[inputNum][i]	= Math.abs(this.goalHue[inputNum][i] - this.curHue[inputNum][i]);
+
+			// divide the attack/release/transition value by 50
+			// and divide colorRange by that value to find the amount to add each 50 millis.
+			float addThis = (int)(this.colorRange[inputNum][i] / (this.attRelTranVals[inputNum][this.attRelTranPos[inputNum]] / 50));
+
+			this.colorAdd[inputNum][i]	= (int)addThis;	
+		} // for
+
+	} // fadeAmp
 	
 	public void smoothAmpScale(/*int curAmp,*/int inputNum)
 	{
@@ -3390,7 +3535,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 		if(id == this.shapeSizeSliderId)
 		{
-			this.shapeSize	= val;
+			for(int i = 0; i < this.shapeSize.length; i++)
+			{
+				this.shapeSize[i]	= val;
+			}
 		}
 
 		// Saturation and Brightness Threshold and Percent Sliders:
@@ -4443,7 +4591,7 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.majMinChrom;
 	}
 
-	public float getShapeSize() {
+	public float[] getShapeSize() {
 		return this.shapeSize;
 	}
 
