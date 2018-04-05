@@ -376,7 +376,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 	/**	Size of the shape (if there is one) from 1-100, designating the diameter in relation to the sketch canvas
 	 * (e.g., shapeSize of 50 means that the shape diameter will be 50% of the sketch size)	*/
-	protected	float[]	shapeSize;
+	protected	float[]	shapeSize = new float[] {0};
 
 
 	//	private boolean shapeMenuIsOpen;
@@ -470,7 +470,10 @@ public class ModuleMenu extends MenuTemplate  {
 	
 	private	boolean	recInputPlaying;
 	
-	private float 	amplitudeFollower;
+	private float[] 	amplitudeFollower;
+	
+	//this part of the amplitude follower will be replaced by a slider in the menu to allow for more consistent results
+	private float[]		maxAmplitude;
 
 
 	/**
@@ -687,6 +690,11 @@ public class ModuleMenu extends MenuTemplate  {
 		FileFilter filter = new FileNameExtensionFilter(".txt", "txt");
 		this.fc.addChoosableFileFilter(filter);
 		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
+		
+		for(int i = 0; i < this.input.getNumInputs(); i++)
+		{
+			this.maxAmplitude[i] = 100;
+		}
 	} // constructor
 
 	public void addLandingMenu()
@@ -1989,45 +1997,89 @@ public class ModuleMenu extends MenuTemplate  {
 	} // fadeColor
 	
 	/**
+	 * this method uptades the amplitude follower and needs to be called every time in the draw loop
+	 * for each input that is using it.
 	 * 
-	 * 
-	 * @param numInput
+	 * @param numInput:  Controls the input that is updated
+	 * @param followerType:  Controls the style of amplitude follower that is implemented
 	 */
 	@SuppressWarnings("unused")
-	public void updateAmplitudeFollower(int numInput)
+	public void updateAmplitudeFollower(int numInput, int followerType)
 	{
 		//this variation of the amplitude follower always moves the follower half way from the
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
-		if(true)
+		if(followerType == 1)
 		{
-			this.amplitudeFollower = (this.amplitudeFollower + this.input.getAmplitude()) / 2;
+			this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.input.getAmplitude()) / 2;
 		}
 		
 		//this variation of the amplitude follower always moves the follower half way from the
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
 		//but there is also a maxIncrament value that puts a limit on how much the amplitudeFollower
 		//value can change in one increment
-		if(false)
+		if(followerType == 2)
 		{
-			float maxAmplitude = 5000; // What does this actually equal???
-			float maxIncrament = maxAmplitude/30;
+			float amp = this.input.getAmplitude(numInput);
 			
-			float incrament = (this.input.getAmplitude() - this.amplitudeFollower)/2;
+			if(this.maxAmplitude[numInput] < amp)
+			{
+				this.maxAmplitude[numInput] = amp;
+			}
+			
+			float maxIncrament = this.maxAmplitude[numInput]/30;
+			float incrament = (amp - this.amplitudeFollower[numInput])/2;
 			
 			if(Math.abs(incrament) < maxIncrament)
 			{
-				this.amplitudeFollower = this.amplitudeFollower + incrament;
+				this.amplitudeFollower[numInput] = this.amplitudeFollower[numInput] + incrament;
 			}
 			else
 			{
-				this.amplitudeFollower = this.amplitudeFollower + (maxIncrament * (incrament/Math.abs(incrament)));
+				this.amplitudeFollower[numInput] = this.amplitudeFollower[numInput] + (maxIncrament * (incrament/Math.abs(incrament)));
+			}
+			
+			if(this.maxAmplitude[numInput] < amp)
+			{
+				this.maxAmplitude[numInput] = amp;
 			}
 		}
+		
+		/*
+		 * jumps to a higher amplitude immediately, has a maximum increment when decreasing
+		 */
+		if(followerType == 3)
+		{
+			float amp = this.input.getAmplitude();
+			
+			if(amp > this.amplitudeFollower[numInput])
+			{
+				this.amplitudeFollower[numInput] = amp;
+			}
+			else
+			{
+				float maxIncramentDown = this.maxAmplitude[numInput]/50;
+				
+				if(this.amplitudeFollower[numInput] - amp > maxIncramentDown)
+				{
+					this.amplitudeFollower[numInput] = this.amplitudeFollower[numInput] - maxIncramentDown;
+				}
+				else
+				{
+					this.amplitudeFollower[numInput] = amp;
+				}
+			}
+			
+			if(amp > this.maxAmplitude[numInput])
+			{
+				this.maxAmplitude[numInput] = amp;
+			}
+		}
+		
 	}
 	
-	public float getAmplitudeFollower()
+	public float getAmplitudeFollower(int numInput)
 	{
-		return this.amplitudeFollower;
+		return this.amplitudeFollower[numInput];
 	}
 	
 	
