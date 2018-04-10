@@ -284,7 +284,7 @@ public abstract class Input {
 		this.setFund();
 
 		//		return this.frequencyArray[inputNum - 1].getAmplitude();
-		return this.amplitudeArray[inputNum] * 100000;
+		return this.amplitudeArray[inputNum];// * 100000; // TODO - Talent Show?
 	} // getAmplitude
 
 	/**
