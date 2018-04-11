@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 /**
  *  from https://processing.org/examples/scrollbar.html
  */
@@ -99,6 +102,7 @@ class HScrollbar {
     // 0 and the total width of the scrollbar
     return spos * ratio;
   }
+<<<<<<< HEAD
 =======
 /**
  *  from https://processing.org/examples/scrollbar.html
@@ -201,4 +205,6 @@ class HScrollbar {
     return spos * ratio;
   }
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 }

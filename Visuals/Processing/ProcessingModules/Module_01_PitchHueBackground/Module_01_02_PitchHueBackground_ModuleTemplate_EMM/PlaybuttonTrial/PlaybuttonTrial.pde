@@ -1,7 +1,11 @@
 import ddf.minim.*;                                                      
 //Import the audio library
 Minim minim;                                                              
+<<<<<<< HEAD:Visuals/Processing/ProcessingModules/Module_01_PitchHueBackground/Module_01_02_PitchHueBackground_ModuleTemplate_EMM/PlaybuttonTrial/PlaybuttonTrial.pde
 // Use the library
+=======
+// Use the minim class within the library
+>>>>>>> RachelPractice:TeenTech/PlaybuttonTrial/PlaybuttonTrial.pde
 AudioPlayer player;                                                         
 // Get Audio player
 boolean play;                                                               
@@ -17,7 +21,11 @@ void setup()
   //(number of pixels in the x direction, number of pixels in the y direction)                                    
 
 minim=new Minim(this);
+<<<<<<< HEAD:Visuals/Processing/ProcessingModules/Module_01_PitchHueBackground/Module_01_02_PitchHueBackground_ModuleTemplate_EMM/PlaybuttonTrial/PlaybuttonTrial.pde
 //function 
+=======
+//Pass minim the file
+>>>>>>> RachelPractice:TeenTech/PlaybuttonTrial/PlaybuttonTrial.pde
   player=minim.loadFile("Thomas Rhett - Die A Happy Man (Home Free Cover).mp3");   
   //Select music file from folder
 }

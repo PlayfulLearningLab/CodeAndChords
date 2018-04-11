@@ -22,7 +22,11 @@ import processing.core.PApplet;
  * 06/12/2017
  * Class to play Notes; usually called by a Melody.
  * 
+<<<<<<< HEAD
  * @author Emily Meuer, Dan Mahota
+=======
+ * @author Emily Meuer
+>>>>>>> RachelPractice
  *
  */
 public class Instrument {

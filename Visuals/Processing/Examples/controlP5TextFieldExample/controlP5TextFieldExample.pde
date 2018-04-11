@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 /**
 * ControlP5 Textfield
 *
@@ -218,6 +221,7 @@ java.lang.Object : String toString()
 java.lang.Object : boolean equals(Object) 
 
 
+<<<<<<< HEAD
 =======
 /**
 * ControlP5 Textfield
@@ -439,4 +443,6 @@ java.lang.Object : boolean equals(Object)
 
 
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 */
