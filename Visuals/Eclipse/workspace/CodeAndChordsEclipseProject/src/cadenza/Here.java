@@ -8,9 +8,25 @@ import processing.core.PApplet;
 
 public class Here extends Module
 {
+	private float		maxAmplitude = 10;
+
+	private float 		pointSize;
+	private int 		numPoints;
+	private float 		pointIncrament;
+
+	private boolean[]	drawSineFlag;
+	private float[] 	pointPos;
+	private float[][] 	pointHeight;
+
+	private boolean[]	skewGenerator;
+	private float[] 	maxSkew;
+
+	private boolean[]	skewFlag;
+	private float[] 	pointSkew;
+
 	public static void main(String[] args)
 	{
-		PApplet.main("module_01_02.Module_01_02_PitchHue_MultipleInputs");
+		PApplet.main("cadenza.Here");
 	} // main
 
 	public void setup() 
@@ -28,44 +44,126 @@ public class Here extends Module
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
+
+		this.pointSize = 10;
+		this.numPoints = (int) Math.floor((this.width / (this.pointSize * 2)) - 1);
+		System.out.println("numPoints: " + this.numPoints);
+		this.pointIncrament = this.width / this.numPoints;
+
+		this.pointSkew = new float[this.totalNumInputs];
+		this.maxSkew = new float[this.totalNumInputs];
+		
+		this.pointPos = new float[this.numPoints];
+		
+		this.pointHeight = new float[this.totalNumInputs][this.numPoints];
+		
+		this.drawSineFlag = new boolean[this.totalNumInputs];
+		this.skewFlag = new boolean[this.totalNumInputs];
+		this.skewGenerator = new boolean[this.totalNumInputs];
+		
+		float pos = this.pointIncrament/2;
+		
+		for(int i = 0; i < this.totalNumInputs; i++)
+		{	
+			for(int i2 = 0; i2 < this.numPoints; i2++)
+			{
+				this.pointHeight[i][i2] = 0;
+			}
+			
+			this.pointSkew[i] = 0;
+			this.skewFlag[i] = false;
+			this.skewGenerator[i] = false;
+			this.maxSkew[i] = 50;
+			this.drawSineFlag[i] = false;
+			i++;
+		}
+
+		for(int i = 0; i < this.numPoints; i++)
+		{
+			this.pointPos[i] = pos;
+			pos += this.pointIncrament;
+		}
+		
+		this.skewFlag[0] = true;
+		this.drawSineFlag[0] = true;
+		this.skewGenerator[1] = true;
+
 	} // setup()
 
 
 	public void draw()
 	{
 		int	scaleDegree;
+		
+		this.background(0);
 
-		// The following line is necessary so that key press shows the menu button
-		/*		if (keyPressed == true && !this.menu.getIsRunning()) 
+		//scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+		//this.menu.universalFade(scaleDegree);
+
+		for(int i = 0; i < this.totalNumInputs; i++)
 		{
-			this.menu.setMenuVal();
-		} // if keyPressed
-		 */
+			this.menu.updateAmplitudeFollower(i, 3);
+			if(this.menu.getAmplitudeFollower(i) > this.maxAmplitude)
+			{
+				this.maxAmplitude = this.menu.getAmplitudeFollower(i);
+			}
+		}
 
+		float totalSkew = 0;
+
+		for(int i = 0; i < this.totalNumInputs; i++)
+		{
+			if(this.skewGenerator[i])
+			{
+				float rand = (float) (Math.random() - .5);
+				totalSkew += this.maxSkew[i] * (Math.abs(rand)/rand);
+			}
+		}
+
+		for(int i = 0; i < this.totalNumInputs; i++)
+		{
+			if(this.skewFlag[i])
+			{
+				this.pointSkew[i] = (float) (this.menu.getAmplitudeFollower(i)/this.maxAmplitude);
+			}
+		}
+
+		
+		this.color(255);
+		this.fill(255);
+		
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
-			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
-
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-
-			this.menu.universalFade(scaleDegree);
-
-			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-
-			int	curX;
-			int	curY;
-
-			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
-			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
-			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
-
-			if(this.menu.isShowScale())
+			if(this.drawSineFlag[i])
 			{
-				this.legend(scaleDegree, i);
+				float sineAmp = this.menu.getAmplitudeFollower(i);
+				for(int i2 = 0; i2 < this.numPoints; i2++)
+				{
+					float sineIncrament = (float) (6*Math.PI)/this.numPoints;
+					
+					System.out.println("filled cell: " + i + ", " + i2 );
+					
+					this.pointHeight[i][i2] = (float) (sineAmp*Math.sin(sineIncrament * i2));
+					
+					float h = (this.height/2) + (this.pointHeight[i][i2]);
+					if(this.skewFlag[i])
+					{
+						float rand = (float)(2*(Math.random() - .5));
+						h += totalSkew * rand;
+					}
+					
+					this.ellipse(this.pointPos[i2], h, this.pointSize, this.pointSize);
+				}
 			}
+		}
 
-		} // for
+
+		if(this.menu.isShowScale())
+		{
+			//this.legend(scaleDegree, i);
+		}
+
+
 
 		this.menu.runMenu();
 

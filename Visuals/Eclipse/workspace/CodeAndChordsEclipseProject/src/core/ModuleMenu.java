@@ -680,9 +680,13 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fc.addChoosableFileFilter(filter);
 		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
 		
+		this.maxAmplitude = new float[16];
+		this.amplitudeFollower = new float[16];
+		
 		for(int i = 0; i < this.input.getNumInputs(); i++)
 		{
 			this.maxAmplitude[i] = 100;
+			this.amplitudeFollower[i] = 0;
 		}
 	} // constructor
 
@@ -1986,6 +1990,12 @@ public class ModuleMenu extends MenuTemplate  {
 	@SuppressWarnings("unused")
 	public void updateAmplitudeFollower(int numInput, int followerType)
 	{
+		if(numInput >= this.module.curNumInputs)
+		{
+			followerType = 0;
+			System.out.println("WARNING: update amplitude follower was called on a null input");
+		}
+		
 		//this variation of the amplitude follower always moves the follower half way from the
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
 		if(followerType == 1)
@@ -2037,7 +2047,7 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 			else
 			{
-				float maxIncramentDown = this.maxAmplitude[numInput]/50;
+				float maxIncramentDown = 10;
 				
 				if(this.amplitudeFollower[numInput] - amp > maxIncramentDown)
 				{
