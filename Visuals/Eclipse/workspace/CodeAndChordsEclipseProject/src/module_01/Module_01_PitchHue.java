@@ -3,12 +3,8 @@ package module_01;
 import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
-import core.PortAudioAudioIO;
-import core.Archive_ModuleTemplate.ModuleTemplate01;
 import core.input.RealTimeInput;
-import module_02.Module_02_AmplitudeHSB;
 import net.beadsproject.beads.core.AudioContext;
-import	controlP5.*;
 
 public class Module_01_PitchHue extends Module
 {
@@ -47,11 +43,11 @@ public class Module_01_PitchHue extends Module
 		this.setSquareValues();
 
 		// call add methods:
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
-=======
+/*=======
 		
 		this.menu.addHideButtons(0, textYVals[0]);
 		
@@ -111,10 +107,9 @@ public class Module_01_PitchHue extends Module
 		// Moved the % 12 from the above line out of round() so that we don't have to min() from 12 to 11:
 		curHuePos    = round(input.getAdjustedFundAsMidiNote(0)) % 12;
 		
-		// TODO - can it run w/out this?
-//		this.menu.setCurHueColorRangeColorAdd(curHuePos);
 
 >>>>>>> RachelPractice
+*/
 	} // setup()
 
 	public void draw()
@@ -128,10 +123,7 @@ public class Module_01_PitchHue extends Module
 		}
 
 		int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-<<<<<<< HEAD
 
-=======
->>>>>>> RachelPractice
 		this.menu.fade(scaleDegree, 0);
 
 		fill(this.menu.getCurHue()[0][0], this.menu.getCurHue()[0][1], this.menu.getCurHue()[0][2]);
