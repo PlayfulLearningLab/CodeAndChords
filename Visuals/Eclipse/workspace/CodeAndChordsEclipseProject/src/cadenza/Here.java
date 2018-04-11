@@ -73,7 +73,7 @@ public class Here extends Module
 			this.pointSkew[i] = 0;
 			this.skewFlag[i] = false;
 			this.skewGenerator[i] = false;
-			this.maxSkew[i] = 50;
+			this.maxSkew[i] = 30;
 			this.drawSineFlag[i] = false;
 			i++;
 		}
@@ -86,6 +86,7 @@ public class Here extends Module
 		
 		this.skewFlag[0] = true;
 		this.drawSineFlag[0] = true;
+		this.skewGenerator[0] = true;
 		this.skewGenerator[1] = true;
 
 	} // setup()
@@ -116,7 +117,7 @@ public class Here extends Module
 			if(this.skewGenerator[i])
 			{
 				float rand = (float) (Math.random() - .5);
-				totalSkew += this.maxSkew[i] * (Math.abs(rand)/rand);
+				totalSkew += this.maxSkew[i] * (Math.abs(rand)/rand) * (this.menu.getAmplitudeFollower(i)/this.maxAmplitude);
 			}
 		}
 
