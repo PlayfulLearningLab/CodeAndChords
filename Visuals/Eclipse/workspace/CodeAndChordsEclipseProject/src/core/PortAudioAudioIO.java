@@ -12,6 +12,15 @@ import net.beadsproject.beads.core.AudioUtils;
 import net.beadsproject.beads.core.IOAudioFormat;
 import net.beadsproject.beads.core.UGen;
 
+/**
+ * Summer 2017
+ * @author Emily Meuer
+ * 
+ * Class to interface with C's PortAudio library.
+ * 
+ * (Adapted from the Bead's library's AudioIO class.)
+ */
+
 public class PortAudioAudioIO extends AudioIO {
 
 	/** The default system buffer size. */
@@ -129,7 +138,8 @@ public class PortAudioAudioIO extends AudioIO {
 	{
 		try {
 			// Give it a little time to get out of the loop in runRealTime()
-			Thread.sleep(25);
+			//Thread.sleep(25);
+			audioThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -201,6 +211,9 @@ public class PortAudioAudioIO extends AudioIO {
 		 *            the AudioContext.
 		 * @param audioFormat
 		 *            the AudioFormat.
+		 * @param inStream
+		 * 				the BlockingStream opened when PortAudio was initialized.
+		 * @param channels the number of channels
 		 */
 		PortAudioInput(AudioContext context, AudioFormat audioFormat, BlockingStream inStream, int numChannels, int[] channels) {
 			super(context, numChannels);
