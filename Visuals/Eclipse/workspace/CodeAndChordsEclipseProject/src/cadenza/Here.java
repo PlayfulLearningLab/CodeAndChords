@@ -3,11 +3,14 @@ package cadenza;
 import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
+import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class Here extends Module
 {
+	//private RecordedInput recordedInput;
+	
 	private float		maxAmplitude = 10;
 
 	private float 		pointSize;
@@ -31,6 +34,7 @@ public class Here extends Module
 
 	public void setup() 
 	{
+		
 		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
 		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
@@ -40,6 +44,21 @@ public class Here extends Module
 
 		this.setSquareValues();
 
+/*
+		this.recordedInput	= new RecordedInput(this, new String[] {
+				"WantingMemories_Melody.wav",
+				"WMBass_Later_Quiet.wav",
+				"WantingMemories_Alto.wav",
+				"WantingMemories_Soprano.wav",
+				"WMTenor_Medium.wav"
+		});
+		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
+		this.curNumInputs	= 5;
+
+		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
+*/
+		
+		
 		// call add methods:
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
@@ -87,7 +106,6 @@ public class Here extends Module
 		this.skewFlag[0] = true;
 		this.drawSineFlag[0] = true;
 		this.skewGenerator[0] = true;
-		this.skewGenerator[1] = true;
 
 	} // setup()
 
@@ -107,6 +125,7 @@ public class Here extends Module
 			if(this.menu.getAmplitudeFollower(i) > this.maxAmplitude)
 			{
 				this.maxAmplitude = this.menu.getAmplitudeFollower(i);
+				System.out.println(this.maxAmplitude);
 			}
 		}
 
@@ -141,16 +160,14 @@ public class Here extends Module
 				for(int i2 = 0; i2 < this.numPoints; i2++)
 				{
 					float sineIncrament = (float) (6*Math.PI)/this.numPoints;
-					
-					System.out.println("filled cell: " + i + ", " + i2 );
-					
+										
 					this.pointHeight[i][i2] = (float) (sineAmp*Math.sin(sineIncrament * i2));
 					
 					float h = (this.height/2) + (this.pointHeight[i][i2]);
 					if(this.skewFlag[i])
 					{
 						float rand = (float)(2*(Math.random() - .5));
-						h += totalSkew * rand;
+						//h += totalSkew * rand + (this.height/2);
 					}
 					
 					this.ellipse(this.pointPos[i2], h, this.pointSize, this.pointSize);
