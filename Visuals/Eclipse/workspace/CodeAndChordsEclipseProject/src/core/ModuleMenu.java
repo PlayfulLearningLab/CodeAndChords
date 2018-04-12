@@ -4828,6 +4828,11 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.recInput;
 	}
+	
+	public boolean getUseRecInput()
+	{
+		return this.useRecInput;
+	}
 
 
 } // ModuleMenu
