@@ -15,7 +15,7 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorInterface */{
-	int xspacing = width/5;   // How far apart should each horizontal location be spaced
+	int xspacing;   // How far apart should each horizontal location be spaced
 	int w;              // Width of entire wave
 	double q = 10;
 
@@ -36,18 +36,17 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 
 	public void settings()
 	{
-		//fullScreen();
-		size(925, 520);
-		  w = width+16;
-		  dx = (TWO_PI / period) * xspacing;
-		  yvalues = new float[w/xspacing];
+		fullScreen();
 	} // settings
 
 	public void setup()
 	{
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-
+		 w = width;
+		 xspacing = width/70;
+		 dx = (TWO_PI / period) * xspacing;
+		 yvalues = new float[w/xspacing];
 		  
 		this.input    = new RealTimeInput(1, new AudioContext(), this);
 		this.totalNumInputs = this.input.getAdjustedNumInputs();
@@ -151,6 +150,11 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 			  {
 				  fill(255,255,0);
 			  ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
+			  }
+			  if(this.menu.getAmplitudeFollower(0)/q>160)
+			  {
+				  fill(255,255,0);
+			  ellipse(x*xspacing, 47*(height)/48+yvalues[x], 16, 16);
 			  }
 			  
 			  if(this.menu.getAmplitudeFollower(0)/q>175)

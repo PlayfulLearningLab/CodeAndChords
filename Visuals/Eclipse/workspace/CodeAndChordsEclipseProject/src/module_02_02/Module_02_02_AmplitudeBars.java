@@ -16,7 +16,7 @@ import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_02_AmplitudeBars extends Module /*implements ShapeEditorInterface */{
 
-	int xspacing = 16;   // How far apart should each horizontal location be spaced
+	int xspacing;   // How far apart should each horizontal location be spaced
 	int w;              // Width of entire wave
 
 	double theta = 0.0;  // Start angle at 0
@@ -36,11 +36,8 @@ public class Module_02_02_AmplitudeBars extends Module /*implements ShapeEditorI
 
 	public void settings()
 	{
-		//fullScreen();
-		size(925, 520);
-		  w = width+16;
-		  dx = (TWO_PI / period) * xspacing;
-		  yvalues = new float[w/xspacing];
+		fullScreen();
+		//size(925, 520);
 	} // settings
 
 	public void setup()
@@ -48,6 +45,12 @@ public class Module_02_02_AmplitudeBars extends Module /*implements ShapeEditorI
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
 
+		System.out.println("Width:" + width);
+		w = width;
+		xspacing = width/50;
+	    dx = (TWO_PI / period) * xspacing;
+	    yvalues = new float[w/xspacing];
+		 System.out.println(yvalues.length);
 		  
 		this.input    = new RealTimeInput(1, new AudioContext(), this);
 
@@ -124,22 +127,26 @@ public class Module_02_02_AmplitudeBars extends Module /*implements ShapeEditorI
 		  // A simple way to draw the wave with an ellipse at each location
 		  for (int x = 0; x < yvalues.length; x++) 
 		  {
-			 //color = color(255, 204*(this.input.getAmplitude(), 0);
+			  System.out.println(x*xspacing);
+			  System.out.println("xspacing equals: "+xspacing);
 			 //fill(color);
-			  ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
+			 ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
+			 //ellipse(x*xspacing, height/2, 16, 16);
 			  if (key == CODED)
 				{
 					if(keyCode==UP) 
 					{
 					    ellipse(x*xspacing, height/4+yvalues[x], 16, 16);
+						//ellipse(x*xspacing, height/4, 16, 16);
 					}
 					else if (keyCode==DOWN)
 					{
 					    ellipse(x*xspacing, 3*(height/4)+yvalues[x], 16, 16);
+					    //ellipse(x*xspacing, 3*(height/4), 16, 16);
 					}
 				}
+			 }
 		  }
-		}
 		
 	@Override
 	public String[] getLegendText()
