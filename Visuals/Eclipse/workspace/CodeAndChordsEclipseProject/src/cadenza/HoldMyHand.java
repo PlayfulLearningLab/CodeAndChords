@@ -86,7 +86,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	public void draw()
 	{
 		int	scaleDegree;
-		
+
 		// The following line is necessary so that key press shows the menu button
 		System.out.print(keyPressed);
 
@@ -97,7 +97,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 		this.menu.runMenu();
 
-//		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
+		//		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		scaleDegree	= (round(input.getAdjustedFundAsMidiNote(0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 		this.menu.fadeColor(scaleDegree, 0);
@@ -121,108 +121,112 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		// A simple way to draw the line with an ellipse at each location
 		for (int x = 0; x < yvalues.length; x++) 
 		{
-			//checks current amplitude to determine each amplitude step size for each new line 
-			double amp;
-			amp = this.input.getAmplitude();
-			System.out.println("Curent Amplitute: "+amp);
-
-			//fill(255,0,0);
-			ellipse(x*xspacing, height+yvalues[x], 16, 16);//bottom line
-			if( this.input.getAmplitude()/q>10)
+			for(int y = 0; y<curNumInputs; y++)
 			{
+				//checks current amplitude to determine each amplitude step size for each new line 
+				double amp;
+				amp = this.input.getAmplitude();
+				System.out.println("Curent Amplitute: "+amp);
+
 				//fill(255,0,0);
-				ellipse(x*xspacing, 15*(height)/16+yvalues[x], 16, 16);
-			}
+				ellipse(x*xspacing, height+yvalues[x], 16, 16);//bottom line
+				if( this.input.getAmplitude()/q>10)
+				{
+					//fill(255,0,0);
+					ellipse(x*xspacing, 15*(height)/16+yvalues[x], 16, 16);
+				}
 
-			if( this.menu.getAmplitudeFollower(0)/q>50)
-			{
-				//fill(255,127,0);
-				ellipse(x*xspacing, 7*(height)/8+yvalues[x], 16, 16);
-			}
+				if( this.menu.getAmplitudeFollower(y)/q>50)
+				{
+					//fill(255,127,0);
+					ellipse(x*xspacing, 7*(height)/8+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>100)
-			{
-				//fill(255,127,0);
-				ellipse(x*xspacing, 13*(height)/16+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>100)
+				{
+					//fill(255,127,0);
+					ellipse(x*xspacing, 13*(height)/16+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>125)
-			{
-				//fill(255,255,0);
-				ellipse(x*xspacing, 6*(height)/8+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>125)
+				{
+					//fill(255,255,0);
+					ellipse(x*xspacing, 6*(height)/8+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>150)
-			{
-				//fill(255,255,0);
-				ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
-			}
-			if(this.menu.getAmplitudeFollower(0)/q>160)
-			{
-				//fill(255,255,0);
-				ellipse(x*xspacing, 47*(height)/48+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>150)
+				{
+					//fill(255,255,0);
+					ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
+				}
+				if(this.menu.getAmplitudeFollower(y)/q>160)
+				{
+					//fill(255,255,0);
+					ellipse(x*xspacing, 47*(height)/48+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>175)
-			{
-				//fill(0,255,0);
-				ellipse(x*xspacing, 5*(height)/8+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>175)
+				{
+					//fill(0,255,0);
+					ellipse(x*xspacing, 5*(height)/8+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>200)
-			{
-				//fill(0,255,0);
-				ellipse(x*xspacing, 9*(height)/16+yvalues[x], 16, 16);
-			}			  
+				if(this.menu.getAmplitudeFollower(y)/q>200)
+				{
+					//fill(0,255,0);
+					ellipse(x*xspacing, 9*(height)/16+yvalues[x], 16, 16);
+				}			  
 
-			if(this.menu.getAmplitudeFollower(0)/q>225)
-			{
-				//fill(0,255,0);
-				ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>225)
+				{
+					//fill(0,255,0);
+					ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>250)
-			{
-				//fill(0,0,255);
-				ellipse(x*xspacing, 7*(height)/16+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>250)
+				{
+					//fill(0,0,255);
+					ellipse(x*xspacing, 7*(height)/16+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>275)
-			{
-				//fill(0,0,255);
-				ellipse(x*xspacing, 3*(height)/8+yvalues[x], 16, 16);
-			}			  
+				if(this.menu.getAmplitudeFollower(y)/q>275)
+				{
+					//fill(0,0,255);
+					ellipse(x*xspacing, 3*(height)/8+yvalues[x], 16, 16);
+				}			  
 
-			if(this.menu.getAmplitudeFollower(0)/q>300)
-			{
-				//fill(0,0,255);
-				ellipse(x*xspacing, 5*(height)/16+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>300)
+				{
+					//fill(0,0,255);
+					ellipse(x*xspacing, 5*(height)/16+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>325)
-			{
-				//fill(75,0,130);
-				ellipse(x*xspacing, (height)/4+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>325)
+				{
+					//fill(75,0,130);
+					ellipse(x*xspacing, (height)/4+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>350)
-			{
-				//fill(75,0,130);
-				ellipse(x*xspacing, 3*(height)/16+yvalues[x], 16, 16);
-			}
-			if(this.menu.getAmplitudeFollower(0)/q>375)
-			{
-				//fill(148,0,211);
-				ellipse(x*xspacing, (height)/8+yvalues[x], 16, 16);
-			}
+				if(this.menu.getAmplitudeFollower(y)/q>350)
+				{
+					//fill(75,0,130);
+					ellipse(x*xspacing, 3*(height)/16+yvalues[x], 16, 16);
+				}
+				if(this.menu.getAmplitudeFollower(y)/q>375)
+				{
+					//fill(148,0,211);
+					ellipse(x*xspacing, (height)/8+yvalues[x], 16, 16);
+				}
 
-			if(this.menu.getAmplitudeFollower(0)/q>400)
-			{
-				//fill(148,0,211);
-				ellipse(x*xspacing, (height)/16+yvalues[x], 16, 16);
+				if(this.menu.getAmplitudeFollower(y)/q>400)
+				{
+					//fill(148,0,211);
+					ellipse(x*xspacing, (height)/16+yvalues[x], 16, 16);
+				}
 			}
 		}
-	}
+
+	} // renderWave
 
 	@Override
 	public String[] getLegendText()
