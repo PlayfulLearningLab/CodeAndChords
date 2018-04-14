@@ -1993,7 +1993,7 @@ public class ModuleMenu extends MenuTemplate  {
 		if(numInput >= this.module.curNumInputs)
 		{
 			followerType = 0;
-			System.out.println("WARNING: update amplitude follower was called on a null input");
+			//System.out.println("WARNING: update amplitude follower was called on a null input");
 		}
 		
 		//this variation of the amplitude follower always moves the follower half way from the
@@ -4827,6 +4827,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public RecordedInput getRecInput()
 	{
 		return this.recInput;
+	}
+	
+	public boolean getUseRecInput()
+	{
+		return this.useRecInput;
 	}
 
 
