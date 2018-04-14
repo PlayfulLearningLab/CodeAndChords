@@ -30,7 +30,7 @@ public class PortAudioAudioIO extends AudioIO {
 	private Thread audioThread;
 
 	/** The priority of the audio thread. */
-	private int threadPriority; 
+	private int threadPriority;
 
 	private	BlockingStream	outStream;
 	private	BlockingStream	inStream;
@@ -49,7 +49,6 @@ public class PortAudioAudioIO extends AudioIO {
 
 		setThreadPriority(Thread.MAX_PRIORITY);
 	}
-
 	/**
 	 * Initializes PortAudio.
 	 */ 
@@ -90,7 +89,6 @@ public class PortAudioAudioIO extends AudioIO {
 		this.threadPriority = priority;
 		if(audioThread != null) audioThread.setPriority(threadPriority);
 	}
-
 	/**
 	 * @return The priority of the audio thread.
 	 */
@@ -105,7 +103,7 @@ public class PortAudioAudioIO extends AudioIO {
 			if(this.inStream.isActive())	{	this.inStream.stop();	}
 			this.inStream.close();
 		} // inStream not null
-
+		
 		if(this.outStream != null)
 		{
 			if(this.outStream.isActive())	{	this.outStream.stop();	}
@@ -176,7 +174,6 @@ public class PortAudioAudioIO extends AudioIO {
 			}
 			this.outStream.write( interleavedOutput, bufferSizeInFrames );
 		} // while
-
 	} // runRealTime
 
 	@Override
