@@ -124,5 +124,13 @@ public class Follower
 	{
 		return this.val;
 	}
+	
+	public float getScalarVal()
+	{
+		if(this.useLimits == false)
+			throw new IllegalArgumentException("Limits must be set and turned on to use this function");
+		
+		return this.val/this.maxVal;
+	}
 
 }
