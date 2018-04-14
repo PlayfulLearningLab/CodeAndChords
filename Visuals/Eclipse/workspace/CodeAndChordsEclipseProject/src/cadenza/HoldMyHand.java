@@ -1,4 +1,4 @@
-package module_02_03;
+package cadenza;
 /*
  * Rachel Farah
  * Vintage Stereo Lines Controlled by Amplitude
@@ -14,7 +14,7 @@ import core.ShapeEditor;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
-public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorInterface */{
+public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	int xspacing;   // How far apart should each horizontal location be spaced
 	int w;              // Width of entire wave
 	double q = 10;
@@ -30,7 +30,7 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 
 	public static void main(String[] args) 
 	{
-		PApplet.main("module_02_03.Module_02_03_AmplitudeBars");
+		PApplet.main("cadenza.HoldMyHand");
 	} // main
 
 
@@ -126,99 +126,99 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 			amp = this.input.getAmplitude();
 			System.out.println("Curent Amplitute: "+amp);
 
-			fill(255,0,0);
+			//fill(255,0,0);
 			ellipse(x*xspacing, height+yvalues[x], 16, 16);//bottom line
 			if( this.input.getAmplitude()/q>10)
 			{
-				fill(255,0,0);
+				//fill(255,0,0);
 				ellipse(x*xspacing, 15*(height)/16+yvalues[x], 16, 16);
 			}
 
 			if( this.menu.getAmplitudeFollower(0)/q>50)
 			{
-				fill(255,127,0);
+				//fill(255,127,0);
 				ellipse(x*xspacing, 7*(height)/8+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>100)
 			{
-				fill(255,127,0);
+				//fill(255,127,0);
 				ellipse(x*xspacing, 13*(height)/16+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>125)
 			{
-				fill(255,255,0);
+				//fill(255,255,0);
 				ellipse(x*xspacing, 6*(height)/8+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>150)
 			{
-				fill(255,255,0);
+				//fill(255,255,0);
 				ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
 			}
 			if(this.menu.getAmplitudeFollower(0)/q>160)
 			{
-				fill(255,255,0);
+				//fill(255,255,0);
 				ellipse(x*xspacing, 47*(height)/48+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>175)
 			{
-				fill(0,255,0);
+				//fill(0,255,0);
 				ellipse(x*xspacing, 5*(height)/8+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>200)
 			{
-				fill(0,255,0);
+				//fill(0,255,0);
 				ellipse(x*xspacing, 9*(height)/16+yvalues[x], 16, 16);
 			}			  
 
 			if(this.menu.getAmplitudeFollower(0)/q>225)
 			{
-				fill(0,255,0);
+				//fill(0,255,0);
 				ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>250)
 			{
-				fill(0,0,255);
+				//fill(0,0,255);
 				ellipse(x*xspacing, 7*(height)/16+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>275)
 			{
-				fill(0,0,255);
+				//fill(0,0,255);
 				ellipse(x*xspacing, 3*(height)/8+yvalues[x], 16, 16);
 			}			  
 
 			if(this.menu.getAmplitudeFollower(0)/q>300)
 			{
-				fill(0,0,255);
+				//fill(0,0,255);
 				ellipse(x*xspacing, 5*(height)/16+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>325)
 			{
-				fill(75,0,130);
+				//fill(75,0,130);
 				ellipse(x*xspacing, (height)/4+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>350)
 			{
-				fill(75,0,130);
+				//fill(75,0,130);
 				ellipse(x*xspacing, 3*(height)/16+yvalues[x], 16, 16);
 			}
 			if(this.menu.getAmplitudeFollower(0)/q>375)
 			{
-				fill(148,0,211);
+				//fill(148,0,211);
 				ellipse(x*xspacing, (height)/8+yvalues[x], 16, 16);
 			}
 
 			if(this.menu.getAmplitudeFollower(0)/q>400)
 			{
-				fill(148,0,211);
+				//fill(148,0,211);
 				ellipse(x*xspacing, (height)/16+yvalues[x], 16, 16);
 			}
 		}

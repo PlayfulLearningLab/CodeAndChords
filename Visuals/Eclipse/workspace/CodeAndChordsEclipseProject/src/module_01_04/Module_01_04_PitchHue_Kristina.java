@@ -80,7 +80,7 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 
 			hold2[0] = this.menu.getCurHue()[0][0];
 			hold2[1] = this.menu.getCurHue()[0][1];
