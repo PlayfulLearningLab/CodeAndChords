@@ -34,7 +34,7 @@ public class SMM_Demo extends Module {
 	private	static final int	SCENE_RIVER				= 97;	// a
 	private	static final int	SCENE_STRAIGHTEN		= 115;	// s
 	private	static final int	SCENE_CAT				= 100;	// d
-	private	static final int	SCENE_PRAYER			= 102;	// f	// 
+	private	static final int	SCENE_PRAYER			= 102;	// f
 
 	// Cadenza:
 	private	static final int	SCENE_KALEIDESCOPE		= 113;	// q
