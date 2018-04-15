@@ -502,6 +502,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
 		
+		/*
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -514,6 +515,17 @@ public class ModuleMenu extends MenuTemplate  {
 		this.recInput.pause(true);
 		this.useRecInput		= false;
 		this.recInputPlaying	= false;
+		*/
+		
+		this.recInput	= new RecordedInput(this.module, new String[] {
+				"cadenza/Hold My Hand - Alto.wav",
+				"cadenza/Hold My Hand - Mezzo.wav",
+				"cadenza/Hold My Hand - Soprano.wav",
+				"cadenza/Hold My Hand - Melody.wav"
+		});
+		this.recInput.pause(false);
+		this.useRecInput		= true;
+		this.recInputPlaying	= true;
 
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
