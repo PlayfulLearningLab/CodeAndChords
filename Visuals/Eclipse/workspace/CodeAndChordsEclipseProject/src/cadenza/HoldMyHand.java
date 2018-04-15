@@ -15,9 +15,16 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
 public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
-	int xspacing;   // How far apart should each horizontal location be spaced
-	int w;              // Width of entire wave
+	int xspacing; 
+	int yspacing;
+	int w; 
+	int h;// Width of entire wave
 	double q = 10;
+	float amp;
+	float ampLevel;
+	float maxAmp;
+	float inputWidth;
+	float numEllipses; 
 
 	double theta = 0.0;  // Start angle at 0
 	double amplitude = 75.0;  // Height of wave
@@ -43,10 +50,17 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	{
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-		w = width;
-		xspacing = width/70;
-		dx = (TWO_PI / period) * xspacing;
-		yvalues = new float[w/xspacing];
+		 w = width;
+		 h = height;
+		 xspacing = width/70;
+		 yspacing = height/70;
+		 maxAmp=40;
+		 dx = (TWO_PI / period) * xspacing;
+		 yvalues = new float[h/yspacing];
+		 for(int i=0; i<yspacing;i++)
+		 {
+			 yvalues[i]=h-(i*yspacing);
+		 }
 
 		this.input    = new RealTimeInput(1, new AudioContext(), this);
 		this.totalNumInputs = this.input.getAdjustedNumInputs();
@@ -115,118 +129,31 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	} // draw
 
-	void renderWave() {
+	void renderWave() 
+	{
 		noStroke();
 		fill(255);
 		// A simple way to draw the line with an ellipse at each location
-		for (int x = 0; x < yvalues.length; x++) 
-		{
-			for(int y = 0; y<curNumInputs; y++)
+			for(int i = 0; i<curNumInputs; i++)
 			{
 				//checks current amplitude to determine each amplitude step size for each new line 
-				double amp;
-				amp = this.input.getAmplitude();
+				amp = this.menu.getAmplitudeFollower(i);
+				ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
+				inputWidth = width/curNumInputs; 
+				numEllipses  = inputWidth/xspacing; 
+				System.out.println("ampLevel: "+ampLevel);
 				System.out.println("Curent Amplitute: "+amp);
-
-				//fill(255,0,0);
-				ellipse(x*xspacing, height+yvalues[x], 16, 16);//bottom line
-				if( this.input.getAmplitude()/q>10)
+				for(int y = 0; y<ampLevel; y++)
 				{
-					//fill(255,0,0);
-					ellipse(x*xspacing, 15*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if( this.menu.getAmplitudeFollower(y)/q>50)
-				{
-					//fill(255,127,0);
-					ellipse(x*xspacing, 7*(height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>100)
-				{
-					//fill(255,127,0);
-					ellipse(x*xspacing, 13*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>125)
-				{
-					//fill(255,255,0);
-					ellipse(x*xspacing, 6*(height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>150)
-				{
-					//fill(255,255,0);
-					ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
-				}
-				if(this.menu.getAmplitudeFollower(y)/q>160)
-				{
-					//fill(255,255,0);
-					ellipse(x*xspacing, 47*(height)/48+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>175)
-				{
-					//fill(0,255,0);
-					ellipse(x*xspacing, 5*(height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>200)
-				{
-					//fill(0,255,0);
-					ellipse(x*xspacing, 9*(height)/16+yvalues[x], 16, 16);
-				}			  
-
-				if(this.menu.getAmplitudeFollower(y)/q>225)
-				{
-					//fill(0,255,0);
-					ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>250)
-				{
-					//fill(0,0,255);
-					ellipse(x*xspacing, 7*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>275)
-				{
-					//fill(0,0,255);
-					ellipse(x*xspacing, 3*(height)/8+yvalues[x], 16, 16);
-				}			  
-
-				if(this.menu.getAmplitudeFollower(y)/q>300)
-				{
-					//fill(0,0,255);
-					ellipse(x*xspacing, 5*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>325)
-				{
-					//fill(75,0,130);
-					ellipse(x*xspacing, (height)/4+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>350)
-				{
-					//fill(75,0,130);
-					ellipse(x*xspacing, 3*(height)/16+yvalues[x], 16, 16);
-				}
-				if(this.menu.getAmplitudeFollower(y)/q>375)
-				{
-					//fill(148,0,211);
-					ellipse(x*xspacing, (height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>400)
-				{
-					//fill(148,0,211);
-					ellipse(x*xspacing, (height)/16+yvalues[x], 16, 16);
+					for(int x = 0; x<(numEllipses); x++)
+					{
+						//fill(255,0,0);
+						ellipse(((x*xspacing)+((inputWidth)*i)), (yvalues[y]), 12, 12);//bottom line
+					}
 				}
 			}
-		}
 
-	} // renderWave
+		} // renderWave
 
 	@Override
 	public String[] getLegendText()
