@@ -35,6 +35,11 @@ public class Here extends Module
 	{
 		PApplet.main("cadenza.Here");
 	} // main
+	
+	public void settings()
+	{
+		fullScreen();
+	}
 
 	public void setup() 
 	{
@@ -69,6 +74,15 @@ public class Here extends Module
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
+		
+		this.menu.setCurKey("C", 2);
+		this.menu.getControlP5().getController("trichrom").update();
+
+		this.menu.setColor(0, new int[] { 0, 153, 51 }, true);
+		this.menu.setColor(8, new int[] { 255, 255, 102 }, true);
+		this.menu.setColor(4, new int[] { 0, 153, 204 }, true);
+
+		this.menu.getControlP5().getController("trichrom").update();
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
@@ -85,7 +99,8 @@ public class Here extends Module
 		checkpoint = this.millis(); 
 
 
-		this.pointSize = 25;
+//		this.pointSize = 25;
+		this.pointSize	= 10;
 		this.numPoints = (int) Math.floor((this.width / (this.pointSize * 2)) - 1);
 		System.out.println("numPoints: " + this.numPoints);
 		this.pointIncrament = this.width / this.numPoints;

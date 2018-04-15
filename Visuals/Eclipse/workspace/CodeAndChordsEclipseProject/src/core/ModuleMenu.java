@@ -502,7 +502,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
 		
-		/*
+		
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -516,8 +516,9 @@ public class ModuleMenu extends MenuTemplate  {
 		this.recInput.pause(true);
 		this.useRecInput		= false;
 		this.recInputPlaying	= false;
-		*/
-	
+		
+		// From the demos for Cadenza's spring show:
+	/*
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -526,14 +527,14 @@ public class ModuleMenu extends MenuTemplate  {
 				"6_Part_Scale5.wav",
 				"6_Part_Scale6.wav",
 				"6_Part_Scale7.wav",
-				"cadenza/Here - Melody.wav",
+				//"cadenza/Here - Melody.wav",
 				"cadenza/Here - Beatbox.wav"
 		});
 		
 		this.recInput.pause(false);
 		this.useRecInput		= true;
 		this.recInputPlaying	= true;
-
+*/
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
