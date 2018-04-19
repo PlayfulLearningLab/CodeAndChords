@@ -95,13 +95,13 @@ public class Follower
 		return this.minVal;
 	}
 
-	public void update(float input)
+	public void update(float rawValue)
 	{
 		switch(this.type){
 
 		case "average":
 
-			this.val = (input + this.val)/2;
+			this.val = (rawValue + this.val)/2;
 			break;
 			
 			
@@ -122,7 +122,13 @@ public class Follower
 
 	public float getVal()
 	{
-		return this.val;
+		float returnVal = this.val;
+		
+		if(this.integersOnly)
+		{
+			returnVal = Math.round(returnVal);
+		}
+		return returnVal;
 	}
 	
 	public float getScalarVal()

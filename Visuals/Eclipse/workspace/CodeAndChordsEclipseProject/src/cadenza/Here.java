@@ -9,6 +9,13 @@ import processing.core.PApplet;
 
 public class Here extends Module
 {
+	//index number = mic number - 1;
+	private int			beatBoxIndexNumber = 0;
+	
+	//index number = mic number - 1;
+	private int			soloistIndexNumber = 0;
+	
+	
 	private float		maxAmplitude = 300;
 
 	private float 		pointSize;
@@ -124,9 +131,9 @@ public class Here extends Module
 			pos += this.pointIncrament;
 		}
 
-		this.skewFlag[0] = true;
-		this.drawSineFlag[0] = true;
-		this.skewGenerator[0] = true;
+		this.skewFlag[this.soloistIndexNumber] = true;
+		this.drawSineFlag[this.soloistIndexNumber] = true;
+		this.skewGenerator[this.beatBoxIndexNumber] = true;
 
 	} // setup()
 

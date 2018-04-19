@@ -8,6 +8,7 @@ import processing.core.PApplet;
 import core.Shape;
 import core.ShapeEditor;
 import core.input.RealTimeInput;
+import filters.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInterface */{
@@ -15,6 +16,9 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
+	private Follower follower;
+	
+	
 	public static void main(String[] args) 
 	{
 		PApplet.main("module_02.Module_02_AmplitudeHSB");
@@ -34,38 +38,40 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 
 		this.menu	= new ModuleMenu(this, this, this.input, 6);
 
-				this.yVals		= new int[18];
-				// Seemed like a good starting position, related to the text - but pretty arbitrary:
-				this.yVals[0]	= 50;
-				int	distance	= (this.height - this.yVals[0]) / this.yVals.length;
-				for(int i = 1; i < this.yVals.length; i++)
-				{
-					this.yVals[i]	= this.yVals[i - 1] + distance;
-				} // fill yVals
+		this.yVals		= new int[18];
+		// Seemed like a good starting position, related to the text - but pretty arbitrary:
+		this.yVals[0]	= 50;
+		int	distance	= (this.height - this.yVals[0]) / this.yVals.length;
+		for(int i = 1; i < this.yVals.length; i++)
+		{
+			this.yVals[i]	= this.yVals[i - 1] + distance;
+		} // fill yVals
 
-				// Have to addColorSelect() first so that everything else can access the colors:
-				String[]	buttonLabels	= new String[] {
-						"Canvas", "1", "2", "3", "4", "5", "6"
-				};
+		// Have to addColorSelect() first so that everything else can access the colors:
+		String[]	buttonLabels	= new String[] {
+				"Canvas", "1", "2", "3", "4", "5", "6"
+		};
 
-				this.menu.addColorMenu(buttonLabels, 1, true, null, false, false, "Dynamic\nSegments", 6, 6, "color");
-				this.menu.addSensitivityMenu(false);
+		this.menu.addColorMenu(buttonLabels, 1, true, null, false, false, "Dynamic\nSegments", 6, 6, "color");
+		this.menu.addSensitivityMenu(false);
 
-				this.menu.addShapeSizeSlider(0, this.yVals[15]);
+		this.menu.addShapeSizeSlider(0, this.yVals[15]);
 
-				// Have to do this last so that the manually added Slider (above) doesn't get an id already used by the ShapeEditor:
-				this.menu.addShapeMenu(1);
-			
-				this.menu.getInstrument().setADSR(1000, 500, 0, 0);
-				this.menu.setBPM(30);
+		// Have to do this last so that the manually added Slider (above) doesn't get an id already used by the ShapeEditor:
+		this.menu.addShapeMenu(1);
 
-//				this.textSize(32);
+		this.menu.getInstrument().setADSR(1000, 500, 0, 0);
+		this.menu.setBPM(30);
+		
+		this.follower = new Follower();
+
+		//				this.textSize(32);
 
 	} // setup
 
 	public void draw()
 	{
-//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
+		//		System.out.println("this.input.getAmplitude() = " + this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true && !this.menu.getIsRunning() && !this.menu.getShapeEditor().getIsRunning()) 
@@ -75,8 +81,10 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
+		this.follower.update(this.input.getAmplitude());
+		
 		// pick the appropriate color by checking amplitude threshold
-		float	curAmp		= this.menu.getAmplitudeFollower(0);
+		float	curAmp		= this.follower.getVal();
 		int		goalHuePos	= 0;
 
 		for(int i = 0; i < this.menu.getCurRangeSegments(); i++)
@@ -89,8 +97,6 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		//		System.out.println("curAmp " + curAmp + " was over thresholds[" + goalHuePos + "]: " + this.moduleTemplate.getThresholds()[goalHuePos]);
 
 		this.menu.fadeColor(goalHuePos, 0);
-		
-		this.menu.updateAmplitudeFollower(0, 1);
 
 		/*
 		 * need:
@@ -116,7 +122,7 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		} // if showScale
 
 		// ShapeEditor.runMenu now included in menu.runMenu:
-//		this.menu.shapeEditor.runMenu();
+		//		this.menu.shapeEditor.runMenu();
 		this.menu.runMenu();
 
 	} // draw
@@ -140,19 +146,19 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 
 	public void mousePressed()
 	{
-/*
+		/*
 		FullScreenDisplay fsm = new FullScreenDisplay();
 		fsm.startDisplay();
 		this.shapeEditor.setPApplet(fsm);
 		this.menu.setPApplet(fsm);
-*/
-		
+		 */
+
 		//TODO: Is the hamburger button in a ControlP5 object not in this if statement? -- yes, it's in the menu.getOutsideButtonsCP5().
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
 			Shape	shape	= shapeEditor.getShapes()[0];
-			
+
 			// Map if running:
 			if(this.menu.getShapeEditor().getIsRunning() || this.menu.getIsRunning())
 			{
