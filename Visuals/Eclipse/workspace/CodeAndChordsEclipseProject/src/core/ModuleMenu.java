@@ -502,6 +502,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
 		
+		
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -511,10 +512,29 @@ public class ModuleMenu extends MenuTemplate  {
 				"6_Part_Scale6.wav",
 				"6_Part_Scale7.wav"
 		});
+		
 		this.recInput.pause(true);
 		this.useRecInput		= false;
 		this.recInputPlaying	= false;
-
+		
+		// From the demos for Cadenza's spring show:
+	/*
+		this.recInput	= new RecordedInput(this.module, new String[] {
+				"6_Part_Scale1.wav",
+				"6_Part_Scale2.wav",
+				"6_Part_Scale3.wav",
+				"6_Part_Scale4.wav",
+				"6_Part_Scale5.wav",
+				"6_Part_Scale6.wav",
+				"6_Part_Scale7.wav",
+				//"cadenza/Here - Melody.wav",
+				"cadenza/Here - Beatbox.wav"
+		});
+		
+		this.recInput.pause(false);
+		this.useRecInput		= true;
+		this.recInputPlaying	= true;
+*/
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
@@ -1981,7 +2001,7 @@ public class ModuleMenu extends MenuTemplate  {
 	} // fadeColor
 	
 	/**
-	 * this method uptades the amplitude follower and needs to be called every time in the draw loop
+	 * this method updates the amplitude follower and needs to be called every time in the draw loop
 	 * for each input that is using it.
 	 * 
 	 * @param numInput:  Controls the input that is updated
@@ -2000,7 +2020,12 @@ public class ModuleMenu extends MenuTemplate  {
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
 		if(followerType == 1)
 		{
-			this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.input.getAmplitude()) / 2;
+			if(!this.recInputPlaying)
+			{
+				this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.input.getAmplitude(numInput)) / 2;
+			} else {
+				this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.recInput.getAmplitude(numInput)) / 2;
+			}
 		}
 		
 		//this variation of the amplitude follower always moves the follower half way from the
@@ -2009,7 +2034,13 @@ public class ModuleMenu extends MenuTemplate  {
 		//value can change in one increment
 		if(followerType == 2)
 		{
-			float amp = this.input.getAmplitude(numInput);
+			float	amp;
+			if(!this.recInputPlaying)
+			{
+				amp = this.input.getAmplitude(numInput);
+			} else {
+				amp	= this.recInput.getAmplitude(numInput);
+			}
 			
 			if(this.maxAmplitude[numInput] < amp)
 			{

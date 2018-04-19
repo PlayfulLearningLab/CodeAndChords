@@ -9,15 +9,26 @@ package cadenza;
 import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
-import core.Shape;
-import core.ShapeEditor;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
 public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
-	int xspacing;   // How far apart should each horizontal location be spaced
-	int w;              // Width of entire wave
+	int	soloistInput	= 0;
+	
+	int[]	inputNums	= {
+			1, 2, 3
+	};
+	
+	int xspacing; 
+	int yspacing;
+	int w; 
+	int h;// Width of entire wave
 	double q = 10;
+	float amp;
+	float ampLevel;
+	float maxAmp;
+	float inputWidth;
+	float numEllipses; 
 
 	double theta = 0.0;  // Start angle at 0
 	double amplitude = 75.0;  // Height of wave
@@ -43,17 +54,35 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	{
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-		w = width;
-		xspacing = width/70;
-		dx = (TWO_PI / period) * xspacing;
-		yvalues = new float[w/xspacing];
+		 w = width;
+		 h = height;
+		 
+		 xspacing = width/70;
+		 yspacing = height/70;
+		 
+//		 maxAmp=40;
+		 maxAmp=400;
+		 
+		 dx = (TWO_PI / period) * xspacing;
+		 
+		 yvalues = new float[h/yspacing];
+		 for(int i=0; i<yvalues.length;i++)
+		 {
+			 yvalues[i]=h-(i*yspacing);
+		 }
 
-		this.input    = new RealTimeInput(1, new AudioContext(), this);
+		this.input    = new RealTimeInput(7, new AudioContext(), this);
 		this.totalNumInputs = this.input.getAdjustedNumInputs();
-		this.curNumInputs = 4;
+//		this.curNumInputs = 4;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
+		this.curNumInputs	= this.menu.getRecInput().getNumInputs();
+		
+		this.menu.setCurKey("G", 2);
 
+		this.inputWidth = width/this.inputNums.length; 
+		this.numEllipses  = inputWidth/xspacing;
+		
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
 		this.yVals[0]	= 50;
@@ -68,7 +97,8 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 				"Canvas", "1", "2", "3", "4", "5", "6"
 		};
 
-		this.menu.addColorMenu(buttonLabels, 1, true, null, false, false, "Dynamic\nSegments", 6, 6, "color");
+//		this.menu.addColorMenu(buttonLabels, 1, true, null, false, false, "Dynamic\nSegments", 6, 6, "color");
+		this.menu.addColorMenu();
 		this.menu.addSensitivityMenu(false);
 
 		this.menu.addShapeSizeSlider(0, this.yVals[15]);
@@ -80,6 +110,14 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		this.menu.setBPM(30);
 
 		//				this.textSize(32);
+		
+		this.menu.getControlP5().getController("trichrom").update();
+
+		this.menu.setColor(0, new int[] { 254, 183, 78 }, true);
+		this.menu.setColor(4, new int[] { 0, 0, 200 }, true);
+		this.menu.setColor(8, new int[] { 150, 0, 150 }, true);
+
+		this.menu.getControlP5().getController("trichrom").update();
 
 	} // setup
 
@@ -88,8 +126,6 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		int	scaleDegree;
 
 		// The following line is necessary so that key press shows the menu button
-		System.out.print(keyPressed);
-
 		if (keyPressed == true && !this.menu.getIsRunning()) 
 		{
 			this.menu.setMenuVal();
@@ -99,134 +135,55 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 		//		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
-		scaleDegree	= (round(input.getAdjustedFundAsMidiNote(0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-		this.menu.fadeColor(scaleDegree, 0);
-		background(this.menu.getCurHue()[0][0], this.menu.getCurHue()[0][1], this.menu.getCurHue()[0][2]);
-
-		// pick the appropriate color by checking amplitude threshold
-		float	curAmp		= this.input.getAmplitude();
+		/*
+		scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+		this.menu.fadeColor(scaleDegree, this.soloistInput);
+		*/
+		if(this.menu.getRecInputPlaying())
+		{
+			scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
+		} else {
+			System.out.println("input check");
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
+		}
+		
+		this.menu.fadeColor(scaleDegree, this.soloistInput);		
+		background(this.menu.getCurHue()[this.soloistInput][0], this.menu.getCurHue()[this.soloistInput][1], this.menu.getCurHue()[this.soloistInput][2]);
 
 		renderWave();
 
-		for(int i=0;i<curNumInputs;i++)
+		for(int i=0;i<this.curNumInputs;i++)
 		{
 			this.menu.updateAmplitudeFollower(i,1);
 		}
 
 	} // draw
 
-	void renderWave() {
+	void renderWave() 
+	{
 		noStroke();
 		fill(255);
 		// A simple way to draw the line with an ellipse at each location
-		for (int x = 0; x < yvalues.length; x++) 
-		{
-			for(int y = 0; y<curNumInputs; y++)
+			for(int i = 0; i<this.inputNums.length; i++)
 			{
 				//checks current amplitude to determine each amplitude step size for each new line 
-				double amp;
-				amp = this.input.getAmplitude();
-				System.out.println("Curent Amplitute: "+amp);
-
-				//fill(255,0,0);
-				ellipse(x*xspacing, height+yvalues[x], 16, 16);//bottom line
-				if( this.input.getAmplitude()/q>10)
+				amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
+				ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
+				
+				//System.out.println("ampLevel: "+ampLevel);
+				//System.out.println("Curent Amplitute: "+amp);
+				
+				for(int y = 0; y < ampLevel; y++)
 				{
-					//fill(255,0,0);
-					ellipse(x*xspacing, 15*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if( this.menu.getAmplitudeFollower(y)/q>50)
-				{
-					//fill(255,127,0);
-					ellipse(x*xspacing, 7*(height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>100)
-				{
-					//fill(255,127,0);
-					ellipse(x*xspacing, 13*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>125)
-				{
-					//fill(255,255,0);
-					ellipse(x*xspacing, 6*(height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>150)
-				{
-					//fill(255,255,0);
-					ellipse(x*xspacing, 11*(height)/16+yvalues[x], 16, 16);
-				}
-				if(this.menu.getAmplitudeFollower(y)/q>160)
-				{
-					//fill(255,255,0);
-					ellipse(x*xspacing, 47*(height)/48+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>175)
-				{
-					//fill(0,255,0);
-					ellipse(x*xspacing, 5*(height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>200)
-				{
-					//fill(0,255,0);
-					ellipse(x*xspacing, 9*(height)/16+yvalues[x], 16, 16);
-				}			  
-
-				if(this.menu.getAmplitudeFollower(y)/q>225)
-				{
-					//fill(0,255,0);
-					ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>250)
-				{
-					//fill(0,0,255);
-					ellipse(x*xspacing, 7*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>275)
-				{
-					//fill(0,0,255);
-					ellipse(x*xspacing, 3*(height)/8+yvalues[x], 16, 16);
-				}			  
-
-				if(this.menu.getAmplitudeFollower(y)/q>300)
-				{
-					//fill(0,0,255);
-					ellipse(x*xspacing, 5*(height)/16+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>325)
-				{
-					//fill(75,0,130);
-					ellipse(x*xspacing, (height)/4+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>350)
-				{
-					//fill(75,0,130);
-					ellipse(x*xspacing, 3*(height)/16+yvalues[x], 16, 16);
-				}
-				if(this.menu.getAmplitudeFollower(y)/q>375)
-				{
-					//fill(148,0,211);
-					ellipse(x*xspacing, (height)/8+yvalues[x], 16, 16);
-				}
-
-				if(this.menu.getAmplitudeFollower(y)/q>400)
-				{
-					//fill(148,0,211);
-					ellipse(x*xspacing, (height)/16+yvalues[x], 16, 16);
+					for(int x = 0; x < this.numEllipses; x++)
+					{
+						//fill(255,0,0);
+						ellipse(((x*xspacing)+((this.inputWidth)*i)), (yvalues[y]), 12, 12);//bottom line
+					}
 				}
 			}
-		}
 
-	} // renderWave
+		} // renderWave
 
 	@Override
 	public String[] getLegendText()
