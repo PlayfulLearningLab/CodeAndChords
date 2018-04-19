@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 import org.jaudiolibs.beads.AudioServerIO;
 import org.jaudiolibs.beads.*;
 
@@ -729,6 +732,7 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
   public float getAmplitude() {  
     return this.amplitude;
   }
+<<<<<<< HEAD
 =======
 import org.jaudiolibs.beads.AudioServerIO;
 import org.jaudiolibs.beads.*;
@@ -1461,4 +1465,6 @@ class FrequencyEMM extends FeatureExtractor<Float, float[]> {
     return this.amplitude;
   }
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 }

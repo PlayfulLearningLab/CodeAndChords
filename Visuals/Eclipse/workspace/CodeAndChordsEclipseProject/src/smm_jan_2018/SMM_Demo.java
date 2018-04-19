@@ -34,7 +34,7 @@ public class SMM_Demo extends Module {
 	private	static final int	SCENE_RIVER				= 97;	// a
 	private	static final int	SCENE_STRAIGHTEN		= 115;	// s
 	private	static final int	SCENE_CAT				= 100;	// d
-	private	static final int	SCENE_PRAYER			= 102;	// f	// 
+	private	static final int	SCENE_PRAYER			= 102;	// f
 
 	// Cadenza:
 	private	static final int	SCENE_KALEIDESCOPE		= 113;	// q
@@ -50,13 +50,15 @@ public class SMM_Demo extends Module {
 	private	static final int	SCENE_WINGS_DYNAMIC		= 91;	// [
 
 	private	int	curScene							= SMM_Demo.SCENE_OPEN;
+	
+	private int talentShowInput	= 4;
 
 	private	int	clapInput0	= 0;
 	//	private	int	clapShape0	= 0;
 	
-	private	int	ampDemoInput	= 6;
-	private	int	soloistInput	= 1;
-	private	int	lullabyInput	= 1;
+	private	int	ampDemoInput	= 16;
+	private	int	soloistInput	= 0;
+	private	int	lullabyInput	= 16;
 
 	private	int	trioInput0	= 0;	// Shahzore
 	private	int	trioInput1	= 1;	// Taylor
@@ -105,10 +107,10 @@ public class SMM_Demo extends Module {
 
 	public void setup()
 	{
-		this.totalNumInputs	= 16;
+		this.totalNumInputs	= 24;
 		this.curNumInputs	= 1;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, true, this);
+		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
@@ -125,7 +127,7 @@ public class SMM_Demo extends Module {
 
 
 		// Have to add this last, else it overwrites Controllers and causes an infinite loop:
-		this.menu.addShapeMenu(8);
+		this.menu.addShapeMenu(28);
 		this.shapeEditor	= this.menu.getShapeEditor();	// for convenience/speed
 		/*
 		// Starts on clapping scene:
@@ -274,6 +276,7 @@ public class SMM_Demo extends Module {
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
+			System.out.println("scaleDegree = " + this.scaleDegree + "; amp = " + this.input.getAmplitude(this.soloistInput));
 			this.menu.fade(this.scaleDegree, this.soloistInput);
 			this.curHue	= this.menu.getCurHue()[this.soloistInput];
 			this.fill(this.curHue[0], this.curHue[1], this.curHue[2]);
@@ -514,7 +517,7 @@ public class SMM_Demo extends Module {
 		//////////////////////////// Cadenza: ////////////////////////////////
 		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE)
 		{
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.totalNumInputs; i++)
 			{
 				if(!this.menu.getRecInputPlaying())
 				{
@@ -536,8 +539,10 @@ public class SMM_Demo extends Module {
 
 		else if(this.curScene == SMM_Demo.SCENE_KALEIDESCOPE_SPIN)
 		{
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.totalNumInputs; i++)
 			{
+				System.out.println("amp(" + i + ") = " + this.input.getAmplitude(i));
+				
 				if(!this.menu.getRecInputPlaying())
 				{
 					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
@@ -548,7 +553,7 @@ public class SMM_Demo extends Module {
 				//					this.menu.fade(this.scaleDegree, i);
 				this.menu.fade(this.scaleDegree, i);
 
-				this.shapeEditor.getShapes()[i].setRotation(this.shapeEditor.getShapes()[i].getRotation() + (this.input.getAmplitude(i) / 100000));
+				this.shapeEditor.getShapes()[i/* % this.shapeEditor.getShapes().length*/].setRotation(this.shapeEditor.getShapes()[i].getRotation() + (this.input.getAmplitude(i) / 1000));
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -1578,7 +1583,8 @@ public class SMM_Demo extends Module {
 			this.menu.showShapeMenu();
 			this.menu.showColorMenu();
 
-			this.curNumInputs	= 7;
+//			this.curNumInputs	= 7;
+			this.curNumInputs	= 4;
 			//this.setSquareValues();
 
 			Shape	curShape;
@@ -1602,7 +1608,7 @@ public class SMM_Demo extends Module {
 					(this.height / 2) - radius
 			};
 
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.totalNumInputs; i++)
 			{
 				curShape	= this.shapeEditor.getShapes()[i];
 				//				curShape.setCurrentShape("x");
@@ -1611,8 +1617,8 @@ public class SMM_Demo extends Module {
 				//				curShape.setRotation(300);
 				curShape.setShapeScale(2.5f);
 
-				curShape.setXPos(xVals[i]);
-				curShape.setYPos(yVals[i]);
+				curShape.setXPos(xVals[i % xVals.length]);
+				curShape.setYPos(yVals[i % yVals.length]);
 			}
 
 			this.menu.setAlphaSlider(150);
@@ -1623,7 +1629,7 @@ public class SMM_Demo extends Module {
 
 			this.menu.getControlP5().getController("trichrom").update();
 
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.totalNumInputs; i++)
 			{
 				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
 				this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);
@@ -1639,7 +1645,8 @@ public class SMM_Demo extends Module {
 			this.menu.showShapeMenu();
 			this.menu.showColorMenu();
 
-			this.curNumInputs	= 7;
+//			this.curNumInputs	= 7;
+			this.curNumInputs	= 4;
 			//this.setSquareValues();
 
 			Shape	curShape;
@@ -1663,19 +1670,18 @@ public class SMM_Demo extends Module {
 					(this.height / 2) - radius
 			};
 
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.totalNumInputs; i++)
 			{
-				curShape	= this.shapeEditor.getShapes()[i];
+				curShape	= this.shapeEditor.getShapes()[i/* % this.shapeEditor.getShapes().length*/];
 				//				curShape.setCurrentShape("x");
 				//				curShape.setCurrentShape("pentagon");
 				curShape.setCurrentShape("hexagon");
 				//				curShape.setRotation(300);
-				curShape.setShapeScale(2.51f);
+				curShape.setShapeScale(2.5f);
 
-				curShape.setXPos(xVals[i]);
-				curShape.setYPos(yVals[i]);
+				curShape.setXPos(xVals[i % xVals.length]);
+				curShape.setYPos(yVals[i % yVals.length]);
 			}
-
 			this.menu.setAlphaSlider(150);
 
 			//			this.menu.setGlobal(true);
@@ -1684,7 +1690,7 @@ public class SMM_Demo extends Module {
 
 			this.menu.getControlP5().getController("trichrom").update();
 
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.totalNumInputs; i++)
 			{
 				this.menu.setColor(0, new int[] { 150, 0, 150 }, i, true);
 				this.menu.setColor(4, new int[] { 255, 255, 0 }, i, true);

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Created by https://www.gitignore.io/api/processing
 
 ### Processing ###
@@ -11,17 +10,3 @@ application.windows64
 application.macosx
 .metadata
 .recommenders
-=======
-# Created by https://www.gitignore.io/api/processing
-
-### Processing ###
-.DS_Store
-applet
-application.linux32
-application.linux64
-application.windows32
-application.windows64
-application.macosx
-.metadata
-.recommenders
->>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010

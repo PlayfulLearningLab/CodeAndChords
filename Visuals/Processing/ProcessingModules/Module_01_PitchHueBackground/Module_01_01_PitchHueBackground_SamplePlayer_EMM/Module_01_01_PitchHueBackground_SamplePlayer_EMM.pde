@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> RachelPractice
 import interfascia.*;
 
 /**
@@ -245,6 +248,7 @@ void actionPerformed(GUIEvent e) {
   if (e.getMessage().equals("Completed")) {
     label.setLabel(textField.getValue());
   }
+<<<<<<< HEAD
 =======
 import interfascia.*;
 
@@ -493,4 +497,6 @@ void actionPerformed(GUIEvent e) {
     label.setLabel(textField.getValue());
   }
 >>>>>>> 346fdda528fc720bc3ef683871dafc344f6c9010
+=======
+>>>>>>> RachelPractice
 } // actionPerformed
