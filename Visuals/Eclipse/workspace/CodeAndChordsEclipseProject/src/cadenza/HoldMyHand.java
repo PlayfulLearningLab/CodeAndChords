@@ -10,6 +10,7 @@ import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
 import core.input.RealTimeInput;
+import filters.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
 public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
@@ -39,6 +40,9 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
+	private Follower follower;
+	
+	
 	public static void main(String[] args) 
 	{
 		PApplet.main("cadenza.HoldMyHand");
@@ -118,12 +122,25 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		this.menu.setColor(8, new int[] { 150, 0, 150 }, true);
 
 		this.menu.getControlP5().getController("trichrom").update();
+		
+		this.follower = new Follower();
+		
+		this.follower.setType("maxScalarJump");
+		this.follower.setMaxVal(this.maxAmp);
+		this.follower.setMinVal(0);
+		this.follower.setUseLimits(true);
+		this.follower.setScalar(this.yVals.length);
+		this.follower.setIntOnly(true);
+		this.follower.setMaxIncrament(3);
+		
 
 	} // setup
 
 	public void draw()
 	{
 		int	scaleDegree;
+		
+		this.follower.update(this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true && !this.menu.getIsRunning()) 
@@ -159,7 +176,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	} // draw
 
-	void renderWave() 
+	private void renderWave() 
 	{
 		noStroke();
 		fill(255);
@@ -167,8 +184,10 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			for(int i = 0; i<this.inputNums.length; i++)
 			{
 				//checks current amplitude to determine each amplitude step size for each new line 
-				amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
-				ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
+				//amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
+				//ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
+				
+				ampLevel = this.follower.getScalarVal();
 				
 				//System.out.println("ampLevel: "+ampLevel);
 				//System.out.println("Curent Amplitute: "+amp);
