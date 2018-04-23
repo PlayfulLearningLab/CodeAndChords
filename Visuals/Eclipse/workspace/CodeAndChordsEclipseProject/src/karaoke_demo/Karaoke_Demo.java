@@ -29,14 +29,14 @@ public class Karaoke_Demo extends Module {
 	};
 	private	String[]	dontStopBelieving;
 	private	String[]	proudMary;
-	// Ain't No Mountain High Enough
+	// ** Ain't No Mountain High Enough
 	// Sound of Silence? :)
 	// ** California Dreamin'
-	// T Swift: Shake It Off? Stay Stay Stay;
+	// ** T Swift: Shake It Off? Stay Stay Stay;
 	// Lean on Me
 	// Elvis?
 	// Beatles?
-	// Someday Maybe
+	// ** Someday Maybe
 	// Ring of Fire; Walk the Line?
 	// Say Something?
 	// Unforgettable
@@ -1321,8 +1321,9 @@ public class Karaoke_Demo extends Module {
 		//////////////////////////// Cadenza: ////////////////////////////
 		else if(this.curScene == Karaoke_Demo.SCENE_KILLING)
 		{
-			this.curNumInputs	= 7;
+			this.curNumInputs	= 4;
 			this.setSquareValues();
+			this.noStroke();
 
 			this.menu.showColorMenu();
 			this.menu.hideShapeMenu();
@@ -1348,9 +1349,10 @@ public class Karaoke_Demo extends Module {
 
 		else if (this.curScene == Karaoke_Demo.SCENE_KILLING_DYNAMIC)
 		{
-			this.curNumInputs	= 7;
+			this.curNumInputs	= 4;
 			this.menu.setDynamicBars(true);
 			this.setSquareValues();
+			this.noStroke();
 
 
 			this.menu.showColorMenu();
@@ -1585,7 +1587,7 @@ public class Karaoke_Demo extends Module {
 
 		else if(this.curScene == Karaoke_Demo.SCENE_MAN)
 		{
-			this.curNumInputs	= 7;
+			this.curNumInputs	= 4;
 			//			this.setSquareValues();
 
 			this.menu.showColorMenu();
