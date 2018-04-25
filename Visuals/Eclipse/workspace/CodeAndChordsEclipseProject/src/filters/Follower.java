@@ -40,6 +40,10 @@ public class Follower
 		{
 			throw new IllegalArgumentException("Not a valid follower type");
 		}
+		else
+		{
+			this.type = type;
+		}
 	}
 	
 	public void setMaxIncrament(float maxIncrament)
@@ -110,7 +114,7 @@ public class Follower
 
 		case "average":
 
-			this.val = (rawValue + this.val)/2;
+			this.val += (rawValue - this.val)/4;
 			break;
 			
 		case "maxScalarJump":
@@ -123,19 +127,22 @@ public class Follower
 				incrament = Math.max(incrament, -this.maxIncrament);
 			
 			this.val += (incrament)* (this.maxIncrament/this.scalar);
+			
+			break;
+			
+		default:
+			
+			throw new IllegalArgumentException("Not a valid follower type");
 
 		}
 
 
-		if(this.useLimits && this.maxVal < this.val)
+		if(this.useLimits)
 		{
-			this. val = this.maxVal;
+			this.val = Math.min(this.maxVal, this.val);
+			this.val = Math.max(this.minVal, this.val);
 		}
 
-		if(this.useLimits && this.minVal > this.val)
-		{
-			this.val = this.minVal;
-		}
 
 	}
 

@@ -4,19 +4,21 @@ import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
+import filters.Follower;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class Here extends Module
 {
 	//index number = mic number - 1;
-	private int			beatBoxIndexNumber = 0;
-	
+	private int			beatBoxIndexNumber = 1;
+
 	//index number = mic number - 1;
 	private int			soloistIndexNumber = 0;
 	
-	
-	private float		maxAmplitude = 300;
+	private Follower	ampFollower;
+
+	private float		maxAmplitude = 500;
 
 	private float 		pointSize;
 	private int 		numPoints;
@@ -42,7 +44,7 @@ public class Here extends Module
 	{
 		PApplet.main("cadenza.Here");
 	} // main
-	
+
 	public void settings()
 	{
 		fullScreen();
@@ -81,7 +83,7 @@ public class Here extends Module
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
-		
+
 		this.menu.setCurKey("C", 2);
 		this.menu.getControlP5().getController("trichrom").update();
 
@@ -100,13 +102,13 @@ public class Here extends Module
 		this.menu.setCanvasColor(color);
 		this.noStroke();
 
-		move = new int [this.curNumInputs][183][3];
+		move = new int [this.curNumInputs - 1][183][3];
 		hold1 = new int [3];
 		hold2 = new int [3];
 		checkpoint = this.millis(); 
 
 
-//		this.pointSize = 25;
+		//		this.pointSize = 25;
 		this.pointSize	= 10;
 		this.numPoints = (int) Math.floor((this.width / (this.pointSize * 2)) - 1);
 		System.out.println("numPoints: " + this.numPoints);
@@ -149,6 +151,12 @@ public class Here extends Module
 		this.skewFlag[this.soloistIndexNumber] = true;
 		this.drawSineFlag[this.soloistIndexNumber] = true;
 		this.skewGenerator[this.beatBoxIndexNumber] = true;
+		
+		this.ampFollower = new Follower();
+		
+		this.ampFollower.setMaxVal(500);
+		this.ampFollower.setMinVal(0);
+		this.ampFollower.setUseLimits(true);
 
 	} // setup()
 
@@ -164,81 +172,102 @@ public class Here extends Module
 
 		if(checkpoint < this.millis())
 		{
-			for(int j = 0; j < move.length; j++)
+			int soloistPassed = 0;
+
+			for(int j = 0; j < move.length + 1; j++)
 			{
+				if(j == this.soloistIndexNumber) 
+				{
+					soloistPassed = 1;
+					j++;
+				}
+
 				if(this.menu.getRecInputPlaying())
 				{
-					scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
+					scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(j - soloistPassed)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 				} else {
 					System.out.println("input check");
-					scaleDegree	= (round(input.getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
+					scaleDegree	= (round(input.getAdjustedFundAsMidiNote(j - soloistPassed)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 				}
 
 				System.out.println(scaleDegree);
 
-				this.menu.fadeColor(scaleDegree, j);
+				this.menu.fadeColor(scaleDegree, j - soloistPassed);
 
 
 
 
-				hold2[0] = this.menu.getCurHue()[j][0];
-				hold2[1] = this.menu.getCurHue()[j][1];
-				hold2[2] = this.menu.getCurHue()[j][2];
+				hold2[0] = this.menu.getCurHue()[j - soloistPassed][0];
+				hold2[1] = this.menu.getCurHue()[j - soloistPassed][1];
+				hold2[2] = this.menu.getCurHue()[j - soloistPassed][2];
 
-				for(int i = 0; i < move[j].length; i++)
+				for(int i = 0; i < move[j - soloistPassed].length; i++)
 				{	
 
-					hold1[0] = move[j][i][0];
-					hold1[1] = move[j][i][1];
-					hold1[2] = move[j][i][2];
+					hold1[0] = move[j - soloistPassed][i][0];
+					hold1[1] = move[j - soloistPassed][i][1];
+					hold1[2] = move[j - soloistPassed][i][2];
 
 
-					move[j][i][0] = hold2[0];
-					move[j][i][1] = hold2[1];
-					move[j][i][2] = hold2[2];
+					move[j - soloistPassed][i][0] = hold2[0];
+					move[j - soloistPassed][i][1] = hold2[1];
+					move[j - soloistPassed][i][2] = hold2[2];
 
 
-					this.fill(move[j][i][0], move[j][i][1], move[j][i][2]);
-					this.rect(((this.width/move[j].length)*(i)),(this.height/this.curNumInputs)*j,(this.width/move.length), this.height/this.curNumInputs);
+					this.fill(move[j - soloistPassed][i][0], move[j - soloistPassed][i][1], move[j - soloistPassed][i][2]);
+					this.rect(((this.width/move[j - soloistPassed].length)*(i)),(this.height/(this.curNumInputs - 1))*(j - soloistPassed),(this.width/move.length), this.height/(this.curNumInputs - 1));
 
 
 					hold2[0] = hold1[0];
 					hold2[1] = hold1[1];
 					hold2[2] = hold1[2];
 
+					if(j == this.move.length && soloistPassed == 0)
+					{
+						j++;
+					}
+					
 				}
 				//checkpoint = this.millis() + 100;
 			}
 		}
 
+		if(this.menu.getRecInputPlaying())
+		{
+			this.ampFollower.update(this.menu.getRecInput().getAmplitude());
+		}
+		else
+		{
+			this.ampFollower.update(this.input.getAmplitude(this.soloistIndexNumber));
+		}
 
-
-		for(int i = 0; i < this.totalNumInputs; i++)
+		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			this.menu.updateAmplitudeFollower(i, 3);
-			if(this.menu.getAmplitudeFollower(i) > this.maxAmplitude)
-			{
-				//this.maxAmplitude = this.menu.getAmplitudeFollower(i);
-				System.out.println(this.maxAmplitude);
-			}
+			
 		}
 
 		float totalSkew = 0;
 
-		for(int i = 0; i < this.totalNumInputs; i++)
+		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			if(this.skewGenerator[i])
 			{
-				float rand = (float) (Math.random() - .5);
-				totalSkew += this.maxSkew[i] * (Math.abs(rand)/rand) * (this.menu.getAmplitudeFollower(i)/this.maxAmplitude);
+				totalSkew +=this.menu.getAmplitudeFollower(i)/this.maxAmplitude;
+				
+				
 			}
 		}
 
-		for(int i = 0; i < this.totalNumInputs; i++)
+		float rand = 0;
+		
+		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			if(this.skewFlag[i])
 			{
-				this.pointSkew[i] = (float) (this.menu.getAmplitudeFollower(i)/this.maxAmplitude);
+				rand = (float) (2 * (Math.random() - .5));
+	
+				this.pointSkew[i] = (totalSkew * rand) ;
 			}
 		}
 
@@ -250,18 +279,21 @@ public class Here extends Module
 		{
 			if(this.drawSineFlag[i])
 			{
-				float sineAmp = this.menu.getAmplitudeFollower(i);
+				float sineAmp = (float) (this.height * .5 * this.ampFollower.getUnitVal());
+				System.out.println("unitVal: " + this.ampFollower.getUnitVal());
+				System.out.println("sineAmp: " + sineAmp);
+				
+				float sineIncrament = (float) (6*Math.PI)/this.numPoints;
+				
 				for(int i2 = 0; i2 < this.numPoints; i2++)
 				{
-					float sineIncrament = (float) (6*Math.PI)/this.numPoints;
-
 					this.pointHeight[i][i2] = (float) (sineAmp*Math.sin(sineIncrament * i2));
 
 					float h = (this.height/2) + (this.pointHeight[i][i2]);
 					if(this.skewFlag[i])
 					{
-						float rand = (float)(2*(Math.random() - .5));
-						//h += totalSkew * rand + (this.height/2);
+						rand = (float)(2*(Math.random() - .5));
+						h += this.pointSkew[i];
 					}
 
 					this.ellipse(this.pointPos[i2], h, this.pointSize, this.pointSize);

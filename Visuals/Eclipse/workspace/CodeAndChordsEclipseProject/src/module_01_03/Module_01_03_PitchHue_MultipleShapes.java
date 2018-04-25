@@ -66,7 +66,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 
 //			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 

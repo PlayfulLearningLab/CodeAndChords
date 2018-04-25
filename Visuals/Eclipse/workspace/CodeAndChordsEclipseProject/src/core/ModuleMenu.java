@@ -2070,7 +2070,14 @@ public class ModuleMenu extends MenuTemplate  {
 		 */
 		if(followerType == 3)
 		{
-			float amp = this.input.getAmplitude();
+			float amp = 0;
+			
+			if(!this.recInputPlaying)
+			{
+				amp = this.input.getAmplitude(numInput);
+			} else {
+				amp	= this.recInput.getAmplitude(numInput);
+			}
 			
 			if(amp > this.amplitudeFollower[numInput])
 			{
@@ -2078,7 +2085,7 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 			else
 			{
-				float maxIncramentDown = 10;
+				float maxIncramentDown = 60;
 				
 				if(this.amplitudeFollower[numInput] - amp > maxIncramentDown)
 				{
