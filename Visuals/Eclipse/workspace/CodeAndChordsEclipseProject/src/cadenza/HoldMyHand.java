@@ -14,6 +14,12 @@ import filters.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
 public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
+	
+	private static final int SCENE1 = 1;
+	private static final int SCENE2 = 2;
+	
+	private int sceneNum = 1;  //IMPORTANT: Starts at 1 not 0!!!
+	
 	int	soloistInput	= 0;
 	
 	int[]	inputNums	= {
@@ -135,8 +141,36 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		
 
 	} // setup
-
+	
 	public void draw()
+	{
+		switch(this.sceneNum)
+		{
+		case 1:
+			this.drawScene1();
+			break;
+			
+		case 2:
+			this.drawScene2();
+			break;
+			
+			default: throw new IllegalArgumentException("not a valid scene number");
+		}
+		
+		this.menu.runMenu();
+	}
+	
+	private void drawScene1()
+	{
+		
+	}
+	
+	private void drawScene2()
+	{
+		
+	}
+
+	public void oldDraw()
 	{
 		int	scaleDegree;
 		
@@ -168,11 +202,6 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		background(this.menu.getCurHue()[this.soloistInput][0], this.menu.getCurHue()[this.soloistInput][1], this.menu.getCurHue()[this.soloistInput][2]);
 
 		renderWave();
-
-		for(int i=0;i<this.curNumInputs;i++)
-		{
-			this.menu.updateAmplitudeFollower(i,1);
-		}
 
 	} // draw
 
@@ -215,5 +244,18 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 		return result;
 	} // fillLegendText
+	
+	
+	public void keyPressed()
+	{
+		if(this.key == '1')
+		{
+			this.sceneNum = 1;
+		}
+		else if(this.key == '2')
+		{
+			this.sceneNum = 2;
+		}
+	}
 
 } // Module_03_AmplitudeHSB
