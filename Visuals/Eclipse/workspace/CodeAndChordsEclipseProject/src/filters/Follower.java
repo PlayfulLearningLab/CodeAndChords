@@ -15,7 +15,7 @@ public class Follower
 	private float 		maxVal = 0;
 	private float		minVal = 0;
 	
-	private float		scalar = 0;
+	private float		scalar = 1;
 
 
 	public Follower()
@@ -34,6 +34,7 @@ public class Follower
 
 		if(type == "average") typeCheck = true;
 		if(type == "maxScalarJump") typeCheck = true;
+		if(type == "beatbox") typeCheck = true;
 
 
 		if(typeCheck == false)
@@ -127,6 +128,19 @@ public class Follower
 				incrament = Math.max(incrament, -this.maxIncrament);
 			
 			this.val += (incrament)* (this.maxIncrament/this.scalar);
+			
+			break;
+			
+		case "beatbox":
+				
+			if(rawValue > this.val)
+			{
+				this.val = rawValue;
+			}
+			else
+			{
+				this.val = (float) (this.val * .7);
+			}
 			
 			break;
 			

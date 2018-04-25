@@ -11,12 +11,13 @@ import processing.core.PApplet;
 public class Here extends Module
 {
 	//index number = mic number - 1;
-	private int			beatBoxIndexNumber = 1;
+	private int			beatBoxIndexNumber = 0;
 
 	//index number = mic number - 1;
 	private int			soloistIndexNumber = 0;
 	
 	private Follower	ampFollower;
+	private Follower	bbFollower;
 
 	private float		maxAmplitude = 500;
 
@@ -157,6 +158,12 @@ public class Here extends Module
 		this.ampFollower.setMaxVal(500);
 		this.ampFollower.setMinVal(0);
 		this.ampFollower.setUseLimits(true);
+		
+		this.bbFollower = new Follower("beatbox");
+		
+		this.bbFollower.setMaxVal(300);
+		this.bbFollower.setMinVal(0);
+		this.bbFollower.setUseLimits(true);
 
 	} // setup()
 
@@ -240,6 +247,8 @@ public class Here extends Module
 		{
 			this.ampFollower.update(this.input.getAmplitude(this.soloistIndexNumber));
 		}
+		
+		this.bbFollower.update(this.input.getAmplitude(this.beatBoxIndexNumber));
 
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
@@ -253,9 +262,7 @@ public class Here extends Module
 		{
 			if(this.skewGenerator[i])
 			{
-				totalSkew +=this.menu.getAmplitudeFollower(i)/this.maxAmplitude;
-				
-				
+				totalSkew += this.bbFollower.getUnitVal()*this.maxSkew[i];
 			}
 		}
 
@@ -280,7 +287,7 @@ public class Here extends Module
 			if(this.drawSineFlag[i])
 			{
 				float sineAmp = (float) (this.height * .5 * this.ampFollower.getUnitVal());
-				System.out.println("unitVal: " + this.ampFollower.getUnitVal());
+				System.out.println("unitVal: " + this.bbFollower.getUnitVal());
 				System.out.println("sineAmp: " + sineAmp);
 				
 				float sineIncrament = (float) (6*Math.PI)/this.numPoints;
@@ -293,7 +300,7 @@ public class Here extends Module
 					if(this.skewFlag[i])
 					{
 						rand = (float)(2*(Math.random() - .5));
-						h += this.pointSkew[i];
+						h = (this.height/2) + this.pointHeight[i][i2] + this.pointSkew[i]*rand*5;
 					}
 
 					this.ellipse(this.pointPos[i2], h, this.pointSize, this.pointSize);
