@@ -10,9 +10,16 @@ import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
 import core.input.RealTimeInput;
+import filters.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
 public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
+	
+	private static final int SCENE1 = 1;
+	private static final int SCENE2 = 2;
+	
+	private int sceneNum = 1;  //IMPORTANT: Starts at 1 not 0!!!
+	
 	int	soloistInput	= 0;
 	
 	int[]	inputNums	= {
@@ -39,6 +46,9 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
+	private Follower follower;
+	
+	
 	public static void main(String[] args) 
 	{
 		PApplet.main("cadenza.HoldMyHand");
@@ -118,12 +128,53 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		this.menu.setColor(8, new int[] { 150, 0, 150 }, true);
 
 		this.menu.getControlP5().getController("trichrom").update();
+		
+		this.follower = new Follower();
+		
+		this.follower.setType("maxScalarJump");
+		this.follower.setMaxVal(this.maxAmp);
+		this.follower.setMinVal(0);
+		this.follower.setUseLimits(true);
+		this.follower.setScalar(this.yVals.length);
+		this.follower.setIntOnly(true);
+		this.follower.setMaxIncrament(3);
+		
 
 	} // setup
-
+	
 	public void draw()
 	{
+		switch(this.sceneNum)
+		{
+		case 1:
+			this.drawScene1();
+			break;
+			
+		case 2:
+			this.drawScene2();
+			break;
+			
+			default: throw new IllegalArgumentException("not a valid scene number");
+		}
+		
+		this.menu.runMenu();
+	}
+	
+	private void drawScene1()
+	{
+		
+	}
+	
+	private void drawScene2()
+	{
+		
+	}
+
+	public void oldDraw()
+	{
 		int	scaleDegree;
+		
+		this.follower.update(this.input.getAmplitude());
 
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true && !this.menu.getIsRunning()) 
@@ -152,14 +203,9 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 		renderWave();
 
-		for(int i=0;i<this.curNumInputs;i++)
-		{
-			this.menu.updateAmplitudeFollower(i,1);
-		}
-
 	} // draw
 
-	void renderWave() 
+	private void renderWave() 
 	{
 		noStroke();
 		fill(255);
@@ -167,8 +213,10 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			for(int i = 0; i<this.inputNums.length; i++)
 			{
 				//checks current amplitude to determine each amplitude step size for each new line 
-				amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
-				ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
+				//amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
+				//ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
+				
+				ampLevel = this.follower.getScalarVal();
 				
 				//System.out.println("ampLevel: "+ampLevel);
 				//System.out.println("Curent Amplitute: "+amp);
@@ -196,5 +244,18 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 		return result;
 	} // fillLegendText
+	
+	
+	public void keyPressed()
+	{
+		if(this.key == '1')
+		{
+			this.sceneNum = 1;
+		}
+		else if(this.key == '2')
+		{
+			this.sceneNum = 2;
+		}
+	}
 
 } // Module_03_AmplitudeHSB
