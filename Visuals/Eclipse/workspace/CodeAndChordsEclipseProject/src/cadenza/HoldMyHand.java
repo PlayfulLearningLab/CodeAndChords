@@ -24,7 +24,8 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	int secondSoloistInput = 1;
 
 	int[]	inputNums	= {
-			1, 2, 3
+	//		1, 2, 3
+			0, 1, 0, 1, 0, 1, 0, 1
 	};
 
 	int xspacing; 
@@ -82,17 +83,20 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			yvalues[i]=h-(i*yspacing);
 		}
 
-		this.input    = new RealTimeInput(7, new AudioContext(), this);
+		this.input    = new RealTimeInput(9, new AudioContext(), this);
 		this.totalNumInputs = this.input.getAdjustedNumInputs();
+		this.curNumInputs	= this.totalNumInputs;
 		//		this.curNumInputs = 4;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
-		this.curNumInputs	= this.menu.getRecInput().getNumInputs();
+	//	this.curNumInputs	= this.menu.getRecInput().getNumInputs();
 
 		this.menu.setCurKey("G", 2);
 
-		this.inputWidth = width/this.inputNums.length; 
-		this.numEllipses  = inputWidth/xspacing;
+		this.inputWidth = width/this.inputNums.length;
+		this.numEllipses  = (inputWidth/xspacing) ;
+		
+		System.out.println("width = " + this.width + "; inputWidth = " + inputWidth + "; xSpacing = " + this.xspacing + "; numEllipses = " + this.numEllipses);
 
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
@@ -155,14 +159,14 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		{
 		case 1:
 
-			this.inputWidth = this.width / (this.inputNums.length - 1);
+			this.inputWidth = this.width / (this.inputNums.length);
 
 			this.drawScene1();
 			break;
 
 		case 2:
 
-			this.inputWidth = this.width / (this.inputNums.length - 2);
+			this.inputWidth = this.width / (this.inputNums.length - 1);
 
 			this.drawScene2();
 			break;
@@ -201,7 +205,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		{
 			scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		} else {
-			System.out.println("input check");
+	//		System.out.println("input check");
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		}
 
@@ -311,11 +315,12 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		// A simple way to draw the line with an ellipse at each location
 		for(int i = 0; i<this.inputNums.length; i++)
 		{
-
+			/*
 			if(i == this.soloistInput)
 			{
 				skipForSoloist++;
 			}
+			*/
 			
 			if(this.sceneNum == 2 && i == this.secondSoloistInput)
 			{
@@ -326,11 +331,13 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 					skipForSoloist++;
 				}
 			}
+			
+			
 			//checks current amplitude to determine each amplitude step size for each new line 
 			//amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
 			//ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
 
-			ampLevel = this.follower[i].getScalarVal();
+			ampLevel = this.follower[this.inputNums[i]].getScalarVal();
 
 			//System.out.println("ampLevel: "+ampLevel);
 			//System.out.println("Curent Amplitute: "+amp);
@@ -341,7 +348,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 				{
 					//fill(255,0,0);
 					//fill(0);
-					ellipse(((x*xspacing)+((this.inputWidth)*(i - skipForSoloist))), (yvalues[y]), 12, 12);//bottom line
+					ellipse(((x*xspacing)+(this.inputWidth*i)), (yvalues[y]), 12, 12);//bottom line
 				}
 			}
 		}
