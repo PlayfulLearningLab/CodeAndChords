@@ -17,7 +17,9 @@ public class Here extends Module
 	private int			soloistIndexNumber = 1;
 	
 	private	int[]		inputNums	= {
-			2, 4, 6, 7, 10, 12, 14
+
+			2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+
 	//		0, 1, 0, 1, 0, 1, 0
 	};
 	
@@ -65,7 +67,7 @@ public class Here extends Module
 	{
 
 		this.input	= new RealTimeInput(15, false, this);
-
+		
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		//this.curNumInputs	= 7;
 		this.curNumInputs	= this.totalNumInputs;
@@ -172,6 +174,11 @@ public class Here extends Module
 
 	public void draw()
 	{
+		for(int i = 0; i < this.input.getNumInputs(); i++)
+		{
+			System.out.println(i + ": amp = " + this.input.getAmplitude(i));
+		}
+		
 		int	scaleDegree;
 
 		this.noStroke();
