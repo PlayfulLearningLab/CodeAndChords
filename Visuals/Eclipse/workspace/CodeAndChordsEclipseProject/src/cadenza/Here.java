@@ -17,8 +17,8 @@ public class Here extends Module
 	private int			soloistIndexNumber = 1;
 	
 	private	int[]		inputNums	= {
-	//		2, 3, 4, 5, 6, 7, 8
-			0, 1, 0, 1, 0, 1, 0
+			2, 4, 6, 7, 10, 12, 14
+	//		0, 1, 0, 1, 0, 1, 0
 	};
 	
 	private	int	numSmallRects	= 500;
@@ -64,7 +64,7 @@ public class Here extends Module
 	public void setup() 
 	{
 
-		this.input	= new RealTimeInput(20, false, this);
+		this.input	= new RealTimeInput(15, false, this);
 
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		//this.curNumInputs	= 7;
