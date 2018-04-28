@@ -8,6 +8,7 @@ package cadenza;
 //import core.Input;
 import core.Module;
 import core.ModuleMenu;
+import core.PortAudioAudioIO;
 import processing.core.PApplet;
 import core.input.RealTimeInput;
 import filters.Follower;
@@ -25,7 +26,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	int[]	inputNums	= {
 	//		1, 2, 3
-			0, 1, 0, 1, 0, 1, 0, 1
+			2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
 	};
 
 	int xspacing; 
@@ -83,8 +84,10 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			yvalues[i]=h-(i*yspacing);
 		}
 
-		this.input    = new RealTimeInput(9, new AudioContext(), this);
-		this.totalNumInputs = this.input.getAdjustedNumInputs();
+	//	this.input    = new RealTimeInput(9, new AudioContext(), this);
+//		this.input	= new RealTimeInput(20, new AudioContext(new PortAudioAudioIO()) , this);
+		this.input	= new RealTimeInput(25, false, this);
+		this.totalNumInputs = this.input.getNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 		//		this.curNumInputs = 4;
 
@@ -133,6 +136,8 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		this.menu.setColor(8, new int[] { 150, 0, 150 }, true);
 
 		this.menu.getControlP5().getController("trichrom").update();
+		
+		this.menu.getOutsideButtonsCP5().hide();
 
 		this.follower = new Follower[this.curNumInputs];
 		
@@ -155,6 +160,12 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	public void draw()
 	{
+		
+		for(int i = 0; i < this.input.getNumInputs(); i++)
+		{
+			System.out.println(i + ": amp = " + this.input.getAmplitude(i));
+		}
+		
 		switch(this.sceneNum)
 		{
 		case 1:
@@ -205,7 +216,6 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		{
 			scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		} else {
-	//		System.out.println("input check");
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		}
 
@@ -294,7 +304,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		{
 			scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		} else {
-			System.out.println("input check");
+		//	System.out.println("input check");
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		}
 
@@ -338,17 +348,19 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			//ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
 
 			ampLevel = this.follower[this.inputNums[i]].getScalarVal();
+	//		System.out.println(i + ": ampLevel = " + ampLevel);
 
 			//System.out.println("ampLevel: "+ampLevel);
 			//System.out.println("Curent Amplitute: "+amp);
 
 			for(int y = 0; y < ampLevel; y++)
 			{
+				System.out.println("y = " + y);
 				for(int x = 0; x < this.numEllipses; x++)
 				{
 					//fill(255,0,0);
 					//fill(0);
-					ellipse(((x*xspacing)+(this.inputWidth*i)), (yvalues[y]), 12, 12);//bottom line
+					ellipse(((x*xspacing)+(this.inputWidth*i)), (yvalues[y]), 6, 6);//bottom line
 				}
 			}
 		}

@@ -75,6 +75,8 @@ public class PortAudioAudioIO extends AudioIO {
 
 		this.outStream = PortAudio.openStream( null, outParameters, sampleRate, framesPerBuffer, flags );
 		this.outStream.start();
+		
+		System.out.println("context.getSampleRate() = " + context.getSampleRate());
 
 		return true;
 	} // create

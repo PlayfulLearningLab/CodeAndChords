@@ -700,8 +700,8 @@ public class ModuleMenu extends MenuTemplate  {
 		this.fc.addChoosableFileFilter(filter);
 		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
 		
-		this.maxAmplitude = new float[16];
-		this.amplitudeFollower = new float[16];
+		this.maxAmplitude = new float[this.input.getNumInputs()];
+		this.amplitudeFollower = new float[this.input.getNumInputs()];
 		
 		for(int i = 0; i < this.input.getNumInputs(); i++)
 		{
