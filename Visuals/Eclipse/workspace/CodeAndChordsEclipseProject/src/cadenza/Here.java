@@ -14,10 +14,10 @@ public class Here extends Module
 	private int			beatBoxIndexNumber = 0;
 
 	//index number = mic number - 1;
-	private int			soloistIndexNumber = 1;
+	private int			soloistIndexNumber = 7;
 	
 	private	int[]		inputNums	= {
-			2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+			1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14
 	//		0, 1, 0, 1, 0, 1, 0
 	};
 	
@@ -92,6 +92,7 @@ public class Here extends Module
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 		
 		this.menu.getControlP5().hide();
+		this.menu.getOutsideButtonsCP5().hide();
 
 		background(255);
 		int[] color;

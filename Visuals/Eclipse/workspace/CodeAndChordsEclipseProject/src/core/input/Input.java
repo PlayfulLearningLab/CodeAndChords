@@ -537,7 +537,8 @@ public abstract class Input {
 		{
 			for(int i = 0; i < newVal.length; i++)
 			{
-				this.amplitudeArray[i]	= newVal[i];
+				this.amplitudeArray[i]	= newVal[i] * 1000000;
+				// TODO
 			} // for
 		} // if
 	} // setAmplitudeArray
