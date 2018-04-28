@@ -41,7 +41,7 @@ public class TalentShow extends Module {
 
 	public void setup()
 	{
-		this.totalNumInputs	= 24;
+		this.totalNumInputs	= 6;
 		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
 		// Setting this to 1 so that we have a nicely sized legend for the demo; no one else will use it.
 		this.curNumInputs	= 1;
@@ -116,7 +116,7 @@ public class TalentShow extends Module {
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.demoInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
-			this.menu.fade(scaleDegree, this.demoInput);
+			this.menu.fadeColor(scaleDegree, this.demoInput);
 
 			this.fill(this.menu.getCurHue()[this.demoInput][0], this.menu.getCurHue()[this.demoInput][1], this.menu.getCurHue()[this.demoInput][2], this.menu.getAlphaVal());
 
@@ -131,7 +131,7 @@ public class TalentShow extends Module {
 			{					
 				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(inputNums[i])) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
-				this.menu.fade(scaleDegree, inputNums[i]);
+				this.menu.fadeColor(scaleDegree, inputNums[i]);
 
 				this.fill(this.menu.getCurHue()[inputNums[i]][0], this.menu.getCurHue()[inputNums[i]][1], this.menu.getCurHue()[inputNums[i]][2], this.menu.getAlphaVal());
 

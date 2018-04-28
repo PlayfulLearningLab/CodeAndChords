@@ -14,7 +14,11 @@ public class Here extends Module
 	private int			beatBoxIndexNumber = 0;
 
 	//index number = mic number - 1;
-	private int			soloistIndexNumber = 0;
+	private int			soloistIndexNumber = 1;
+	
+	private	int[]		inputNums	= {
+			2, 3, 4, 5, 6, 7, 8
+	};
 	
 	private Follower	ampFollower;
 	private Follower	bbFollower;
@@ -54,30 +58,16 @@ public class Here extends Module
 	public void setup() 
 	{
 
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
-		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
+		this.input	= new RealTimeInput(28, new AudioContext(), this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 7;
+		//this.curNumInputs	= 7;
+		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
 		this.menu.setUseRecInput(true);
 
 		this.setSquareValues();
-
-		/*
-		this.recordedInput	= new RecordedInput(this, new String[] {
-				"WantingMemories_Melody.wav",
-				"WMBass_Later_Quiet.wav",
-				"WantingMemories_Alto.wav",
-				"WantingMemories_Soprano.wav",
-				"WMTenor_Medium.wav"
-		});
-		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
-		this.curNumInputs	= 5;
-
-		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
-		 */
 
 
 		// call add methods:
@@ -171,9 +161,6 @@ public class Here extends Module
 	public void draw()
 	{
 		int	scaleDegree;
-
-		//scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-		//this.menu.universalFade(scaleDegree);
 
 		this.noStroke();
 
