@@ -58,7 +58,7 @@ public class Here extends Module
 	public void setup() 
 	{
 
-		this.input	= new RealTimeInput(28, new AudioContext(), this);
+		this.input	= new RealTimeInput(7, new AudioContext(), this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		//this.curNumInputs	= 7;
 		this.curNumInputs	= this.totalNumInputs;
