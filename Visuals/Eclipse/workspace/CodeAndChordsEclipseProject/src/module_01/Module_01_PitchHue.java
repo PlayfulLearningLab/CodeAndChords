@@ -139,7 +139,7 @@ public class Module_01_PitchHue extends Module
 	} // draw()
 	
 	public String[] getLegendText()
-	{
+	{	
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
 	

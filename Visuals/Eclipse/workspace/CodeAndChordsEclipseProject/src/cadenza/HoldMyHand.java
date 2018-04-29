@@ -21,12 +21,12 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	private int sceneNum = 1;  //IMPORTANT: Scene numbers start at 1 not 0!!!
 
-	int	soloistInput	= 0;
-	int secondSoloistInput = 1;
+	int	soloistInput	= 8;
+	int secondSoloistInput = 13;
 
 	int[]	inputNums	= {
 	//		1, 2, 3
-			2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+			0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14
 	};
 
 	int xspacing; 
@@ -38,7 +38,9 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	float ampLevel;
 	float maxAmp;
 	float inputWidth;
-	float numEllipses; 
+	float numEllipses;
+	
+	int	circleSize	= 10;
 
 	double theta = 0.0;  // Start angle at 0
 	double amplitude = 75.0;  // Height of wave
@@ -70,11 +72,13 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		w = width;
 		h = height;
 
-		xspacing = width/70;
-		yspacing = height/70;
 
 		//		 maxAmp=40;
-		maxAmp=400;
+		maxAmp=40;
+		
+
+		xspacing = width/70;
+		yspacing = (int)(this.height/this.maxAmp);
 
 		dx = (TWO_PI / period) * xspacing;
 
@@ -136,6 +140,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		this.menu.setColor(8, new int[] { 150, 0, 150 }, true);
 
 		this.menu.getControlP5().getController("trichrom").update();
+	
 		
 		this.menu.getOutsideButtonsCP5().hide();
 
@@ -148,7 +153,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			this.follower[i].setMaxVal(this.maxAmp);
 			this.follower[i].setMinVal(0);
 			this.follower[i].setUseLimits(true);
-			this.follower[i].setScalar(this.yVals.length);
+			this.follower[i].setScalar(this.yvalues.length);
 			this.follower[i].setIntOnly(true);
 			this.follower[i].setMaxIncrament(3);
 		}
@@ -360,7 +365,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 				{
 					//fill(255,0,0);
 					//fill(0);
-					ellipse(((x*xspacing)+(this.inputWidth*i)), (yvalues[y]), 6, 6);//bottom line
+					ellipse(((x*xspacing)+(this.inputWidth*i)), (yvalues[y]), this.circleSize, this.circleSize);//bottom line
 				}
 			}
 		}

@@ -616,7 +616,8 @@ public class ModuleMenu extends MenuTemplate  {
 			this.satBrightThresholdVals[i]	= new float[2];
 			this.satBrightPercentVals[i]	= new float[2];
 
-			this.pianoThreshold[i]	= 10;
+			// TODO
+			this.pianoThreshold[i]	= 5;
 			this.forteThreshold[i]	= 500;
 			this.resetThresholds(i);
 		} // for - initialize Thresholds
