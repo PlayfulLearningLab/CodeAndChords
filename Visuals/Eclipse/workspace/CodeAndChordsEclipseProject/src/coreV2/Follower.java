@@ -1,4 +1,4 @@
-package filters;
+package coreV2;
 
 public class Follower 
 {

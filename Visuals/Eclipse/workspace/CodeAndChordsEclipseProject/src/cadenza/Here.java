@@ -4,7 +4,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
-import filters.Follower;
+import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 

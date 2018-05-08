@@ -8,7 +8,7 @@ import processing.core.PApplet;
 import core.Shape;
 import core.ShapeEditor;
 import core.input.RealTimeInput;
-import filters.Follower;
+import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
 public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInterface */{
