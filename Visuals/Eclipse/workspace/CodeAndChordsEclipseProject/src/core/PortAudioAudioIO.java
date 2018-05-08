@@ -30,7 +30,7 @@ public class PortAudioAudioIO extends AudioIO {
 	private Thread audioThread;
 
 	/** The priority of the audio thread. */
-	private int threadPriority; 
+	private int threadPriority;
 
 	private	BlockingStream	outStream;
 	private	BlockingStream	inStream;
@@ -49,7 +49,7 @@ public class PortAudioAudioIO extends AudioIO {
 
 		setThreadPriority(Thread.MAX_PRIORITY);
 	}
-
+	
 	/**
 	 * Initializes PortAudio.
 	 */ 

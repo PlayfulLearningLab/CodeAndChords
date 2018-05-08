@@ -124,7 +124,7 @@ public class Module_01_PitchHue extends Module
 
 		int	scaleDegree	= (round(input.getAdjustedFundAsMidiNote(0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-		this.menu.fade(scaleDegree, 0);
+		this.menu.fadeColor(scaleDegree, 0);
 
 		fill(this.menu.getCurHue()[0][0], this.menu.getCurHue()[0][1], this.menu.getCurHue()[0][2]);
 		rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0), width - this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(height));
@@ -140,7 +140,7 @@ public class Module_01_PitchHue extends Module
 	} // draw()
 	
 	public String[] getLegendText()
-	{
+	{	
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
 	
