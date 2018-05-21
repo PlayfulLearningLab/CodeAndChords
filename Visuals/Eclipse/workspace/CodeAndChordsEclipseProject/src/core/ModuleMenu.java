@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
@@ -24,6 +25,7 @@ import controlP5.Toggle;
 import core.input.Input;
 import core.input.RecordedInput;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 /**
@@ -412,7 +414,6 @@ public class ModuleMenu extends MenuTemplate  {
 	/**	Shapes, initialized by addShapeMenu(int)	*/
 	//	protected	Shape[]	shapes;
 
-	// TODO: considering replacing Module's Shape and ShapeEditor with these
 	private	ShapeEditor	shapeEditor;
 
 	/**	
@@ -453,7 +454,18 @@ public class ModuleMenu extends MenuTemplate  {
 	private	int	tabHeight	= 30;
 
 	/**	For saving and loading saved color states */
-	final JFileChooser fc = new JFileChooser();
+	private JFileChooser colorFileChooser;
+	
+	/**	For loading lyrics from a file */
+	private	JFileChooser	lyricsFileChooser;
+	
+	/**	The current song lyrics	*/
+	private ArrayList<String>	curLyrics;
+	
+	/**	The current lyric position	*/
+	private	int	curLyricsLine	= 0;
+	
+	private	boolean	showLyrics;
 	
 	/**	For now, adding this so that the play Button can either start the guide tones or these tracks */
 	private	RecordedInput recInput;
@@ -616,7 +628,8 @@ public class ModuleMenu extends MenuTemplate  {
 			this.satBrightThresholdVals[i]	= new float[2];
 			this.satBrightPercentVals[i]	= new float[2];
 
-			this.pianoThreshold[i]	= 10;
+			// TODO
+			this.pianoThreshold[i]	= 5;
 			this.forteThreshold[i]	= 500;
 			this.resetThresholds(i);
 		} // for - initialize Thresholds
@@ -692,22 +705,35 @@ public class ModuleMenu extends MenuTemplate  {
 		
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
-
-		this.fc.setCurrentDirectory(new File("./savedColors/"));
-
-		// Filter out all but .txt files:
-		FileFilter filter = new FileNameExtensionFilter(".txt", "txt");
-		this.fc.addChoosableFileFilter(filter);
-		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
 		
-		this.maxAmplitude = new float[16];
-		this.amplitudeFollower = new float[16];
+
+		this.maxAmplitude = new float[this.input.getNumInputs()];
+		this.amplitudeFollower = new float[this.input.getNumInputs()];
 		
 		for(int i = 0; i < this.input.getNumInputs(); i++)
 		{
 			this.maxAmplitude[i] = 100;
 			this.amplitudeFollower[i] = 0;
 		}
+		
+		// Karaoke lyrics:
+		this.curLyrics	= new ArrayList<String>();
+		this.colorFileChooser	= new JFileChooser();
+		this.colorFileChooser.setCurrentDirectory(new File("./savedColors/"));
+
+		// Filter out all but .txt files:
+		FileFilter filter = new FileNameExtensionFilter(".txt", "txt");
+
+		this.colorFileChooser.addChoosableFileFilter(filter);
+		this.colorFileChooser.removeChoosableFileFilter(this.colorFileChooser.getAcceptAllFileFilter());
+		
+		this.lyricsFileChooser	= new JFileChooser();
+//		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/lyrics/"));
+		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/"));
+
+		// Filter out all but .txt files:
+		this.lyricsFileChooser.addChoosableFileFilter(filter);
+		this.lyricsFileChooser.removeChoosableFileFilter(this.lyricsFileChooser.getAcceptAllFileFilter());
 	} // constructor
 
 	/**
@@ -869,6 +895,36 @@ public class ModuleMenu extends MenuTemplate  {
 		//		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.getShapeEditor().updateSliders();
 	} // addShapeMenu
+	
+	/**
+	 * Adds the Landing Menu by setting the label of the default tab.
+	 */
+	public void addLyricMenu()
+	{
+		this.controlP5.addTab("lyrics")
+		.setLabel("Lyrics\nMenu")
+		.setWidth(50)
+		.setHeight(this.tabHeight)
+		.activateEvent(true)
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		// Add lyric Toggle:
+		this.controlP5.addToggle("showLyrics")
+			.setPosition(this.leftAlign, this.textYVals[4])
+			.setWidth(60)
+			.setState(false)
+			.setTab("lyrics")
+			.plugTo(this)
+			.setLabel("Show Lyrics")
+			.getCaptionLabel()
+			.align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.controlP5.addButton("loadLyrics")
+		.setPosition(this.leftAlign, this.textYVals[5])
+		.setWidth(60)
+		.moveTo("lyrics")
+		.setLabel("Load Lyrics");
+	} // addLandingMenu
 
 	public void hideSensitivityMenu()
 	{
@@ -2007,7 +2063,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param numInput:  Controls the input that is updated
 	 * @param followerType:  Controls the style of amplitude follower that is implemented
 	 */
-	@SuppressWarnings("unused")
 	public void updateAmplitudeFollower(int numInput, int followerType)
 	{
 		if(numInput >= this.module.curNumInputs)
@@ -2109,7 +2164,6 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.amplitudeFollower[numInput];
 	}
-	
 	
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
@@ -3564,6 +3618,11 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				this.loadColorState();
 			}
+			
+			if(controlEvent.getName().equals("loadLyrics"))
+			{
+				this.loadLyrics();
+			}
 
 			// Dynamic Bars:
 			if(controlEvent.getController().getId() == 99999)
@@ -3834,6 +3893,17 @@ public class ModuleMenu extends MenuTemplate  {
 		} // specialColors
 
 	} // colorWheelEvent
+	
+	public void cycleLyrics(int keyCode)
+	{
+		if(keyCode == PConstants.RIGHT)
+		{
+			this.curLyricsLine	= (this.curLyricsLine + 1) % this.curLyrics.size();
+		} else if(keyCode == PConstants.LEFT)
+		{
+			this.curLyricsLine	= (this.curLyricsLine - 1 + this.curLyrics.size()) % this.curLyrics.size();
+		}
+	} // mousePressed
 
 
 	/**
@@ -4453,10 +4523,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public void saveColorState()
 	{
-		int returnVal = fc.showSaveDialog(null);
+		int returnVal = colorFileChooser.showSaveDialog(null);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
+			File file = colorFileChooser.getSelectedFile();
 			String	filename	= file.getName();
 			if( (filename.length() < 4) || !(filename.substring(filename.length() - 4).equalsIgnoreCase(".txt")) )
 			{
@@ -4516,11 +4586,11 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		String[]	splitResults;	// Use this to hold the color values while they are being parsed to ints
 		
-		int returnVal = fc.showOpenDialog(null);
+		int returnVal = colorFileChooser.showOpenDialog(null);
 		
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			File file	= fc.getSelectedFile();
+			File file	= colorFileChooser.getSelectedFile();
 			
 			try
 			{
@@ -4572,6 +4642,42 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 		}
 	} // loadColorState
+	
+	/**
+	 * Opens the lyric File Chooser and allows the user to choose a file from which to 
+	 * load lyrics (each line of the file will be displayed individually on keypress).
+	 */
+	private void loadLyrics() 
+	{
+		int 	returnVal = this.lyricsFileChooser.showOpenDialog(null);
+		String	curLine;
+		// Remove the current lyrics:
+		this.curLyrics.clear();
+		this.curLyricsLine	= 0;
+		
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			File file	= this.lyricsFileChooser.getSelectedFile();
+			
+			try
+			{
+				BufferedReader in	= new BufferedReader(new FileReader(file));
+				
+				curLine	= in.readLine();
+
+				while(curLine != null)
+				{
+					this.curLyrics.add(curLine);
+					curLine	= in.readLine();
+				} // while - read through file
+				
+				in.close();
+			} catch (IOException ioe) {
+				System.out.println("ModuleMenu.loadColorState: caught IOException " + ioe);
+				ioe.printStackTrace();
+			} // try/catch
+		}
+	} // loadLyrics
 
 	public int[][] getCurHue()				{	return this.curHue;	}
 
@@ -4857,6 +4963,11 @@ public class ModuleMenu extends MenuTemplate  {
 		this.useRecInput	= newVal;
 	}
 	
+	public boolean getUseRecInput()
+	{
+		return this.useRecInput;
+	}
+	
 	public boolean getRecInputPlaying()
 	{
 		return this.recInputPlaying;
@@ -4867,9 +4978,19 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.recInput;
 	}
 	
-	public boolean getUseRecInput()
+	public boolean getShowLyrics()
 	{
-		return this.useRecInput;
+		return this.showLyrics;
+	}
+	
+	public ArrayList<String> getCurLyrics()
+	{
+		return this.curLyrics;
+	}
+	
+	public int getCurLyricsLine()
+	{
+		return this.curLyricsLine;
 	}
 
 

@@ -1,12 +1,9 @@
 package demo_01;
 
 import controlP5.ControlP5;
-import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
-import core.input.RecordedInput;
-import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 public class Demo_01_VerticalBars extends Module {
@@ -195,7 +192,7 @@ public class Demo_01_VerticalBars extends Module {
 
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 

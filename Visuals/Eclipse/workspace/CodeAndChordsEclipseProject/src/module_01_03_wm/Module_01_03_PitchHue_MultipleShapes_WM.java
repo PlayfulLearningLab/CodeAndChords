@@ -46,13 +46,6 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 		// call add methods:
 		this.menu.addSensitivityMenu(true);
 		
-
-		String[] noteNames = new String[] {
-				"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
-		}; // noteNames
-		String[] specialColors	= new String[] {
-				"Canvas", "Tonic", "2nd Color", "3rd Color"
-		}; // buttonLabels
 		this.menu.addColorMenu();
 		
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
@@ -87,7 +80,7 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 
 			scaleDegree	= (round(recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 			System.out.println("\ti = " + i + "; scaleDegree = " + scaleDegree);
 
 //			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
@@ -109,17 +102,6 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 
 //		this.shapeEditor.runMenu();
 		this.menu.runMenu();
-
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
 
 	} // draw()
 
@@ -143,7 +125,6 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 		this.menu.setPApplet(fsm);
 		 */
 
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();

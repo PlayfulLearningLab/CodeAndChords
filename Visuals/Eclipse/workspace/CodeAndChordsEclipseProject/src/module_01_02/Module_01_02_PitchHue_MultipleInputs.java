@@ -3,7 +3,6 @@ package module_01_02;
 import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
-import core.archive.InputMatrix;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 
@@ -65,7 +64,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 			
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 			

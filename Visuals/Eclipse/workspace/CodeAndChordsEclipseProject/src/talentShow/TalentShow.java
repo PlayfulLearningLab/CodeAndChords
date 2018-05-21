@@ -41,7 +41,7 @@ public class TalentShow extends Module {
 
 	public void setup()
 	{
-		this.totalNumInputs	= 6;
+		this.totalNumInputs	= 24;
 		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
 		// Setting this to 1 so that we have a nicely sized legend for the demo; no one else will use it.
 		this.curNumInputs	= 1;

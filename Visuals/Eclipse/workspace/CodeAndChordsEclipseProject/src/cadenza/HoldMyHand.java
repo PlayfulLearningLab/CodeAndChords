@@ -8,6 +8,7 @@ package cadenza;
 //import core.Input;
 import core.Module;
 import core.ModuleMenu;
+import core.PortAudioAudioIO;
 import processing.core.PApplet;
 import core.input.RealTimeInput;
 import coreV2.Follower;
@@ -20,11 +21,12 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	private int sceneNum = 1;  //IMPORTANT: Scene numbers start at 1 not 0!!!
 
-	int	soloistInput	= 0;
-	int secondSoloistInput = 1;
+	int	soloistInput	= 8;
+	int secondSoloistInput = 13;
 
 	int[]	inputNums	= {
-			1, 2, 3
+	//		1, 2, 3
+			0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14
 	};
 
 	int xspacing; 
@@ -36,7 +38,9 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	float ampLevel;
 	float maxAmp;
 	float inputWidth;
-	float numEllipses; 
+	float numEllipses;
+	
+	int	circleSize	= 10;
 
 	double theta = 0.0;  // Start angle at 0
 	double amplitude = 75.0;  // Height of wave
@@ -68,11 +72,13 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		w = width;
 		h = height;
 
-		xspacing = width/70;
-		yspacing = height/70;
 
 		//		 maxAmp=40;
-		maxAmp=400;
+		maxAmp=40;
+		
+
+		xspacing = width/70;
+		yspacing = (int)(this.height/this.maxAmp);
 
 		dx = (TWO_PI / period) * xspacing;
 
@@ -82,17 +88,22 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			yvalues[i]=h-(i*yspacing);
 		}
 
-		this.input    = new RealTimeInput(7, new AudioContext(), this);
-		this.totalNumInputs = this.input.getAdjustedNumInputs();
+	//	this.input    = new RealTimeInput(9, new AudioContext(), this);
+//		this.input	= new RealTimeInput(20, new AudioContext(new PortAudioAudioIO()) , this);
+		this.input	= new RealTimeInput(25, false, this);
+		this.totalNumInputs = this.input.getNumInputs();
+		this.curNumInputs	= this.totalNumInputs;
 		//		this.curNumInputs = 4;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
-		this.curNumInputs	= this.menu.getRecInput().getNumInputs();
+	//	this.curNumInputs	= this.menu.getRecInput().getNumInputs();
 
 		this.menu.setCurKey("G", 2);
 
-		this.inputWidth = width/this.inputNums.length; 
-		this.numEllipses  = inputWidth/xspacing;
+		this.inputWidth = width/this.inputNums.length;
+		this.numEllipses  = (inputWidth/xspacing) ;
+		
+		System.out.println("width = " + this.width + "; inputWidth = " + inputWidth + "; xSpacing = " + this.xspacing + "; numEllipses = " + this.numEllipses);
 
 		this.yVals		= new int[18];
 		// Seemed like a good starting position, related to the text - but pretty arbitrary:
@@ -129,6 +140,9 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		this.menu.setColor(8, new int[] { 150, 0, 150 }, true);
 
 		this.menu.getControlP5().getController("trichrom").update();
+	
+		
+		this.menu.getOutsideButtonsCP5().hide();
 
 		this.follower = new Follower[this.curNumInputs];
 		
@@ -139,7 +153,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 			this.follower[i].setMaxVal(this.maxAmp);
 			this.follower[i].setMinVal(0);
 			this.follower[i].setUseLimits(true);
-			this.follower[i].setScalar(this.yVals.length);
+			this.follower[i].setScalar(this.yvalues.length);
 			this.follower[i].setIntOnly(true);
 			this.follower[i].setMaxIncrament(3);
 		}
@@ -151,18 +165,24 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	public void draw()
 	{
+		
+		for(int i = 0; i < this.input.getNumInputs(); i++)
+		{
+			System.out.println(i + ": amp = " + this.input.getAmplitude(i));
+		}
+		
 		switch(this.sceneNum)
 		{
 		case 1:
 
-			this.inputWidth = this.width / (this.inputNums.length - 1);
+			this.inputWidth = this.width / (this.inputNums.length);
 
 			this.drawScene1();
 			break;
 
 		case 2:
 
-			this.inputWidth = this.width / (this.inputNums.length - 2);
+			this.inputWidth = this.width / (this.inputNums.length - 1);
 
 			this.drawScene2();
 			break;
@@ -201,7 +221,6 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		{
 			scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		} else {
-			System.out.println("input check");
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		}
 
@@ -290,7 +309,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		{
 			scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		} else {
-			System.out.println("input check");
+		//	System.out.println("input check");
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 		}
 
@@ -311,11 +330,12 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		// A simple way to draw the line with an ellipse at each location
 		for(int i = 0; i<this.inputNums.length; i++)
 		{
-
+			/*
 			if(i == this.soloistInput)
 			{
 				skipForSoloist++;
 			}
+			*/
 			
 			if(this.sceneNum == 2 && i == this.secondSoloistInput)
 			{
@@ -326,22 +346,26 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 					skipForSoloist++;
 				}
 			}
+			
+			
 			//checks current amplitude to determine each amplitude step size for each new line 
 			//amp = this.menu.getAmplitudeFollower(this.inputNums[i]);
 			//ampLevel = (Math.min(amp, maxAmp)/maxAmp)*yvalues.length;
 
-			ampLevel = this.follower[i].getScalarVal();
+			ampLevel = this.follower[this.inputNums[i]].getScalarVal();
+	//		System.out.println(i + ": ampLevel = " + ampLevel);
 
 			//System.out.println("ampLevel: "+ampLevel);
 			//System.out.println("Curent Amplitute: "+amp);
 
 			for(int y = 0; y < ampLevel; y++)
 			{
+				System.out.println("y = " + y);
 				for(int x = 0; x < this.numEllipses; x++)
 				{
 					//fill(255,0,0);
 					//fill(0);
-					ellipse(((x*xspacing)+((this.inputWidth)*(i - skipForSoloist))), (yvalues[y]), 12, 12);//bottom line
+					ellipse(((x*xspacing)+(this.inputWidth*i)), (yvalues[y]), this.circleSize, this.circleSize);//bottom line
 				}
 			}
 		}

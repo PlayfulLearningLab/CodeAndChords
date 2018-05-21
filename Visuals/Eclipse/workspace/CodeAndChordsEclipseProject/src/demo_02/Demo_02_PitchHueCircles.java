@@ -4,7 +4,6 @@ import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
 import core.input.RealTimeInput;
-import core.input.RecordedInput;
 
 public class Demo_02_PitchHueCircles extends Module
 {
@@ -167,7 +166,7 @@ public class Demo_02_PitchHueCircles extends Module
 			
 //			System.out.println(i + ": scaleDegree = " + scaleDegree);
 			
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 

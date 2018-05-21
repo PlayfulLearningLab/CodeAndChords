@@ -1,8 +1,5 @@
 package multiInputTest;
 
-import org.jaudiolibs.audioservers.AudioConfiguration;
-
-import com.portaudio.*;
 import processing.core.*;
 import core.PortAudioAudioIO;
 import core.PortAudioAudioServer;
