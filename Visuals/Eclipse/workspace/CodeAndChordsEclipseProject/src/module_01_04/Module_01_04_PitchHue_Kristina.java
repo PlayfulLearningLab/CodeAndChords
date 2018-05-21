@@ -2,10 +2,7 @@ package module_01_04;
 
 import core.Module;
 import core.ModuleMenu;
-import core.Shape;
-import core.ShapeEditor;
 import core.input.RealTimeInput;
-import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 

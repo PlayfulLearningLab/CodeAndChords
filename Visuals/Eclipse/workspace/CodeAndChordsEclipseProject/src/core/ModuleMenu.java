@@ -414,7 +414,6 @@ public class ModuleMenu extends MenuTemplate  {
 	/**	Shapes, initialized by addShapeMenu(int)	*/
 	//	protected	Shape[]	shapes;
 
-	// TODO: considering replacing Module's Shape and ShapeEditor with these
 	private	ShapeEditor	shapeEditor;
 
 	/**	
@@ -2064,7 +2063,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param numInput:  Controls the input that is updated
 	 * @param followerType:  Controls the style of amplitude follower that is implemented
 	 */
-	@SuppressWarnings("unused")
 	public void updateAmplitudeFollower(int numInput, int followerType)
 	{
 		if(numInput >= this.module.curNumInputs)
