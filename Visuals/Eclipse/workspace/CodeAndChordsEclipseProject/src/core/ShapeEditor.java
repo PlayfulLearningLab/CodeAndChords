@@ -223,6 +223,8 @@ public class ShapeEditor extends MenuTemplate implements ControlListener {
 	 */
 	private void drawSE() 
 	{
+		//this.parent.background(0);
+		
 		PShape ps = this.shapes[this.shapeIndex].getPShape();
 		ps.beginShape();
 		ps.stroke(255);

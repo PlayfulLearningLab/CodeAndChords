@@ -1100,34 +1100,33 @@ public class ModuleMenu extends MenuTemplate  {
 		.updateSize()
 		.setVisible(false);
 
+		// Add hamburger and menuX:
 		int	hamburgerX		= 10;
 		int	hamburgerY		= 13;
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
+		
+		//int	menuXX			= 5;
+		//int	menuXY			= 5;
+		int	menuXWidth		= 15;
+		
+		PImage[]	hamXImages	= { 
+				this.parent.loadImage("hamburger.png"),
+				this.parent.loadImage("menuX.png")
+		};
+		hamXImages[0].resize(hamburgerWidth, hamburgerHeight);
+		hamXImages[1].resize(menuXWidth, 0);
 
 
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
-		this.outsideButtonsCP5.addButton("hamburger")
+		this.outsideButtonsCP5.addToggle
+		("hamburger")
 		.setPosition(hamburgerX, hamburgerY)
-		.setImage(hamburger)
+		.setImages(hamXImages)
 		.setClickable(true)
-		.updateSize();
-
-		int	menuXX			= 5;
-		int	menuXY			= 5;
-		int	menuXWidth		= 15;
-
-		PImage	menuX	= this.parent.loadImage("menuX.png");
-		menuX.resize(menuXWidth, 0);
-		this.controlP5.addButton("menuX")
-		.setPosition(menuXX, menuXY)
-		.setImage(menuX)
 		.moveTo("global")	// "global" means it will show in all tabs
-		.updateSize()
-		.bringToFront();
-
-		//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
+		.updateSize();
 	} // addOutsideButtons
 
 
@@ -3213,44 +3212,25 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			}
 
+			
 			// Hamburger button:
 			if(controlEvent.getController().getName().equals("hamburger"))
 			{
-				// Make sure that we don't call this when we just mean to call menuX:
-				if(this.parent.millis() > (this.lastMenuXMillis + 10))
-				{
-					this.setIsRunning(true);
-					controlEvent.getController().setVisible(false);
-				}
-				this.showHamburger	= false;
-				this.isRunning		= true;
-
-				System.out.println("controlEvent - hamburger: isRunning = " + this.isRunning);
-				/*			
-				this.controlP5.getWindow().resetMouseOver();
-				this.menuIsOpen = true;
-				this.displaySidebar(true);
-				 */
-			} // if - hamburger
-
-			// MenuX button:
-			if(controlEvent.getController().getName().equals("menuX"))
-			{
-				this.lastMenuXMillis	= this.parent.millis();
-				this.isRunning			= false;
-
-				//			this.displaySidebar(false);
-				/*			this.leftEdgeX	= 0;
-				this.controlP5.getGroup("sidebarGroup").setVisible(false);
-				 */
-				//			this.outsideButtonsCP5.getController("hamburger").setVisible(true);
-
-				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
-				if(this.shapeEditor != null)
+				System.out.println("((Toggle)controlEvent.getController()).getBooleanValue() = " + ((Toggle)controlEvent.getController()).getBooleanValue());
+				this.isRunning		= ((Toggle)controlEvent.getController()).getBooleanValue();
+				// Set it to visible true either
+				// - when we're coming into the menu (so getBooleanValue == true)
+				// - when we're going out of the menu (getBooleanValue == false) AND !hideMenuButton
+				controlEvent.getController().setVisible(((Toggle)controlEvent.getController()).getBooleanValue() || 
+						(!((Toggle)controlEvent.getController()).getBooleanValue() && !((Toggle)this.controlP5.getController("menuButton")).getBooleanValue()));
+				
+				if(this.shapeEditor != null && this.shapeEditor.isRunning)
 				{
 					this.shapeEditor.isRunning	= false;	// In case it gets clicked from within the ShapeEditor Tab
 				}
-			} // if - menuX
+				
+			} // if - hamburger
+			
 
 			// Hide play button button:
 			if(controlEvent.getName().equals("playButton"))

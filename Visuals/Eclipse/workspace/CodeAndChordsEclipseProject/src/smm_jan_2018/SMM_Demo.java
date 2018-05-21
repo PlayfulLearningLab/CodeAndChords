@@ -196,8 +196,6 @@ public class SMM_Demo extends Module {
 		this.drawScene();
 		this.menu.runMenu();
 		
-		System.out.println("input.getAmplitude(3) = " + this.input.getAmplitude(3));
-
 	} // draw
 
 	private void drawScene()
@@ -278,7 +276,7 @@ public class SMM_Demo extends Module {
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			System.out.println("scaleDegree = " + this.scaleDegree + "; amp = " + this.input.getAmplitude(this.soloistInput));
+			//System.out.println("scaleDegree = " + this.scaleDegree + "; amp = " + this.input.getAmplitude(this.soloistInput));
 
 			this.menu.fadeColor(this.scaleDegree, this.soloistInput);
 
@@ -545,7 +543,7 @@ public class SMM_Demo extends Module {
 		{
 			for(int i = 0; i < this.totalNumInputs; i++)
 			{
-				System.out.println("amp(" + i + ") = " + this.input.getAmplitude(i));
+				//System.out.println("amp(" + i + ") = " + this.input.getAmplitude(i));
 				
 				if(!this.menu.getRecInputPlaying())
 				{
@@ -1351,7 +1349,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1394,7 +1392,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1437,7 +1435,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1480,7 +1478,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1518,7 +1516,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
