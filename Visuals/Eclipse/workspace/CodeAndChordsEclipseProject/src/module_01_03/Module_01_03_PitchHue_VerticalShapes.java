@@ -5,7 +5,6 @@ import core.ModuleMenu;
 import core.Shape;
 import core.ShapeEditor;
 import core.input.RealTimeInput;
-import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
@@ -66,7 +65,7 @@ public class Module_01_03_PitchHue_VerticalShapes extends Module {
 
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 
 //			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -97,23 +96,12 @@ public class Module_01_03_PitchHue_VerticalShapes extends Module {
 //		this.shapeEditor.runMenu();
 		this.menu.runMenu();
 
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 		int scaleDegree1;
 		scaleDegree1	= round(input.getAdjustedFundAsHz(i));// - this.menu.getCurKeyEnharmonicOffset() + 3 + 12));
 		//System.out.println(scaleDegree1);
 		
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
@@ -163,7 +151,6 @@ public class Module_01_03_PitchHue_VerticalShapes extends Module {
 		System.out.println(scaleDegree);
 		System.out.println(this.height);
 		
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();

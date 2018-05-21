@@ -1,10 +1,8 @@
 package demo_01;
 
 import controlP5.ControlP5;
-import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
 import core.input.RecordedInput;
 import processing.core.PApplet;
 
@@ -62,9 +60,6 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 			this.barVel[i] = 0;
 		}
 
-		// TODO: test with more inputs than are supported
-		//		this.input	= new Input(2, this);
-//		this.input	= new RealTimeInput(16, true, this);
 		
 		this.recordedInput	= new RecordedInput(this, new String[] { 
 				"WantingMemories_Melody.wav",
@@ -218,10 +213,10 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 
 			if(this.amplitude[i] > this.menu.getPianoThreshold(i))
 			{
-				this.scaleDegree	= (round(this.recordedInput.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;				
+				this.scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;				
 			}
 
-			this.menu.fade(this.scaleDegree, i);
+			this.menu.fadeColor(this.scaleDegree, i);
 
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 
@@ -294,17 +289,6 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		} // for
 
 		this.menu.runMenu();
-
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
 
 	} // draw()
 

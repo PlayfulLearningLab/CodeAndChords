@@ -2,10 +2,7 @@ package module_01_04;
 
 import core.Module;
 import core.ModuleMenu;
-import core.Shape;
-import core.ShapeEditor;
 import core.input.RealTimeInput;
-import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
@@ -81,7 +78,7 @@ public class Module_01_04_VerticalHue extends Module {
 			{
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 
-			this.menu.fade(scaleDegree, j);
+			this.menu.fadeColor(scaleDegree, j);
 
 
 		
