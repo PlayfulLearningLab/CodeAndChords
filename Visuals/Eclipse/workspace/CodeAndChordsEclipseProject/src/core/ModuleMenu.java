@@ -1604,9 +1604,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addThresholdSliders(int xVal, int yVal, int verticalSpacer)
 	{
-		// Since some i's will add a couple rows of labels and sliders,
-		// this variable keeps track of which "level" of y the next thing should be added to.
-
 		String[]	names	= new String[] {
 				"saturation",
 				"saturationForteThresh",
@@ -1620,41 +1617,18 @@ public class ModuleMenu extends MenuTemplate  {
 				"Brightness",
 				"Bright: Forte\nThreshold"
 		}; // labels
+		
+		float[][]	rangeAndStartingVals	= new float[][] {
+				new float[] { -1, 1, 0	},	// percentSliders
+				new float[] { 0, 1, 0.7f }, // forteThresholds
+		};
 
 		this.firstSatBrightThreshSliderId	= this.nextSliderId;
 		System.out.println("firstSatBrightThreshSliderId = " + firstSatBrightThreshSliderId);
 
 		for(int i = 0; i < names.length; i++)
 		{
-			// Forte Thresholds
-			if(i % 2 == 1)
-			{
-				this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], 0, 1, 0.7f, "sensitivity");
-
-			} // if - Forte Thresholds
-
-			// Percent Sliders
-			if(i % 2 == 0)
-			{
-				this.controlP5.addLabel(names[i])
-				.setPosition(xVal + this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
-				.setValue(labels[i])
-				.moveTo("sensitivity");
-
-				this.controlP5.addSlider("slider" + this.nextSliderId)
-				.setPosition(xVal + this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
-				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
-				.setRange(-1, 1)
-				.setValue(0)
-				.setId(this.nextSliderId)
-				.moveTo("sensitivity")
-				.getCaptionLabel().setVisible(false);
-
-				this.nextSliderId	= this.nextSliderId + 1;
-				// Also need to increment nextSTextfieldId so that they don't get out of sync
-				// (since this slider had no connected Textfield).
-				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
-			} // if - percent sliders
+				this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], rangeAndStartingVals[i % 2][0], rangeAndStartingVals[i % 2][1], rangeAndStartingVals[i % 2][2], "sensitivity");
 		} // for
 
 	} // addThresholdSliders
@@ -3093,21 +3067,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 
 	/**
-	 * Displays the "sidebarGroup" of this.controlP5
-	 */
-	protected void displaySidebar(boolean show)
-	{	
-		//		this.controlP5.getGroup("sidebarGroup").setVisible(show);
-		if(show)
-		{
-			//			this.leftEdgeX 	= this.sidebarWidth;
-		} else {
-			//			this.leftEdgeX	= 0;
-		}
-
-	} // displaySidebar
-
-	/**
 	 * Calls super.runMenu to show or hide the Controllers and shapeEditor.runMenu, if applicable.
 	 */
 	@Override
@@ -3576,11 +3535,15 @@ public class ModuleMenu extends MenuTemplate  {
 
 				this.fillHSBColors();
 			} // input select dropdown
-
+			
 			if(controlEvent.getName().equals("global"))
 			{
+				this.setGlobal(((Toggle)controlEvent.getController()).getBooleanValue());
+				/*
+				this.global			= true;
 				this.startHere		= 0;
 				this.endBeforeThis	= this.module.getTotalNumInputs();
+				*/
 			} // global
 
 			if(controlEvent.getName().equals("numInputsList"))
@@ -4538,18 +4501,18 @@ public class ModuleMenu extends MenuTemplate  {
 					BufferedWriter	out	= new BufferedWriter(new FileWriter(file));
 					out.write("*** *** ***\n");
 
-					// Need these (colors.length, colors[0].length) in order to correctly interpret the data when loading it
+					// Need this (colors[this.currentInput].length) in order to correctly interpret the data when loading it
 					// and to notify the user if the numbers do not match his colors:
-					out.write(this.colors.length + "\n");	// Number of inputs
-					out.write(this.colors[0].length + "\n");	// Number of color items
+			//		out.write(this.colors.length + "\n");	// Number of inputs
+					out.write(this.colors[this.currentInput].length + "\n");	// Number of color items
 
-					for(int i = 0; i < this.colors.length; i++)
-					{
-						for(int j = 0; j < this.colors[i].length; j++)
+					//for(int i = 0; i < this.colors.length; i++)
+					//{
+						for(int i = 0; i < this.colors[this.currentInput].length; i++)
 						{
-							out.write(this.colors[i][j][0] + "\t" + this.colors[i][j][1] + "\t" + this.colors[i][j][2] + "\n");
+							out.write(this.colors[this.currentInput][i][0] + "\t" + this.colors[this.currentInput][i][1] + "\t" + this.colors[this.currentInput][i][2] + "\n");
 						}
-					}
+					//}
 
 					out.close();		
 
@@ -4564,8 +4527,6 @@ public class ModuleMenu extends MenuTemplate  {
 	
 	public void loadColorState()
 	{
-		String[]	splitResults;	// Use this to hold the color values while they are being parsed to ints
-		
 		int returnVal = colorFileChooser.showOpenDialog(null);
 		
 		if(returnVal == JFileChooser.APPROVE_OPTION)
@@ -4580,25 +4541,37 @@ public class ModuleMenu extends MenuTemplate  {
 
 				if(stars.equals("*** *** ***"))
 				{
-					// else, go on to check the dimensions
-					int	numInputs	= Integer.parseInt(in.readLine());
-					int	numColors	= Integer.parseInt(in.readLine());
+					// Go on to check the dimensions
+					//int	numInputs	= Integer.parseInt(in.readLine());
+					int			numColors		= Integer.parseInt(in.readLine());
+					String		stringColors	= in.readLine();
+					String[]	stringColorsArray;
+					int[][]		tempColors		= new int[Math.max(0, numColors)][3];
 					
-					System.out.println("numInputs = " + numInputs + "; numColors = " + numColors);
-					
-					if( (this.colors.length == numInputs) && (numColors == this.colors[0].length) )
+					if(numColors == this.colors[this.currentInput].length)
 					{
+						// Fill tempColors from file:
+						for(int i = 0; ( i < tempColors.length ) && ( stringColors != null ); i++)
+						{
+							stringColorsArray	= stringColors.split("\t");
+							
+							for(int j = 0; j < tempColors[i].length; j++)
+							{
+								tempColors[i][j]	= Integer.parseInt(stringColorsArray[j]);
+							}
+							
+							stringColors	= in.readLine();
+						}
+						
 						// and if we make it this far, actually read the values into this.colors
-						for(int i = 0; i < this.colors.length; i++)
+						for(int i = this.startHere; i < this.endBeforeThis; i++)
 						{
 							for(int j = 0; j < this.colors[i].length; j++)
 							{
-								splitResults	= (in.readLine()).split("\t");
-								
-								for(int k = 0; k < splitResults.length; k++)
+								for(int k = 0; k < this.colors[i][j].length; k++)
 								{
-									this.colors[i][j][k]	= Integer.parseInt(splitResults[k]);
-								} // for - k
+									this.colors[i][j][k]	= tempColors[j][k];									
+								}
 							} // for - j
 						} // for - i
 						
@@ -4606,9 +4579,8 @@ public class ModuleMenu extends MenuTemplate  {
 						// Wrong dimensions
 						JOptionPane.showMessageDialog(null, 
 								"Sorry, the dimensions of that color file do not match the current settings.  " + 
-						"Currently, colors.length == " + this.colors.length + " and colors[0].length == " + 
-										this.colors[0].length + ", while the file has " + numInputs + " and " + 
-						numColors + ", respectively.");
+						"Currently, colors[" + this.currentInput + "].length == " + 
+										this.colors[this.currentInput].length + ", while the file has " + numColors + " colors.");
 					} // if - correct dimensions
 				} else {
 					// Doesn't begin with "*** *** ***"
@@ -4894,7 +4866,7 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		this.currentInput	= newCurrentInput;
 
-		if(!global)
+		if(!this.global)
 		{
 			this.startHere	= this.currentInput;
 			this.endBeforeThis	= (this.currentInput + 1);
@@ -4904,10 +4876,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public void setGlobal(boolean newGlobal)
 	{
 		//		this.global	= newGlobal;
-		((Toggle)this.controlP5.getController("global")).setState(false);
+		this.global = newGlobal;
 
 		if(!newGlobal)
 		{
+			//this.controlP5.getController("inputSelectDropdown").setValue(this.currentInput);
 			this.startHere	= this.currentInput;
 			this.endBeforeThis	= (this.currentInput + 1);
 		} else {
