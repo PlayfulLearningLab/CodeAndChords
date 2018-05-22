@@ -6,6 +6,7 @@
 # https://github.com/jahianancyyang/AlarmBuddy/blob/master/amazon-skills-development/alexa-pi/fullsetup.sh)
 #
 # Step-by-step JNI compliation instructions from https://medium.com/@bschlining/a-simple-java-native-interface-jni-example-in-java-and-scala-68fdafe76f5f.
+#
 
 PORT_AUDIO_FILE="pa_stable_v190600_20161030.tgz"
 PORT_AUDIO_DOWNLOAD_URL="http://www.portaudio.com/archives/$PORT_AUDIO_FILE"
@@ -19,13 +20,12 @@ cd portaudio
 ./configure --without-jack
 make
 
-cc -dynamiclib -o libjportaudio.jnilib hola.o hello.o $FRAMEWORKS
-
-cc -dynamiclib -O3 \
+cc -dynamiclib \
     -I/usr/include \
     -I$JAVA_HOME/include \
     -I$JAVA_HOME/include/darwin \
     ./portaudio/bindings/java/c/src/com_portaudio_BlockingStream.c \
     ./portaudio/bindings/java/c/src/com_portaudio_PortAudio.c \
     ./portaudio/bindings/java/c/src/com_portaudio_jpa_tools.c \
-    -o libjportaudio.dylib
+    -o libjportaudio.jnilib \
+    $FRAMEWORKS
