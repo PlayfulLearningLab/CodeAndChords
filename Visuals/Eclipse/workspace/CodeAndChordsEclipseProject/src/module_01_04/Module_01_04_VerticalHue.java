@@ -6,9 +6,9 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
-public class Module_01_04_PitchHue_Kristina extends Module {
+public class Module_01_04_VerticalHue extends Module {
 
-	int[][][] move;
+	int[][] move;
 	int[] hold1;
 	int[] hold2;
 	int checkpoint;
@@ -16,20 +16,18 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 	public static void main(String[] args)
 	{
-		PApplet.main("module_01_04.Module_01_04_PitchHue_Kristina");
+		PApplet.main("module_01_04.Module_01_04_VerticalHue");
 	} // main
 
 	public void setup() 
 	{
 		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
-
 		//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 7;
+		this.curNumInputs	= 3;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
-		this.menu.setUseRecInput(true);
 
 		this.setSquareValues();
 
@@ -45,7 +43,7 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 		this.menu.setCanvasColor(color);
 		this.noStroke();
 
-		move = new int [this.curNumInputs][183][3];
+		move = new int [10][3];
 		hold1 = new int [3];
 		hold2 = new int [3];
 		checkpoint = this.millis(); 
@@ -73,46 +71,48 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 		//System.out.println("****** CurNumInputs = " + this.curNumInputs + "  *******");
 
-
-		for(int i = 0; i < this.getCurNumInputs(); i++)
+		
+		if(checkpoint < this.millis())
 		{
-
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-
-			this.menu.fadeColor(scaleDegree, i);
-
-			hold2[0] = this.menu.getCurHue()[0][0];
-			hold2[1] = this.menu.getCurHue()[0][1];
-			hold2[2] = this.menu.getCurHue()[0][2];
-
-			if(checkpoint < this.millis())
+			for(int j = 0; j < this.curNumInputs; j++)
 			{
-				for(int j = 0; j < move.length; j++)
-				{
-					hold1[0] = move[i][j][0];
-					hold1[1] = move[i][j][1];
-					hold1[2] = move[i][j][2];
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
+
+			this.menu.fadeColor(scaleDegree, j);
 
 
-					move[i][j][0] = hold2[0];
-					move[i][j][1] = hold2[1];
-					move[i][j][2] = hold2[2];
+		
+			
+			hold2[0] = this.menu.getCurHue()[j][0];
+			hold2[1] = this.menu.getCurHue()[j][1];
+			hold2[2] = this.menu.getCurHue()[j][2];
+			
+			for(int i = 0; i < move.length; i++)
+			{	
 
-					//System.out.println(this.width/move.length);
-					fill(move[i][j][0], move[i][j][1], move[i][j][2]);
-					rect(((this.width/move.length)*(j)), (this.height/3) * i, (this.width/move.length), this.height/3);
+				hold1[0] = move[i][0];
+				hold1[1] = move[i][1];
+				hold1[2] = move[i][2];
 
-					hold2[0] = hold1[0];
-					hold2[1] = hold1[1];
-					hold2[2] = hold1[2];
 
-				}
-				//checkpoint = this.millis() + 100;
+				move[i][0] = hold2[0];
+				move[i][1] = hold2[1];
+				move[i][2] = hold2[2];
+
+			
+				fill(move[i][0], move[i][1], move[i][2]);
+				rect(((this.width/move.length)*(i)),(this.height/this.curNumInputs)*j,(this.width/move.length), this.height/this.curNumInputs);
+			
+				
+				hold2[0] = hold1[0];
+				hold2[1] = hold1[1];
+				hold2[2] = hold1[2];
+				System.out.println(((this.width/move.length)*(i)));
 			}
-		} // for - numInputs
-
-		//rect(((this.width/move.length)*(i)),(this.height/3)*1 ,(this.width/move.length), this.height/3);
-		//rect(((this.width/move.length)*(i)),(this.height/3)*2 ,(this.width/move.length), this.height/3);
+			//checkpoint = this.millis() + 100;
+			}
+		}
+		
 
 
 
@@ -120,6 +120,14 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 		//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
+
+
+
+		//if(this.menu.isShowScale())
+	//{
+			//draws the legend along the bottom of the screen:
+			//this.legend(scaleDegree, j);
+		//}
 
 		
 

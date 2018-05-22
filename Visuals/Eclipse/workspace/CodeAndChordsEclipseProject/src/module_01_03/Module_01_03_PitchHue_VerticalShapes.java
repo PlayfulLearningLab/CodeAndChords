@@ -8,12 +8,12 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
-public class Module_01_03_PitchHue_MultipleShapes extends Module {
+public class Module_01_03_PitchHue_VerticalShapes extends Module {
 
 
 	public static void main(String[] args)
 	{
-		PApplet.main("module_01_03.Module_01_03_PitchHue_MultipleShapes");
+		PApplet.main("module_01_03.Module_01_03_PitchHue_VerticalShapes");
 	} // main
 
 	public void setup() 
@@ -76,12 +76,12 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 			}
 			
 
-			if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
-			{
+			//if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
+			//{
 				// draws the legend along the bottom of the screen:
-				this.legend(scaleDegree, i);
+				//this.legend(scaleDegree, i);
 
-			} // if showScale
+			//} // if showScale
 
 		} // for
 
@@ -96,16 +96,32 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 //		this.shapeEditor.runMenu();
 		this.menu.runMenu();
 
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
+		for(int i = 0; i < this.curNumInputs; i++)
+		{
+		int scaleDegree1;
+		scaleDegree1	= round(input.getAdjustedFundAsHz(i));// - this.menu.getCurKeyEnharmonicOffset() + 3 + 12));
+		//System.out.println(scaleDegree1);
+		
+		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
+		{
+			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
+			Shape[]		shapes		= shapeEditor.getShapes();
+			// Map if running:
+			if(shapeEditor.getIsRunning() || this.menu.getIsRunning())
+			{	
+				//shapes[shapeEditor.getShapeIndex()].setXPos( shapeEditor.mapFullAppletXPos( Math.max( shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( shapeEditor.mapFullAppletYPos( Math.max( shapeEditor.mapAdjustedMenuYPos(0), Math.min(scaleDegree1, shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				shapeEditor.updateSliders();
+			}
+			else
+			{
+				// If neither are running, just keep w/in bounds:
+				//shapes[shapeEditor.getShapeIndex()].setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( Math.max( 0, Math.min(scaleDegree1, this.height) ) );
+				shapeEditor.updateSliders();
+			}
+		} // if - not over either ControlP5
+		}
 
 	} // draw()
 
@@ -120,16 +136,21 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		this.mousePressed();
 	}
 
-	public void mousePressed()
+	/*public void mousePressed()
 	{
-		/*
+		
 		FullScreenDisplay fsm = new FullScreenDisplay();
 		fsm.startDisplay();
 		this.shapeEditor.setPApplet(fsm);
 		this.menu.setPApplet(fsm);
-		 */
-
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
+		 
+		for(int i = 0; i < this.curNumInputs; i++)
+		{
+		int scaleDegree;
+		scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) ;
+		System.out.println(scaleDegree);
+		System.out.println(this.height);
+		
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
@@ -137,18 +158,19 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 			// Map if running:
 			if(shapeEditor.getIsRunning() || this.menu.getIsRunning())
 			{	
-				shapes[shapeEditor.getShapeIndex()].setXPos( shapeEditor.mapFullAppletXPos( Math.max( shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
-				shapes[shapeEditor.getShapeIndex()].setYPos( shapeEditor.mapFullAppletYPos( Math.max( shapeEditor.mapAdjustedMenuYPos(0), Math.min(this.mouseY, shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
+				//shapes[shapeEditor.getShapeIndex()].setXPos( shapeEditor.mapFullAppletXPos( Math.max( shapeEditor.mapAdjustedMenuXPos(0), Math.min(this.mouseX, shapeEditor.mapFullAppletXPos(this.width) ) ) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( shapeEditor.mapFullAppletYPos( Math.max( shapeEditor.mapAdjustedMenuYPos(0), Math.min(scaleDegree, shapeEditor.mapFullAppletYPos(this.height) ) ) ) );
 				shapeEditor.updateSliders();
 			}
 			else
 			{
 				// If neither are running, just keep w/in bounds:
-				shapes[shapeEditor.getShapeIndex()].setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
-				shapes[shapeEditor.getShapeIndex()].setYPos( Math.max( 0, Math.min(this.mouseY, this.height) ) );
+				//shapes[shapeEditor.getShapeIndex()].setXPos( Math.max( 0, Math.min(this.mouseX, this.width) ) );
+				shapes[shapeEditor.getShapeIndex()].setYPos( Math.max( 0, Math.min(scaleDegree, this.height) ) );
 				shapeEditor.updateSliders();
 			}
 		} // if - not over either ControlP5
-	} // mouseClicked
+		}
+	} // mouseClicked*/
 
 }

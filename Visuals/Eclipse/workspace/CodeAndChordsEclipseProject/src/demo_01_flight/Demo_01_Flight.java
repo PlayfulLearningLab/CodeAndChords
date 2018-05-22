@@ -1,7 +1,6 @@
 package demo_01_flight;
 
 import controlP5.ControlP5;
-import core.MenuTemplate;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
@@ -177,8 +176,8 @@ public class Demo_01_Flight extends Module {
 		*/
 		
 		// Purple - Yellow - Blue "Trichrom" (lots of other colors!)
-		this.menu.setColorStyle(ModuleMenu.CS_RAINBOW, 0);
-		this.menu.setColorStyle(ModuleMenu.CS_RAINBOW, 1);
+		this.menu.setColorStyle(ModuleMenu.CS_TRICHROM, 0);
+		this.menu.setColorStyle(ModuleMenu.CS_TRICHROM, 1);
 		this.menu.setColor(0, new int[] {150, 0, 150 }, false);
 		this.menu.setColor(4, new int[] { 92, 16, 118 }, false);
 		this.menu.setColor(8, new int[] { 0, 163, 255 }, false);
@@ -218,15 +217,13 @@ public class Demo_01_Flight extends Module {
 
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 
 			int	curX;
-			int	curY;
 
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
-			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 
 
 			//Value from 0 to 1 to act as a percent of the screen that should be covered
@@ -260,25 +257,11 @@ public class Demo_01_Flight extends Module {
 			
 
 
-				this.legend(scaleDegree, i);
 			if(this.menu.isShowScale())
 			{
+				this.legend(scaleDegree, i);
 			}
-/*
-			if(this.currentMenu != this.menu.getCurrentMenu())
-			{
-				this.currentMenu = this.menu.getCurrentMenu();
 
-				if(this.currentMenu == 0)
-				{
-					this.menu.setIsRunning(false);
-				}
-				else if(this.currentMenu == 1)
-				{
-					this.menu.setIsRunning(true);
-				}
-			}
-			*/
 		} // for
 
 		this.menu.runMenu();

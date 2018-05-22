@@ -9,8 +9,6 @@ package module_02_03;
 import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
-import core.Shape;
-import core.ShapeEditor;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
@@ -24,6 +25,7 @@ import controlP5.Toggle;
 import core.input.Input;
 import core.input.RecordedInput;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 /**
@@ -412,7 +414,6 @@ public class ModuleMenu extends MenuTemplate  {
 	/**	Shapes, initialized by addShapeMenu(int)	*/
 	//	protected	Shape[]	shapes;
 
-	// TODO: considering replacing Module's Shape and ShapeEditor with these
 	private	ShapeEditor	shapeEditor;
 
 	/**	
@@ -453,7 +454,18 @@ public class ModuleMenu extends MenuTemplate  {
 	private	int	tabHeight	= 30;
 
 	/**	For saving and loading saved color states */
-	final JFileChooser fc = new JFileChooser();
+	private JFileChooser colorFileChooser;
+	
+	/**	For loading lyrics from a file */
+	private	JFileChooser	lyricsFileChooser;
+	
+	/**	The current song lyrics	*/
+	private ArrayList<String>	curLyrics;
+	
+	/**	The current lyric position	*/
+	private	int	curLyricsLine	= 0;
+	
+	private	boolean	showLyrics;
 	
 	/**	For now, adding this so that the play Button can either start the guide tones or these tracks */
 	private	RecordedInput recInput;
@@ -616,7 +628,8 @@ public class ModuleMenu extends MenuTemplate  {
 			this.satBrightThresholdVals[i]	= new float[2];
 			this.satBrightPercentVals[i]	= new float[2];
 
-			this.pianoThreshold[i]	= 10;
+			// TODO
+			this.pianoThreshold[i]	= 5;
 			this.forteThreshold[i]	= 500;
 			this.resetThresholds(i);
 		} // for - initialize Thresholds
@@ -692,22 +705,35 @@ public class ModuleMenu extends MenuTemplate  {
 		
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
-
-		this.fc.setCurrentDirectory(new File("./savedColors/"));
-
-		// Filter out all but .txt files:
-		FileFilter filter = new FileNameExtensionFilter(".txt", "txt");
-		this.fc.addChoosableFileFilter(filter);
-		this.fc.removeChoosableFileFilter(this.fc.getAcceptAllFileFilter());
 		
-		this.maxAmplitude = new float[16];
-		this.amplitudeFollower = new float[16];
+
+		this.maxAmplitude = new float[this.input.getNumInputs()];
+		this.amplitudeFollower = new float[this.input.getNumInputs()];
 		
 		for(int i = 0; i < this.input.getNumInputs(); i++)
 		{
 			this.maxAmplitude[i] = 100;
 			this.amplitudeFollower[i] = 0;
 		}
+		
+		// Karaoke lyrics:
+		this.curLyrics	= new ArrayList<String>();
+		this.colorFileChooser	= new JFileChooser();
+		this.colorFileChooser.setCurrentDirectory(new File("./savedColors/"));
+
+		// Filter out all but .txt files:
+		FileFilter filter = new FileNameExtensionFilter(".txt", "txt");
+
+		this.colorFileChooser.addChoosableFileFilter(filter);
+		this.colorFileChooser.removeChoosableFileFilter(this.colorFileChooser.getAcceptAllFileFilter());
+		
+		this.lyricsFileChooser	= new JFileChooser();
+//		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/lyrics/"));
+		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/"));
+
+		// Filter out all but .txt files:
+		this.lyricsFileChooser.addChoosableFileFilter(filter);
+		this.lyricsFileChooser.removeChoosableFileFilter(this.lyricsFileChooser.getAcceptAllFileFilter());
 	} // constructor
 
 	/**
@@ -869,6 +895,36 @@ public class ModuleMenu extends MenuTemplate  {
 		//		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.getShapeEditor().updateSliders();
 	} // addShapeMenu
+	
+	/**
+	 * Adds the Landing Menu by setting the label of the default tab.
+	 */
+	public void addLyricMenu()
+	{
+		this.controlP5.addTab("lyrics")
+		.setLabel("Lyrics\nMenu")
+		.setWidth(50)
+		.setHeight(this.tabHeight)
+		.activateEvent(true)
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		// Add lyric Toggle:
+		this.controlP5.addToggle("showLyrics")
+			.setPosition(this.leftAlign, this.textYVals[4])
+			.setWidth(60)
+			.setState(false)
+			.setTab("lyrics")
+			.plugTo(this)
+			.setLabel("Show Lyrics")
+			.getCaptionLabel()
+			.align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.controlP5.addButton("loadLyrics")
+		.setPosition(this.leftAlign, this.textYVals[5])
+		.setWidth(60)
+		.moveTo("lyrics")
+		.setLabel("Load Lyrics");
+	} // addLandingMenu
 
 	public void hideSensitivityMenu()
 	{
@@ -1044,34 +1100,33 @@ public class ModuleMenu extends MenuTemplate  {
 		.updateSize()
 		.setVisible(false);
 
+		// Add hamburger and menuX:
 		int	hamburgerX		= 10;
 		int	hamburgerY		= 13;
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
+		
+		//int	menuXX			= 5;
+		//int	menuXY			= 5;
+		int	menuXWidth		= 15;
+		
+		PImage[]	hamXImages	= { 
+				this.parent.loadImage("hamburger.png"),
+				this.parent.loadImage("menuX.png")
+		};
+		hamXImages[0].resize(hamburgerWidth, hamburgerHeight);
+		hamXImages[1].resize(menuXWidth, 0);
 
 
 		PImage	hamburger	= this.parent.loadImage("hamburger.png");
 		hamburger.resize(hamburgerWidth, hamburgerHeight);
-		this.outsideButtonsCP5.addButton("hamburger")
+		this.outsideButtonsCP5.addToggle
+		("hamburger")
 		.setPosition(hamburgerX, hamburgerY)
-		.setImage(hamburger)
+		.setImages(hamXImages)
 		.setClickable(true)
-		.updateSize();
-
-		int	menuXX			= 5;
-		int	menuXY			= 5;
-		int	menuXWidth		= 15;
-
-		PImage	menuX	= this.parent.loadImage("menuX.png");
-		menuX.resize(menuXWidth, 0);
-		this.controlP5.addButton("menuX")
-		.setPosition(menuXX, menuXY)
-		.setImage(menuX)
 		.moveTo("global")	// "global" means it will show in all tabs
-		.updateSize()
-		.bringToFront();
-
-		//		this.menuWidth = this.controlP5.getController("menuX").getWidth();
+		.updateSize();
 	} // addOutsideButtons
 
 
@@ -1549,9 +1604,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 */
 	public void addThresholdSliders(int xVal, int yVal, int verticalSpacer)
 	{
-		// Since some i's will add a couple rows of labels and sliders,
-		// this variable keeps track of which "level" of y the next thing should be added to.
-
 		String[]	names	= new String[] {
 				"saturation",
 				"saturationForteThresh",
@@ -1565,41 +1617,18 @@ public class ModuleMenu extends MenuTemplate  {
 				"Brightness",
 				"Bright: Forte\nThreshold"
 		}; // labels
+		
+		float[][]	rangeAndStartingVals	= new float[][] {
+				new float[] { -1, 1, 0	},	// percentSliders
+				new float[] { 0, 1, 0.7f }, // forteThresholds
+		};
 
 		this.firstSatBrightThreshSliderId	= this.nextSliderId;
 		System.out.println("firstSatBrightThreshSliderId = " + firstSatBrightThreshSliderId);
 
 		for(int i = 0; i < names.length; i++)
 		{
-			// Forte Thresholds
-			if(i % 2 == 1)
-			{
-				this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], 0, 1, 0.7f, "sensitivity");
-
-			} // if - Forte Thresholds
-
-			// Percent Sliders
-			if(i % 2 == 0)
-			{
-				this.controlP5.addLabel(names[i])
-				.setPosition(xVal + this.labelX, yVal + (i * (verticalSpacer + this.sliderHeight)) + 4)
-				.setValue(labels[i])
-				.moveTo("sensitivity");
-
-				this.controlP5.addSlider("slider" + this.nextSliderId)
-				.setPosition(xVal + this.leftAlign, (yVal + (i * (verticalSpacer + this.sliderHeight))))
-				.setSize(this.sliderWidth + this.spacer + this.textfieldWidth, this.sliderHeight)
-				.setRange(-1, 1)
-				.setValue(0)
-				.setId(this.nextSliderId)
-				.moveTo("sensitivity")
-				.getCaptionLabel().setVisible(false);
-
-				this.nextSliderId	= this.nextSliderId + 1;
-				// Also need to increment nextSTextfieldId so that they don't get out of sync
-				// (since this slider had no connected Textfield).
-				this.nextSTextfieldId	= this.nextSTextfieldId + 1;
-			} // if - percent sliders
+				this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], rangeAndStartingVals[i % 2][0], rangeAndStartingVals[i % 2][1], rangeAndStartingVals[i % 2][2], "sensitivity");
 		} // for
 
 	} // addThresholdSliders
@@ -2007,7 +2036,6 @@ public class ModuleMenu extends MenuTemplate  {
 	 * @param numInput:  Controls the input that is updated
 	 * @param followerType:  Controls the style of amplitude follower that is implemented
 	 */
-	@SuppressWarnings("unused")
 	public void updateAmplitudeFollower(int numInput, int followerType)
 	{
 		if(numInput >= this.module.curNumInputs)
@@ -2109,7 +2137,6 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.amplitudeFollower[numInput];
 	}
-	
 	
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
@@ -3040,21 +3067,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 
 	/**
-	 * Displays the "sidebarGroup" of this.controlP5
-	 */
-	protected void displaySidebar(boolean show)
-	{	
-		//		this.controlP5.getGroup("sidebarGroup").setVisible(show);
-		if(show)
-		{
-			//			this.leftEdgeX 	= this.sidebarWidth;
-		} else {
-			//			this.leftEdgeX	= 0;
-		}
-
-	} // displaySidebar
-
-	/**
 	 * Calls super.runMenu to show or hide the Controllers and shapeEditor.runMenu, if applicable.
 	 */
 	@Override
@@ -3159,44 +3171,25 @@ public class ModuleMenu extends MenuTemplate  {
 				}
 			}
 
+			
 			// Hamburger button:
 			if(controlEvent.getController().getName().equals("hamburger"))
 			{
-				// Make sure that we don't call this when we just mean to call menuX:
-				if(this.parent.millis() > (this.lastMenuXMillis + 10))
-				{
-					this.setIsRunning(true);
-					controlEvent.getController().setVisible(false);
-				}
-				this.showHamburger	= false;
-				this.isRunning		= true;
-
-				System.out.println("controlEvent - hamburger: isRunning = " + this.isRunning);
-				/*			
-				this.controlP5.getWindow().resetMouseOver();
-				this.menuIsOpen = true;
-				this.displaySidebar(true);
-				 */
-			} // if - hamburger
-
-			// MenuX button:
-			if(controlEvent.getController().getName().equals("menuX"))
-			{
-				this.lastMenuXMillis	= this.parent.millis();
-				this.isRunning			= false;
-
-				//			this.displaySidebar(false);
-				/*			this.leftEdgeX	= 0;
-				this.controlP5.getGroup("sidebarGroup").setVisible(false);
-				 */
-				//			this.outsideButtonsCP5.getController("hamburger").setVisible(true);
-
-				this.outsideButtonsCP5.getController("hamburger").setVisible(!((Toggle)this.controlP5.getController("menuButton")).getBooleanValue());
-				if(this.shapeEditor != null)
+				System.out.println("((Toggle)controlEvent.getController()).getBooleanValue() = " + ((Toggle)controlEvent.getController()).getBooleanValue());
+				this.isRunning		= ((Toggle)controlEvent.getController()).getBooleanValue();
+				// Set it to visible true either
+				// - when we're coming into the menu (so getBooleanValue == true)
+				// - when we're going out of the menu (getBooleanValue == false) AND !hideMenuButton
+				controlEvent.getController().setVisible(((Toggle)controlEvent.getController()).getBooleanValue() || 
+						(!((Toggle)controlEvent.getController()).getBooleanValue() && !((Toggle)this.controlP5.getController("menuButton")).getBooleanValue()));
+				
+				if(this.shapeEditor != null && this.shapeEditor.isRunning)
 				{
 					this.shapeEditor.isRunning	= false;	// In case it gets clicked from within the ShapeEditor Tab
 				}
-			} // if - menuX
+				
+			} // if - hamburger
+			
 
 			// Hide play button button:
 			if(controlEvent.getName().equals("playButton"))
@@ -3542,11 +3535,15 @@ public class ModuleMenu extends MenuTemplate  {
 
 				this.fillHSBColors();
 			} // input select dropdown
-
+			
 			if(controlEvent.getName().equals("global"))
 			{
+				this.setGlobal(((Toggle)controlEvent.getController()).getBooleanValue());
+				/*
+				this.global			= true;
 				this.startHere		= 0;
 				this.endBeforeThis	= this.module.getTotalNumInputs();
+				*/
 			} // global
 
 			if(controlEvent.getName().equals("numInputsList"))
@@ -3563,6 +3560,11 @@ public class ModuleMenu extends MenuTemplate  {
 			if(controlEvent.getName().equals("loadColors"))
 			{
 				this.loadColorState();
+			}
+			
+			if(controlEvent.getName().equals("loadLyrics"))
+			{
+				this.loadLyrics();
 			}
 
 			// Dynamic Bars:
@@ -3834,6 +3836,17 @@ public class ModuleMenu extends MenuTemplate  {
 		} // specialColors
 
 	} // colorWheelEvent
+	
+	public void cycleLyrics(int keyCode)
+	{
+		if(keyCode == PConstants.RIGHT)
+		{
+			this.curLyricsLine	= (this.curLyricsLine + 1) % this.curLyrics.size();
+		} else if(keyCode == PConstants.LEFT)
+		{
+			this.curLyricsLine	= (this.curLyricsLine - 1 + this.curLyrics.size()) % this.curLyrics.size();
+		}
+	} // mousePressed
 
 
 	/**
@@ -4453,10 +4466,10 @@ public class ModuleMenu extends MenuTemplate  {
 
 	public void saveColorState()
 	{
-		int returnVal = fc.showSaveDialog(null);
+		int returnVal = colorFileChooser.showSaveDialog(null);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
+			File file = colorFileChooser.getSelectedFile();
 			String	filename	= file.getName();
 			if( (filename.length() < 4) || !(filename.substring(filename.length() - 4).equalsIgnoreCase(".txt")) )
 			{
@@ -4488,18 +4501,18 @@ public class ModuleMenu extends MenuTemplate  {
 					BufferedWriter	out	= new BufferedWriter(new FileWriter(file));
 					out.write("*** *** ***\n");
 
-					// Need these (colors.length, colors[0].length) in order to correctly interpret the data when loading it
+					// Need this (colors[this.currentInput].length) in order to correctly interpret the data when loading it
 					// and to notify the user if the numbers do not match his colors:
-					out.write(this.colors.length + "\n");	// Number of inputs
-					out.write(this.colors[0].length + "\n");	// Number of color items
+			//		out.write(this.colors.length + "\n");	// Number of inputs
+					out.write(this.colors[this.currentInput].length + "\n");	// Number of color items
 
-					for(int i = 0; i < this.colors.length; i++)
-					{
-						for(int j = 0; j < this.colors[i].length; j++)
+					//for(int i = 0; i < this.colors.length; i++)
+					//{
+						for(int i = 0; i < this.colors[this.currentInput].length; i++)
 						{
-							out.write(this.colors[i][j][0] + "\t" + this.colors[i][j][1] + "\t" + this.colors[i][j][2] + "\n");
+							out.write(this.colors[this.currentInput][i][0] + "\t" + this.colors[this.currentInput][i][1] + "\t" + this.colors[this.currentInput][i][2] + "\n");
 						}
-					}
+					//}
 
 					out.close();		
 
@@ -4514,13 +4527,11 @@ public class ModuleMenu extends MenuTemplate  {
 	
 	public void loadColorState()
 	{
-		String[]	splitResults;	// Use this to hold the color values while they are being parsed to ints
-		
-		int returnVal = fc.showOpenDialog(null);
+		int returnVal = colorFileChooser.showOpenDialog(null);
 		
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			File file	= fc.getSelectedFile();
+			File file	= colorFileChooser.getSelectedFile();
 			
 			try
 			{
@@ -4530,25 +4541,37 @@ public class ModuleMenu extends MenuTemplate  {
 
 				if(stars.equals("*** *** ***"))
 				{
-					// else, go on to check the dimensions
-					int	numInputs	= Integer.parseInt(in.readLine());
-					int	numColors	= Integer.parseInt(in.readLine());
+					// Go on to check the dimensions
+					//int	numInputs	= Integer.parseInt(in.readLine());
+					int			numColors		= Integer.parseInt(in.readLine());
+					String		stringColors	= in.readLine();
+					String[]	stringColorsArray;
+					int[][]		tempColors		= new int[Math.max(0, numColors)][3];
 					
-					System.out.println("numInputs = " + numInputs + "; numColors = " + numColors);
-					
-					if( (this.colors.length == numInputs) && (numColors == this.colors[0].length) )
+					if(numColors == this.colors[this.currentInput].length)
 					{
+						// Fill tempColors from file:
+						for(int i = 0; ( i < tempColors.length ) && ( stringColors != null ); i++)
+						{
+							stringColorsArray	= stringColors.split("\t");
+							
+							for(int j = 0; j < tempColors[i].length; j++)
+							{
+								tempColors[i][j]	= Integer.parseInt(stringColorsArray[j]);
+							}
+							
+							stringColors	= in.readLine();
+						}
+						
 						// and if we make it this far, actually read the values into this.colors
-						for(int i = 0; i < this.colors.length; i++)
+						for(int i = this.startHere; i < this.endBeforeThis; i++)
 						{
 							for(int j = 0; j < this.colors[i].length; j++)
 							{
-								splitResults	= (in.readLine()).split("\t");
-								
-								for(int k = 0; k < splitResults.length; k++)
+								for(int k = 0; k < this.colors[i][j].length; k++)
 								{
-									this.colors[i][j][k]	= Integer.parseInt(splitResults[k]);
-								} // for - k
+									this.colors[i][j][k]	= tempColors[j][k];									
+								}
 							} // for - j
 						} // for - i
 						
@@ -4556,9 +4579,8 @@ public class ModuleMenu extends MenuTemplate  {
 						// Wrong dimensions
 						JOptionPane.showMessageDialog(null, 
 								"Sorry, the dimensions of that color file do not match the current settings.  " + 
-						"Currently, colors.length == " + this.colors.length + " and colors[0].length == " + 
-										this.colors[0].length + ", while the file has " + numInputs + " and " + 
-						numColors + ", respectively.");
+						"Currently, colors[" + this.currentInput + "].length == " + 
+										this.colors[this.currentInput].length + ", while the file has " + numColors + " colors.");
 					} // if - correct dimensions
 				} else {
 					// Doesn't begin with "*** *** ***"
@@ -4572,6 +4594,42 @@ public class ModuleMenu extends MenuTemplate  {
 			}
 		}
 	} // loadColorState
+	
+	/**
+	 * Opens the lyric File Chooser and allows the user to choose a file from which to 
+	 * load lyrics (each line of the file will be displayed individually on keypress).
+	 */
+	private void loadLyrics() 
+	{
+		int 	returnVal = this.lyricsFileChooser.showOpenDialog(null);
+		String	curLine;
+		// Remove the current lyrics:
+		this.curLyrics.clear();
+		this.curLyricsLine	= 0;
+		
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			File file	= this.lyricsFileChooser.getSelectedFile();
+			
+			try
+			{
+				BufferedReader in	= new BufferedReader(new FileReader(file));
+				
+				curLine	= in.readLine();
+
+				while(curLine != null)
+				{
+					this.curLyrics.add(curLine);
+					curLine	= in.readLine();
+				} // while - read through file
+				
+				in.close();
+			} catch (IOException ioe) {
+				System.out.println("ModuleMenu.loadColorState: caught IOException " + ioe);
+				ioe.printStackTrace();
+			} // try/catch
+		}
+	} // loadLyrics
 
 	public int[][] getCurHue()				{	return this.curHue;	}
 
@@ -4808,7 +4866,7 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		this.currentInput	= newCurrentInput;
 
-		if(!global)
+		if(!this.global)
 		{
 			this.startHere	= this.currentInput;
 			this.endBeforeThis	= (this.currentInput + 1);
@@ -4818,10 +4876,11 @@ public class ModuleMenu extends MenuTemplate  {
 	public void setGlobal(boolean newGlobal)
 	{
 		//		this.global	= newGlobal;
-		((Toggle)this.controlP5.getController("global")).setState(false);
+		this.global = newGlobal;
 
 		if(!newGlobal)
 		{
+			//this.controlP5.getController("inputSelectDropdown").setValue(this.currentInput);
 			this.startHere	= this.currentInput;
 			this.endBeforeThis	= (this.currentInput + 1);
 		} else {
@@ -4857,6 +4916,11 @@ public class ModuleMenu extends MenuTemplate  {
 		this.useRecInput	= newVal;
 	}
 	
+	public boolean getUseRecInput()
+	{
+		return this.useRecInput;
+	}
+	
 	public boolean getRecInputPlaying()
 	{
 		return this.recInputPlaying;
@@ -4867,9 +4931,19 @@ public class ModuleMenu extends MenuTemplate  {
 		return this.recInput;
 	}
 	
-	public boolean getUseRecInput()
+	public boolean getShowLyrics()
 	{
-		return this.useRecInput;
+		return this.showLyrics;
+	}
+	
+	public ArrayList<String> getCurLyrics()
+	{
+		return this.curLyrics;
+	}
+	
+	public int getCurLyricsLine()
+	{
+		return this.curLyricsLine;
 	}
 
 
