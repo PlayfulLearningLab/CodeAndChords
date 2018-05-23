@@ -11,7 +11,7 @@
 PORT_AUDIO_FILE="pa_stable_v190600_20161030.tgz"
 PORT_AUDIO_DOWNLOAD_URL="http://www.portaudio.com/archives/$PORT_AUDIO_FILE"
 
-FRAMEWORKS="-framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -framework Carbon"
+FRAMEWORKS="-framework JavaVM -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreServices -framework Carbon"
 
 curl -O $PORT_AUDIO_DOWNLOAD_URL
 tar -xzf $PORT_AUDIO_FILE
@@ -20,12 +20,17 @@ cd portaudio
 ./configure --without-jack
 make
 
+# Build the jPortAudio lib (libjportaudio.jnilib) :
+cc -c -Iinclude -Ibindings/java/c/src \
+    ./bindings/java/c/src/com_portaudio_BlockingStream.c \
+    ./bindings/java/c/src/com_portaudio_PortAudio.c \
+    ./bindings/java/c/src/jpa_tools.c
+
 cc -dynamiclib \
-    -I/usr/include \
-    -I$JAVA_HOME/include \
-    -I$JAVA_HOME/include/darwin \
-    ./portaudio/bindings/java/c/src/com_portaudio_BlockingStream.c \
-    ./portaudio/bindings/java/c/src/com_portaudio_PortAudio.c \
-    ./portaudio/bindings/java/c/src/com_portaudio_jpa_tools.c \
-    -o libjportaudio.jnilib \
-    $FRAMEWORKS
+    -L./lib/.libs \
+    -lportaudio \
+    -o libjportaudio.jnilib com_portaudio_BlockingStream.o com_portaudio_PortAudio.o jpa_tools.o $FRAMEWORKS
+
+# Move the Mac libs over to the Eclipse project:
+cp ./lib/.libs/libportaudio.a ../Eclipse/workspace/CodeAndChordsEclipseProject/libs/
+cp ./libjportaudio.jnilib ../Eclipse/workspace/CodeAndChordsEclipseProject/libs/
