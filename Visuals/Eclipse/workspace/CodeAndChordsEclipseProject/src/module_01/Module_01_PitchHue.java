@@ -10,10 +10,7 @@ public class Module_01_PitchHue extends Module
 {
 	/**
 	 * 
-	 * 
- 1/4/2016
- Emily
-
+	 *
 	 * 08/01/2016
 	 * Emily Meuer
 	 *

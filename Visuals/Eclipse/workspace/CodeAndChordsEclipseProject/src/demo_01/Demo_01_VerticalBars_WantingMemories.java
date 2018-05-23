@@ -10,16 +10,12 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 	/**
 	 * 
 	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
-	 * Emily Meuer
-
+	 * Emily Meuer, Dan Mahota
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Each vertical bar changes hue based on the pitch and height based on the amplitude of its 
+	 * respective input;
+	 * see Demo_01_VerticalBars.java for in-text explanatory comments.
 	 */
 
 	private float[]	barVel;
@@ -74,15 +70,6 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
-		/*
-		 * 		this.shapes	= new Shape[12];
-		for(int i = 0; i < this.shapes.length; i++)
-		{
-			this.shapes[i]	= new Shape(this);
-			this.shapes[i].setCurrentShape("supershape", 
-					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
-		} // for - i
-		 */
 
 		this.setSquareValues();
 
@@ -122,7 +109,7 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 				((this.width / 3) * 2) - 40	
 		};
 
-		// call add methods:
+		// call add methods (as of 2018, this is the old way to do it):
 
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
 
@@ -186,11 +173,9 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		.setLabel("Dynamic Bar Height")
 		.getCaptionLabel()
 		.align(ControlP5.CENTER, ControlP5.CENTER);
-//		.setVisible(false);
 		
 
 		this.menu.getOutsideButtonsCP5().getController("play").hide();
-//		this.menu.getOutsideButtonsCP5().getController("play").setVisible(false);
 
 		this.scaleDegree	= 0;
 	} // setup()
@@ -203,11 +188,7 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			this.amplitude[i] = this.recordedInput.getAmplitude(i);
-		}
 
-		
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 

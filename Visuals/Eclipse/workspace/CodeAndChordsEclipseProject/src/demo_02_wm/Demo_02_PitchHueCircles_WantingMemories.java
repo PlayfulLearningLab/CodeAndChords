@@ -9,17 +9,11 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 {
 	/**
 	 * 
-	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
 	 * Emily Meuer
-
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Concentric circles, each corresponding to a particular input, with background color controlled by pitch.
+	 * See Demo_02_PitchHueCircles.java for explanatory comments within the program.
 	 */
 
 	public static void main(String[] args)
@@ -27,18 +21,9 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 		PApplet.main("demo_02_wm.Demo_02_PitchHueCircles_WantingMemories");
 	} // main
 
-
-//	private RealTimeInput  input;
 	private	RecordedInput	recordedInput;
 	
 	private	int[]	circleDiams;
-/*	private	int		numInputs;
-
-	private	int[]	xVals;
-	private	int[]	yVals;
-	private	int[]	rectWidths;
-	private	int[]	rectHeights;
-*/
 	
 	public void settings()
 	{
@@ -55,29 +40,18 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 				"WantingMemories_Soprano.wav",
 //				"WantingMemories_Tenor.wav",
 				"WMTenor_Medium.wav"				
-		});//new RealTimeInput(16, true, this);
+		});
 		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 		
 		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
-/*
- * 		this.shapes	= new Shape[12];
-		for(int i = 0; i < this.shapes.length; i++)
-		{
-			this.shapes[i]	= new Shape(this);
-			this.shapes[i].setCurrentShape("supershape", 
-					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
-		} // for - i
-*/
-		
-//		this.setSquareValues();
+
 		this.circleDiams	= new int[] { 100, 250, 400, 550, 700 };
 		
 		int[]	textYVals  		= new int[18];
 		int[]	modulateYVals	= new int[3];
 		int[]	modulateHSBVals	= new int[3];
 		int[]	controllerXVals	= new int[3];
-//		int					colorSelectY;
 		
 		// calculate y's
 		// set y vals for first set of scrollbar labels:
@@ -108,16 +82,11 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 				((this.width / 3) * 2) - 40	
 			};
 
-		// call add methods:
-		
+		// Call add methods (as of 2018, this is the old way to do it - use add____Menu() instead):
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
 		
-//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 		this.menu.addForteThresholdSlider(controllerXVals[0], textYVals[3]);
-
-		// Adding inputNumSelect first so that inputSelect can be in front:
-//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		
 		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
 
@@ -127,7 +96,6 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 		this.menu.addARTSliders(controllerXVals[1], textYVals[1], textYVals[2], textYVals[3]);
 		
 		this.menu.addInputSelect(controllerXVals[0], textYVals[4]);		
-
 
 		modulateHSBVals[0] = textYVals[6];
 		modulateHSBVals[1] = textYVals[7];
@@ -170,37 +138,29 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 		
 		this.menu.getOutsideButtonsCP5().getController("play").hide();
 
-
 	} // setup()
 
 	
 	public void draw()
 	{
 		int	scaleDegree;			
+		int	curX;
+		int	curY;
+			
 		
 		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 		
 		
 		for(int i = (this.curNumInputs - 1); i >= 0; i--)
-//		for(int i = 0; i < this.curNumInputs; i++)
 		{
 //			System.out.println("recordedInput.getAdjustedFundAsMidiNote(" + (i) + ") = " + recordedInput.getAdjustedFundAsMidiNote(i) + 
 //					"; recordedInput.getAmplitude(" + (i) + ") = " + recordedInput.getAmplitude(i));
 		
 			scaleDegree	= (round(recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-//			scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			
-//			System.out.println(i + ": scaleDegree = " + scaleDegree);
 			
 			this.menu.fadeColor(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-
-//			System.out.println(i + ": rgb(" + this.menu.getCurHue()[i][0] + ", " + 
-//					this.menu.getCurHue()[i][1] + ", " + this.menu.getCurHue()[i][2] + ")");
-
-			int	curX;
-			int	curY;
 			
 			curX	= (int)this.menu.mapCurrentXPos(this.width / 2);
 			curY	= (int)this.menu.mapCurrentYPos(this.height / 2);
@@ -216,7 +176,6 @@ public class Demo_02_PitchHueCircles_WantingMemories extends Module
 		} // for
 		
 		this.menu.runMenu();
-
 
 	} // draw()
 	
