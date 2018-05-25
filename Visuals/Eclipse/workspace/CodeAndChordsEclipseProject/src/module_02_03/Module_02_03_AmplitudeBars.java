@@ -1,17 +1,18 @@
 package module_02_03;
-/*
- * Rachel Farah
- * Vintage Stereo Lines Controlled by Amplitude
- * */
 
-//import core.FullScreenDisplay;
-//import core.Input;
+
 import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
 import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
-
+/**
+ * 
+ * Vintage Stereo Lines Controlled by Amplitude,
+ * with background color controlled by pitch.
+ * 
+ * @author Rachel Farah
+ */
 public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorInterface */{
 	int xspacing;   // How far apart should each horizontal location be spaced
 	int w;              // Width of entire wave
@@ -48,7 +49,8 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 
 		this.input    = new RealTimeInput(1, new AudioContext(), this);
 		this.totalNumInputs = this.input.getAdjustedNumInputs();
-		this.curNumInputs = 4;
+		//this.curNumInputs = 4;
+		this.curNumInputs	= 1;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 

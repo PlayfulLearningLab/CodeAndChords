@@ -6,6 +6,14 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
+/**
+ * Kristina's intro to C+C;
+ * colored bars move across the screen, with color determined by pitch.
+ * Currently supports only one input.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Module_01_04_PitchHue_Kristina extends Module {
 
 	int[][][] move;
@@ -37,7 +45,6 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
 
-		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 		background(255);
 		int[] color;
 
@@ -51,9 +58,6 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 		checkpoint = this.millis(); 
 		//System.out.println(this.width + ";" + (this.width/185) + ";" + (this.height));
 
-
-
-		//		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
 
@@ -120,29 +124,19 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 		//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
-
-		
-
-
-
-
 		//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
 
-
 	} // draw()
 
-
+	/**
+	 * Each Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-
-	public void mouseDragged()
-	{
-		this.mousePressed();
-	}
-
-
 
 }

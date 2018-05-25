@@ -6,6 +6,14 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
+/**
+ * A cool accident when trying to make Module_01_04 multi-input:
+ * same colored bars, but each input goes diagonally down the screen a few times.
+ * Kind of confusing right now, but could be fun to play with.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Module_01_04_VerticalHue extends Module {
 
 	int[][] move;
@@ -114,14 +122,9 @@ public class Module_01_04_VerticalHue extends Module {
 		}
 		
 
-
-
 		//rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0), width - this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(height));
 
 		//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
-
-
-
 
 		//if(this.menu.isShowScale())
 	//{
@@ -129,12 +132,6 @@ public class Module_01_04_VerticalHue extends Module {
 			//this.legend(scaleDegree, j);
 		//}
 
-		
-
-
-
-
-		//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
 
 
@@ -145,12 +142,6 @@ public class Module_01_04_VerticalHue extends Module {
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-
-	public void mouseDragged()
-	{
-		this.mousePressed();
-	}
-
 
 
 }
