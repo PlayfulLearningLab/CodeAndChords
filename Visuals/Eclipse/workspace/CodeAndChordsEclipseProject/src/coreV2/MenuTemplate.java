@@ -1,4 +1,4 @@
-package core;
+package coreV2;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -16,14 +16,14 @@ import processing.core.PApplet;
 import processing.core.PShape;
 
 /**
- * Moved to coreV2 on 5/25/2018.
- * 
  * Abstract class for a menu that maintains the correct aspect ratio for objects in the module
  * while scaling them down to make room for the menus above and on the left side.
  * 
  * All values are stored and set as relative to their position in the full canvas, 
  * not the scaled down version.  When you need these values relative to the scaled 
  * down screen, use the getAdjustedMenuXPos() and getAdjustedMenuYPos() functions.
+ * 
+ * Originally from core; moved to coreV2 on 5/25/2018.
  * 
  * @author Dan Mahota, Emily Meuer
  *

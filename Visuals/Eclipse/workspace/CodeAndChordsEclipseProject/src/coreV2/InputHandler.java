@@ -26,7 +26,6 @@ public class InputHandler
 		if(InputHandler.inputHandler == null)
 		{
 			InputHandler.inputHandler = new InputHandler();
-
 		}
 
 		return InputHandler.inputHandler;

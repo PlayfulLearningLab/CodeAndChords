@@ -15,7 +15,7 @@ public class TestModule extends PApplet
 		
 	}
 	
-	public void settup()
+	public void setup()
 	{
 		
 	}

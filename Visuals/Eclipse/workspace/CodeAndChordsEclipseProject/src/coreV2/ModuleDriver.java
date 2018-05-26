@@ -122,7 +122,7 @@ public class ModuleDriver implements Runnable
 	{
 		if(activeInputs.length > this.totalNumInputs)
 		{
-			throw new IllegalArgumentException("too many inputs in your array");
+			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: too many Inputs in your array");
 		}
 		for(int i = 0; i < activeInputs.length; i++)
 		{
