@@ -3500,13 +3500,6 @@ public class ModuleMenu extends MenuTemplate  {
 			{
 				controlEvent.getController().bringToFront();
 
-				// Save these colors: -- no longer necessary, since getColor() uses this.colors, too
-				/*			for(int i = 0; i < this.colorSelect.length; i++)
-				{
-					this.colors[this.currentInput][i]	= this.getColor(i);
-				}
-				 */
-
 				// Switch to newly selected input num:
 				this.currentInput	= (int)controlEvent.getValue();
 				System.out.println("currentInput = " + this.currentInput);
@@ -3539,11 +3532,7 @@ public class ModuleMenu extends MenuTemplate  {
 			if(controlEvent.getName().equals("global"))
 			{
 				this.setGlobal(((Toggle)controlEvent.getController()).getBooleanValue());
-				/*
-				this.global			= true;
-				this.startHere		= 0;
-				this.endBeforeThis	= this.module.getTotalNumInputs();
-				*/
+				
 			} // global
 
 			if(controlEvent.getName().equals("numInputsList"))
@@ -4503,16 +4492,12 @@ public class ModuleMenu extends MenuTemplate  {
 
 					// Need this (colors[this.currentInput].length) in order to correctly interpret the data when loading it
 					// and to notify the user if the numbers do not match his colors:
-			//		out.write(this.colors.length + "\n");	// Number of inputs
 					out.write(this.colors[this.currentInput].length + "\n");	// Number of color items
 
-					//for(int i = 0; i < this.colors.length; i++)
-					//{
-						for(int i = 0; i < this.colors[this.currentInput].length; i++)
-						{
-							out.write(this.colors[this.currentInput][i][0] + "\t" + this.colors[this.currentInput][i][1] + "\t" + this.colors[this.currentInput][i][2] + "\n");
-						}
-					//}
+					for(int i = 0; i < this.colors[this.currentInput].length; i++)
+					{
+						out.write(this.colors[this.currentInput][i][0] + "\t" + this.colors[this.currentInput][i][1] + "\t" + this.colors[this.currentInput][i][2] + "\n");
+					}
 
 					out.close();		
 
@@ -4542,7 +4527,6 @@ public class ModuleMenu extends MenuTemplate  {
 				if(stars.equals("*** *** ***"))
 				{
 					// Go on to check the dimensions
-					//int	numInputs	= Integer.parseInt(in.readLine());
 					int			numColors		= Integer.parseInt(in.readLine());
 					String		stringColors	= in.readLine();
 					String[]	stringColorsArray;
