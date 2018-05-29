@@ -10,6 +10,16 @@ import core.input.RealTimeInput;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
+/**
+ * April 2018
+ * Emily Meuer
+ * 
+ * This is simply SMM_Demo.java without any helpful comments (so see SMM_Demo.java for comments)
+ *  - but with karaoke lyrics!  Choose song and show lyrics in Menu.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Karaoke_Demo extends Module {
 	
 	private	String[]	lionSleepsTonight = new String[] {

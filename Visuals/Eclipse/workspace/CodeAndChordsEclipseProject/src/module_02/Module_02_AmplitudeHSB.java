@@ -1,7 +1,5 @@
 package module_02;
 
-//import core.FullScreenDisplay;
-//import core.Input;
 import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
@@ -11,7 +9,13 @@ import core.input.RealTimeInput;
 import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
-public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInterface */{
+/**
+ * Shape with background color determined by amplitude level.
+ * 
+ * @author Dan Mahota
+ *
+ */
+public class Module_02_AmplitudeHSB extends Module {
 
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
@@ -101,7 +105,7 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		/*
 		 * need:
 		 * 	drawShape()  		- draws the main shape
-		 * 	runSE()     		- should be run every cycle, draws shape editor
+		 *  [ runSE()     		- should be run every cycle, draws shape editor ] -- legacy; now runMenu() also runs the ShapeEditor
 		 * 	legend(goalHuePos)	- draws legend
 		 * 
 		 * 	if(this.moduleTemplate.isShowScale()
@@ -127,6 +131,11 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 
 	} // draw
 
+	/**
+	 * Each Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current amplitude thresholds
+	 */
 	@Override
 	public String[] getLegendText()
 	{
@@ -144,6 +153,9 @@ public class Module_02_AmplitudeHSB extends Module /*implements ShapeEditorInter
 		this.mousePressed();
 	}
 
+	/**
+	 * Can click and drag the shape to move it.
+	 */
 	public void mousePressed()
 	{
 		/*

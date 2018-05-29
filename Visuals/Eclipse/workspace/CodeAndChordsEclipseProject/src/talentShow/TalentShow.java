@@ -7,6 +7,13 @@ import core.ModuleMenu;
 import core.input.RealTimeInput;
 import processing.core.PApplet;
 
+/**
+ * For Catholic Studies Talent Show, Spring 2018.
+ * Pretty much just Demo_01_VerticalBars, with scenes and definable input numbers for convenience.
+ * 
+ * @author Emily Meuer
+ *
+ */
 public class TalentShow extends Module {
 
 	private	static final int	SCENE_DEMO				= 0;
@@ -57,10 +64,8 @@ public class TalentShow extends Module {
 
 		this.menu.setAlphaSlider(255);
 
-		// Starts on "If I Were A Boy":
 		this.menu.showColorMenu();
 
-		//			this.menu.setGlobal(true);
 		((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
 		this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
 

@@ -8,6 +8,13 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
+/**
+ * Takes the pitch-determines-background-color idea of Module_01_02_PitchHue_MultipleInputs
+ * but instead of a rectangle, each input has its own shape.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 
@@ -19,7 +26,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 	public void setup() 
 	{
 		this.input	= new RealTimeInput(1, new AudioContext(), this);
-//		this.input	= new RealTimeInput(16, true, this);
+		//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 
@@ -28,23 +35,17 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		this.setSquareValues();
 
-		// call add methods:
+		// Call add methods:
 		this.menu.addSensitivityMenu(true);
-		
 		this.menu.addColorMenu();
-		
-		this.menu.getControlP5().getController("keyDropdown").bringToFront();
-
 		this.menu.addShapeMenu(16);
-
-//		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
 
 
 	public void draw()
 	{
-//		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
+		//		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
 
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
@@ -56,8 +57,6 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 			this.menu.setMenuVal();
 		} // if keyPressed
 
-		//System.out.println("****** CurNumInputs = " + this.curNumInputs + "  *******");
-
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + input.getAdjustedFundAsMidiNote(i) + 
@@ -65,71 +64,47 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
+			// This Module calls fadeColor() but not fill() because drawShape() takes from curHue() automatically:
 			this.menu.fadeColor(scaleDegree, i);
-
-//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
-
-
 			if(!this.menu.getShapeEditor().getIsRunning())
 			{
 				this.menu.getShapeEditor().drawShape(i);
 			}
-			
 
 			if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
 			{
 				// draws the legend along the bottom of the screen:
 				this.legend(scaleDegree, i);
-
 			} // if showScale
 
 		} // for
 
-
-		if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
-		{
-			// draws the legend along the bottom of the screen:
-			//this.legend(goalHuePos, 0);
-
-		} // if showScale
-
-//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
-
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
-
 	} // draw()
 
 
+	/**
+	 * Each Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
+
 
 	public void mouseDragged()
 	{
 		this.mousePressed();
 	}
 
+	/**
+	 * Shape mouse-drag functionality here
+	 * (can only drag the Shape currently selected in the ShapeEditor):
+	 */
 	public void mousePressed()
 	{
-		/*
-		FullScreenDisplay fsm = new FullScreenDisplay();
-		fsm.startDisplay();
-		this.shapeEditor.setPApplet(fsm);
-		this.menu.setPApplet(fsm);
-		 */
-
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();

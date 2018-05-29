@@ -189,7 +189,8 @@ public class ModuleDriver extends PApplet
 	{
 		if(activeInputs.length != this.totalNumInputs)
 		{
-			throw new IllegalArgumentException("You passed in an array of the wrong size.  There are " + this.totalNumInputs + " inputs total.");
+			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array of the wrong size.  There are " + this.totalNumInputs + " inputs total.");
+
 		}
 		for(int i = 0; i < activeInputs.length; i++)
 		{

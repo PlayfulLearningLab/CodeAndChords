@@ -7,132 +7,129 @@ import core.input.RecordedInput;
 public class InputHandler 
 {
 	private static InputHandler		inputHandler;
+	
+	private	static final int		REAL_TIME_INPUT	= 0;
+	private	static final int		PLAYABLE_INPUT	= 1;
 
-	private RealTimeInput 			realTimeInput;
-	private RecordedInput 			recordedInput;
-	
-	private Input					curInput;
-	
+	private	Input[]					inputs;
+	private	int						curInputNumber;	// 0 - realTimeInput; 1 - playableInput
+
 	private InputHandler()
 	{
 		System.out.println("Remember to set your inputs!");
+
+		this.inputs			= new Input[2];
 	}
-	
+
 	public static InputHandler getInputHandler()
 	{
 		if(InputHandler.inputHandler == null)
 		{
 			InputHandler.inputHandler = new InputHandler();
-			
 		}
-		
+
 		return InputHandler.inputHandler;
 	}
-	
+
 	public void setRealTimeInput(RealTimeInput realTimeInput)
 	{
+		// Error checking:
+		if(realTimeInput == null)	{
+			throw new IllegalArgumentException("InputHandle.setRealTimeInput: RealTimeInput parameter is null.");
+		}
+
+		this.inputs[0]		= realTimeInput;
+		this.curInputNumber	= InputHandler.REAL_TIME_INPUT;
+
+
+		// TODO - Emily isn't sold on the necessity of the following lines:
+		/*
 		if(this.curInput == realTimeInput)
 		{
 			this.curInput = null;
 		}
-		
-		this.realTimeInput = realTimeInput;
-		
+
 		if(this.recordedInput == null)
 		{
 			this.useRealTimeInput();
 		}
-		
+		*/
 	}
-	
-	public void setRecordedInput(RecordedInput recordedInput)
+
+	public void playableInput(Input playableInput)
 	{
+		this.inputs[1]		= playableInput;
+		this.curInputNumber	= InputHandler.PLAYABLE_INPUT;
+		
+		// TODO - still not sold on this, and it does something different than setRealTimeInput:
+		/*
 		if(this.curInput == this.recordedInput)
 		{
 			this.curInput = null;
 		}
-		
-		this.recordedInput = recordedInput;
-		
+
 		if(this.curInput == null)
 		{
 			this.useRecordedInput();
 		}
+		*/
 	}
-	
-	public RealTimeInput getRealTimeInput()
+
+	public Input getRealTimeInput()
 	{
-		return this.realTimeInput;
+		return this.inputs[InputHandler.REAL_TIME_INPUT];
 	}
-	
-	public RecordedInput getRecordedInput()
+
+	public Input getPlayableInput()
 	{
-		return this.recordedInput;
+		return this.inputs[InputHandler.PLAYABLE_INPUT];
 	}
-	
+
 	public void useRealTimeInput()
 	{
-		if(this.realTimeInput == null)
+		if(this.inputs[InputHandler.REAL_TIME_INPUT] == null)
 		{
-			throw new IllegalArgumentException("real time input is null");
+			throw new IllegalArgumentException("RealTimeInput is null");
 		}
-		
-		this.curInput = this.realTimeInput;
+
+		this.curInputNumber	= InputHandler.REAL_TIME_INPUT;
 	}
-	
+
 	public void useRecordedInput()
 	{
-		if(this.recordedInput == null)
+		if(this.inputs[InputHandler.PLAYABLE_INPUT] == null)
 		{
 			throw new IllegalArgumentException("recorded input is null");
 		}
-		
-		this.curInput = this.recordedInput;
+
+		this.curInputNumber	= InputHandler.PLAYABLE_INPUT;
 	}
 	
-	public void play()
+
+	public void switchInputs()
 	{
-		if(this.curInput == this.realTimeInput)
-		{
-			throw new IllegalArgumentException("InputHandler is still set to real time input.  Use the useRecordedInput() method if you wish to play a recorded input.");
-		}
+		// Pause the current Input:
+		this.inputs[this.curInputNumber].pause(true);
 		
-		if(this.recordedInput == null)
-		{
-			throw new IllegalArgumentException("Cannot play recorded input because it has not been set.");
-		}
-		
-		this.curInput.pause(false);
-	}
-	
-	public void pause()
-	{
-		if(this.curInput == this.realTimeInput)
-		{
-			throw new IllegalArgumentException("InputHandler is still set to real time input.  Use the useRecordedInput() method if you wish to play a recorded input.");
-		}
-		
-		if(this.realTimeInput == null)
-		{
-			throw new IllegalArgumentException("Cannot play recorded input because it has not been set.");
-		}
-		
-		this.curInput.pause(true);
-	}
-	
+		// Go to the next Input and start it:
+		this.curInputNumber	= (this.curInputNumber + 1) % 2;
+		this.inputs[this.curInputNumber].pause(false);
+	} // switch(boolean)
+
+
 	public float getMidiNote(int inputNum)
 	{
-		if(this.curInput == null)
+		if(this.inputs[this.curInputNumber] == null)
 		{
-			throw new IllegalArgumentException("The currently selected input is null.  Remember to use the useRecordedInput and useRealTimeInput methods.");
+			throw new IllegalArgumentException("The currently selected Input is null.  Remember to use the useRecordedInput and useRealTimeInput methods.");
 		}
-		
-		return this.curInput.getAdjustedFundAsMidiNote(inputNum);
+
+		return this.inputs[this.curInputNumber].getAdjustedFundAsMidiNote(inputNum);
 	}
-	
+
 	public float getAmplitude(int inputNum)
 	{
-		return this.curInput.getAmplitude(inputNum);
+		return this.inputs[this.curInputNumber].getAmplitude(inputNum);
 	}
-	
+
 }

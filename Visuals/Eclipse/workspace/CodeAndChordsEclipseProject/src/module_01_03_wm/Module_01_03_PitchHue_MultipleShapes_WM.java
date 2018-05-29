@@ -7,6 +7,13 @@ import core.ShapeEditor;
 import core.input.RecordedInput;
 import processing.core.PApplet;
 
+/**
+ * Takes the pitch-determines-background-color idea of Module_01_02_PitchHue_MultipleInputs
+ * but instead of a rectangle, each input has its own shape.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 
 
@@ -37,22 +44,16 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 				"WMTenor_Medium.wav"
 		});
 		this.totalNumInputs	= this.recordedInput.getAdjustedNumInputs();
-		this.curNumInputs	= 5;
+		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
 
 		this.setSquareValues();
 
-		// call add methods:
+		// Call add methods:
 		this.menu.addSensitivityMenu(true);
-		
 		this.menu.addColorMenu();
-		
-		this.menu.getControlP5().getController("keyDropdown").bringToFront();
-
 		this.menu.addShapeMenu(16);
-
-//		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
 
@@ -93,19 +94,14 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 
 		} // for
 
-		if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
-		{
-			// draws the legend along the bottom of the screen:
-			//this.legend(goalHuePos, 0);
-
-		} // if showScale
-
-//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
-
 	} // draw()
 
-
+	/**
+	 * Each Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
@@ -115,16 +111,13 @@ public class Module_01_03_PitchHue_MultipleShapes_WM extends Module {
 	{
 		this.mousePressed();
 	}
-
+	
+	/**
+	 * Shape mouse-drag functionality here
+	 * (can only drag the Shape currently selected in the ShapeEditor):
+	 */
 	public void mousePressed()
 	{
-		/*
-		FullScreenDisplay fsm = new FullScreenDisplay();
-		fsm.startDisplay();
-		this.shapeEditor.setPApplet(fsm);
-		this.menu.setPApplet(fsm);
-		 */
-
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();

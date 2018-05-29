@@ -12,16 +12,12 @@ public class Demo_01_Flight extends Module {
 	/**
 	 * 
 	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
-	 * Emily Meuer
-
+	 * Emily Meuer, Dan Mahota
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Each vertical bar changes hue based on the pitch and height based on the amplitude of its 
+	 * respective input;
+	 * see Demo_01_VerticalBars.java for in-text explanatory comments.
 	 */
 
 	private float[]	barVel;
@@ -207,11 +203,7 @@ public class Demo_01_Flight extends Module {
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			this.amplitude[i] = this.input.getAmplitude(i);
-		}
 
-		
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 

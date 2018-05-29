@@ -16,6 +16,8 @@ import processing.core.PApplet;
 import processing.core.PShape;
 
 /**
+ * Moved to coreV2 on 5/25/2018.
+ * 
  * Abstract class for a menu that maintains the correct aspect ratio for objects in the module
  * while scaling them down to make room for the menus above and on the left side.
  * 
@@ -149,15 +151,6 @@ public abstract class MenuTemplate implements ControlListener {
 		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
 		this.sliderHeight		= this.parent.height / 26;
 
-//		this.leftEdgeX	= 0;
-/*
-		this.nextSliderId		= 0;
-		this.nextSTextfieldId	= 100;
-		this.nextButtonId		= 200;
-		this.nextColorWheelId	= 300;
-		this.nextCWTextfieldId	= 400;
-		this.nextToggleId		= 500;
-		*/
 		
 		this.nextSliderId		= 1;
 		this.nextSTextfieldId	= 101;
@@ -173,23 +166,10 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public void drawMenu()
 	{
-		
 		this.parent.shape(this.menuBackground, 0, 0);
 		
-//		this.parent.stroke(150);
-//		this.parent.strokeWeight(3);
 		this.parent.noStroke();
 		this.parent.noFill();
-		
-	/*
-		this.parent.rect(	this.mapAdjustedMenuXPos(0), 
-							this.mapAdjustedMenuYPos(0), 
-							this.parent.width * this.scale + 3, 
-							this.parent.height * this.scale + 3 );
-	*/
-		//System.out.println(this.scale);
-		//System.out.println(this.mapAdjustedMenuXPos(0) + "    "  +  this.mapAdjustedMenuXPos(this.parent.width));
-		
 	} // drawMenu
 	
 	
