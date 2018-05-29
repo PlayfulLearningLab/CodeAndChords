@@ -5,9 +5,15 @@ import processing.core.PApplet;
 public class NavigationMenu extends Menu
 {
 
-	public NavigationMenu(PApplet pApplet) 
+	public NavigationMenu(Canvas canvas) 
 	{
-		super(pApplet);
+		super(canvas);
+		
+	}
 
+	@Override
+	public void drawMenu()
+	{
+		
 	}
 }

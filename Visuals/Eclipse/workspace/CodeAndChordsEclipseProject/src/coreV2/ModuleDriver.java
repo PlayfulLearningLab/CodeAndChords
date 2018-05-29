@@ -23,12 +23,9 @@ public class ModuleDriver implements Runnable
 	private ColorHandler	colorHandler;
 
 	private Canvas canvas;
-
-
+	
 
 	private MenuGroup menu;
-
-	private boolean menuIsOpen;
 
 
 
@@ -44,29 +41,13 @@ public class ModuleDriver implements Runnable
 		{
 			this.activeInputs[i] = i;
 		}
-
-		new Thread(this).start();
-	}
-
-	@Override
-	public void run() 
-	{
-		this.setUp();
-
-		while(true)
-		{
-			this.runModule();
-		}
-
-	}
-
-	private void setUp()
-	{
+		
 		this.inputHandler = InputHandler.getInputHandler();
+		
+		this.inputHandler.setRealTimeInput(new RealTimeInput(this.totalNumInputs, this.pApplet));
 
 		this.canvas = new Canvas(this.pApplet, 925, 520);
-		this.menu = new MenuGroup();
-		this.menuIsOpen = false;
+		this.menu = new MenuGroup(this.canvas);
 
 		this.useFollowers = true;
 		this.follower = new Follower[this.totalNumInputs];
@@ -77,18 +58,21 @@ public class ModuleDriver implements Runnable
 
 		this.colorHandler = new ColorHandler();
 
-
+		//Thread thread = new Thread(this);
+		//thread.setPriority(10);
+		//thread.start();
 	}
 
-	public void setMenuIsOpen(boolean value)
+	@Override
+	public void run() 
 	{
-		this.menuIsOpen = value;
+		while(true)
+		{
+			this.runModule();
+		}
+
 	}
 
-	public boolean getMenuIsOpen()
-	{
-		return this.menuIsOpen;
-	}
 
 	public void runModule()
 	{
@@ -101,6 +85,13 @@ public class ModuleDriver implements Runnable
 				this.follower[inputNum].update(this.inputHandler.getAmplitude(inputNum));
 			}
 		}
+		
+		if(this.colorHandler != null)
+		{
+			//update color handler
+		}
+		
+		this.menu.runMenu();
 	}
 
 	public Follower getFollower(int inputNum)

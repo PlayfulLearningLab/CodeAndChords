@@ -4,16 +4,20 @@ import processing.core.PApplet;
 
 public abstract class Menu 
 {
-	private PApplet 	pApp;
+	private PApplet 			pApp;
 	
-	private int		 	canvasXPos;
-	private int 		canvasYPos;
-	private int 		canvasWidth;
-	private int 		canvasHeight;
+	protected Canvas			canvas;
 	
-	public Menu(PApplet pApplet)
+	private String				menuName;
+	
+	private int				 	canvasXPos;
+	private int 				canvasYPos;
+	private int 				canvasWidth;
+	private int 				canvasHeight;
+	
+	public Menu(Canvas canvas)
 	{
-		this.pApp = pApplet;
+		this.canvas = canvas;
 		
 		this.canvasXPos = 0;
 		this.canvasYPos = 260;
@@ -21,10 +25,23 @@ public abstract class Menu
 		this.canvasHeight = 260;
 	}
 	
-	public void drawMenu()
+	public Canvas getCanvas()
 	{
-		
+		return this.canvas;
 	}
+	
+	public void setCanvas(Canvas canvas)
+	{
+		this.canvas = canvas;
+	}
+	
+	public void setCanvasSize()
+	{
+		this.canvas.setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
+	}
+	
+	abstract public void drawMenu();
+	
 	
 	
 }
