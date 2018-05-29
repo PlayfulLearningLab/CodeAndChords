@@ -132,5 +132,9 @@ public class ModuleDriver implements Runnable
 	{
 		return this.canvas;
 	}
+	
+	public int getTotalNumInputs() {
+		return this.totalNumInputs;
+	} // getTotalNumInputs
 
 }

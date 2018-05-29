@@ -75,10 +75,6 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**	Height of SliderS	*/
 	protected	int			sliderHeight;
-	
-//	protected	int[][][]	colors;
-	
-//	protected	int		currentInput;
 
 	
 	/**
@@ -95,6 +91,8 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
+	
+	protected	ModuleDriver	moduleDriver;
 
 
 	/**
@@ -103,8 +101,9 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param pApp	PApplet to initialize this.parent
 	 * @param appWidth	width of the PApplet
 	 * @param appHeight	height of the PApplet
+	 * @param moduleDriver 
 	 */
-	public MenuTemplate(PApplet pApp, float appWidth, float appHeight)
+	public MenuTemplate(PApplet pApp, float appWidth, float appHeight, ControlP5 controlP5, ModuleDriver moduleDriver)
 	{
 		this.isRunning = false;
 		
@@ -115,7 +114,7 @@ public abstract class MenuTemplate implements ControlListener {
 */
 		this.scale = .7f;
 		
-		this.controlP5	= new ControlP5(this.parent);
+		this.controlP5	= controlP5;
 		this.controlP5.addListener(this);
 		
 		this.controlP5.addGroup("groupPlaceholder");
@@ -158,6 +157,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.nextColorWheelId	= 301;
 		this.nextCWTextfieldId	= 401;
 		this.nextToggleId		= 501;
+		
+		this.moduleDriver	= moduleDriver;
 
 	} // constructor
 	
@@ -615,6 +616,26 @@ public abstract class MenuTemplate implements ControlListener {
 		if(this.isRunning)	{	return this.mapAdjustedMenuYPos(yVal);	}
 		else				{	return yVal;							}
 	} // getCurrentXPos
+	
+	/**
+	 *  Error checker; rejects numbers that are greater than or equal to the number of inputs or less than 0.
+	 *
+	 *  @param   inputNum  an int that is to be checked for suitability as an input line number.
+	 *  @param   String    name of the method that called this method, used in the exception message.
+	 */
+	protected void inputNumErrorCheck(int inputNum) {
+		if (inputNum >= this.moduleDriver.getTotalNumInputs()) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.moduleDriver.getTotalNumInputs() + ", the number of inputs.");
+
+			iae.printStackTrace();
+			throw iae;
+		}
+		if (inputNum < 0) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter is " + inputNum + "; must be 1 or greater.");
+			iae.printStackTrace();
+			throw iae;
+		}
+	} // inputNumErrorCheck
 	
 	/**
 	 * Shows or hides this.controlP5, depending on whether or not the Menu is open,

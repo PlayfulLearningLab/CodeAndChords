@@ -438,6 +438,7 @@ public class ModuleMenu extends MenuTemplate  {
 	protected	int	firstSatBrightThreshSliderId	= -1;
 	protected	int	alphaSliderId			= -1;
 
+	
 	/**	Indicates whether or not amplitude determines height of bars (only applies to amplitude bar Modules) */
 	protected boolean dynamicBars = false;
 
@@ -783,6 +784,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.setCurKey("A", 2);
 		}
 	} // addSensitivityMenu
+
 
 	/**
 	 * Adds the normal, 12-note Color Menu, with "Canvas"/"Tonic"/etc. special colors and no range segments.
@@ -1176,7 +1178,7 @@ public class ModuleMenu extends MenuTemplate  {
 		this.showScale = true;
 	} // addHideButtons
 
-
+	
 	/**
 	 * Adds the attack, release, and transition Sliders.
 	 * 
@@ -1423,7 +1425,6 @@ public class ModuleMenu extends MenuTemplate  {
 		.getCaptionLabel().toUpperCase(false);
 
 	} // addGuideTonePopout
-
 
 	/**
 	 * Adds the hue, saturation, and brightness modulate sliders

@@ -51,11 +51,14 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
 	};
 
+	///////////////
+	// Moved:
 	// ALL notes here
 	protected	final String[]	allNotes	= new String[] {
 			"A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab"
 	}; // allNotes
-
+	///////////////
+	
 	/**
 	 * This list of notes is to be used for custom color select Button labels
 	 */
@@ -233,7 +236,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 	/**	Holds the rgb values for all the colors, which will be updated by the ColorWheels of the current input num	*/
 	protected	int[][][]	colors;
-	
+
 	/**	ColorWheels that hold all the colors for the Module	*/
 	protected	ColorWheel[]	colorSelect;
 
@@ -242,19 +245,19 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 	/**	Hue that corresponds to the current sound, but to which curHue may not yet have faded	*/
 	private	int[][]			goalHue;
-	
+
 	/**	Current shapeSize (as opposed to the goal shapeSize, which may not have been reached)	 */
 	private	int[]			curShapeSize;
 
 	/**	ShapeSize that corresponds to the current amplitude, but to which curShapeSize may not yet have faded	*/
 	private	int[]			goalShapeSize;
-	
+
 	/**	The amount that must be added each iteration through the fadeShapeSize loop to reach the goalShapeSize */
 	private	int[]			shapeSizeAdd;
-	
+
 	/**	Indicates whether or not each shape has reached its goalSize */
 	private	boolean[]		shapeSizeReached;
-	
+
 	/**	The distance between the current and goal size for each Shape */
 	private	int[]			shapeSizeRange;
 
@@ -303,17 +306,17 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	protected	float[][]	satBrightPercentVals;
 
 	////////////////////////////////////////////////////////////	
-	
+
 	///// Not necessary b/c we have Follower?
 	/**	
 	 * A number between 0 and 1 indicating the percent at which a Shape should be scaled
 	 * given the current amplitude to allow a smooth growing or shrinking.
 	 */
 	protected	float[]	curAmpScale;
-	
+
 	/**	Used in smoothAmpScale to calculate curAmpScale */
 	protected	float[]	goalAmpScale;
-	
+
 	protected	int[]	ampCheckpoint;
 
 	/**	Flag denoting whether or not the current volume is below the threshold	*/
@@ -322,7 +325,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 	/**	For a timer that allows attack/release/transition sliders to be time-based	*/
 	private int[]	colorCheckpoint;
-	
+
 	/**	For a timer that allows shape size to change smoothly based on amplitude input	*/
 	private int[]	shapeSizeCheckpoint;
 
@@ -330,10 +333,10 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	// Moved:
 	/**	Attack, Release, or Transition - 0 = attack, 1 = release, 2 = transition	*/
 	private	int[]		attRelTranPos;
-	
+
 	/**	Stores the values of the attack, release, and transition sliders	*/
 	private	float[][]	attRelTranVals;
-	
+
 	/**	Melody object that guide tones will use to play scales	*/
 	protected Melody		melody;
 
@@ -362,7 +365,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	protected Instrument	instrument;
 
 	///////////////////////////////////////////////////////////////
-	
+
 
 	/**	Stores the values of the red, green, and blue modulate sliders	*/
 	protected	float[]	redGreenBlueMod;
@@ -384,6 +387,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	 * (e.g., shapeSize of 50 means that the shape diameter will be 50% of the sketch size)	*/
 	protected	float[]	shapeSize = new float[] {0};
 
+	// Moved:
 	/**
 	 * The current number of range segements (i.e., sections into which the spectrum, be it of amplitude or frequency, is split).
 	 * 
@@ -394,6 +398,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 	/**	The total number of range segments available to this instance	*/
 	protected	int		totalRangeSegments;
+	/////////////////////////////////////
 
 	/**	Which position in colorSelect each specialColor controls.	*/
 	protected	int[][]	specialColorsPos;
@@ -436,15 +441,24 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	protected	int	firstColorSelectCWId	= -1;
 	protected	int	firstSpecialColorsCWId	= -1;
 	protected	int	lastColorSelectId		= -1;
+	////
+	// Moved:
 	protected	int	firstARTSliderId		= -1;
+	////
 	protected	int	firstHSBSliderId		= -1;
 	protected	int	firstRGBSliderId		= -1;
+	////
+	// Moved:
 	protected	int	bpmSliderId				= -1;
 	protected	int	volumeSliderId			= -1;
+	////
 	protected	int	shapeSizeSliderId		= -1;
 	protected	int	firstRangeSegmentsId	= -1;
+	////////
+	// Moved:
 	protected	int	pianoThresholdSliderId	= -1;
 	protected	int	forteThresholdSliderId	= -1;
+	////
 	protected	int	firstSatBrightThreshSliderId	= -1;
 	protected	int	alphaSliderId			= -1;
 
@@ -455,7 +469,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	 * Used to position the labels next to the controllers
 	 */
 	private	int	textYVals[];
-	
+
 	/**
 	 * Used to position the controllers
 	 */
@@ -465,27 +479,27 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 	/**	For saving and loading saved color states */
 	private JFileChooser colorFileChooser;
-	
+
 	/**	For loading lyrics from a file */
 	private	JFileChooser	lyricsFileChooser;
-	
+
 	/**	The current song lyrics	*/
 	private ArrayList<String>	curLyrics;
-	
+
 	/**	The current lyric position	*/
 	private	int	curLyricsLine	= 0;
-	
+
 	private	boolean	showLyrics;
-	
+
 	/**	For now, adding this so that the play Button can either start the guide tones or these tracks */
 	private	RecordedInput recInput;
-	
+
 	private	boolean	useRecInput;
-	
+
 	private	boolean	recInputPlaying;
-	
+
 	private float[] 	amplitudeFollower;
-	
+
 	//this part of the amplitude follower will be replaced by a slider in the menu to allow for more consistent results
 	private float[]		maxAmplitude;
 
@@ -523,8 +537,8 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		this.rangeOctave	= 3;
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
-		
-		
+
+
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -534,13 +548,13 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				"6_Part_Scale6.wav",
 				"6_Part_Scale7.wav"
 		});
-		
+
 		this.recInput.pause(true);
 		this.useRecInput		= false;
 		this.recInputPlaying	= false;
-		
+
 		// From the demos for Cadenza's spring show:
-	/*
+		/*
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -552,11 +566,11 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				//"cadenza/Here - Melody.wav",
 				"cadenza/Here - Beatbox.wav"
 		});
-		
+
 		this.recInput.pause(false);
 		this.useRecInput		= true;
 		this.recInputPlaying	= true;
-*/
+		 */
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
@@ -604,7 +618,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
 		this.colorCheckpoint		= new int[this.module.getTotalNumInputs()];
 		this.shapeSizeCheckpoint	= new int[this.module.getTotalNumInputs()];
-		
+
 		this.curAmpScale	= new float[this.module.getTotalNumInputs()];
 		this.ampCheckpoint	= new int[this.module.getTotalNumInputs()];
 
@@ -614,7 +628,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			this.attRelTranVals[i]	= new float[] {		200, 200, 200	};	// attack, release, transition all begin at 200 millis
 			this.colorCheckpoint[i]		= this.parent.millis() + 100;
 			this.shapeSizeCheckpoint[i]	= this.parent.millis() + 100;
-			
+
 			this.curAmpScale[i]	= 1;
 			this.ampCheckpoint[i]	= this.parent.millis() + 100;
 		}
@@ -655,7 +669,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		this.minThreshold	= 101;
 
-		
+
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.sidebarWidth, this.parent.height + 1)
@@ -712,20 +726,20 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		this.controlP5.controlWindow.setPositionOfTabs(this.leftAlign, this.textYVals[0] - 10);
 		this.addLandingMenu();
-		
+
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
-		
+
 
 		this.maxAmplitude = new float[this.input.getNumInputs()];
 		this.amplitudeFollower = new float[this.input.getNumInputs()];
-		
+
 		for(int i = 0; i < this.input.getNumInputs(); i++)
 		{
 			this.maxAmplitude[i] = 100;
 			this.amplitudeFollower[i] = 0;
 		}
-		
+
 		// Karaoke lyrics:
 		this.curLyrics	= new ArrayList<String>();
 		this.colorFileChooser	= new JFileChooser();
@@ -736,9 +750,9 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		this.colorFileChooser.addChoosableFileFilter(filter);
 		this.colorFileChooser.removeChoosableFileFilter(this.colorFileChooser.getAcceptAllFileFilter());
-		
+
 		this.lyricsFileChooser	= new JFileChooser();
-//		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/lyrics/"));
+		//		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/lyrics/"));
 		this.lyricsFileChooser.setCurrentDirectory(new File("/Users/codeandchords/Documents/CodeAndChords/Visuals/Eclipse/workspace/CodeAndChordsEclipseProject/"));
 
 		// Filter out all but .txt files:
@@ -764,6 +778,9 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		this.addInputSelect(this.controllerXVals[0], textYVals[4]);
 	} // addLandingMenu
 
+
+	////////////////////////////////////////////
+	// Moved:
 	/**
 	 * Adds the Attack/Release/Transition Sliders, Piano and Forte Threshold Sliders,
 	 * Saturation/Brightness Percent Sliders,
@@ -793,6 +810,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			this.setCurKey("A", 2);
 		}
 	} // addSensitivityMenu
+	////////////////////////////////////////////
 
 	/**
 	 * Adds the normal, 12-note Color Menu, with "Canvas"/"Tonic"/etc. special colors and no range segments.
@@ -905,7 +923,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		//		this.shapeEditor.getControlP5().getController("shapeSelect").setVisible(false);
 		this.getShapeEditor().updateSliders();
 	} // addShapeMenu
-	
+
 	/**
 	 * Adds the Landing Menu by setting the label of the default tab.
 	 */
@@ -920,15 +938,15 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		// Add lyric Toggle:
 		this.controlP5.addToggle("showLyrics")
-			.setPosition(this.leftAlign, this.textYVals[4])
-			.setWidth(60)
-			.setState(false)
-			.setTab("lyrics")
-			.plugTo(this)
-			.setLabel("Show Lyrics")
-			.getCaptionLabel()
-			.align(ControlP5.CENTER, ControlP5.CENTER);
-		
+		.setPosition(this.leftAlign, this.textYVals[4])
+		.setWidth(60)
+		.setState(false)
+		.setTab("lyrics")
+		.plugTo(this)
+		.setLabel("Show Lyrics")
+		.getCaptionLabel()
+		.align(ControlP5.CENTER, ControlP5.CENTER);
+
 		this.controlP5.addButton("loadLyrics")
 		.setPosition(this.leftAlign, this.textYVals[5])
 		.setWidth(60)
@@ -1032,7 +1050,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		{
 			this.canvasColorSelectId	= this.nextColorWheelId;
 			this.firstColorSelectCWId	= this.nextColorWheelId + 1;
-			
+
 		} else {
 			this.firstColorSelectCWId	= this.nextColorWheelId;
 		}
@@ -1115,11 +1133,11 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		int	hamburgerY		= 13;
 		int	hamburgerWidth	= 30;
 		int	hamburgerHeight	= 30;
-		
+
 		//int	menuXX			= 5;
 		//int	menuXY			= 5;
 		int	menuXWidth		= 15;
-		
+
 		PImage[]	hamXImages	= { 
 				this.parent.loadImage("hamburger.png"),
 				this.parent.loadImage("menuX.png")
@@ -1186,7 +1204,8 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		this.showScale = true;
 	} // addHideButtons
 
-
+	/////////////////////////////////////////////////
+	// Moved:
 	/**
 	 * Adds the attack, release, and transition Sliders.
 	 * 
@@ -1433,6 +1452,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		.getCaptionLabel().toUpperCase(false);
 
 	} // addGuideTonePopout
+	/////////////////////////////////////////////////
 
 
 	/**
@@ -1627,10 +1647,10 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				"Brightness",
 				"Bright: Forte\nThreshold"
 		}; // labels
-		
+
 		float[][]	rangeAndStartingVals	= new float[][] {
-				new float[] { -1, 1, 0	},	// percentSliders
-				new float[] { 0, 1, 0.7f }, // forteThresholds
+			new float[] { -1, 1, 0	},	// percentSliders
+			new float[] { 0, 1, 0.7f }, // forteThresholds
 		};
 
 		this.firstSatBrightThreshSliderId	= this.nextSliderId;
@@ -1638,7 +1658,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		for(int i = 0; i < names.length; i++)
 		{
-				this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], rangeAndStartingVals[i % 2][0], rangeAndStartingVals[i % 2][1], rangeAndStartingVals[i % 2][2], "sensitivity");
+			this.addSliderGroup(xVal, yVal + (i * (verticalSpacer + this.sliderHeight)), labels[i], rangeAndStartingVals[i % 2][0], rangeAndStartingVals[i % 2][1], rangeAndStartingVals[i % 2][2], "sensitivity");
 		} // for
 
 	} // addThresholdSliders
@@ -1837,13 +1857,13 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	public void addSaveLoadColorsButtons(int xVal, int yVal, String tabName)
 	{
 		int	buttonWidth	= ((this.sidebarWidth - this.leftAlign) / 2) - this.spacer;
-		
+
 		this.controlP5.addButton("saveColors")
 		.setPosition(this.leftAlign + xVal, yVal)
 		.setWidth(buttonWidth)
 		.moveTo(tabName)
 		.setLabel("Save Colors");
-		
+
 		this.controlP5.addButton("loadColors")
 		.setPosition(this.leftAlign + xVal + this.spacer + buttonWidth, yVal)
 		.setWidth(buttonWidth)
@@ -2038,7 +2058,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		} // for
 
 	} // fadeColor
-	
+
 	/**
 	 * this method updates the amplitude follower and needs to be called every time in the draw loop
 	 * for each input that is using it.
@@ -2053,7 +2073,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			followerType = 0;
 			//System.out.println("WARNING: update amplitude follower was called on a null input");
 		}
-		
+
 		//this variation of the amplitude follower always moves the follower half way from the
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
 		if(followerType == 1)
@@ -2065,7 +2085,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.recInput.getAmplitude(numInput)) / 2;
 			}
 		}
-		
+
 		//this variation of the amplitude follower always moves the follower half way from the
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
 		//but there is also a maxIncrament value that puts a limit on how much the amplitudeFollower
@@ -2079,15 +2099,15 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			} else {
 				amp	= this.recInput.getAmplitude(numInput);
 			}
-			
+
 			if(this.maxAmplitude[numInput] < amp)
 			{
 				this.maxAmplitude[numInput] = amp;
 			}
-			
+
 			float maxIncrament = this.maxAmplitude[numInput]/30;
 			float incrament = (amp - this.amplitudeFollower[numInput])/2;
-			
+
 			if(Math.abs(incrament) < maxIncrament)
 			{
 				this.amplitudeFollower[numInput] = this.amplitudeFollower[numInput] + incrament;
@@ -2096,27 +2116,27 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			{
 				this.amplitudeFollower[numInput] = this.amplitudeFollower[numInput] + (maxIncrament * (incrament/Math.abs(incrament)));
 			}
-			
+
 			if(this.maxAmplitude[numInput] < amp)
 			{
 				this.maxAmplitude[numInput] = amp;
 			}
 		}
-		
+
 		/*
 		 * jumps to a higher amplitude immediately, has a maximum increment when decreasing
 		 */
 		if(followerType == 3)
 		{
 			float amp = 0;
-			
+
 			if(!this.recInputPlaying)
 			{
 				amp = this.input.getAmplitude(numInput);
 			} else {
 				amp	= this.recInput.getAmplitude(numInput);
 			}
-			
+
 			if(amp > this.amplitudeFollower[numInput])
 			{
 				this.amplitudeFollower[numInput] = amp;
@@ -2124,7 +2144,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			else
 			{
 				float maxIncramentDown = 60;
-				
+
 				if(this.amplitudeFollower[numInput] - amp > maxIncramentDown)
 				{
 					this.amplitudeFollower[numInput] = this.amplitudeFollower[numInput] - maxIncramentDown;
@@ -2134,20 +2154,20 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					this.amplitudeFollower[numInput] = amp;
 				}
 			}
-			
+
 			if(amp > this.maxAmplitude[numInput])
 			{
 				this.maxAmplitude[numInput] = amp;
 			}
 		}
-		
+
 	}
-	
+
 	public float getAmplitudeFollower(int numInput)
 	{
 		return this.amplitudeFollower[numInput];
 	}
-	
+
 	/**
 	 * Takes the values of curHue from its current values to the values in goalHue
 	 * over the time that is designated by the attack, release, and transition sliders
@@ -2180,12 +2200,12 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			{
 				this.goalHue[inputNum][i]	= this.canvasColor[i];
 			} // for - canvas
-*/
+			 */
 		} else {
 			this.nowBelow[inputNum]	= false;
-/*
+			/*
 			this.goalHue[inputNum]	= this.applyThresholdSBModulate(curAmp, inputNum, position);
-			*/
+			 */
 		} // else
 
 		if(this.shapeSizeCheckpoint[inputNum] < this.parent.millis())
@@ -2240,7 +2260,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		} // for
 
 		// If all elements of the color are in range, then the color has been reached:
-//		this.colorReached[inputNum]	= this.colorReachedArray[inputNum][0] && this.colorReachedArray[inputNum][1] && this.colorReachedArray[inputNum][2];
+		//		this.colorReached[inputNum]	= this.colorReachedArray[inputNum][0] && this.colorReachedArray[inputNum][1] && this.colorReachedArray[inputNum][2];
 
 		// If coming from a low amplitude note and not yet reaching a color,
 		// use the attack value to control the color change:
@@ -2259,19 +2279,19 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		}
 
 		// Calculate color ranges:
-//		for(int i = 0; i < this.curShapeSize[inputNum].length; i++)
-//		{
-			this.shapeSizeRange[inputNum]	= Math.abs(this.goalShapeSize[inputNum] - this.curShapeSize[inputNum]);
+		//		for(int i = 0; i < this.curShapeSize[inputNum].length; i++)
+		//		{
+		this.shapeSizeRange[inputNum]	= Math.abs(this.goalShapeSize[inputNum] - this.curShapeSize[inputNum]);
 
-			// divide the attack/release/transition value by 50
-			// and divide colorRange by that value to find the amount to add each 50 millis.
-			float addThis = (int)(this.shapeSizeRange[inputNum] / (this.attRelTranVals[inputNum][this.attRelTranPos[inputNum]] / 50));
+		// divide the attack/release/transition value by 50
+		// and divide colorRange by that value to find the amount to add each 50 millis.
+		float addThis = (int)(this.shapeSizeRange[inputNum] / (this.attRelTranVals[inputNum][this.attRelTranPos[inputNum]] / 50));
 
-			this.shapeSizeAdd[inputNum]	= (int)addThis;	
-//		} // for
+		this.shapeSizeAdd[inputNum]	= (int)addThis;	
+		//		} // for
 
 	} // fadeAmp
-	
+
 	/**
 	 * In progress; will eventually allow shape size to change smoothly over time,
 	 * like fade() does to color, rather than jumping as it currently does. (Mar. 2018)
@@ -2460,15 +2480,15 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		float	rDif	= rgbVals1[0] - rgbVals2[0];
 		float	gDif	= rgbVals1[1] - rgbVals2[1];
 		float	bDif	= rgbVals1[2] - rgbVals2[2];
-/*
+		/*
 		System.out.println("Here we are in dichromatic!  rgbVals1 = rgb(" + rgbVals1[0] + ", "
 				+ rgbVals1[1] + ", " + rgbVals1[2] + "); rgbVals2 = rgb(" + rgbVals2[0] + ", "
 				+ rgbVals2[1] + ", " + rgbVals2[2] + "); "
 				+ "\n\trDif = " + rDif + "; gDif = " + gDif + "; bDif = " + bDif);
-*/
+		 */
 		// This array will hold the dichromatic spectrum:
 		int[][]	dichromColors	= new int[this.scaleLength][3];
-		
+
 		// Fill dichromColors with the dichromatic spectrum:
 		for(int i = 0; i < (dichromColors.length - 1); i++)
 		{
@@ -2476,7 +2496,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			dichromColors[i][1]	= Math.round(rgbVals1[1] - (gDif * i * percent / 100));
 			dichromColors[i][2]	= Math.round(rgbVals1[2] - (bDif * i * percent / 100));
 		} // for - i
-		
+
 		// Fill the last position manually, in case the math rounds things too far and we don't quite get to it:
 		for(int i = 0; i < rgbVals2.length; i++)
 		{
@@ -2486,15 +2506,15 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		// Now use scaleDegreeColors to fill this.colors with the dichrom spectrum at the appropriate positions for the current scale:
 		int	dichromColorPos	= 0;
 
-//		for(int i = this.startHere; i < this.endBeforeThis; i++)
-//		{
-			for(int j = 0; j < this.colors[inputNum].length && dichromColorPos < dichromColors.length; j++)
-			{
-				dichromColorPos	= this.getScaleDegreeColors()[this.majMinChrom][j];
-	
-				this.colors[inputNum][j]	= dichromColors[dichromColorPos];
-			} // for - j
-//		} // for - i
+		//		for(int i = this.startHere; i < this.endBeforeThis; i++)
+		//		{
+		for(int j = 0; j < this.colors[inputNum].length && dichromColorPos < dichromColors.length; j++)
+		{
+			dichromColorPos	= this.getScaleDegreeColors()[this.majMinChrom][j];
+
+			this.colors[inputNum][j]	= dichromColors[dichromColorPos];
+		} // for - j
+		//		} // for - i
 
 		this.fillHSBColors();
 
@@ -2684,15 +2704,15 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		// fill colors with the trichrom spectrum; some colors will be repeated, as designated in scaleDegreeColors:
 		int	trichromColorPos	= 0;
 
-//		for(int i = this.startHere; i < this.endBeforeThis; i++)
-//		{
-			for(int j = 0; j < this.colors[inputNum].length && trichromColorPos < trichromColors.length; j++)
-			{
-				trichromColorPos	= this.getScaleDegreeColors()[this.majMinChrom][j];
+		//		for(int i = this.startHere; i < this.endBeforeThis; i++)
+		//		{
+		for(int j = 0; j < this.colors[inputNum].length && trichromColorPos < trichromColors.length; j++)
+		{
+			trichromColorPos	= this.getScaleDegreeColors()[this.majMinChrom][j];
 
-				this.colors[inputNum][j]	= trichromColors[trichromColorPos];
-			} // for - j
-//		} // for - i
+			this.colors[inputNum][j]	= trichromColors[trichromColorPos];
+		} // for - j
+		//		} // for - i
 
 		this.fillHSBColors();
 	} //trichromatic_ThreeRGB
@@ -2766,124 +2786,124 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		// Dichromatic:
 		if(this.curColorStyle[inputNum] == ModuleMenuToSplitUp.CS_DICHROM)
 		{
-//			this.specialColorsPos[inputNum][0]	= 0;
-			
+			//			this.specialColorsPos[inputNum][0]	= 0;
+
 			// Determine the correct position for 2nd Color (minor scale will use a whole step before the tonic,
 			// but major and chromatic use the leading tone):
 			int	colorPos2;
-			
+
 			colorPos2	= this.colors[inputNum].length - 1;
 
-				// For minor keys, choose the 2nd to last note; else choose the last note:
-	/*			if(this.majMinChrom == 1)	{	colorPos2	= this.colors[inputNum].length - 2;	}
+			// For minor keys, choose the 2nd to last note; else choose the last note:
+			/*			if(this.majMinChrom == 1)	{	colorPos2	= this.colors[inputNum].length - 2;	}
 				else						{	colorPos2	= this.colors[inputNum].length - 1;	}
-*/
-				// Lock/unlock the appropriate specialColors Buttons:
-				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
-				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
-				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
+			 */
+			// Lock/unlock the appropriate specialColors Buttons:
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).lock();	}
 
-				// First time to dichromatic, dichromFlag will be false, 
-				// and the two colors will be set to contrast.			
-				if(!this.dichromFlag)
-				{
-					this.dichromatic_OneRGB(this.colors[inputNum][0], inputNum);					
+			// First time to dichromatic, dichromFlag will be false, 
+			// and the two colors will be set to contrast.			
+			if(!this.dichromFlag)
+			{
+				this.dichromatic_OneRGB(this.colors[inputNum][0], inputNum);					
 
-					this.dichromFlag	= true;
-				} // first time
-				// After the fjrst tjme, use current color values
-				// (allows selection of 2nd color):
-				else
-				{
-					// 1/12: Not doing this so that setting a color and then calling Dichrom will go from the newly set color:
-					// Put the previous "2nd Color" into our new "2nd Color" position in colors, so that we can get the color directly from colors:
-//					this.colors[inputNum][colorPos2]	= this.colors[inputNum][this.specialColorsPos[inputNum][1]];
+				this.dichromFlag	= true;
+			} // first time
+			// After the fjrst tjme, use current color values
+			// (allows selection of 2nd color):
+			else
+			{
+				// 1/12: Not doing this so that setting a color and then calling Dichrom will go from the newly set color:
+				// Put the previous "2nd Color" into our new "2nd Color" position in colors, so that we can get the color directly from colors:
+				//					this.colors[inputNum][colorPos2]	= this.colors[inputNum][this.specialColorsPos[inputNum][1]];
 
-					// Update specialColors positions for this scale:
-					this.specialColorsPos[inputNum][0]	= 0;
-					this.specialColorsPos[inputNum][1]	= colorPos2;
+				// Update specialColors positions for this scale:
+				this.specialColorsPos[inputNum][0]	= 0;
+				this.specialColorsPos[inputNum][1]	= colorPos2;
 
-					this.dichromatic_TwoRGB(this.colors[inputNum][0], this.colors[inputNum][this.specialColorsPos[inputNum][1]], inputNum);
-				}
+				this.dichromatic_TwoRGB(this.colors[inputNum][0], this.colors[inputNum][this.specialColorsPos[inputNum][1]], inputNum);
+			}
 
 		} // Dichromatic
 
 		// Trichromatic:
 		if(this.curColorStyle[inputNum] == ModuleMenuToSplitUp.CS_TRICHROM)
 		{
-			
+
 			int	colorPos2	= 4;	// initializing for the first call
 			int	colorPos3	= 8;
 
-				// Turned off the "first time/remaining times" because it's still pretty interesting
-				// and, I think, more intuitive, coming off of another color.  Dichromatic is boring coming off rainbow.
-				// first time trichromatic has been called:
-				if(!this.trichromFlag)
+			// Turned off the "first time/remaining times" because it's still pretty interesting
+			// and, I think, more intuitive, coming off of another color.  Dichromatic is boring coming off rainbow.
+			// first time trichromatic has been called:
+			if(!this.trichromFlag)
+			{
+				this.trichromatic_OneRGB(this.colors[inputNum][0], inputNum);
+				this.trichromFlag	= true;
+			}
+			// every other time:
+			else
+			{
+				if(this.majMinChrom == 2)
 				{
-					this.trichromatic_OneRGB(this.colors[inputNum][0], inputNum);
-					this.trichromFlag	= true;
-				}
-				// every other time:
-				else
-				{
-					if(this.majMinChrom == 2)
-					{
-						colorPos2	= 4;
-						colorPos3	= 8;
-					} else {
-						// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
-						// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+					colorPos2	= 4;
+					colorPos3	= 8;
+				} else {
+					// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+					// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
 
-						colorPos2	= 5;
-						colorPos3	= 7;
-					} // else - colorPos for different scales
-					
-				} // else - all but the first time
+					colorPos2	= 5;
+					colorPos3	= 7;
+				} // else - colorPos for different scales
 
-				//				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
-				//						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
-				//				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
-				//						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
+			} // else - all but the first time
 
-				// Have to do this so that changing between keys doesn't change the specialColors:
-				this.colors[inputNum][colorPos2]	= this.colors[inputNum][this.specialColorsPos[inputNum][1]];
-				this.colors[inputNum][colorPos3]	= this.colors[inputNum][this.specialColorsPos[inputNum][2]];
+			//				System.out.println("trichrom: setting colors[" + i + "][" + colorPos2 + "] to the color at position " + this.specialColorsPos[i][1] + 
+			//						": rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")");
+			//				System.out.println("trichrom: setting colors[" + i + "][" + colorPos3 + "] to the color at position " + this.specialColorsPos[i][2] + 
+			//						": rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")");
 
-				this.specialColorsPos[inputNum][0]	= 0;
-				this.specialColorsPos[inputNum][1]	= colorPos2;
-				this.specialColorsPos[inputNum][2]	= colorPos3;
+			// Have to do this so that changing between keys doesn't change the specialColors:
+			this.colors[inputNum][colorPos2]	= this.colors[inputNum][this.specialColorsPos[inputNum][1]];
+			this.colors[inputNum][colorPos3]	= this.colors[inputNum][this.specialColorsPos[inputNum][2]];
 
-				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
-				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
-				if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).unlock();	}
+			this.specialColorsPos[inputNum][0]	= 0;
+			this.specialColorsPos[inputNum][1]	= colorPos2;
+			this.specialColorsPos[inputNum][2]	= colorPos3;
 
-				this.trichromatic_ThreeRGB(this.colors[inputNum][0], this.colors[inputNum][colorPos2], this.colors[inputNum][colorPos3], inputNum);
-			} // Trichromatic
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 100)).unlock();	}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 99)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId  - 99)).unlock();	}
+			if(this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)) != null)	{	this.controlP5.getController("button" + (this.firstSpecialColorsCWId - 98)).unlock();	}
+
+			this.trichromatic_ThreeRGB(this.colors[inputNum][0], this.colors[inputNum][colorPos2], this.colors[inputNum][colorPos3], inputNum);
+		} // Trichromatic
 
 	} // setColorStyle
-	
+
 	public void updateSpecialColorsPos(int colorStyle, int inputNum)
 	{
 		// Dichromatic:
 		if(this.curColorStyle[inputNum] == ModuleMenuToSplitUp.CS_DICHROM)
 		{
-//			this.specialColorsPos[inputNum][1]	
+			//			this.specialColorsPos[inputNum][1]	
 		}
 		// Trichromatic:
-				if(this.curColorStyle[inputNum] == ModuleMenuToSplitUp.CS_TRICHROM)
-				{
-							if(this.majMinChrom == 2)
-							{
-								this.specialColorsPos[inputNum][1]	= 4;
-								this.specialColorsPos[inputNum][2]	= 8;
-							} else {
-								// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
-								// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
+		if(this.curColorStyle[inputNum] == ModuleMenuToSplitUp.CS_TRICHROM)
+		{
+			if(this.majMinChrom == 2)
+			{
+				this.specialColorsPos[inputNum][1]	= 4;
+				this.specialColorsPos[inputNum][2]	= 8;
+			} else {
+				// Positions have to be 5 and 7, not 3 and 4, since colors is filled all the way and we just ignore
+				// non-diatonic tones, so 5 and 7 actually corresponds to the mediant and dominant scale degrees.
 
-								this.specialColorsPos[inputNum][1]	= 5;
-								this.specialColorsPos[inputNum][2]	= 7;
-							} // else - colorPos for different scales
-				} // Trichromatic
+				this.specialColorsPos[inputNum][1]	= 5;
+				this.specialColorsPos[inputNum][2]	= 7;
+			} // else - colorPos for different scales
+		} // Trichromatic
 	}
 
 	/**
@@ -3126,7 +3146,6 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				}
 			} else {
 				this.shapeEditor.isRunning	= true;
-
 			}
 		} else {
 			super.controlEvent(controlEvent);
@@ -3157,7 +3176,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					// play is pressed again:
 					((Toggle)this.outsideButtonsCP5.getController("pause")).setState(false);
 					//				this.showPause	= false;
-					
+
 					if(!this.useRecInput)
 					{
 						this.melody.stop();						
@@ -3181,7 +3200,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				}
 			}
 
-			
+
 			// Hamburger button:
 			if(controlEvent.getController().getName().equals("hamburger"))
 			{
@@ -3192,14 +3211,14 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				// - when we're going out of the menu (getBooleanValue == false) AND !hideMenuButton
 				controlEvent.getController().setVisible(((Toggle)controlEvent.getController()).getBooleanValue() || 
 						(!((Toggle)controlEvent.getController()).getBooleanValue() && !((Toggle)this.controlP5.getController("menuButton")).getBooleanValue()));
-				
+
 				if(this.shapeEditor != null && this.shapeEditor.isRunning)
 				{
 					this.shapeEditor.isRunning	= false;	// In case it gets clicked from within the ShapeEditor Tab
 				}
-				
+
 			} // if - hamburger
-			
+
 
 			// Hide play button button:
 			if(controlEvent.getName().equals("playButton"))
@@ -3298,7 +3317,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					controlEvent.getName().equals("chrom"))
 			{
 				Toggle	curToggle	= (Toggle) controlEvent.getController();
-				
+
 				// Dichromatic and Trichromatic take care of this themselves:
 				/*
 				int[]	sc1	= new int[3];
@@ -3311,17 +3330,17 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					sc1	= this.colors[i][this.specialColorsPos[i][0]];
 					sc2	= this.colors[i][this.specialColorsPos[i][1]];
 					sc3	= this.colors[i][this.specialColorsPos[i][2]];
-					
+
 					System.out.println(i + ": specialColors at " + this.specialColorsPos[i][0] + 
 							"[rgb(" + this.colors[i][this.specialColorsPos[i][0]][0] + ", " + this.colors[i][this.specialColorsPos[i][0]][1] + ", " + this.colors[i][this.specialColorsPos[i][0]][2] + ")], " + 
 							this.specialColorsPos[i][1] + "[rgb(" + this.colors[i][this.specialColorsPos[i][1]][0] + ", " + this.colors[i][this.specialColorsPos[i][1]][1] + ", " + this.colors[i][this.specialColorsPos[i][1]][2] + ")], and " + 
 							this.specialColorsPos[i][2] + "[rgb(" + this.colors[i][this.specialColorsPos[i][2]][0] + ", " + this.colors[i][this.specialColorsPos[i][2]][1] + ", " + this.colors[i][this.specialColorsPos[i][2]][2] + ")]");
 				}
-				*/
-				
+				 */
+
 				// Update the key:
 				this.setCurKey(this.curKey, (int) curToggle.internalValue());					
-				
+
 				// Call setColorStyle so that dichromatic and trichromatic can adjust for the key change:
 				// (not using startHere and endBeforeThis because key has global effect every time)
 				for(int i = 0; i < this.colors.length; i++)
@@ -3538,11 +3557,11 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 				this.fillHSBColors();
 			} // input select dropdown
-			
+
 			if(controlEvent.getName().equals("global"))
 			{
 				this.setGlobal(((Toggle)controlEvent.getController()).getBooleanValue());
-				
+
 			} // global
 
 			if(controlEvent.getName().equals("numInputsList"))
@@ -3555,12 +3574,12 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			{
 				this.saveColorState();
 			}
-			
+
 			if(controlEvent.getName().equals("loadColors"))
 			{
 				this.loadColorState();
 			}
-			
+
 			if(controlEvent.getName().equals("loadLyrics"))
 			{
 				this.loadLyrics();
@@ -3591,6 +3610,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	{
 		//		System.out.println("ModuleMenu: got sliderEvent with id " + id + " and val " + val);
 
+		// Moved:
 		// Piano Threshold:
 		if(id == this.pianoThresholdSliderId)
 		{
@@ -3628,6 +3648,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				this.setAttRelTranVal(pos, this.currentInput, val);
 			} // else - not global
 		} // attack/release/transition
+		/////////////////////////////////
 
 		// Hue/Saturation/Brightness modulate
 		if((id >= this.firstHSBSliderId && id < (this.firstHSBSliderId + 3)) && this.firstHSBSliderId != -1)
@@ -3651,6 +3672,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			this.applyRGBModulate();
 		} // red/green/blue mod
 
+		// Moved:
 		if( id == this.bpmSliderId)
 		{
 			this.bpm	= Math.max(Math.min((int)val, 240), 0);
@@ -3660,6 +3682,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		{
 			this.instrument.setVolume(Math.max(Math.min(val, 5), 0));
 		}
+		///////////////////////////////
 
 		if(id == this.shapeSizeSliderId)
 		{
@@ -3668,7 +3691,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				this.shapeSize[i]	= val;
 			}
 		}
-
+		
 		// Saturation and Brightness Threshold and Percent Sliders:
 		if( ( id >= this.firstSatBrightThreshSliderId ) && ( id < this.firstSatBrightThreshSliderId + 4 ) 
 				&& this.firstSatBrightThreshSliderId != -1)
@@ -3756,7 +3779,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	 */
 	public void colorWheelEvent(int id, Color color)
 	{
-//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
+		//		System.out.println("ModuleMenu: got colorWheelEvent with id " + id + " and color array " + color);
 
 		// Either do everything once for the currentInput or do it for all inputs:
 
@@ -3835,7 +3858,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		} // specialColors
 
 	} // colorWheelEvent
-	
+
 	public void cycleLyrics(int keyCode)
 	{
 		if(keyCode == PConstants.RIGHT)
@@ -3845,7 +3868,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		{
 			this.curLyricsLine	= (this.curLyricsLine - 1 + this.curLyrics.size()) % this.curLyrics.size();
 		}
-	} // mousePressed
+	} // cycleLyrics
 
 
 	/**
@@ -4013,6 +4036,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	} // resetHSBSlidersTextfields
 
 
+	// Moved:
 	/**
 	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
 	 * to recalculate the length of and values within this.thresholds.
@@ -4038,7 +4062,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			this.thresholds[pos][i]	= this.pianoThreshold[pos] + (int)segmentValue * i;
 		} // for
 	} // resetThresholds
-
+	/////////////////////
 
 	private void updateCustomColorButtonLabels(int enharmonicKeyPos)
 	{
@@ -4259,6 +4283,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		return -1;
 	} // arrayContains
 
+	// Moved:
 	/**
 	 *  Error checker; rejects numbers that are greater than or equal to the number of inputs or less than 0.
 	 *
@@ -4278,7 +4303,9 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			throw iae;
 		}
 	} // inputNumErrorCheck
+	///////////////////////
 
+	
 	public int[][][] getColors()
 	{
 		return this.colors;
@@ -4519,19 +4546,19 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		} // if - chose to save File
 
 	} // saveColorState
-	
+
 	public void loadColorState()
 	{
 		int returnVal = colorFileChooser.showOpenDialog(null);
-		
+
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
 			File file	= colorFileChooser.getSelectedFile();
-			
+
 			try
 			{
 				BufferedReader in	= new BufferedReader(new FileReader(file));
-				
+
 				String	stars	= in.readLine();
 
 				if(stars.equals("*** *** ***"))
@@ -4541,22 +4568,22 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					String		stringColors	= in.readLine();
 					String[]	stringColorsArray;
 					int[][]		tempColors		= new int[Math.max(0, numColors)][3];
-					
+
 					if(numColors == this.colors[this.currentInput].length)
 					{
 						// Fill tempColors from file:
 						for(int i = 0; ( i < tempColors.length ) && ( stringColors != null ); i++)
 						{
 							stringColorsArray	= stringColors.split("\t");
-							
+
 							for(int j = 0; j < tempColors[i].length; j++)
 							{
 								tempColors[i][j]	= Integer.parseInt(stringColorsArray[j]);
 							}
-							
+
 							stringColors	= in.readLine();
 						}
-						
+
 						// and if we make it this far, actually read the values into this.colors
 						for(int i = this.startHere; i < this.endBeforeThis; i++)
 						{
@@ -4568,19 +4595,19 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 								}
 							} // for - j
 						} // for - i
-						
+
 					} else {
 						// Wrong dimensions
 						JOptionPane.showMessageDialog(null, 
 								"Sorry, the dimensions of that color file do not match the current settings.  " + 
-						"Currently, colors[" + this.currentInput + "].length == " + 
+										"Currently, colors[" + this.currentInput + "].length == " + 
 										this.colors[this.currentInput].length + ", while the file has " + numColors + " colors.");
 					} // if - correct dimensions
 				} else {
 					// Doesn't begin with "*** *** ***"
 					JOptionPane.showMessageDialog(null, "Sorry, " + file.getName() + " is not a valid color file.");
 				} // if - valid color file
-				
+
 				in.close();
 			} catch (IOException ioe) {
 				System.out.println("ModuleMenu.loadColorState: caught IOException " + ioe);
@@ -4588,7 +4615,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			}
 		}
 	} // loadColorState
-	
+
 	/**
 	 * Opens the lyric File Chooser and allows the user to choose a file from which to 
 	 * load lyrics (each line of the file will be displayed individually on keypress).
@@ -4600,15 +4627,15 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		// Remove the current lyrics:
 		this.curLyrics.clear();
 		this.curLyricsLine	= 0;
-		
+
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
 			File file	= this.lyricsFileChooser.getSelectedFile();
-			
+
 			try
 			{
 				BufferedReader in	= new BufferedReader(new FileReader(file));
-				
+
 				curLine	= in.readLine();
 
 				while(curLine != null)
@@ -4616,7 +4643,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					this.curLyrics.add(curLine);
 					curLine	= in.readLine();
 				} // while - read through file
-				
+
 				in.close();
 			} catch (IOException ioe) {
 				System.out.println("ModuleMenu.loadColorState: caught IOException " + ioe);
@@ -4641,6 +4668,8 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		return this.attRelTranVals[attRelTranPos];
 	}
 	 */
+	
+	// Moved:
 	/**
 	 * Sets either attack, release, or transition to the given value
 	 * 
@@ -4654,6 +4683,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		this.attRelTranVals[inputNum][position]	= val;
 	}
+	///////////////////////////////////////
 
 	/**
 	 * Sets either global hue, saturation, or brightness modulate to the given value
@@ -4686,7 +4716,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	public int[] getCanvasColor() {
 		return this.canvasColor;
 	}
-	
+
 	public void setCanvasColor(int[] newCanvasColor)
 	{
 		if(this.canvasColor.length != newCanvasColor.length) {
@@ -4737,11 +4767,11 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	{
 		return this.thresholds;
 	}
-	
+
 	public int getPianoThreshold(int inputNum)
 	{
 		this.inputNumErrorCheck(inputNum);
-		
+
 		return this.pianoThreshold[inputNum];
 	}
 
@@ -4804,8 +4834,8 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		((ScrollableList)this.controlP5.getController("menuList"))
 		.addItems(list);
 	}
-*/
-	
+	 */
+
 	public int getCurrentMenu()
 	{
 		return (int) this.controlP5.getController("menuList").getValue();
@@ -4904,37 +4934,37 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	public int[][] getScaleDegreeColors() {
 		return scaleDegreeColors;
 	}
-	
+
 	public void setUseRecInput(boolean newVal)
 	{
 		this.useRecInput	= newVal;
 	}
-	
+
 	public boolean getUseRecInput()
 	{
 		return this.useRecInput;
 	}
-	
+
 	public boolean getRecInputPlaying()
 	{
 		return this.recInputPlaying;
 	}
-	
+
 	public RecordedInput getRecInput()
 	{
 		return this.recInput;
 	}
-	
+
 	public boolean getShowLyrics()
 	{
 		return this.showLyrics;
 	}
-	
+
 	public ArrayList<String> getCurLyrics()
 	{
 		return this.curLyrics;
 	}
-	
+
 	public int getCurLyricsLine()
 	{
 		return this.curLyricsLine;

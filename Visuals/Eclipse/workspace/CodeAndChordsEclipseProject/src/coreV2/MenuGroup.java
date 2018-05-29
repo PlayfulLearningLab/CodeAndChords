@@ -6,14 +6,18 @@ public class MenuGroup
 	private Menu[] 		menuGroup;
 	private Canvas 		canvas;
 	
+	private	ModuleDriver	moduleDriver;
+	
 	private boolean		menuOpen;
 	
 	private Menu 		activeMenu;
 	
-	public MenuGroup(Canvas canvas)
+	public MenuGroup(Canvas canvas, ModuleDriver moduleDriver)
 	{
 		this.menuGroup = new Menu[1];
 		this.canvas = canvas;
+		
+		this.moduleDriver	= moduleDriver;
 		
 		this.menuGroup[0] = new NavigationMenu(this.canvas);
 		this.activeMenu = this.menuGroup[0];
