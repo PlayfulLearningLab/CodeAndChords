@@ -2,31 +2,37 @@ package coreV2;
 
 import processing.core.PApplet;
 
-public class TestModule extends PApplet
-{
-
-	private ModuleDriver driver;
-	
-	
+public class TestModule extends ModuleOutline
+{	
 	public static void main(String[] args)
 	{
-		PApplet.main("coreV2.TestModule");
+		new TestModule();
 	}
-	
-	public void settings()
+
+
+	@Override
+	public void moduleSetup() 
 	{
-		this.size(920, 525);
+		System.out.println("moduleSetup() code here");
 	}
-	
-	public void setup()
+
+
+	@Override
+	public void moduleDraw() 
 	{
-		this.driver = new ModuleDriver(this, 1);
+		System.out.println("moduleDraw() code here");
+
+		try 
+		{
+			Thread.sleep(1000);
+		} 
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
 	}
-	
-	public void draw()
-	{
-		this.driver.runModule();
-	}
-	
-	
+
+
+
+
 }

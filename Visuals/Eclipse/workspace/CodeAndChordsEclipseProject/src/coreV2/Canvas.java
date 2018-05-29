@@ -12,7 +12,7 @@ public class Canvas
 	private int 			displayHeight;
 	
 	
-	public Canvas(PApplet pApplet, int width, int height)
+	public Canvas(PApplet pApplet)
 	{
 		this.pApp = pApplet;
 		
@@ -35,7 +35,7 @@ public class Canvas
 		this.displayHeight = this.pApp.height;
 	}
 	
-	public void background(int color)
+	public void background()
 	{
 		this.pApp.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
 	}
