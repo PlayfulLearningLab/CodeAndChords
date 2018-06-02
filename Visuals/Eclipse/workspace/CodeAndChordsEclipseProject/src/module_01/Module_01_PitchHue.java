@@ -25,8 +25,6 @@ public class Module_01_PitchHue extends Module
 		PApplet.main("module_01.Module_01_PitchHue");
 	} // main
 
-
-	private RealTimeInput  input;
 	
 	public void setup() 
 	{

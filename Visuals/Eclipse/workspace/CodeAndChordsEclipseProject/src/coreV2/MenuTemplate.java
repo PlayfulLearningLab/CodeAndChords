@@ -617,25 +617,6 @@ public abstract class MenuTemplate implements ControlListener {
 		else				{	return yVal;							}
 	} // getCurrentXPos
 	
-	/**
-	 *  Error checker; rejects numbers that are greater than or equal to the number of inputs or less than 0.
-	 *
-	 *  @param   inputNum  an int that is to be checked for suitability as an input line number.
-	 *  @param   String    name of the method that called this method, used in the exception message.
-	 */
-	protected void inputNumErrorCheck(int inputNum) {
-		if (inputNum >= this.moduleDriver.getTotalNumInputs()) {
-			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.moduleDriver.getTotalNumInputs() + ", the number of inputs.");
-
-			iae.printStackTrace();
-			throw iae;
-		}
-		if (inputNum < 0) {
-			IllegalArgumentException iae = new IllegalArgumentException("ModuleMenu.inputNumErrorCheck(int): int parameter is " + inputNum + "; must be 1 or greater.");
-			iae.printStackTrace();
-			throw iae;
-		}
-	} // inputNumErrorCheck
 	
 	/**
 	 * Shows or hides this.controlP5, depending on whether or not the Menu is open,

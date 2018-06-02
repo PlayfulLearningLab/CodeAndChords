@@ -1,8 +1,12 @@
 package coreV2;
 
 import java.awt.Color;
+import java.util.Map;
 
+import controlP5.Button;
+import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.ScrollableList;
 import controlP5.Toggle;
 import core.Instrument;
 import core.Melody;
@@ -10,12 +14,42 @@ import processing.core.PApplet;
 
 public class SensitivityMenu extends MenuTemplate
 {
-	
+
 	/** ALL notes here	*/
 	protected	final String[]	allNotes	= new String[] {
 			"A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab"
 	}; // allNotes
+
+	/** Positions of each note in allNotes, where enharmonic notes have the same position */
+	private	final int[]	enharmonicPos	= new int[] {
+			0, 1, 1, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11
+	}; // enharmonicPos
 	
+	/**
+	 * This list of notes is to be used for custom color select Button labels
+	 */
+	public	final String[] noteNames 	= new String[] {
+			"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Db", "E", "F", "F#/Gb", "G", "G#/Ab"
+	}; // noteNames
+	
+	/**
+	 * This String[] is used to change the order of the labels on the custom color select Buttons
+	 * when a new key is selected.
+	 */
+	private	String[]	newNoteNames	= new String[this.noteNames.length];
+	
+	/**
+	 * These lists of notes allow the position of any given note to be found in the current scale.
+	 */
+	protected	final String[]	notesAtoAbFlats	= new String[] { 
+			"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"
+	};
+
+	protected final String[]	notesAtoGSharps	= new String[] { 
+			"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
+	};
+	
+
 	/**	Amplitude thresholds	*/
 	protected	int[][]	thresholds;
 
@@ -33,13 +67,13 @@ public class SensitivityMenu extends MenuTemplate
 
 	/**	Holds the values of the saturation percent and brightness percent threshold Sliders, respectively	*/
 	protected	float[][]	satBrightPercentVals;
-	
+
 	/**	Stores the values of the attack, release, and transition sliders	*/
 	private	float[][]	attRelTranVals;
-	
+
 	/**	Attack, Release, or Transition - 0 = attack, 1 = release, 2 = transition	*/
 	private	int[]		attRelTranPos;
-	
+
 	/**	Melody object that guide tones will use to play scales	*/
 	protected Melody		melody;
 
@@ -66,7 +100,7 @@ public class SensitivityMenu extends MenuTemplate
 
 	/**	Instrument object used to play the guide tone scales	*/
 	protected Instrument	instrument;
-	
+
 	/**
 	 * The current number of range segements (i.e., sections into which the spectrum, be it of amplitude or frequency, is split).
 	 * 
@@ -74,10 +108,10 @@ public class SensitivityMenu extends MenuTemplate
 	 * but it is up to child classes to implement the variable how they see fit.
 	 */
 	protected	int		curRangeSegments;
-	
+
 	/**	The total number of range segments available to this instance	*/
 	protected	int		totalRangeSegments;
-	
+
 	/**	
 	 * The following id's will be set by the add____() methods and used to identify Controllers in controlEvent().
 	 */
@@ -92,7 +126,7 @@ public class SensitivityMenu extends MenuTemplate
 	public SensitivityMenu(PApplet pApplet, int appWidth, int appHeight, ControlP5 controlP5, ModuleDriver moduleDriver) 
 	{
 		super(pApplet, appWidth, appHeight, controlP5, moduleDriver);
-		
+
 		this.controlP5.addTab("sensitivity")
 		.setLabel("Sensitivity\nMenu")
 		.setWidth(50)
@@ -110,7 +144,7 @@ public class SensitivityMenu extends MenuTemplate
 		this.addKeySelector(controllerXVals[1], textYVals[2]);
 		this.setCurKey("A", 2);
 	}
-	
+
 	/**
 	 * Adds the attack, release, and transition Sliders.
 	 * 
@@ -357,14 +391,14 @@ public class SensitivityMenu extends MenuTemplate
 		.getCaptionLabel().toUpperCase(false);
 
 	} // addGuideTonePopout
-	
+
 	/**
 	 * Uses this.threshold, this.forteThreshold and this.curRangeSegments 
 	 * to recalculate the length of and values within this.thresholds.
 	 */
 	private	void resetThresholds(int pos)
 	{
-		this.inputNumErrorCheck(pos);
+		this.moduleDriver.inputNumErrorCheck(pos);
 
 		float	segmentValue;
 		if(this.curRangeSegments == 1)
@@ -383,7 +417,7 @@ public class SensitivityMenu extends MenuTemplate
 			this.thresholds[pos][i]	= this.pianoThreshold[pos] + (int)segmentValue * i;
 		} // for
 	} // resetThresholds
-	
+
 	/**
 	 * Sets either attack, release, or transition to the given value
 	 * 
@@ -397,6 +431,187 @@ public class SensitivityMenu extends MenuTemplate
 
 		this.attRelTranVals[inputNum][position]	= val;
 	}
+	
+	/**
+	 * Updates the keyDropdown ScrollableList and sets the current key and all 
+	 * connected variables: this.majMinChrom, this.scaleLength, this.curKey, this.keyAddVal.
+	 * 
+	 * @param key	String indicating the key (e.g., "D", "Eb")
+	 * @param majMinChrom	int indicating quality of the scale: 0 = major, 1 = minor, 2 = chromatic
+	 */
+	public void setCurKey(String key, int majMinChrom)
+	{
+		// Checking allNotes gives the right position for the dropdown menu, since it has all the keys separately, too:
+		int	keyPos	= this.arrayContains(this.allNotes, key);
+		int	enharmonicKeyPos;
+
+		if(keyPos == -1)	{
+			throw new IllegalArgumentException("Module_01_02.setCurKey: " + key + " is not a valid key.");
+		}
+
+		// Use the previous number to get the enharmonic position and rearrange the notes:
+		enharmonicKeyPos	= this.enharmonicPos[keyPos];
+
+		//System.out.println("key = " + key + "; keyPos = " + keyPos);
+
+
+		this.majMinChrom	= majMinChrom;
+		this.scaleLength	= this.getScale(key, majMinChrom).length;
+
+		if(this.controlP5.getController("keyDropdown") != null)
+		{
+			this.controlP5.getController("keyDropdown").setValue(keyPos);
+		}
+
+		// Reset the text on the Custom Color Select buttons:
+		if(this.firstColorSelectCWId > -1)
+		{
+			this.updateCustomColorButtonLabels(enharmonicKeyPos);
+		}
+	} // setCurKey
+
+	/**
+	 * Given the name of a key (e.g., "A#", "Bb") and the quality (0 for major, 1 for minor, 2 for chromatic), 
+	 * returns the appropriate scale (minor = natural minor).
+	 * 
+	 * @param key	String indicating the key of the scale
+	 * @param majMinChrom	int indicating quality of the scale: 0 = major, 1 = minor, 2 = chromatic
+	 * @return	String[] with the notes of this particular scale
+	 */
+	public String[] getScale(String key, int majMinChrom)
+	{
+		// find keyPos -- hey ! maybe I can just pass in keyPos.
+		int	keyPos = this.arrayContains(this.allNotes, key);
+		if(keyPos == -1) {
+			throw new IllegalArgumentException("ModuleTemplate.getScale: key " + key + " is not a valid key.");
+		}
+		/*
+		return this.getScale(keyPos, majMinChrom);
+	} // getScale(String, int)
+
+	public String[] getScale(int keyPos, int majMinChrom)
+	{*/
+		String[][] majorScales	= new String[][] {
+			new String[] { "A", "B", "C#", "D", "E", "F#", "G#" },
+			new String[] { "A#", "B#", "C##", "D#", "E#", "F##", "G##" },
+			new String[] { "Bb", "C", "D", "Eb", "F", "G", "A" },
+			new String[] { "B", "C#", "D#", "E", "F#", "G#", "A#" },
+			new String[] { "C", "D", "E", "F", "G", "A", "B" },
+			new String[] { "C#", "D#", "E#", "F#", "G#", "A#", "B#" },
+			new String[] { "Db", "Eb", "F", "Gb", "Ab", "Bb", "C" },
+			new String[] { "D", "E", "F#", "G", "A", "B", "C#" },
+			new String[] { "D#", "E#", "F##", "G#", "A#", "B#", "C##" },
+			new String[] { "Eb", "F", "G", "Ab", "Bb", "C", "D" },
+			new String[] { "E", "F#", "G#", "A", "B", "C#", "D#" },
+			new String[] { "F", "G", "A", "Bb", "C", "D", "E" },
+			new String[] { "F#", "G#", "A#", "B", "C#", "D#", "E#" },
+			new String[] { "Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F" },
+			new String[] { "G", "A", "B", "C", "D", "E", "F#" },
+			new String[] { "G#", "A#", "B#", "C#", "D#", "E#", "F##" },
+			new String[] { "Ab", "Bb", "C", "Db", "Eb", "F", "G" }
+		}; // majorScales
+
+		String[][] minorScales	= new String[][] {
+			new String[] { "A", "B", "C", "D", "E", "F", "G" },
+			new String[] { "A#", "B#", "C#", "D#", "E#", "F#", "G#" },
+			new String[] { "Bb", "C", "Db", "Eb", "F", "Gb", "Ab" },
+			new String[] { "B", "C#", "D", "E", "F#", "G", "A" },
+			new String[] { "C", "D", "Eb", "F", "G", "Ab", "Bb" },
+			new String[] { "C#", "D#", "E", "F#", "G#", "A", "B" },
+			new String[] { "Db", "Eb", "Fb", "Gb", "Ab", "Bbb", "Cb" },
+			new String[] { "D", "E", "F", "G", "A", "Bb", "C" },
+			new String[] { "D#", "E#", "F#", "G#", "A#", "B", "C#" },
+			new String[] { "Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db" },
+			new String[] { "E", "F#", "G", "A", "B", "C", "D" },
+			new String[] { "F", "G", "Ab", "Bb", "C", "Db", "Eb" },
+			new String[] { "F#", "G#", "A", "B", "C#", "D", "E" },
+			new String[] { "Gb", "Ab", "Bbb", "Cb", "Db", "Ebb", "Fb" },
+			new String[] { "G", "A", "Bb", "C", "D", "Eb", "F" },
+			new String[] { "G#", "A#", "B", "C#", "D#", "E", "F#" },
+			new String[] { "Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb" }
+		}; // majorScales
+
+
+		if(keyPos > majorScales.length) {
+			throw new IllegalArgumentException("ModuleTemplate.getScale(int, int): int param " + keyPos + " is greater than majorScales.length (" + majorScales.length + ").");
+		}
+
+		String[] result;
+
+		if(majMinChrom == 0)
+		{
+			// major:
+			result	= new String[7];
+			for(int i = 0; i < result.length; i++)
+			{
+				result[i]	= majorScales[keyPos][i]; 
+			} // for
+		} else if (majMinChrom == 1) {
+			// minor:
+			result	= new String[7];
+			for(int i = 0; i < result.length; i++)
+			{
+				result[i]	= minorScales[keyPos][i]; 
+			} // for
+		} else {
+			// chromatic:
+			result	= new String[12];
+
+			// find whether scale should use sharps or flats:
+			//			boolean	sharps	= true;
+			int	notePos	= this.arrayContains(this.notesAtoGSharps, majorScales[keyPos][0]);
+			if(notePos > -1) 
+			{
+				for(int i = 0; i < result.length; i++)
+				{
+					result[i]	= this.notesAtoGSharps[notePos];
+					notePos	= (notePos + 1) % result.length;
+				} // for
+			} else {
+				notePos	= this.arrayContains(this.notesAtoAbFlats, majorScales[keyPos][0]);
+				for(int i = 0; i < result.length; i++)
+				{
+					result[i]	= this.notesAtoAbFlats[notePos];
+					notePos	= (notePos + 1) % result.length;
+				} // for
+			}
+		} // else - chromatic
+
+		return result;
+
+	} // getScale
+
+
+	
+	/**
+	 * Used in draw for determining whether a particular scale degree is in the 
+	 * major or minor scale;
+	 * returns the position of the element if it exists in the array,
+	 * or -1 if the element is not in the array.
+	 * 
+	 * @param array		String[] to be searched for the given element
+	 * @param element	String whose position in the given array is to be returned.
+	 * @return		position of the given element in the given array, or -1 
+	 * 				if the element does not exist in the array.
+	 */
+	private int arrayContains(String[] array, String element) {
+		if(array == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): array parameter is null.");
+		}
+		if(element == null) {
+			throw new IllegalArgumentException("Module_01_02.arrayContains(String[], String): String parameter is null.");
+		}
+
+		for (int i = 0; i < array.length; i++)
+		{
+			//    println("array[i] = " + array[i]);
+			if (array[i] == element) {
+				return i;
+			} // if
+		} // for
+
+		return -1;
+	} // arrayContains
 
 
 	@Override
@@ -428,17 +643,17 @@ public class SensitivityMenu extends MenuTemplate
 			int	pos	= id - this.firstARTSliderId;
 			//			this.attackReleaseTransition[pos]	= val;
 
-			if(global)
+			if(this.moduleDriver.getGlobal())
 			{
 				for(int i = 0; i < this.moduleDriver.getTotalNumInputs(); i++)
 				{
 					this.setAttRelTranVal(pos, i, val);
 				} // for
 			} else {
-				this.setAttRelTranVal(pos, this.currentInput, val);
+				this.setAttRelTranVal(pos, this.moduleDriver.getCurrentInput(), val);
 			} // else - not global
 		} // attack/release/transition
-		
+
 
 		if( id == this.bpmSliderId)
 		{
@@ -454,11 +669,174 @@ public class SensitivityMenu extends MenuTemplate
 
 	@Override
 	public void buttonEvent(int id) {
-		
+
 	} // buttonEvent
 
 	@Override
 	public void colorWheelEvent(int id, Color color) {
-		
+
 	} // colorWheelEvent
+
+	public void controlEvent(ControlEvent controlEvent) {
+		// TODO - test out exactly who has to call super.controlEvent:
+		super.controlEvent(controlEvent);
+		
+		// Can't call getController() on a Tab (which controlEvent() will try to do):
+		if(!controlEvent.isTab())
+		{
+
+			//		System.out.println("ModuleMenu.controlEvent: controlEvent = " + controlEvent);
+
+			int	id	= controlEvent.getController().getId();
+
+			// Major/Minor/Chromatic buttons
+			if(controlEvent.getName().equals("major") ||
+					controlEvent.getName().equals("minor") ||
+					controlEvent.getName().equals("chrom"))
+			{
+				Toggle	curToggle	= (Toggle) controlEvent.getController();
+
+				// Update the key:
+				this.setCurKey(this.curKey, (int) curToggle.internalValue());					
+
+				// Call setColorStyle so that dichromatic and trichromatic can adjust for the key change:
+				// (not using startHere and endBeforeThis because key has global effect every time)
+				for(int i = 0; i < this.moduleDriver.getColorHandler().colors.length; i++)
+					// TODO - getting colors like this for real? ^
+				{
+					// Update the colorStyle, which will update specialColorsPos since we have a new key:
+					this.moduleDriver.getColorHandler().setColorStyle(this.moduleDriver.getColorHandler().getColorStyle(i), i);
+				}
+
+				// TODO - the problem: what to do when Menus interact?
+				
+				// Turn off the other two:
+				Toggle[] toggleArray	= new Toggle[] {
+						(Toggle)this.controlP5.getController("major"),
+						(Toggle)this.controlP5.getController("minor"),
+						(Toggle)this.controlP5.getController("chrom"),
+				};
+				boolean[]	broadcastState	= new boolean[toggleArray.length];
+				for(int i = 0; i < toggleArray.length; i++)
+				{
+					// save the current broadcast state of the controller:
+					broadcastState[i]	= toggleArray[i].isBroadcast();
+
+					// turn off broadcasting to avoid endless looping in this method:
+					toggleArray[i].setBroadcast(false);
+
+					// only switch off the ones that weren't just clicked:
+					if(!controlEvent.getController().getName().equals(toggleArray[i].getName()))
+					{
+						toggleArray[i].setState(false);
+					}
+
+					// set broadcasting back to original setting:
+					toggleArray[i].setBroadcast(broadcastState[i]);
+				} // for - switch off all Toggles:
+
+				// Update Melody's scale:
+				String[] scales	= new String[] { "major", "minor", "chromatic" };
+				this.melody.setScale(scales[this.majMinChrom]);
+				this.melody.setRangeList();
+				try
+				{
+					((ScrollableList)this.controlP5.getController("rangeDropdown"))
+					.setItems(this.melody.getRangeList())
+					.setValue(0f);
+				} catch(ClassCastException cce) {
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+				} // catch
+
+			} // majMinChrom buttons
+
+			// Key dropdown ScrollableList:
+			if(controlEvent.getName().equals("keyDropdown"))
+			{
+				// keyPos is the position of the particular key in the Scrollable List:
+				int	keyPos	= (int)controlEvent.getValue();
+
+				// getItem returns a Map of the color, state, value, name, etc. of that particular item
+				//  in the ScrollableList:
+				Map<String, Object> keyMap = this.controlP5.get(ScrollableList.class, "keyDropdown").getItem(keyPos);
+
+				// All we want is the name:
+				String	key	= (String) keyMap.get("name");
+				this.curKey	= key;
+				this.curKeyOffset = keyPos;
+				this.curKeyEnharmonicOffset	= this.enharmonicPos[this.curKeyOffset];
+
+				// Update Melody's key and rangeList selection:
+				this.melody.setKey(this.curKey);
+				this.melody.setRangeList();
+				try
+				{
+					((ScrollableList)this.controlP5.getController("rangeDropdown"))
+					.setItems(this.melody.getRangeList())
+					.setValue(0f);
+				} catch(ClassCastException cce) {
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent - keyDropdown: error setting rangeList ScrollableList.");
+				} // catch
+
+				if(this.firstColorSelectCWId > -1)
+				{
+					this.updateCustomColorButtonLabels(curKeyEnharmonicOffset);
+				}
+			} // if
+
+			// Guide Tone Generator:
+			if(controlEvent.getName().equals("guideToneButton"))
+			{
+				if(((Toggle)controlEvent.getController()).getBooleanValue())
+				{
+
+					//				this.controlP5.setAutoDraw(false);
+					this.controlP5.getGroup("leftBackground").setVisible(true);
+					this.controlP5.getGroup("leftBackground").bringToFront();
+					this.controlP5.getGroup("topBackground").setVisible(true);
+					this.controlP5.getGroup("topBackground").bringToFront();
+
+					this.controlP5.getController("guideToneButton").bringToFront();
+
+				} else {
+
+					//				this.controlP5.setAutoDraw(true);
+					this.controlP5.getGroup("leftBackground").setVisible(false);
+					this.controlP5.getGroup("topBackground").setVisible(false);
+				}
+
+				this.controlP5.getGroup("guideToneBackground").bringToFront();
+				this.controlP5.getGroup("guideToneBackground").setVisible(((Toggle) controlEvent.getController()).getBooleanValue());
+			} // Guide Tone Generator
+
+			// ADSR Presets Scrollable List:
+			if(controlEvent.getName().equals("adsrPresetsDropdown"))
+			{
+				int	adsrPos	= (int)controlEvent.getValue();
+
+				System.out.println("adsrPos = " + adsrPos);
+
+				if(adsrPos >= 0 && adsrPos < this.instrument.getADSRPresets().length)
+				{
+					this.instrument.setADSR(adsrPos);
+				} else {
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent: adsrPos" + adsrPos + " is out of range.");
+				}
+			} // ADSR Presets
+
+			// Range Octave Scrollable List:
+			if(controlEvent.getName().equals("rangeDropdown"))
+			{
+				int	rangeOctave	= (int)controlEvent.getValue() + 3;
+
+				if(rangeOctave >= 3 && rangeOctave <= 5)
+				{
+					this.rangeOctave	= rangeOctave;
+				} else {
+					throw new IllegalArgumentException("ModuleTemplate.controlEvent: rangeOctave " + rangeOctave + " is out of range.");
+				}
+			} // rangeDropdown
+
+		} // else - not Tab
+	} // controlEvent
 }

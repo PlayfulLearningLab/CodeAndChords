@@ -3,6 +3,12 @@ package coreV2;
 import core.input.RealTimeInput;
 import processing.core.PApplet;
 
+/**
+ * TODO: Emily is putting things that multiple Menus need access to in this class.
+ * 
+ * @author codeandchords
+ *
+ */
 public class ModuleDriver implements Runnable 
 {
 	private PApplet			pApplet;
@@ -12,7 +18,12 @@ public class ModuleDriver implements Runnable
 	private int				curNumInputs;
 
 	private int[]			activeInputs;
-
+	
+	/**	Number of the input currently affected by the Menu */
+	private	int				currentInput;
+	
+	/**	Boolean indicating whether or not the Menu changes apply to all inputs or just the currentInput */
+	private	boolean			global;
 
 	private InputHandler 	inputHandler;
 
@@ -25,7 +36,14 @@ public class ModuleDriver implements Runnable
 	private Canvas canvas;
 	
 
-	private MenuGroup menu;
+	private MenuGroup 	menu;
+	
+	/**	Used to implement global vs. single input actions: 
+	 * if global, startHere = 0 and endBeforeThis = module.totalNumInputs;
+	 * if particular input, startHere = currentInput and endBeforeThis = (currentInput + 1).
+	 */
+	private	int	startHere;
+	private	int	endBeforeThis;
 
 
 
@@ -36,6 +54,10 @@ public class ModuleDriver implements Runnable
 		this.totalNumInputs = numInputs;
 		this.curNumInputs = this.totalNumInputs;
 		this.activeInputs = new int[this.totalNumInputs];
+		this.currentInput	= 0;
+		this.global			= true;
+		this.startHere		= 0;
+		this.endBeforeThis	= this.totalNumInputs;
 
 		for(int i = 0; i < this.totalNumInputs; i++)
 		{
@@ -47,7 +69,7 @@ public class ModuleDriver implements Runnable
 		this.inputHandler.setRealTimeInput(new RealTimeInput(this.totalNumInputs, this.pApplet));
 
 		this.canvas = new Canvas(this.pApplet, 925, 520);
-		this.menu = new MenuGroup(this.canvas);
+		this.menu = new MenuGroup(this.canvas, this);
 
 		this.useFollowers = true;
 		this.follower = new Follower[this.totalNumInputs];
@@ -56,7 +78,7 @@ public class ModuleDriver implements Runnable
 			this.follower[i] = new Follower();
 		}
 
-		this.colorHandler = new ColorHandler();
+		this.colorHandler = new ColorHandler(this.totalNumInputs, 12);
 
 		//Thread thread = new Thread(this);
 		//thread.setPriority(10);
@@ -93,6 +115,26 @@ public class ModuleDriver implements Runnable
 		
 		this.menu.runMenu();
 	}
+	
+	/**
+	 *  Error checker; rejects numbers that are greater than or equal to the number of inputs or less than 0.
+	 *
+	 *  @param   inputNum  an int that is to be checked for suitability as an input line number.
+	 *  @param   String    name of the method that called this method, used in the exception message.
+	 */
+	protected void inputNumErrorCheck(int inputNum) {
+		if (inputNum >= this.totalNumInputs) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleDriver.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.totalNumInputs + ", the number of inputs.");
+
+			iae.printStackTrace();
+			throw iae;
+		}
+		if (inputNum < 0) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleDriver.inputNumErrorCheck(int): int parameter is " + inputNum + "; must be 1 or greater.");
+			iae.printStackTrace();
+			throw iae;
+		}
+	} // inputNumErrorCheck
 
 	public Follower getFollower(int inputNum)
 	{
@@ -136,5 +178,26 @@ public class ModuleDriver implements Runnable
 	public int getTotalNumInputs() {
 		return this.totalNumInputs;
 	} // getTotalNumInputs
+	
+	public int getCurrentInput() {
+		return this.currentInput;
+	}
+	
+	public boolean getGlobal() {
+		return this.global;
+	}
+	
+	public int getStartHere() {
+		return this.startHere;
+	}
+	
+	public int getEndBeforeThis() {
+		return this.endBeforeThis;
+	}
+	
+	public ColorHandler getColorHandler() {
+		return this.colorHandler;
+	}
+
 
 }

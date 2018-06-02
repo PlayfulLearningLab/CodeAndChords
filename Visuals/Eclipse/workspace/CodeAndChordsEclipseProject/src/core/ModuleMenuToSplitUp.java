@@ -40,6 +40,9 @@ import processing.core.PImage;
 public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 
+	///////////////
+	// Moved:
+
 	/**
 	 * These lists of notes allow the position of any given note to be found in the current scale.
 	 */
@@ -50,14 +53,11 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	protected final String[]	notesAtoGSharps	= new String[] { 
 			"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"
 	};
-
-	///////////////
-	// Moved:
+	
 	// ALL notes here
 	protected	final String[]	allNotes	= new String[] {
 			"A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#", "Ab"
 	}; // allNotes
-	///////////////
 	
 	/**
 	 * This list of notes is to be used for custom color select Button labels
@@ -76,7 +76,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	private	final int[]	enharmonicPos	= new int[] {
 			0, 1, 1, 2, 3, 4, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 11
 	}; // enharmonicPos
-
+	
 	/**
 	 * Colors roughly ROYGBIV; used for the rainbow() method.
 	 */
@@ -189,6 +189,8 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			new int[] { 11, 11 },
 		}
 	}; // colorPosStartEnd
+	////////////////////////
+
 
 	protected float[][] superShapes = new float[][] {
 		new float[] { 1, 1, 0, 0, 1, 1, 1 },
@@ -206,6 +208,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	/**	This is the parent.millis() when menuX is called, so that we don't call Hamburger when menuX is clicked	*/
 	private		int			lastMenuXMillis;
 
+	// Moved:
 	/**
 	 * Color Styles: Rainbow, Dichromatic (fade from one color to another throughout the legend),
 	 * Trichromatic (fade from color1 to  color2 and then from color2 to color3 throughout the legend),
@@ -216,6 +219,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	public	static	int	CS_TRICHROM	= 2;
 	public	static	int	CS_CUSTOM	= 3;
 	protected	int[]	curColorStyle;
+	///////////////////////////
 
 	/**	ControlP5 for the play/stop, pause, and hamburger Buttons	*/
 	protected	ControlP5	outsideButtonsCP5;
@@ -234,18 +238,22 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	/**	false before trichromatic has been called for the first time; true following that.	*/
 	protected	boolean	trichromFlag;
 
+	// Moved:
 	/**	Holds the rgb values for all the colors, which will be updated by the ColorWheels of the current input num	*/
 	protected	int[][][]	colors;
-
+	/////////////////////////////
+	
 	/**	ColorWheels that hold all the colors for the Module	*/
 	protected	ColorWheel[]	colorSelect;
 
+	// Moved:
 	/**	Current hue (as opposed to the goal hue, which may not have been reached)	 */
 	private	int[][]			curHue;
 
 	/**	Hue that corresponds to the current sound, but to which curHue may not yet have faded	*/
 	private	int[][]			goalHue;
-
+	////////////////////
+	
 	/**	Current shapeSize (as opposed to the goal shapeSize, which may not have been reached)	 */
 	private	int[]			curShapeSize;
 
@@ -261,6 +269,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	/**	The distance between the current and goal size for each Shape */
 	private	int[]			shapeSizeRange;
 
+	// Moved:
 	/**	The color when sound is below the piano (lowest) threshold	*/
 	protected	int[]		canvasColor;
 
@@ -278,6 +287,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 	/**	True if all values in the colorReachedArray are true; used to determine fade speed (whether this is attack, release, or transition)	*/
 	private	boolean[]		colorReached;
+	//////////////////////////////
 
 	/**	Holds an alpha value (i.e., opacity) for the Module (all colors will use the same value)	*/
 	private	int			alphaVal;
@@ -406,12 +416,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	/**	True when a ColorWheel Button is a colorSelect Button; false if specialColors	*/
 	protected	boolean[]	fromColorSelect;
 
-	/**	True when a ColorWheel Button is a specialColors Button; false if colorSelect	*/
-	//	protected	boolean[]	fromSpecialColors;
-
-	/**	The current number of input lines	*/
-	//	protected	int	numInputs;
-
+	// Moved:
 	/**	If true, adjustments to Controllers affect all inputs	*/
 	protected	boolean	global;
 
@@ -424,10 +429,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	 */
 	private	int	startHere;
 	private	int	endBeforeThis;
-	//	protected	Shape	shape;
-
-	/**	Shapes, initialized by addShapeMenu(int)	*/
-	//	protected	Shape[]	shapes;
+	//////////////////////////
 
 	private	ShapeEditor	shapeEditor;
 
@@ -575,6 +577,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		// and, since global == true, this fill set this.colors, too.
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
 
+		// Moved: (ModuleDriver)
 		this.colors				= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
 		this.hsbColors			= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
 		this.curHue				= new int[this.module.getTotalNumInputs()][3];
@@ -582,7 +585,8 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		this.canvasColor		= new int[] { 1, 0, 0 };	// If this is set to rgb(0, 0, 0), the CW gets stuck in grayscale
 		this.curColorStyle		= new int[this.module.getTotalNumInputs()];
 		this.rainbow();
-
+		/////////////////
+		
 		this.curShapeSize		= new int[this.module.getTotalNumInputs()];
 		this.goalShapeSize		= new int[this.module.getTotalNumInputs()];
 
@@ -2718,6 +2722,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 	} //trichromatic_ThreeRGB
 
 
+	// Moved:
 	/**
 	 * Populates colors with rainbow colors (ROYGBIV - with a few more for chromatic scales).
 	 */
@@ -2881,6 +2886,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 		} // Trichromatic
 
 	} // setColorStyle
+	////////////////////////////////
 
 	public void updateSpecialColorsPos(int colorStyle, int inputNum)
 	{
@@ -3311,6 +3317,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				} // range segments
 			} // Toggles
 
+			// Moved:
 			// Major/Minor/Chromatic buttons
 			if(controlEvent.getName().equals("major") ||
 					controlEvent.getName().equals("minor") ||
@@ -3388,6 +3395,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 				} // catch
 
 			} // majMinChrom buttons
+			////////////////////////////////
 
 			// Color Style:
 			if(controlEvent.getName().equals("rainbow") ||
@@ -3437,6 +3445,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			} // colorStyle buttons
 
 
+			// Moved:
 			// Key dropdown ScrollableList:
 			if(controlEvent.getName().equals("keyDropdown"))
 			{
@@ -3523,6 +3532,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 					throw new IllegalArgumentException("ModuleTemplate.controlEvent: rangeOctave " + rangeOctave + " is out of range.");
 				}
 			} // rangeDropdown
+			//////////////////////////////////////
 
 			// Input Select dropdown:
 			if(controlEvent.getName() == "inputSelectDropdown")
@@ -3560,7 +3570,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 			if(controlEvent.getName().equals("global"))
 			{
-				this.setGlobal(((Toggle)controlEvent.getController()).getBooleanValue());
+				this.global	= ((Toggle)controlEvent.getController()).getBooleanValue();
 
 			} // global
 
@@ -4062,7 +4072,6 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			this.thresholds[pos][i]	= this.pianoThreshold[pos] + (int)segmentValue * i;
 		} // for
 	} // resetThresholds
-	/////////////////////
 
 	private void updateCustomColorButtonLabels(int enharmonicKeyPos)
 	{
@@ -4226,7 +4235,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 			this.updateCustomColorButtonLabels(enharmonicKeyPos);
 		}
 	} // setCurKey
-
+	
 	/**
 	 * Used in draw for determining whether a particular scale degree is in the 
 	 * major or minor scale;
@@ -4256,6 +4265,7 @@ public class ModuleMenuToSplitUp extends MenuTemplate  {
 
 		return -1;
 	} // arrayContains
+	////////////////////////////////
 
 	/**
 	 * Used in controlEvent for determining whether a given color is in specialColors;
