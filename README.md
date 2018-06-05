@@ -10,8 +10,8 @@ alt="Code+Chords" width="240" height="180" border="10" /></a>
 _Notate bene: 1-input demos can be run on any Java-enable machine with a microphone, but multiple inputs require PortAudio.  For instructions on installing (hint: we have a handy-dandy helper script!), go to the [Installing PortAudio](#installing-portaudio) section._
 
 ## Quick Demos:
-[Module_01_PitchHue](https://drive.google.com/open?id=16YGHWyeVcsUj6IdYLvjAGin-Jifxc9Ks)
-[Module_02_AmplitudeHSB](https://drive.google.com/open?id=1k3fueTNRGQhTN2bDjFGzq65u2QoWH0G4)
+ - [Module_01_PitchHue](https://drive.google.com/open?id=16YGHWyeVcsUj6IdYLvjAGin-Jifxc9Ks)
+ - [Module_02_AmplitudeHSB](https://drive.google.com/open?id=1k3fueTNRGQhTN2bDjFGzq65u2QoWH0G4)
 
 ## Writing your own:
 
