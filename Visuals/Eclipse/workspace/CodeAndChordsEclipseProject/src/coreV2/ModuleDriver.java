@@ -125,7 +125,7 @@ public class ModuleDriver extends PApplet
 		this.colorHandler = new ColorHandler();
 
 		ModuleDriver.module.moduleSetup();
-	}
+	}//setup()
 
 	public void draw()
 	{
@@ -148,7 +148,11 @@ public class ModuleDriver extends PApplet
 
 
 		ModuleDriver.module.moduleDraw();
-	}
+		
+		this.stroke(20);
+		this.fill(20);
+		this.canvas.drawAppletBackground();
+	}//draw()
 
 
 	public Follower getFollower(int inputNum)
