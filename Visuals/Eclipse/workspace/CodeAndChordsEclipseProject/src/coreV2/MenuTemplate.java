@@ -30,57 +30,54 @@ import processing.core.PShape;
  */
 public abstract class MenuTemplate implements ControlListener {
 
-	/**	The current PApplet, passed into the constructor	*/
-	protected PApplet 	parent;
-	
 	/**	ControlP5 for this instance of MenuTemplate	*/
 	protected	ControlP5	controlP5;
-	
+
 	/**	Indicates whether or not the Menu is open	*/
 	protected boolean 	isRunning;
 
 	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
 	 * by the Module when the Menu is open	*/
 	protected float 		scale;
-	
+
 	/**	Blacks out the area behind the Menu	*/
 	private PShape		menuBackground;
-	
+
 	/**	Width of the Menu on the left side of the Module	*/
 	protected	int			sidebarWidth;
-	
+
 	/**	X value along which all the leftmost Sliders, Buttons, etc. are aligned	*/
 	protected	int			leftAlign;
-	
+
 	/**	0 if Menu is closed, this.sidebarWidth if Menu is open	*/
-//	protected	int			leftEdgeX;
+	//	protected	int			leftEdgeX;
 
 	/**	X value for the Labels along the left edge of the Menu	*/
 	protected	int			labelX;
-	
+
 	/**	Width of Labels; used for calculating Button width when number of Buttons is specified by the user	*/
 	protected	int			labelWidth;
-	
+
 	/**	Space between Controllers	*/
 	protected	int			spacer;
-	
+
 	/**	Space along the right hand side of the Menu	*/
 	protected	int			rightEdgeSpacer;
-	
+
 	/**	Width of Textfields next to Sliders	*/
 	protected	int			textfieldWidth;
-	
+
 	/**	Width of Sliders	*/
 	protected	int			sliderWidth;
-	
+
 	/**	Height of SliderS	*/
 	protected	int			sliderHeight;
-	
-//	protected	int[][][]	colors;
-	
-//	protected	int		currentInput;
 
-	
+	//	protected	int[][][]	colors;
+
+	//	protected	int		currentInput;
+
+
 	/**
 	 * The following are id's that are used within the add____ methods to keep id numbering consistent.
 	 * They are initially set to 0 (nextSliderId), 100 (nextSTextfieldId), 200 (nextButtonId), 
@@ -92,9 +89,21 @@ public abstract class MenuTemplate implements ControlListener {
 	protected	int	nextColorWheelId;		// ColorWheels
 	protected	int	nextCWTextfieldId;	// Textfield under a ColorWheels
 	protected	int	nextToggleId;
-	
+
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
+
+
+	private PApplet 			driver;
+
+	private String				menuName;
+
+	private int				 	canvasXPos;
+	private int 				canvasYPos;
+	private int 				canvasWidth;
+	private int 				canvasHeight;
+
+
 
 
 	/**
@@ -104,43 +113,43 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param appWidth	width of the PApplet
 	 * @param appHeight	height of the PApplet
 	 */
-	public MenuTemplate(PApplet pApp, float appWidth, float appHeight)
+	public MenuTemplate()
 	{
 		this.isRunning = false;
-		
-		this.parent = pApp;
-		/*
-		this.appletWidth = appWidth;
-		this.appletHeight = appHeight;
-*/
+
+		this.canvasXPos = 0;
+		this.canvasYPos = 260;
+		this.canvasWidth = 462;
+		this.canvasHeight = 260;
+
 		this.scale = .7f;
-		
-		this.controlP5	= new ControlP5(this.parent);
+
+		this.controlP5	= new ControlP5(ModuleDriver.getModuleDriver());
 		this.controlP5.addListener(this);
-		
+
 		this.controlP5.addGroup("groupPlaceholder");
-		
+
 		// Creating the menuBackground:
-		this.menuBackground = this.parent.createShape();
-		
+		this.menuBackground = ModuleDriver.getModuleDriver().createShape();
+
 		this.menuBackground.beginShape();
-		
+
 		this.menuBackground.vertex(0, 0);
-		this.menuBackground.vertex(this.parent.width, 0);
-		this.menuBackground.vertex(this.parent.width, this.mapAdjustedMenuYPos(0));
+		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, 0);
+		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, this.mapAdjustedMenuYPos(0));
 		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.mapAdjustedMenuYPos(0));
-		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.parent.height);
-		this.menuBackground.vertex(0, this.parent.height);
+		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), ModuleDriver.getModuleDriver().height);
+		this.menuBackground.vertex(0, ModuleDriver.getModuleDriver().height);
 		this.menuBackground.vertex(0, 0);
-		
+
 		this.menuBackground.stroke(20);
 		this.menuBackground.fill(20);
-		
+
 		this.menuBackground.endShape();
-		
+
 		// Use this.scale to determine the size of the sidebar:
-		this.sidebarWidth	= (int)(this.parent.width - (this.parent.width * this.scale));
-		
+		this.sidebarWidth	= (int)(ModuleDriver.getModuleDriver().width - (ModuleDriver.getModuleDriver().width * this.scale));
+
 		// ... and then use the size of the sidebar to determine the sizes of the Controllers:
 		this.leftAlign			= (int)(this.sidebarWidth / 4);
 		this.labelX				= 10;
@@ -149,9 +158,9 @@ public abstract class MenuTemplate implements ControlListener {
 		this.rightEdgeSpacer	= this.labelX;
 		this.textfieldWidth		= (int)(this.sidebarWidth / 7.7);
 		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
-		this.sliderHeight		= this.parent.height / 26;
+		this.sliderHeight		= ModuleDriver.getModuleDriver().height / 26;
 
-		
+
 		this.nextSliderId		= 1;
 		this.nextSTextfieldId	= 101;
 		this.nextButtonId		= 201;
@@ -160,19 +169,25 @@ public abstract class MenuTemplate implements ControlListener {
 		this.nextToggleId		= 501;
 
 	} // constructor
-	
+
 	/**
 	 * This method draws the Menu and should be called repeatedly whenever the Menu is open.
 	 */
 	public void drawMenu()
 	{
-		this.parent.shape(this.menuBackground, 0, 0);
-		
-		this.parent.noStroke();
-		this.parent.noFill();
+		ModuleDriver.getModuleDriver().shape(this.menuBackground, 0, 0);
+
+		ModuleDriver.getModuleDriver().noStroke();
+		ModuleDriver.getModuleDriver().noFill();
 	} // drawMenu
-	
-	
+
+	public void setCanvasSize()
+	{
+		((ModuleDriver) this.driver).getCanvas().setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
+	}
+
+
+
 	/**
 	 * This method should be called in children's controlEvent if they used addSliderGroup()
 	 * or addColorWheelGroup and want to use the Slider/Textfield and Button/ColorWheel/Textfield 
@@ -184,29 +199,29 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public void controlEvent(ControlEvent controlEvent)
 	{
-//		System.out.println("MenuTemplate.controlEvent: controlEvent = " + controlEvent);
-		
+		//		System.out.println("MenuTemplate.controlEvent: controlEvent = " + controlEvent);
+
 		int	id	= controlEvent.getController().getId();
 		// Sliders
 		if(id > -1 && id < 100)
 		{
 			// TODO: was catching a NullPointer here, but I think that's unnecessary; but if NPE errors, try doing that again.
-				Slider	curSlider	= (Slider)this.controlP5.getController("slider" + id);
+			Slider	curSlider	= (Slider)this.controlP5.getController("slider" + id);
 
-				float	sliderValFloat	= curSlider.getValue();
+			float	sliderValFloat	= curSlider.getValue();
 
-				if((Textfield)this.controlP5.getController("textfield" + (id + 100)) != null)
-				{
-					Textfield	curTextfield	= (Textfield)this.controlP5.getController("textfield" + (id + 100));
+			if((Textfield)this.controlP5.getController("textfield" + (id + 100)) != null)
+			{
+				Textfield	curTextfield	= (Textfield)this.controlP5.getController("textfield" + (id + 100));
 
-					String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
+				String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
 
-					curTextfield.setText(sliderValString);			
-				} // if connected to Textfield
-				
-				this.sliderEvent(id, sliderValFloat);
+				curTextfield.setText(sliderValString);			
+			} // if connected to Textfield
+
+			this.sliderEvent(id, sliderValFloat);
 		} // Sliders
-		
+
 		// Textfields
 		if(id > 99 && id < 200)
 		{
@@ -218,10 +233,10 @@ public abstract class MenuTemplate implements ControlListener {
 
 			} catch(NumberFormatException nfe) {
 				System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
-				"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
+						"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
 			} // catch
 		} // textField
-		
+
 		// Color Select Buttons (to show ColorWheel)
 		if(id > 199 && id < 300)
 		{
@@ -250,10 +265,10 @@ public abstract class MenuTemplate implements ControlListener {
 
 			this.controlP5.getController("colorWheel" + (controlEvent.getId() + 100)).setVisible(curButton.getBooleanValue());
 			this.controlP5.getController("textfield" + (controlEvent.getId() + 200)).setVisible(curButton.getBooleanValue());
-			
+
 			this.buttonEvent(id);
 		} // CW Buttons
-		
+
 		// ColorWheels
 		if(id > 299 && id < 400)
 		{
@@ -266,7 +281,7 @@ public abstract class MenuTemplate implements ControlListener {
 			// Set corresponding Textfield with color value:
 			Textfield	curColorTF	= (Textfield)this.controlP5.getController("textfield" + (controlEvent.getId() + 100));
 			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-			
+
 			this.colorWheelEvent(id, color);
 		} // ColorWheels
 
@@ -310,8 +325,8 @@ public abstract class MenuTemplate implements ControlListener {
 			} // catch
 		} // ColorWheel Textfields
 	} // controlEvent
-	
-	
+
+
 	/**
 	 * Child classes will implement this method to use the values of Sliders added by 
 	 * this.addSliderGroup() (corresponding Textfield has been set in controlEvent).
@@ -328,7 +343,7 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param id	id of the current Button
 	 */
 	public abstract void buttonEvent(int id);
-	
+
 	/**
 	 * Child classes will implement this method to use the ColorWheels connected to Buttons and Textfields
 	 * (corresponding Textfield has already been updated in controlEvent).
@@ -336,8 +351,8 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param color
 	 */
 	public abstract void colorWheelEvent(int id, Color color);
-	
-	
+
+
 	/**
 	 * Adds a Label with given text, Slider of given lowest value, highest value, and starting value, with default 
 	 * width and x value at this.leftAlign, and Textfield with default width at given y value.
@@ -352,8 +367,8 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		this.addSliderGroup(0, yVal, labelText, lowRange, highRange, startingVals);
 	} // addSliderGroup - use default width
-	
-	
+
+
 	/**
 	 * Adds a Label with given text, Slider of given x value, lowest value, highest value, and starting value, with default 
 	 * width, and Textfield with default width at given y value; tab == "default".
@@ -385,8 +400,8 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		this.addSliderGroup(xVal, yVal, labelText, (xVal + this.leftAlign), this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, tab);
 	} // addSliderGroup - specify tab but use default width
-	
-	
+
+
 	/**	 
 	 * Adds a Label with given text at xVal + this.labelX, Slider with given width, lowest value, 
 	 * highest value, and starting value, and Textfield with given width to the given group at the given y value.
@@ -521,17 +536,17 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		this.isRunning = isRunning;
 	}
-	
+
 	public boolean getIsRunning()
 	{
 		return this.isRunning;
 	}
-	
+
 	public float getScale()
 	{
 		return this.scale;
 	}
-	
+
 	public float getCurrentScale()
 	{
 		if(this.isRunning)
@@ -541,103 +556,10 @@ public abstract class MenuTemplate implements ControlListener {
 			return 1;
 		}
 	} // getCurrentScale
-	
+
 	public ControlP5 getControlP5()
 	{
 		return this.controlP5;
-	}
-	
-	/**
-	 * Maps the given float within the smaller canvas (TODO - is there a good term for "smaller canvas"?)
-	 * when a Menu is open - TODO true? It would return the smaller value even if the Menu was closed?
-	 * 
-	 * @param fullAppletXPos
-	 * @return
-	 */
-	public float mapAdjustedMenuXPos(float fullAppletXPos)
-	{
-		float adjustedX = PApplet.map(fullAppletXPos, 0, 1, 0, this.scale);
-		adjustedX += (this.parent.width * (1 - this.scale));
-
-		return adjustedX;
-	}
-	
-	/**
-	 * TODO - whatever goes above can go here, too :)
-	 * 
-	 * @param fullAppletYPos
-	 * @return
-	 */
-	public float mapAdjustedMenuYPos(float fullAppletYPos)
-	{
-		float adjustedY = PApplet.map(fullAppletYPos, 0, 1, 0, this.scale);
-		adjustedY += (this.parent.height * (1 - this.scale));
-
-		return adjustedY;
-	}
-	
-	/**
-	 * Converts an x value from the (smaller canvas - TODO better name) to a corresponding x value on the full canvas.
-	 * 
-	 * @param adjustedMenuXPos	x position on smaller canvas
-	 * @return	x position on full canvas
-	 */
-	public float mapFullAppletXPos(float adjustedMenuXPos)
-	{
-		float fullX = adjustedMenuXPos - (this.parent.width * (1 - this.scale));
-		fullX = PApplet.map(fullX, 0, this.scale, 0, 1);
-
-		return fullX;
-	}
-	
-	/**
-	 * Converts a y value from the (smaller canvas - TODO better name) to a corresponding y value on the full canvas.
-	 * 
-	 * @param adjustedMenuYPos	y position on smaller canvas
-	 * @return	y position on full canvas
-	 */
-	public float mapFullAppletYPos(float adjustedMenuYPos)
-	{
-		float fullY = adjustedMenuYPos - (this.parent.height * (1 - this.scale));
-		fullY = PApplet.map(fullY, 0, this.scale, 0, 1);
-
-		return fullY;
-	}
-	
-	public float mapCurrentXPos(float xVal)
-	{
-		if(this.isRunning)	{	return this.mapAdjustedMenuXPos(xVal);	}
-		else				{	return xVal;							}
-	} // getCurrentXPos
-	
-	public float mapCurrentYPos(float yVal)
-	{
-		if(this.isRunning)	{	return this.mapAdjustedMenuYPos(yVal);	}
-		else				{	return yVal;							}
-	} // getCurrentXPos
-	
-	/**
-	 * Shows or hides this.controlP5, depending on whether or not the Menu is open,
-	 * and then calls drawMenu(); should be called every time through draw.
-	 */
-	public void runMenu()
-	{
-		if (this.isRunning) {
-			if (!this.controlP5.isVisible()) {
-				this.controlP5.show();
-			}
-			
-			this.drawMenu();
-			
-		} else if (this.controlP5.isVisible()) {
-			// if cp5 is visible but the Menu is not running, hide cp5
-			this.controlP5.hide();
-		}
-	} // runMenu
-	
-	public void setPApplet(PApplet applet)
-	{
-		this.parent = applet;
 	}
 
 } // MenuTemplate

@@ -10,7 +10,7 @@ package coreV2;
  * 		making new modules, and ModuleDriver is the heart of this package.  By starting
  * 		an instance of this driver, all of the individual parts needed to make up a
  * 		fully functioning Code+Chords module are automatically created and grouped into
- * 		one central location.  All of these parts can be seen, listed and explained below.
+ * 		one central location.  All of these parts can be seen listed and explained below.
  * 
  * 		-PApplet:		Code+Chords software is programmed in the java language, but 
  * 						relies largely on the processing library to work.  The steps 
@@ -59,8 +59,11 @@ import processing.core.PApplet;
 
 public class ModuleDriver extends PApplet
 {
+	private static ModuleDriver		instance = null;
+	
 	private static ModuleOutline	module = null;
 
+	//TODO: How could we make it so that these variables are in InputHandler
 	private int						totalNumInputs;
 	private int						curNumInputs;
 	private int[]					activeInputs;
@@ -92,11 +95,17 @@ public class ModuleDriver extends PApplet
 		{
 			System.err.println("ModuleDriver has already been started.");
 		}
-	}
+	}//startModuleDriver()
 
 	public ModuleDriver()
 	{		
-		ModuleDriver.module.setDriver(this);
+		ModuleDriver.instance = this;
+		ModuleDriver.module.setDriver(ModuleDriver.instance);
+	}
+	
+	public static ModuleDriver getModuleDriver()
+	{
+		return ModuleDriver.instance;
 	}
 
 	public void settings()
@@ -113,7 +122,7 @@ public class ModuleDriver extends PApplet
 		this.inputHandler.setRealTimeInput(new RealTimeInput(16, new AudioContext(), true, this));
 
 		this.canvas = new Canvas(this);
-		this.menu = new MenuGroup(this.canvas);
+		this.menu = new MenuGroup(this);
 
 		this.useFollowers = true;
 		this.follower = new Follower[this.totalNumInputs];
@@ -208,6 +217,16 @@ public class ModuleDriver extends PApplet
 	public Canvas getCanvas()
 	{
 		return this.canvas;
+	}
+	
+	public ColorHandler getColorHandler()
+	{
+		return this.colorHandler;
+	}
+	
+	public MenuGroup getMenuGroup()
+	{
+		return this.menu;
 	}
 
 }
