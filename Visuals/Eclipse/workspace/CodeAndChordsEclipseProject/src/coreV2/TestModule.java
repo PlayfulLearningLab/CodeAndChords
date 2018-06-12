@@ -13,23 +13,14 @@ public class TestModule extends ModuleOutline
 	@Override
 	public void moduleSetup() 
 	{
-		System.out.println("moduleSetup() code here");
+		
 	}
 
 
 	@Override
 	public void moduleDraw() 
 	{
-		System.out.println("moduleDraw() code here");
-
-		try 
-		{
-			Thread.sleep(1000);
-		} 
-		catch (InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
+		this.driver.background(0);
 	}
 
 

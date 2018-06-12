@@ -1,5 +1,7 @@
 package coreV2;
 
+import controlP5.ControlP5;
+
 /**
  * 		Danny Mahota
  * 		5/28/2018
@@ -60,7 +62,7 @@ import processing.core.PApplet;
 public class ModuleDriver extends PApplet
 {
 	private static ModuleDriver		instance = null;
-	
+
 	private static ModuleOutline	module = null;
 
 	//TODO: How could we make it so that these variables are in InputHandler
@@ -85,7 +87,7 @@ public class ModuleDriver extends PApplet
 	public static void startModuleDriver(ModuleOutline module)
 	{
 		if(module == null) throw new IllegalArgumentException("parameter is null");
-		
+
 		if(ModuleDriver.module == null)
 		{
 			ModuleDriver.module = module;
@@ -102,7 +104,7 @@ public class ModuleDriver extends PApplet
 		ModuleDriver.instance = this;
 		ModuleDriver.module.setDriver(ModuleDriver.instance);
 	}
-	
+
 	public static ModuleDriver getModuleDriver()
 	{
 		return ModuleDriver.instance;
@@ -122,7 +124,9 @@ public class ModuleDriver extends PApplet
 		this.inputHandler.setRealTimeInput(new RealTimeInput(16, new AudioContext(), true, this));
 
 		this.canvas = new Canvas();
+
 		this.menu = new MenuGroup();
+		this.menu.addMenu(new SensitivityMenu());
 
 		this.useFollowers = true;
 		this.follower = new Follower[this.totalNumInputs];
@@ -157,11 +161,29 @@ public class ModuleDriver extends PApplet
 
 
 		ModuleDriver.module.moduleDraw();
-		
+
 		this.stroke(20);
 		this.fill(20);
 		this.canvas.drawAppletBackground();
 	}//draw()
+
+	public void keyPressed()
+	{
+		if( key == ' ' && this.menu.canvasMenuActive() )
+		{
+			ControlP5 cp5 = this.menu.getActiveMenu().getControlP5();
+
+			if(cp5.getGroup("Canvas Menu").isVisible())
+			{
+				cp5.getGroup("Canvas Menu").hide();
+			}
+			else
+			{
+				cp5.getGroup("Canvas Menu").show();
+			}
+		}
+		
+	}
 
 
 	public Follower getFollower(int inputNum)
@@ -178,8 +200,8 @@ public class ModuleDriver extends PApplet
 	{
 		return this.inputHandler;
 	}
-	
-	
+
+
 	//TODO: talk to Emily about how we handle input numbers.  I know we are using an int[]
 	//		so that we can account for a board that skips numbers (just one example), but
 	//		how do we make sure that this model is unbreakable when we don't know the board
@@ -187,11 +209,11 @@ public class ModuleDriver extends PApplet
 	public void setTotalNumInputs(int totalNumInputs)
 	{
 		if(totalNumInputs < 1) throw new IllegalArgumentException("There must be at least one input.");
-		
+
 		this.totalNumInputs = totalNumInputs;
 		this.curNumInputs = this.totalNumInputs;
 		this.activeInputs = new int[this.totalNumInputs];
-		
+
 		for(int i = 0; i < this.totalNumInputs; i++)
 		{
 			this.activeInputs[i] = i;
@@ -222,12 +244,12 @@ public class ModuleDriver extends PApplet
 	{
 		return this.canvas;
 	}
-	
+
 	public ColorHandler getColorHandler()
 	{
 		return this.colorHandler;
 	}
-	
+
 	public MenuGroup getMenuGroup()
 	{
 		return this.menu;

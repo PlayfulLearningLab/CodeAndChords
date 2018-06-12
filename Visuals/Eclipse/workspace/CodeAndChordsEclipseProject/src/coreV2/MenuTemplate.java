@@ -9,6 +9,7 @@ import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.Controller;
+import controlP5.Group;
 import controlP5.Slider;
 import controlP5.Textfield;
 
@@ -33,9 +34,6 @@ public abstract class MenuTemplate implements ControlListener {
 	
 	/**	ControlP5 for this instance of MenuTemplate	*/
 	protected	ControlP5	controlP5;
-
-	/**	Indicates whether or not the Menu is open	*/
-	protected boolean 	isRunning;
 
 	/**	Blacks out the area behind the Menu	*/
 	private PShape		menuBackground;
@@ -105,8 +103,6 @@ public abstract class MenuTemplate implements ControlListener {
 	public MenuTemplate(String menuTitle)
 	{
 		this.menuTitle = menuTitle;
-		
-		this.isRunning = false;
 
 		this.canvasXPos = 0;
 		this.canvasYPos = 260;
@@ -522,25 +518,14 @@ public abstract class MenuTemplate implements ControlListener {
 		return new Controller[] { button, colorWheel, textfield };
 	} // addColorWheelGroup
 
-
-	/**
-	 * Setter for this.isRunning
-	 * 
-	 * @param isRunning	boolean indicating whether or not the Menu is open
-	 */
-	public void setIsRunning(boolean isRunning) 
-	{
-		this.isRunning = isRunning;
-	}
-
-	public boolean getIsRunning()
-	{
-		return this.isRunning;
-	}
-
 	public ControlP5 getControlP5()
 	{
 		return this.controlP5;
+	}
+	
+	public Group getGroup()
+	{
+		return (Group) this.getControlP5().getGroup(this.getMenuTitle());
 	}
 
 
