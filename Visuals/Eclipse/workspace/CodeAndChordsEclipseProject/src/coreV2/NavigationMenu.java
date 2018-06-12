@@ -2,15 +2,28 @@ package coreV2;
 
 import java.awt.Color;
 
-import processing.core.PApplet;
-
 public class NavigationMenu extends MenuTemplate
 {
-
+	String[] menuList;
+	
 	public NavigationMenu() 
 	{
-		super();
+		super("Navigation Menu");
 		
+		this.menuList = new String[] { this.getMenuTitle() };
+		
+	}
+	
+	public void updateMenuList()
+	{
+		MenuGroup menus = ModuleDriver.getModuleDriver().getMenuGroup();
+		
+		this.menuList = new String[menus.getMenus().length];
+		
+		for(int i = 0; i < menus.getMenus().length; i++)
+		{
+			this.menuList[i] = menus.getMenus()[i].getMenuTitle();
+		}
 	}
 
 	@Override

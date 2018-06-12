@@ -121,8 +121,8 @@ public class ModuleDriver extends PApplet
 
 		this.inputHandler.setRealTimeInput(new RealTimeInput(16, new AudioContext(), true, this));
 
-		this.canvas = new Canvas(this);
-		this.menu = new MenuGroup(this);
+		this.canvas = new Canvas();
+		this.menu = new MenuGroup();
 
 		this.useFollowers = true;
 		this.follower = new Follower[this.totalNumInputs];

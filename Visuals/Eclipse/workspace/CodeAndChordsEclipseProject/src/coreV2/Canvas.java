@@ -4,18 +4,14 @@ import processing.core.PApplet;
 
 public class Canvas 
 {
-	private PApplet			pApp;
-	
 	private int				displayX;
 	private int				displayY;
 	private int 			displayWidth;
 	private int 			displayHeight;
 	
 	
-	public Canvas(PApplet pApplet)
+	public Canvas()
 	{
-		this.pApp = pApplet;
-		
 		this.fullScreen();
 	}
 	
@@ -27,41 +23,58 @@ public class Canvas
 		this.displayHeight = height;
 	}
 	
+	public int[] getCanvasDimensions()
+	{
+		return new int[] { this.displayX, this.displayY, this.displayWidth, this.displayHeight };
+	}
+	
+	//TODO:  Create a method that returns a PShape covering all of the area not covered by the canvas
+	
 	public void fullScreen()
 	{
+		PApplet pApp = ModuleDriver.getModuleDriver();
+		
 		this.displayX = 0;
 		this.displayY = 0;
-		this.displayWidth = this.pApp.width;
-		this.displayHeight = this.pApp.height;
+		this.displayWidth = pApp.width;
+		this.displayHeight = pApp.height;
 	}
 	
 	public void background()
 	{
-		this.pApp.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
+		PApplet pApp = ModuleDriver.getModuleDriver();
+		
+		pApp.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
 	}
 	
 	public void rect(int xPos, int yPos, int width, int height)
 	{
-		width = width*(this.displayWidth/this.pApp.width);
-		height = height*(this.displayHeight/this.pApp.height);
+		PApplet pApp = ModuleDriver.getModuleDriver();
 		
-		this.pApp.rect(this.displayX + xPos, this.displayY + yPos, width, height);
+		width = width*(this.displayWidth/pApp.width);
+		height = height*(this.displayHeight/pApp.height);
+		
+		pApp.rect(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
 	public void ellipse(int xPos, int yPos, int width, int height)
 	{
-		width = width*(this.displayWidth/this.pApp.width);
-		height = height*(this.displayHeight/this.pApp.height);
+		PApplet pApp = ModuleDriver.getModuleDriver();
 		
-		this.pApp.ellipse(this.displayX + xPos, this.displayY + yPos, width, height);
+		width = width*(this.displayWidth/pApp.width);
+		height = height*(this.displayHeight/pApp.height);
+		
+		pApp.ellipse(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
 	public void line(int xPos, int yPos, int width, int height)
 	{
-		width = width*(this.displayWidth/this.pApp.width);
-		height = height*(this.displayHeight/this.pApp.height);
+		PApplet pApp = ModuleDriver.getModuleDriver();
 		
-		this.pApp.line(this.displayX + xPos, this.displayY + yPos, width, height);
+		width = width*(this.displayWidth/pApp.width);
+		height = height*(this.displayHeight/pApp.height);
+		
+		pApp.line(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
 	

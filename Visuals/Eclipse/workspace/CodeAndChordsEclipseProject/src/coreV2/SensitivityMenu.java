@@ -64,7 +64,7 @@ public class SensitivityMenu extends MenuTemplate
 
 	public SensitivityMenu() 
 	{
-		super();
+		super("Sensitivity Menu");
 	}
 
 	@Override

@@ -2,23 +2,17 @@ package coreV2;
 
 public class MenuGroup 
 {
-
-	private ModuleDriver	driver;
+	private MenuTemplate[] 		menuGroup;
 	
-	private MenuTemplate[] 			menuGroup;
+	private boolean				menuOpen;
 	
-	private boolean			menuOpen;
+	private MenuTemplate 		activeMenu;
 	
-	private MenuTemplate 			activeMenu;
-	
-	public MenuGroup(ModuleDriver driver)
+	public MenuGroup()
 	{
-		this.driver = driver;
-		
 		this.menuGroup = new MenuTemplate[1];
 		
 		this.menuGroup[0] = new NavigationMenu();
-		this.activeMenu = this.menuGroup[0];
 	}
 	
 	public void addMenu(MenuTemplate menu)
@@ -31,6 +25,14 @@ public class MenuGroup
 		}
 		
 		newGroup[this.menuGroup.length] = menu;
+		this.menuGroup = newGroup;
+		
+		((NavigationMenu) this.menuGroup[0]).updateMenuList();
+	}
+	
+	public MenuTemplate[] getMenus()
+	{
+		return this.menuGroup;
 	}
 	
 	public void open()
@@ -38,12 +40,26 @@ public class MenuGroup
 		this.activeMenu = this.menuGroup[0];
 		this.menuOpen = true;
 		this.activeMenu.setCanvasSize();
+		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).show();
+	}
+	
+	public void switchTo(int menuNumber)
+	{
+		if(menuNumber > this.menuGroup.length) throw new IllegalArgumentException ("Invalid menuNumber");
+		
+		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).hide();
+		
+		this.activeMenu = this.menuGroup[menuNumber];
+		this.activeMenu.setCanvasSize();
+		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).show();
+		
 	}
 	
 	public void close()
 	{
+		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).hide();
 		this.menuOpen = false;
-		this.driver.getCanvas().fullScreen();
+		ModuleDriver.getModuleDriver().getCanvas().fullScreen();
 	}
 	
 	public void runMenu()

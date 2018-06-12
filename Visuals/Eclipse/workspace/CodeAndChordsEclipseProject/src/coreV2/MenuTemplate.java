@@ -12,7 +12,6 @@ import controlP5.Controller;
 import controlP5.Slider;
 import controlP5.Textfield;
 
-import processing.core.PApplet;
 import processing.core.PShape;
 
 /**
@@ -30,15 +29,13 @@ import processing.core.PShape;
  */
 public abstract class MenuTemplate implements ControlListener {
 
+	private	String			menuTitle;
+	
 	/**	ControlP5 for this instance of MenuTemplate	*/
 	protected	ControlP5	controlP5;
 
 	/**	Indicates whether or not the Menu is open	*/
 	protected boolean 	isRunning;
-
-	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
-	 * by the Module when the Menu is open	*/
-	protected float 		scale;
 
 	/**	Blacks out the area behind the Menu	*/
 	private PShape		menuBackground;
@@ -93,11 +90,6 @@ public abstract class MenuTemplate implements ControlListener {
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
 
-
-	private PApplet 			driver;
-
-	private String				menuName;
-
 	private int				 	canvasXPos;
 	private int 				canvasYPos;
 	private int 				canvasWidth;
@@ -109,12 +101,11 @@ public abstract class MenuTemplate implements ControlListener {
 	/**
 	 * Constructor
 	 * 
-	 * @param pApp	PApplet to initialize this.parent
-	 * @param appWidth	width of the PApplet
-	 * @param appHeight	height of the PApplet
 	 */
-	public MenuTemplate()
+	public MenuTemplate(String menuTitle)
 	{
+		this.menuTitle = menuTitle;
+		
 		this.isRunning = false;
 
 		this.canvasXPos = 0;
@@ -122,23 +113,22 @@ public abstract class MenuTemplate implements ControlListener {
 		this.canvasWidth = 462;
 		this.canvasHeight = 260;
 
-		this.scale = .7f;
-
 		this.controlP5	= new ControlP5(ModuleDriver.getModuleDriver());
 		this.controlP5.addListener(this);
 
-		this.controlP5.addGroup("groupPlaceholder");
+		this.controlP5.addGroup(menuTitle);
 
+		
 		// Creating the menuBackground:
 		this.menuBackground = ModuleDriver.getModuleDriver().createShape();
 
 		this.menuBackground.beginShape();
-
+		
 		this.menuBackground.vertex(0, 0);
 		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, 0);
-		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, this.mapAdjustedMenuYPos(0));
-		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.mapAdjustedMenuYPos(0));
-		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), ModuleDriver.getModuleDriver().height);
+		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, this.canvasYPos);
+		this.menuBackground.vertex(this.canvasXPos, this.canvasYPos);
+		this.menuBackground.vertex(this.canvasXPos, ModuleDriver.getModuleDriver().height);
 		this.menuBackground.vertex(0, ModuleDriver.getModuleDriver().height);
 		this.menuBackground.vertex(0, 0);
 
@@ -146,9 +136,9 @@ public abstract class MenuTemplate implements ControlListener {
 		this.menuBackground.fill(20);
 
 		this.menuBackground.endShape();
-
+		
 		// Use this.scale to determine the size of the sidebar:
-		this.sidebarWidth	= (int)(ModuleDriver.getModuleDriver().width - (ModuleDriver.getModuleDriver().width * this.scale));
+		this.sidebarWidth	= (int)(ModuleDriver.getModuleDriver().width - this.canvasWidth);
 
 		// ... and then use the size of the sidebar to determine the sizes of the Controllers:
 		this.leftAlign			= (int)(this.sidebarWidth / 4);
@@ -183,7 +173,12 @@ public abstract class MenuTemplate implements ControlListener {
 
 	public void setCanvasSize()
 	{
-		((ModuleDriver) this.driver).getCanvas().setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
+		(ModuleDriver.getModuleDriver()).getCanvas().setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
+	}
+	
+	public String getMenuTitle()
+	{
+		return this.menuTitle;
 	}
 
 
@@ -541,21 +536,6 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		return this.isRunning;
 	}
-
-	public float getScale()
-	{
-		return this.scale;
-	}
-
-	public float getCurrentScale()
-	{
-		if(this.isRunning)
-		{
-			return this.scale;
-		} else {
-			return 1;
-		}
-	} // getCurrentScale
 
 	public ControlP5 getControlP5()
 	{
