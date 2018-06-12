@@ -30,24 +30,16 @@ import processing.core.PShape;
  */
 public abstract class MenuTemplate implements ControlListener {
 
-	private String				menuName;
-
-	/**	The current PApplet, passed into the constructor	*/
-	protected PApplet 	parent;
-
 	/**	ControlP5 for this instance of MenuTemplate	*/
 	protected	ControlP5	controlP5;
 
+	/**	Indicates whether or not the Menu is open	*/
+	protected boolean 	isRunning;
 
-	protected Canvas			canvas;
+	/**	This is a float between 0 and 1 which indicates what percentage of the canvas will be taken up 
+	 * by the Module when the Menu is open	*/
+	protected float 		scale;
 
-	private int				 	canvasXPos;
-	private int 				canvasYPos;
-	private int 				canvasWidth;
-	private int 				canvasHeight;
-
-
-	private float		scale;
 
 	/**	Blacks out the area behind the Menu	*/
 	private PShape		menuBackground;
@@ -103,6 +95,18 @@ public abstract class MenuTemplate implements ControlListener {
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
 
 
+	private PApplet 			driver;
+
+	private String				menuName;
+
+	private int				 	canvasXPos;
+	private int 				canvasYPos;
+	private int 				canvasWidth;
+	private int 				canvasHeight;
+
+
+
+
 	/**
 	 * Constructor
 	 * 
@@ -110,33 +114,43 @@ public abstract class MenuTemplate implements ControlListener {
 	 * @param appWidth	width of the PApplet
 	 * @param appHeight	height of the PApplet
 	 */
-	public MenuTemplate(String menuName, PApplet pApp, ControlP5 cp5, Canvas canvas)
+
+	public MenuTemplate()
 	{
+		this.isRunning = false;
 
-		this.parent = pApp;
-		/*
-		this.appletWidth = appWidth;
-		this.appletHeight = appHeight;
-		 */
-
-		this.controlP5	= new ControlP5(this.parent);
-		this.controlP5.addListener(this);
-
-		this.menuName = menuName;
-		this.controlP5.addGroup(this.menuName);
+		this.canvasXPos = 0;
+		this.canvasYPos = 260;
+		this.canvasWidth = 462;
+		this.canvasHeight = 260;
 
 		this.scale = .7f;
 
-		this.canvas = canvas;
+		this.controlP5	= new ControlP5(ModuleDriver.getModuleDriver());
+		this.controlP5.addListener(this);
 
-		this.canvasXPos = (int) (this.parent.width - (this.parent.width * this.scale));
-		this.canvasYPos = (int) (this.parent.height - (this.parent.height * this.scale));
-		this.canvasWidth = (int) (this.parent.width * this.scale);
-		this.canvasHeight = (int) (this.parent.height * this.scale);
-		
+		this.controlP5.addGroup("groupPlaceholder");
+
+		// Creating the menuBackground:
+		this.menuBackground = ModuleDriver.getModuleDriver().createShape();
+
+		this.menuBackground.beginShape();
+
+		this.menuBackground.vertex(0, 0);
+		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, 0);
+		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, this.mapAdjustedMenuYPos(0));
+		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), this.mapAdjustedMenuYPos(0));
+		this.menuBackground.vertex(this.mapAdjustedMenuXPos(0), ModuleDriver.getModuleDriver().height);
+		this.menuBackground.vertex(0, ModuleDriver.getModuleDriver().height);
+		this.menuBackground.vertex(0, 0);
+
+		this.menuBackground.stroke(20);
+		this.menuBackground.fill(20);
+
+		this.menuBackground.endShape();
 
 		// Use this.scale to determine the size of the sidebar:
-		this.sidebarWidth	= (int)(this.parent.width - (this.parent.width * this.scale));
+		this.sidebarWidth	= (int)(ModuleDriver.getModuleDriver().width - (ModuleDriver.getModuleDriver().width * this.scale));
 
 		// ... and then use the size of the sidebar to determine the sizes of the Controllers:
 		this.leftAlign			= (int)(this.sidebarWidth / 4);
@@ -146,7 +160,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.rightEdgeSpacer	= this.labelX;
 		this.textfieldWidth		= (int)(this.sidebarWidth / 7.7);
 		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
-		this.sliderHeight		= this.parent.height / 26;
+		this.sliderHeight		= ModuleDriver.getModuleDriver().height / 26;
 
 
 		this.nextSliderId		= 1;
@@ -158,19 +172,23 @@ public abstract class MenuTemplate implements ControlListener {
 
 	} // constructor
 
-	
-	public void open()
+	/**
+	 * This method draws the Menu and should be called repeatedly whenever the Menu is open.
+	 */
+	public void drawMenu()
 	{
-		this.controlP5.getGroup(this.menuName).show();
-		this.canvas.setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
-	}
-	
-	public void close()
+		ModuleDriver.getModuleDriver().shape(this.menuBackground, 0, 0);
+
+		ModuleDriver.getModuleDriver().noStroke();
+		ModuleDriver.getModuleDriver().noFill();
+	} // drawMenu
+
+	public void setCanvasSize()
 	{
-		this.controlP5.getGroup(this.menuName).hide();
-		this.canvas.fullScreen();
+		((ModuleDriver) this.driver).getCanvas().setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
 	}
-	
+
+
 
 	/**
 	 * This method should be called in children's controlEvent if they used addSliderGroup()
@@ -511,11 +529,41 @@ public abstract class MenuTemplate implements ControlListener {
 		return new Controller[] { button, colorWheel, textfield };
 	} // addColorWheelGroup
 
+
+	/**
+	 * Setter for this.isRunning
+	 * 
+	 * @param isRunning	boolean indicating whether or not the Menu is open
+	 */
+	public void setIsRunning(boolean isRunning) 
+	{
+		this.isRunning = isRunning;
+	}
+
+	public boolean getIsRunning()
+	{
+		return this.isRunning;
+	}
+
+	public float getScale()
+	{
+		return this.scale;
+	}
+
+	public float getCurrentScale()
+	{
+		if(this.isRunning)
+		{
+			return this.scale;
+		} else {
+			return 1;
+		}
+	} // getCurrentScale
+
 	public ControlP5 getControlP5()
 	{
 		return this.controlP5;
 	}
-
 
 
 } // MenuTemplate

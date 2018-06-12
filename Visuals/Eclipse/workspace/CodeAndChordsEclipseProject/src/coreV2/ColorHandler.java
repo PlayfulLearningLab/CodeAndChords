@@ -1,5 +1,6 @@
 package coreV2;
 
-public class ColorHandler {
+public class ColorHandler 
+{
 
 }

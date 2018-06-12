@@ -3,27 +3,27 @@ package coreV2;
 public class MenuGroup 
 {
 
-	private Menu[] 		menuGroup;
-	private Canvas 		canvas;
+	private ModuleDriver	driver;
 	
-	private boolean		menuOpen;
+	private MenuTemplate[] 			menuGroup;
 	
-	private Menu 		activeMenu;
+	private boolean			menuOpen;
 	
-	public MenuGroup(Canvas canvas)
+	private MenuTemplate 			activeMenu;
+	
+	public MenuGroup(ModuleDriver driver)
 	{
-		this.menuGroup = new Menu[1];
-		this.canvas = canvas;
+		this.driver = driver;
 		
-		this.menuGroup[0] = new NavigationMenu(this.canvas);
+		this.menuGroup = new MenuTemplate[1];
+		
+		this.menuGroup[0] = new NavigationMenu();
 		this.activeMenu = this.menuGroup[0];
 	}
 	
-	public void addMenu(Menu menu)
-	{
-		menu.setCanvas(this.canvas);
-		
-		Menu[] newGroup = new Menu[this.menuGroup.length + 1];
+	public void addMenu(MenuTemplate menu)
+	{	
+		MenuTemplate[] newGroup = new MenuTemplate[this.menuGroup.length + 1];
 		
 		for(int i = 0; i < this.menuGroup.length; i++)
 		{
@@ -37,15 +37,13 @@ public class MenuGroup
 	{
 		this.activeMenu = this.menuGroup[0];
 		this.menuOpen = true;
-		
 		this.activeMenu.setCanvasSize();
 	}
 	
 	public void close()
 	{
 		this.menuOpen = false;
-		
-		this.canvas.fullScreen();
+		this.driver.getCanvas().fullScreen();
 	}
 	
 	public void runMenu()
@@ -53,7 +51,6 @@ public class MenuGroup
 		if(this.menuOpen)
 		{
 			this.activeMenu.drawMenu();
-			
 		}
 	}
 	

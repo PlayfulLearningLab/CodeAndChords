@@ -62,9 +62,9 @@ public class SensitivityMenu extends MenuTemplate
 
 
 
-	public SensitivityMenu(PApplet pApplet, int appWidth, int appHeight) 
+	public SensitivityMenu() 
 	{
-		super(pApplet, appWidth, appHeight);
+		super();
 	}
 
 	@Override
@@ -81,6 +81,12 @@ public class SensitivityMenu extends MenuTemplate
 
 	@Override
 	public void colorWheelEvent(int id, Color color) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawMenu() {
 		// TODO Auto-generated method stub
 		
 	}
