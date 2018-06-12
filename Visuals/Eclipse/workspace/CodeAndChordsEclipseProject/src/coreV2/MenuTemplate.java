@@ -522,6 +522,7 @@ public abstract class MenuTemplate implements ControlListener {
 		return new Controller[] { button, colorWheel, textfield };
 	} // addColorWheelGroup
 
+
 	/**
 	 * Setter for this.isRunning
 	 * 
@@ -541,5 +542,6 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		return this.controlP5;
 	}
+
 
 } // MenuTemplate

@@ -9,6 +9,8 @@ public class Canvas
 	private int 			displayWidth;
 	private int 			displayHeight;
 	
+	private boolean			isFullscreen;
+	
 	
 	public Canvas()
 	{
@@ -21,6 +23,8 @@ public class Canvas
 		this.displayY = yPos;
 		this.displayWidth = width;
 		this.displayHeight = height;
+		
+		this.isFullscreen = false;
 	}
 	
 	public int[] getCanvasDimensions()
@@ -38,6 +42,8 @@ public class Canvas
 		this.displayY = 0;
 		this.displayWidth = pApp.width;
 		this.displayHeight = pApp.height;
+
+		this.isFullscreen = true;
 	}
 	
 	public void background()
@@ -77,6 +83,25 @@ public class Canvas
 		pApp.line(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
+	public void drawAppletBackground()
+	{
+		PApplet pApp = ModuleDriver.getModuleDriver();
+		
+		if(!this.isFullscreen)
+		{
+			pApp.rect(0, 0, this.displayX, this.displayHeight);
+			pApp.rect(	this.displayX + this.displayWidth, 
+							0, 
+							pApp.width - (this.displayX + this.displayWidth), 
+							this.displayHeight);
+			
+			pApp.rect(this.displayX, 0, this.displayWidth, this.displayY);
+			pApp.rect(	this.displayX, 
+							this.displayY + this.displayHeight, 
+							this.displayWidth,
+							pApp.height - (this.displayY + this.displayHeight));
+		}
+	}//drawAppletBackground()
 	
 
 }
