@@ -81,7 +81,7 @@ public class ModuleDriver extends PApplet
 
 	private Canvas 					canvas;
 
-	private MenuGroup				menu;
+	private MenuGroup				menu; 
 
 
 	public static void startModuleDriver(ModuleOutline module)
