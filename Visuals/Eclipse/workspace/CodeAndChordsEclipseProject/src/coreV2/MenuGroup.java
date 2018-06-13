@@ -14,6 +14,8 @@ public class MenuGroup
 
 		this.menuGroup[0] = new CanvasMenu();
 		this.menuGroup[1] = new NavigationMenu();
+		
+		this.activeMenu = this.menuGroup[0];
 	}
 
 	public void addMenu(MenuTemplate menu)

@@ -81,7 +81,7 @@ public class CanvasMenu extends MenuTemplate
 		.setPosition(hamburgerX, hamburgerY)
 		.setImages(hamXImages)
 		.setClickable(true)
-		//.moveTo("global")	// "global" means it will show in all tabs
+		.moveTo("global")	// "global" means it will show in all tabs
 		.updateSize()
 		.setGroup(this.getGroup());
 	} // addOutsideButtons

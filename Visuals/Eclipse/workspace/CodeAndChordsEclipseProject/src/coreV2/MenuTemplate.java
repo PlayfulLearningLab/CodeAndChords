@@ -36,7 +36,7 @@ public abstract class MenuTemplate implements ControlListener {
 	protected	ControlP5	controlP5;
 
 	/**	Blacks out the area behind the Menu	*/
-	private PShape		menuBackground;
+	private PShape			menuBackground;
 
 	/**	Width of the Menu on the left side of the Module	*/
 	protected	int			sidebarWidth;
@@ -161,10 +161,11 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public void drawMenu()
 	{
-		ModuleDriver.getModuleDriver().shape(this.menuBackground, 0, 0);
-
 		ModuleDriver.getModuleDriver().noStroke();
 		ModuleDriver.getModuleDriver().noFill();
+		ModuleDriver.getModuleDriver().color(50);
+		
+		ModuleDriver.getModuleDriver().shape(this.menuBackground, 0, 0);
 	} // drawMenu
 
 	public void setCanvasSize()
