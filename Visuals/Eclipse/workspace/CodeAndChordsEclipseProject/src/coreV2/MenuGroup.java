@@ -2,13 +2,24 @@ package coreV2;
 
 import controlP5.ControlP5;
 
+/**
+ * TODO: get particular menus by menuTitle (String)
+ * @author emily
+ *
+ */
 public class MenuGroup 
 {
 	private MenuTemplate[] 		menuGroup;
 
+	private Canvas 		canvas;
+	
+	private	ModuleDriver	moduleDriver;
+	
+	private boolean		menuOpen;
+	
 	private MenuTemplate 		activeMenu;
-
-	public MenuGroup()
+	
+	public MenuGroup(Canvas canvas)
 	{
 		this.menuGroup = new MenuTemplate[2];
 

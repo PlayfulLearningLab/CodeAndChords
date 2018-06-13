@@ -87,6 +87,8 @@ public abstract class MenuTemplate implements ControlListener {
 
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
+	
+	protected	ModuleDriver	moduleDriver;
 
 	private int				 	canvasXPos;
 	private int 				canvasYPos;
@@ -103,29 +105,32 @@ public abstract class MenuTemplate implements ControlListener {
 	public MenuTemplate(String menuTitle)
 	{
 		this.menuTitle = menuTitle;
+		
+		ModuleDriver	moduleDriver	= ModuleDriver.getModuleDriver();
 
+		// These are default positions that can be overridden by custom-sized menus:
 		this.canvasXPos = 0;
-		this.canvasYPos = 260;
-		this.canvasWidth = 462;
-		this.canvasHeight = 260;
+		this.canvasYPos = moduleDriver.height / 2;
+		this.canvasWidth = moduleDriver.width / 2;
+		this.canvasHeight = moduleDriver.height / 2;
 
-		this.controlP5	= new ControlP5(ModuleDriver.getModuleDriver());
+		this.controlP5	= new ControlP5(moduleDriver);
 		this.controlP5.addListener(this);
 
 		this.controlP5.addGroup(menuTitle);
 
 		
 		// Creating the menuBackground:
-		this.menuBackground = ModuleDriver.getModuleDriver().createShape();
+		this.menuBackground = moduleDriver.createShape();
 
 		this.menuBackground.beginShape();
 		
 		this.menuBackground.vertex(0, 0);
-		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, 0);
-		this.menuBackground.vertex(ModuleDriver.getModuleDriver().width, this.canvasYPos);
+		this.menuBackground.vertex(moduleDriver.width, 0);
+		this.menuBackground.vertex(moduleDriver.width, this.canvasYPos);
 		this.menuBackground.vertex(this.canvasXPos, this.canvasYPos);
-		this.menuBackground.vertex(this.canvasXPos, ModuleDriver.getModuleDriver().height);
-		this.menuBackground.vertex(0, ModuleDriver.getModuleDriver().height);
+		this.menuBackground.vertex(this.canvasXPos, moduleDriver.height);
+		this.menuBackground.vertex(0, moduleDriver.height);
 		this.menuBackground.vertex(0, 0);
 
 		this.menuBackground.stroke(20);
@@ -134,7 +139,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.menuBackground.endShape();
 		
 		// Use this.scale to determine the size of the sidebar:
-		this.sidebarWidth	= (int)(ModuleDriver.getModuleDriver().width - this.canvasWidth);
+		this.sidebarWidth	= (int)(moduleDriver.width - this.canvasWidth);
 
 		// ... and then use the size of the sidebar to determine the sizes of the Controllers:
 		this.leftAlign			= (int)(this.sidebarWidth / 4);
@@ -144,7 +149,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.rightEdgeSpacer	= this.labelX;
 		this.textfieldWidth		= (int)(this.sidebarWidth / 7.7);
 		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
-		this.sliderHeight		= ModuleDriver.getModuleDriver().height / 26;
+		this.sliderHeight		= moduleDriver.height / 26;
 
 
 		this.nextSliderId		= 1;
@@ -153,6 +158,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.nextColorWheelId	= 301;
 		this.nextCWTextfieldId	= 401;
 		this.nextToggleId		= 501;
+		
+		this.moduleDriver	= moduleDriver;
 
 	} // constructor
 
@@ -528,6 +535,4 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		return (Group) this.getControlP5().getGroup(this.getMenuTitle());
 	}
-
-
 } // MenuTemplate

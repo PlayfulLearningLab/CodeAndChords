@@ -13,12 +13,22 @@ public class InputHandler
 
 	private	Input[]					inputs;
 	private	int						curInputNumber;	// 0 - realTimeInput; 1 - playableInput
+	
+	// TODO - initialize these:
+	private	int	curNumInputs;
+	private	int	totalNumInputs;
 
 	private InputHandler()
 	{
 		System.out.println("Remember to set your inputs!");
 
 		this.inputs			= new Input[2];
+		
+
+		this.totalNumInputs = numInputs;
+		this.curNumInputs = this.totalNumInputs;
+		this.activeInputs = new int[this.totalNumInputs];
+		this.currentInput	= 0;
 	}
 
 	public static InputHandler getInputHandler()
@@ -41,19 +51,46 @@ public class InputHandler
 		this.inputs[0]		= realTimeInput;
 		this.curInputNumber	= InputHandler.REAL_TIME_INPUT;
 
+	}
+	
 
-		// TODO - Emily isn't sold on the necessity of the following lines:
-		/*
-		if(this.curInput == realTimeInput)
+	//TODO: talk to Emily about how we handle input numbers.  I know we are using an int[]
+	//		so that we can account for a board that skips numbers (just one example), but
+	//		how do we make sure that this model is unbreakable when we don't know the board
+	//		configuration?
+	public void setTotalNumInputs(int totalNumInputs)
+	{
+		if(totalNumInputs < 1) throw new IllegalArgumentException("There must be at least one input.");
+
+		this.totalNumInputs = totalNumInputs;
+		this.curNumInputs = this.totalNumInputs;
+		this.activeInputs = new int[this.totalNumInputs];
+
+		for(int i = 0; i < this.totalNumInputs; i++)
 		{
-			this.curInput = null;
+			this.activeInputs[i] = i;
+		}
+	}
+	
+
+	public void setActiveInputs(int[] activeInputs)
+	{
+		if(activeInputs.length != this.totalNumInputs)
+		{
+			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array of the wrong size.  There are " + this.totalNumInputs + " inputs total.");
+
+		}
+		for(int i = 0; i < activeInputs.length; i++)
+		{
+			if(activeInputs[i] > this.totalNumInputs)
+			{
+				throw new IllegalArgumentException("One of your inputs does not exist. Input num " + activeInputs[i] + " is too high.");
+
+			}
 		}
 
-		if(this.recordedInput == null)
-		{
-			this.useRealTimeInput();
-		}
-		*/
+		this.activeInputs = activeInputs;
+		this.curNumInputs = this.activeInputs.length;
 	}
 
 	public void playableInput(Input playableInput)
@@ -61,18 +98,6 @@ public class InputHandler
 		this.inputs[1]		= playableInput;
 		this.curInputNumber	= InputHandler.PLAYABLE_INPUT;
 		
-		// TODO - still not sold on this, and it does something different than setRealTimeInput:
-		/*
-		if(this.curInput == this.recordedInput)
-		{
-			this.curInput = null;
-		}
-
-		if(this.curInput == null)
-		{
-			this.useRecordedInput();
-		}
-		*/
 	}
 
 	public Input getRealTimeInput()

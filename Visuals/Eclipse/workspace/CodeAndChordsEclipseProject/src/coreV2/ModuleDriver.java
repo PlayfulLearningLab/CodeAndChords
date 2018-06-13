@@ -65,14 +65,6 @@ public class ModuleDriver extends PApplet
 
 	private static ModuleOutline	module = null;
 
-	//TODO: How could we make it so that these variables are in InputHandler
-	private int						totalNumInputs;
-	private int						curNumInputs;
-	private int[]					activeInputs;
-
-
-	private InputHandler		 	inputHandler;
-
 	private Follower[]				follower;
 
 	private boolean					useFollowers;
@@ -82,7 +74,13 @@ public class ModuleDriver extends PApplet
 	private Canvas 					canvas;
 
 	private MenuGroup				menu;
-
+	
+	/**	Used to implement global vs. single input actions: 
+	 * if global, startHere = 0 and endBeforeThis = module.totalNumInputs;
+	 * if particular input, startHere = currentInput and endBeforeThis = (currentInput + 1).
+	 */
+	private	int	startHere;
+	private	int	endBeforeThis;
 
 	public static void startModuleDriver(ModuleOutline module)
 	{
@@ -119,23 +117,26 @@ public class ModuleDriver extends PApplet
 	{
 		this.setTotalNumInputs(1);
 
-		this.inputHandler = InputHandler.getInputHandler();
+		this.startHere		= 0;
+		this.endBeforeThis	= this.totalNumInputs;
 
-		this.inputHandler.setRealTimeInput(new RealTimeInput(16, new AudioContext(), true, this));
+		InputHandler.getInputHandler().setRealTimeInput(new RealTimeInput(16, new AudioContext(), true, this));
 
 		this.canvas = new Canvas();
 
 		this.menu = new MenuGroup();
-		this.menu.addMenu(new SensitivityMenu());
+		this.menu.addMenu(new SensitivityMenu("Sensitivity"));
+
 
 		this.useFollowers = true;
+		// TODO - get totalNumInputs from inputHandler
 		this.follower = new Follower[this.totalNumInputs];
 		for(int i = 0; i < this.totalNumInputs; i++)
 		{
 			this.follower[i] = new Follower();
 		}
 
-		this.colorHandler = new ColorHandler();
+		this.colorHandler = new ColorHandler(this.totalNumInputs, 12);
 
 		ModuleDriver.module.moduleSetup();
 	}//setup()
@@ -184,6 +185,26 @@ public class ModuleDriver extends PApplet
 		}
 		
 	}
+	
+	/**
+	 *  Error checker; rejects numbers that are greater than or equal to the number of inputs or less than 0.
+	 *
+	 *  @param   inputNum  an int that is to be checked for suitability as an input line number.
+	 *  @param   String    name of the method that called this method, used in the exception message.
+	 */
+	protected void inputNumErrorCheck(int inputNum) {
+		if (inputNum >= this.totalNumInputs) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleDriver.inputNumErrorCheck(int): int parameter " + inputNum + " is greater than " + this.totalNumInputs + ", the number of inputs.");
+
+			iae.printStackTrace();
+			throw iae;
+		}
+		if (inputNum < 0) {
+			IllegalArgumentException iae = new IllegalArgumentException("ModuleDriver.inputNumErrorCheck(int): int parameter is " + inputNum + "; must be 1 or greater.");
+			iae.printStackTrace();
+			throw iae;
+		}
+	} // inputNumErrorCheck
 
 
 	public Follower getFollower(int inputNum)
@@ -196,59 +217,23 @@ public class ModuleDriver extends PApplet
 		return this.follower[inputNum];
 	}
 
-	public InputHandler getInputHandler()
-	{
-		return this.inputHandler;
-	}
-
-
-	//TODO: talk to Emily about how we handle input numbers.  I know we are using an int[]
-	//		so that we can account for a board that skips numbers (just one example), but
-	//		how do we make sure that this model is unbreakable when we don't know the board
-	//		configuration?
-	public void setTotalNumInputs(int totalNumInputs)
-	{
-		if(totalNumInputs < 1) throw new IllegalArgumentException("There must be at least one input.");
-
-		this.totalNumInputs = totalNumInputs;
-		this.curNumInputs = this.totalNumInputs;
-		this.activeInputs = new int[this.totalNumInputs];
-
-		for(int i = 0; i < this.totalNumInputs; i++)
-		{
-			this.activeInputs[i] = i;
-		}
-	}
-
-	public void setActiveInputs(int[] activeInputs)
-	{
-		if(activeInputs.length != this.totalNumInputs)
-		{
-			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array of the wrong size.  There are " + this.totalNumInputs + " inputs total.");
-
-		}
-		for(int i = 0; i < activeInputs.length; i++)
-		{
-			if(activeInputs[i] > this.totalNumInputs)
-			{
-				throw new IllegalArgumentException("One of your inputs does not exist. Input num " + activeInputs[i] + " is too high.");
-
-			}
-		}
-
-		this.activeInputs = activeInputs;
-		this.curNumInputs = this.activeInputs.length;
-	}
-
 	public Canvas getCanvas()
 	{
 		return this.canvas;
 	}
-
-	public ColorHandler getColorHandler()
-	{
+	
+	public int getStartHere() {
+		return this.startHere;
+	}
+	
+	public int getEndBeforeThis() {
+		return this.endBeforeThis;
+	}
+	
+	public ColorHandler getColorHandler() {
 		return this.colorHandler;
 	}
+
 
 	public MenuGroup getMenuGroup()
 	{
