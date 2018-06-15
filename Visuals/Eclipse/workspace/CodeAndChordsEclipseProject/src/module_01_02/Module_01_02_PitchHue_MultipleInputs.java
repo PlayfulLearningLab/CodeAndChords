@@ -30,10 +30,11 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		//this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		this.input	= new RealTimeInput(16, true, this);
 		//this.input          = RealTimeInput() Elena give this the audiocontext in branch
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 2;
+		this.curNumInputs	= 4;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 
@@ -62,7 +63,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 			
-			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fadeColor(scaleDegree, i);
 			
