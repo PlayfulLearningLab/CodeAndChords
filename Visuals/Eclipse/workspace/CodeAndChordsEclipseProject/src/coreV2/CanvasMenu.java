@@ -7,8 +7,6 @@ import processing.core.PImage;
 
 public class CanvasMenu extends MenuTemplate
 {
-
-	
 	
 	public CanvasMenu() 
 	{
