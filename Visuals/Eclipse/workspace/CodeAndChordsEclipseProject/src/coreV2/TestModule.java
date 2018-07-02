@@ -6,6 +6,8 @@ public class TestModule extends PApplet
 {	
 	private ModuleDriver driver;
 	
+	private InputHandler inputHandler;
+	
 	public static void main(String[] args)
 	{
 		PApplet.main("coreV2.TestModule");
@@ -19,7 +21,7 @@ public class TestModule extends PApplet
 	public void setup()
 	{
 		this.driver = new ModuleDriver(this);
-		System.out.println("done");
+		this.inputHandler = this.driver.getInputHandler();
 	}
 	
 	public void draw()

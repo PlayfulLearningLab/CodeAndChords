@@ -67,7 +67,7 @@ public class ModuleDriver implements PConstants
 	 * The Parent PApplet that is passed in by the user.
 	 */
 	private PApplet 				parent;
-	
+
 	private ControlP5 				cp5;
 
 	private InputHandler		 	inputHandler;
@@ -87,22 +87,23 @@ public class ModuleDriver implements PConstants
 		if(parent == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
 
 		this.parent = parent;
-		
+
 		this.cp5 = new ControlP5(this.parent);
 		this.cp5.getTab("default").hide();
 
 		this.parent.registerMethod("pre", this);
 		this.parent.registerMethod("keyEvent", this);
-		
-		this.inputHandler = InputHandler.getInputHandler(this);
 
+		this.inputHandler = InputHandler.getInputHandler(this);
+		this.colorHandler = new ColorHandler(this);
 		this.canvas = new Canvas(this.parent);
-		
+
+
 		this.menuGroup = new MenuGroup(this);
 		this.menuGroup.addMenu(new ColorMenu(this));
 		this.menuGroup.addMenu(new InputMenu(this));
 		//this.menu.addMenu(new SensitivityMenu(this));
-		
+
 
 		this.useFollowers = true;
 		this.follower = new Follower[this.inputHandler.getActiveRealTimeInputs().length];
@@ -111,7 +112,6 @@ public class ModuleDriver implements PConstants
 			this.follower[i] = new Follower();
 		}
 
-		//this.colorHandler = new ColorHandler();
 	}
 
 	public void pre()
@@ -130,7 +130,7 @@ public class ModuleDriver implements PConstants
 		{
 			//update color handler
 		}
-		
+
 		this.canvas.drawAppletBackground();
 
 	}//draw()
@@ -150,17 +150,17 @@ public class ModuleDriver implements PConstants
 		}
 
 	}
-	
+
 	public void mouseEvent(MouseEvent e)
 	{
-		
+
 	}
 
 	public PApplet getParent()
 	{
 		return this.parent;
 	}
-	
+
 	public ControlP5 getCP5()
 	{
 		return this.cp5;
@@ -170,20 +170,20 @@ public class ModuleDriver implements PConstants
 	{
 		return this.inputHandler;
 	}
-	
-	
-/*
+
+
+	/*
 	public Follower getFollower(int inputNum)
 	{
 		if(inputNum > this.totalNumInputs)
 		{
 			throw new IllegalArgumentException("input number is invalid: it is too high");
 		}
-	
+
 		return this.follower[inputNum];
 	}
-	
-*/
+
+	 */
 
 	public Canvas getCanvas()
 	{
