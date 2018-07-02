@@ -39,8 +39,6 @@ public class ColorHandler2
 		this.driver = driver;
 		this.initializeColorLibrary();
 		
-		int curNumInputs = this.driver.getInputHandler().getCurNumRealTimeInputs();
-
 		this.pitchColors = new ColorWrapper[12];
 		this.setPitchColors(this.RAINBOW_CHROMATIC);
 		
