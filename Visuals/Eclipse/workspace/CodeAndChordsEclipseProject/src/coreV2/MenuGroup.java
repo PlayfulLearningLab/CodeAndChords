@@ -1,35 +1,42 @@
 package coreV2;
 
+import controlP5.ControlEvent;
+import controlP5.ControlListener;
 import controlP5.ControlP5;
+import controlP5.ControllerInterface;
+import controlP5.Toggle;
 
 /**
  * TODO: get particular menus by menuTitle (String)
  * @author emily
  *
  */
-public class MenuGroup 
+public class MenuGroup implements ControlListener
 {
+	private ModuleDriver		driver;
+
+	private CanvasMenu			canvasMenu;
+
 	private MenuTemplate[] 		menuGroup;
 
-	private Canvas 		canvas;
-	
-	private	ModuleDriver	moduleDriver;
-	
-	private boolean		menuOpen;
-	
 	private MenuTemplate 		activeMenu;
 	
-	public MenuGroup(Canvas canvas)
-	{
-		this.menuGroup = new MenuTemplate[2];
 
-		this.menuGroup[0] = new CanvasMenu();
-		this.menuGroup[1] = new NavigationMenu();
-		
-		this.activeMenu = this.menuGroup[0];
+	public MenuGroup(ModuleDriver driver)
+	{
+		this.driver = driver;
+		driver.getCP5().addListener(this);
+
+		this.menuGroup = new MenuTemplate[0];
+
+		this.canvasMenu = new CanvasMenu(driver);
+
+		this.activeMenu = this.canvasMenu;
+
+		this.driver.getCP5().controlWindow.setPositionOfTabs(40, 7);
 	}
 
-	public void addMenu(MenuTemplate menu)
+	public void addMenu(MenuTemplate newMenu)
 	{	
 		MenuTemplate[] newGroup = new MenuTemplate[this.menuGroup.length + 1];
 
@@ -38,10 +45,13 @@ public class MenuGroup
 			newGroup[i] = this.menuGroup[i];
 		}
 
-		newGroup[this.menuGroup.length] = menu;
+		newGroup[this.menuGroup.length] = newMenu;
 		this.menuGroup = newGroup;
 
-		((NavigationMenu) this.menuGroup[1]).updateMenuList();
+		if(this.activeMenu.equals(this.canvasMenu))
+		{
+			this.hideTabs();
+		}
 	}
 
 	public MenuTemplate[] getMenus()
@@ -58,43 +68,122 @@ public class MenuGroup
 	{
 		boolean val = false;
 
-		if(this.activeMenu.getMenuTitle() == "Canvas Menu") 
+		if(this.activeMenu.equals(this.canvasMenu)) 
 		{
 			val = true;
 		}
 
 		return val;
 	}
-	
-	public ControlP5 getControlP5()
-	{
-		return this.menuGroup[0].getControlP5();
-	}
 
 	public void open()
 	{
-		this.activeMenu = this.menuGroup[1];
+		if(this.menuGroup.length == 0) throw new IllegalArgumentException("There are no menus set");
+
+		this.activeMenu = this.menuGroup[0];
 		this.activeMenu.setCanvasSize();
-		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).show();
+		
+		if(this.activeMenu.isTab())
+		{
+			this.driver.getCP5().getTab(this.activeMenu.getMenuTitle()).setActive(true);
+		}
+
+		this.showTabs();
 	}
 
 	public void switchTo(int menuNumber)
 	{
 		if(menuNumber > this.menuGroup.length) throw new IllegalArgumentException ("Invalid menuNumber");
 
-		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).hide();
-
 		this.activeMenu = this.menuGroup[menuNumber];
 		this.activeMenu.setCanvasSize();
-		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).show();
-
 	}
 
 	public void close()
 	{
-		this.activeMenu.getControlP5().getGroup(this.activeMenu.getMenuTitle()).hide();
-		ModuleDriver.getModuleDriver().getCanvas().fullScreen();
-		this.activeMenu = this.menuGroup[0];
+		this.driver.getCanvas().fullScreen();
+		
+		if(this.activeMenu.isTab())
+		{
+			this.driver.getCP5().getTab(this.activeMenu.getMenuTitle()).setActive(false);
+		}
+		
+		this.activeMenu = this.canvasMenu;
+
+		this.hideTabs();
+	}
+
+	public void hideTabs()
+	{
+		for(int i = 0; i < this.menuGroup.length; i++)
+		{
+			if(this.menuGroup[i].isTab())
+				this.driver.getCP5().getTab(this.menuGroup[i].getMenuTitle()).hide();
+		}
+	}
+
+	public void showTabs()
+	{
+		for(int i = 0; i < this.menuGroup.length; i++)
+		{
+			if(this.menuGroup[i].isTab())
+				this.driver.getCP5().getTab(this.menuGroup[i].getMenuTitle()).show();
+		}
+	}
+
+	@Override
+	public void controlEvent(ControlEvent theEvent) 
+	{
+		if(theEvent.isController())
+		{
+
+			if(theEvent.getController().getName() == "hamburger")
+			{
+				if(this.canvasMenuActive())
+				{
+					this.open();
+				}
+				else
+				{
+					this.close();
+				}
+			}
+
+			if(theEvent.getController().getName() == "play")
+			{
+				if(this.driver.getCP5().getController("pause").isVisible())
+				{
+
+
+					this.driver.getCP5().getController("pause").hide();
+				}
+				else
+				{
+					if(((Toggle) this.driver.getCP5().getController("pause")).getBooleanValue())
+					{
+						((Toggle) this.driver.getCP5().getController("pause")).toggle();
+					}
+
+					this.driver.getCP5().getController("pause").show();
+				}
+			}
+
+
+		}
+
+		if(theEvent.isTab())
+		{
+			String tabName = theEvent.getTab().getName();
+
+			for(int i = 0; i < this.menuGroup.length; i++)
+			{
+				if(tabName == this.menuGroup[i].getMenuTitle())
+				{
+					this.switchTo(i);
+				}
+			}
+		}
+
 	}
 
 }

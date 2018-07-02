@@ -1,35 +1,37 @@
 package coreV2;
 
+/*
+ * This menu was replaced by the use of tabs
+ */
+
+
 import java.awt.Color;
+
+import processing.core.PApplet;
 
 public class NavigationMenu extends MenuTemplate
 {
 	String[] menuList;
 	
-	public NavigationMenu() 
+	public NavigationMenu(ModuleDriver driver) 
 	{
-		super("Navigation Menu");
+		super("Navigation Menu", driver, true);
 		
-		this.menuList = new String[] { this.getMenuTitle() };
+		//this.updateMenuList();
 		
 	}
 	
 	public void updateMenuList()
 	{
-		MenuGroup menus = ModuleDriver.getModuleDriver().getMenuGroup();
+		MenuTemplate[] menus = this.driver.getMenuGroup().getMenus();
+		//System.out.println("Length = " + menus.getMenus().length);
 		
-		this.menuList = new String[menus.getMenus().length];
+		this.menuList = new String[menus.length];
 		
-		for(int i = 0; i < menus.getMenus().length; i++)
+		for(int i = 0; i < menus.length; i++)
 		{
-			this.menuList[i] = menus.getMenus()[i].getMenuTitle();
+			this.menuList[i] = menus[i].getMenuTitle();
 		}
-	}
-
-	@Override
-	public void drawMenu()
-	{
-		
 	}
 
 	@Override

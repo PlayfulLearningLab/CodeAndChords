@@ -1,6 +1,7 @@
 package coreV2;
 
 import controlP5.ControlP5;
+import controlP5.Tab;
 
 /**
  * 		Danny Mahota
@@ -55,21 +56,19 @@ import controlP5.ControlP5;
  * 
  */
 
-import core.input.RealTimeInput;
-import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 
-public class ModuleDriver extends PApplet
+public class ModuleDriver implements PConstants
 {
-	private static ModuleDriver		instance = null;
-
-	private static ModuleOutline	module = null;
-
-	//TODO: How could we make it so that these variables are in InputHandler
-	private int						totalNumInputs;
-	private int						curNumInputs;
-	private int[]					activeInputs;
-
+	/**
+	 * The Parent PApplet that is passed in by the user.
+	 */
+	private PApplet 				parent;
+	
+	private ControlP5 				cp5;
 
 	private InputHandler		 	inputHandler;
 
@@ -81,73 +80,48 @@ public class ModuleDriver extends PApplet
 
 	private Canvas 					canvas;
 
-	private MenuGroup				menu;
+	private MenuGroup				menuGroup;
 
-
-	public static void startModuleDriver(ModuleOutline module)
-	{
-		if(module == null) throw new IllegalArgumentException("parameter is null");
-
-		if(ModuleDriver.module == null)
-		{
-			ModuleDriver.module = module;
-			PApplet.main("coreV2.ModuleDriver");
-		}
-		else
-		{
-			System.err.println("ModuleDriver has already been started.");
-		}
-	}//startModuleDriver()
-
-	public ModuleDriver()
+	public ModuleDriver(PApplet parent)
 	{		
-		ModuleDriver.instance = this;
-		ModuleDriver.module.setDriver(ModuleDriver.instance);
-	}
+		if(parent == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
 
-	public static ModuleDriver getModuleDriver()
-	{
-		return ModuleDriver.instance;
-	}
+		this.parent = parent;
+		
+		this.cp5 = new ControlP5(this.parent);
+		this.cp5.getTab("default").hide();
 
-	public void settings()
-	{
-		this.size(920, 525);
-	}
+		this.parent.registerMethod("pre", this);
+		this.parent.registerMethod("keyEvent", this);
+		
+		this.inputHandler = InputHandler.getInputHandler(this);
 
-	public void setup()
-	{
-		this.setTotalNumInputs(1);
-
-		this.inputHandler = InputHandler.getInputHandler();
-
-		this.inputHandler.setRealTimeInput(new RealTimeInput(16, new AudioContext(), true, this));
-
-		this.canvas = new Canvas();
-
-		this.menu = new MenuGroup();
-		this.menu.addMenu(new SensitivityMenu());
+		this.canvas = new Canvas(this.parent);
+		
+		this.menuGroup = new MenuGroup(this);
+		this.menuGroup.addMenu(new ColorMenu(this));
+		this.menuGroup.addMenu(new InputMenu(this));
+		//this.menu.addMenu(new SensitivityMenu(this));
+		
 
 		this.useFollowers = true;
-		this.follower = new Follower[this.totalNumInputs];
-		for(int i = 0; i < this.totalNumInputs; i++)
+		this.follower = new Follower[this.inputHandler.getActiveRealTimeInputs().length];
+		for(int i = 0; i < this.follower.length; i++)
 		{
 			this.follower[i] = new Follower();
 		}
 
-		this.colorHandler = new ColorHandler();
+		//this.colorHandler = new ColorHandler();
+	}
 
-		ModuleDriver.module.moduleSetup();
-	}//setup()
-
-	public void draw()
+	public void pre()
 	{
 		if(this.useFollowers)
 		{
 			int inputNum;
-			for(int i = 0; i < this.curNumInputs; i++)
+			for(int i = 0; i < this.inputHandler.getCurNumRealTimeInputs(); i++)
 			{
-				inputNum = this.activeInputs[i];
+				inputNum = this.inputHandler.getActiveRealTimeInputs()[i];
 				this.follower[inputNum].update(this.inputHandler.getAmplitude(inputNum));
 			}
 		}
@@ -156,89 +130,60 @@ public class ModuleDriver extends PApplet
 		{
 			//update color handler
 		}
-
-
-
-
-		ModuleDriver.module.moduleDraw();
-
-		this.stroke(20);
-		this.fill(20);
+		
 		this.canvas.drawAppletBackground();
+
 	}//draw()
 
-	public void keyPressed()
-	{
-		if( key == ' ' && this.menu.canvasMenuActive() )
+	public void keyEvent(KeyEvent e)
+	{	
+		if( e.getKey() == ' ' && this.menuGroup.canvasMenuActive() )
 		{
-			ControlP5 cp5 = this.menu.getActiveMenu().getControlP5();
-
-			if(cp5.getGroup("Canvas Menu").isVisible())
+			if(this.cp5.isVisible())
 			{
-				cp5.getGroup("Canvas Menu").hide();
+				this.cp5.hide();
 			}
 			else
 			{
-				cp5.getGroup("Canvas Menu").show();
+				this.cp5.show();
 			}
 		}
+
+	}
+	
+	public void mouseEvent(MouseEvent e)
+	{
 		
 	}
 
-
-	public Follower getFollower(int inputNum)
+	public PApplet getParent()
 	{
-		if(inputNum > this.totalNumInputs)
-		{
-			throw new IllegalArgumentException("input number is invalid: it is too high");
-		}
-
-		return this.follower[inputNum];
+		return this.parent;
+	}
+	
+	public ControlP5 getCP5()
+	{
+		return this.cp5;
 	}
 
 	public InputHandler getInputHandler()
 	{
 		return this.inputHandler;
 	}
-
-
-	//TODO: talk to Emily about how we handle input numbers.  I know we are using an int[]
-	//		so that we can account for a board that skips numbers (just one example), but
-	//		how do we make sure that this model is unbreakable when we don't know the board
-	//		configuration?
-	public void setTotalNumInputs(int totalNumInputs)
+	
+	
+/*
+	public Follower getFollower(int inputNum)
 	{
-		if(totalNumInputs < 1) throw new IllegalArgumentException("There must be at least one input.");
-
-		this.totalNumInputs = totalNumInputs;
-		this.curNumInputs = this.totalNumInputs;
-		this.activeInputs = new int[this.totalNumInputs];
-
-		for(int i = 0; i < this.totalNumInputs; i++)
+		if(inputNum > this.totalNumInputs)
 		{
-			this.activeInputs[i] = i;
+			throw new IllegalArgumentException("input number is invalid: it is too high");
 		}
+	
+		return this.follower[inputNum];
 	}
-
-	public void setActiveInputs(int[] activeInputs)
-	{
-		if(activeInputs.length != this.totalNumInputs)
-		{
-			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array of the wrong size.  There are " + this.totalNumInputs + " inputs total.");
-
-		}
-		for(int i = 0; i < activeInputs.length; i++)
-		{
-			if(activeInputs[i] > this.totalNumInputs)
-			{
-				throw new IllegalArgumentException("One of your inputs does not exist. Input num " + activeInputs[i] + " is too high.");
-
-			}
-		}
-
-		this.activeInputs = activeInputs;
-		this.curNumInputs = this.activeInputs.length;
-	}
+	
+*/
 
 	public Canvas getCanvas()
 	{
@@ -252,7 +197,7 @@ public class ModuleDriver extends PApplet
 
 	public MenuGroup getMenuGroup()
 	{
-		return this.menu;
+		return this.menuGroup;
 	}
 
 }

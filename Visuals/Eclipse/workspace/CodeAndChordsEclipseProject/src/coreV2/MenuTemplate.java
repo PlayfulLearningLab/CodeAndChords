@@ -4,15 +4,18 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 
 import controlP5.Button;
+import controlP5.CColor;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Controller;
 import controlP5.Group;
 import controlP5.Slider;
+import controlP5.Tab;
 import controlP5.Textfield;
-
+import processing.core.PApplet;
 import processing.core.PShape;
 
 /**
@@ -28,15 +31,18 @@ import processing.core.PShape;
  * @author Dan Mahota, Emily Meuer
  *
  */
-public abstract class MenuTemplate implements ControlListener {
+public abstract class MenuTemplate implements ControlListener, ControlP5Constants {
 
-	private	String			menuTitle;
-	
+	protected ModuleDriver	driver;
+
+	protected PApplet		parent;
+
+	protected String		menuTitle;
+
 	/**	ControlP5 for this instance of MenuTemplate	*/
 	protected	ControlP5	controlP5;
-
-	/**	Blacks out the area behind the Menu	*/
-	private PShape			menuBackground;
+	
+	private boolean			makeTab;
 
 	/**	Width of the Menu on the left side of the Module	*/
 	protected	int			sidebarWidth;
@@ -87,8 +93,6 @@ public abstract class MenuTemplate implements ControlListener {
 
 	/**	DecimalFormat used for rounding the text corresponding to Sliders and Colorwheels.	*/
 	protected	DecimalFormat	decimalFormat	= new DecimalFormat("#.##");
-	
-	protected	ModuleDriver	moduleDriver;
 
 	private int				 	canvasXPos;
 	private int 				canvasYPos;
@@ -102,44 +106,40 @@ public abstract class MenuTemplate implements ControlListener {
 	 * Constructor
 	 * 
 	 */
-	public MenuTemplate(String menuTitle)
+	public MenuTemplate(String menuTitle, ModuleDriver driver, boolean makeTab)
 	{
+		if(driver == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
+
+		this.driver = driver;
+		this.parent = driver.getParent();
+
 		this.menuTitle = menuTitle;
-		
-		ModuleDriver	moduleDriver	= ModuleDriver.getModuleDriver();
 
-		// These are default positions that can be overridden by custom-sized menus:
-		this.canvasXPos = 0;
-		this.canvasYPos = moduleDriver.height / 2;
-		this.canvasWidth = moduleDriver.width / 2;
-		this.canvasHeight = moduleDriver.height / 2;
-
-		this.controlP5	= new ControlP5(moduleDriver);
+		this.controlP5 = this.driver.getCP5();
 		this.controlP5.addListener(this);
 
-		this.controlP5.addGroup(menuTitle);
-
+		this.makeTab = makeTab;
 		
-		// Creating the menuBackground:
-		this.menuBackground = moduleDriver.createShape();
+		if(this.makeTab)
+		{
+			this.controlP5.addTab(this.menuTitle)
+			.setWidth(100)
+			.setHeight(30)
+			.activateEvent(true)
+			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
-		this.menuBackground.beginShape();
-		
-		this.menuBackground.vertex(0, 0);
-		this.menuBackground.vertex(moduleDriver.width, 0);
-		this.menuBackground.vertex(moduleDriver.width, this.canvasYPos);
-		this.menuBackground.vertex(this.canvasXPos, this.canvasYPos);
-		this.menuBackground.vertex(this.canvasXPos, moduleDriver.height);
-		this.menuBackground.vertex(0, moduleDriver.height);
-		this.menuBackground.vertex(0, 0);
+		}
 
-		this.menuBackground.stroke(20);
-		this.menuBackground.fill(20);
 
-		this.menuBackground.endShape();
-		
+		// These are default positions that can be overridden by custom-sized menus:
+		this.canvasXPos = (int) (this.parent.width * (1f/3f));
+		this.canvasYPos = (int) (this.parent.height * (1f/3f));
+		this.canvasWidth = (int) (this.parent.width * (2f/3f));
+		this.canvasHeight = (int) (this.parent.height * (2f/3f));
+
+
 		// Use this.scale to determine the size of the sidebar:
-		this.sidebarWidth	= (int)(moduleDriver.width - this.canvasWidth);
+		this.sidebarWidth	= (int)(this.parent.width - this.canvasWidth);
 
 		// ... and then use the size of the sidebar to determine the sizes of the Controllers:
 		this.leftAlign			= (int)(this.sidebarWidth / 4);
@@ -149,7 +149,7 @@ public abstract class MenuTemplate implements ControlListener {
 		this.rightEdgeSpacer	= this.labelX;
 		this.textfieldWidth		= (int)(this.sidebarWidth / 7.7);
 		this.sliderWidth		= (int)(this.sidebarWidth / 1.8);
-		this.sliderHeight		= moduleDriver.height / 26;
+		this.sliderHeight		= this.parent.height / 26;
 
 
 		this.nextSliderId		= 1;
@@ -159,27 +159,14 @@ public abstract class MenuTemplate implements ControlListener {
 		this.nextCWTextfieldId	= 401;
 		this.nextToggleId		= 501;
 		
-		this.moduleDriver	= moduleDriver;
 
 	} // constructor
 
-	/**
-	 * This method draws the Menu and should be called repeatedly whenever the Menu is open.
-	 */
-	public void drawMenu()
-	{
-		ModuleDriver.getModuleDriver().noStroke();
-		ModuleDriver.getModuleDriver().noFill();
-		ModuleDriver.getModuleDriver().color(50);
-		
-		ModuleDriver.getModuleDriver().shape(this.menuBackground, 0, 0);
-	} // drawMenu
-
 	public void setCanvasSize()
 	{
-		(ModuleDriver.getModuleDriver()).getCanvas().setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
+		this.driver.getCanvas().setDisplay(this.canvasXPos, this.canvasYPos, this.canvasWidth, this.canvasHeight);
 	}
-	
+
 	public String getMenuTitle()
 	{
 		return this.menuTitle;
@@ -200,129 +187,133 @@ public abstract class MenuTemplate implements ControlListener {
 	{
 		//		System.out.println("MenuTemplate.controlEvent: controlEvent = " + controlEvent);
 
-		int	id	= controlEvent.getController().getId();
-		// Sliders
-		if(id > -1 && id < 100)
+		if(!controlEvent.isTab())
 		{
-			// TODO: was catching a NullPointer here, but I think that's unnecessary; but if NPE errors, try doing that again.
-			Slider	curSlider	= (Slider)this.controlP5.getController("slider" + id);
-
-			float	sliderValFloat	= curSlider.getValue();
-
-			if((Textfield)this.controlP5.getController("textfield" + (id + 100)) != null)
+			int	id	= controlEvent.getController().getId();
+			// Sliders
+			if(id > -1 && id < 100)
 			{
-				Textfield	curTextfield	= (Textfield)this.controlP5.getController("textfield" + (id + 100));
+				// TODO: was catching a NullPointer here, but I think that's unnecessary; but if NPE errors, try doing that again.
+				Slider	curSlider	= (Slider)this.controlP5.getController("slider" + id);
 
-				String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
+				float	sliderValFloat	= curSlider.getValue();
 
-				curTextfield.setText(sliderValString);			
-			} // if connected to Textfield
-
-			this.sliderEvent(id, sliderValFloat);
-		} // Sliders
-
-		// Textfields
-		if(id > 99 && id < 200)
-		{
-			Textfield	curTextfield	= (Textfield)this.controlP5.getController("textfield" + id);
-			Slider		curSlider		= (Slider)this.controlP5.getController("slider" + (id - 100));
-
-			try	{
-				curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
-
-			} catch(NumberFormatException nfe) {
-				System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
-						"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
-			} // catch
-		} // textField
-
-		// Color Select Buttons (to show ColorWheel)
-		if(id > 199 && id < 300)
-		{
-			Button	curButton	= (Button)controlEvent.getController();
-
-			// draw slightly transparent rectangle:
-			if(curButton.getBooleanValue())
-			{
-
-				this.controlP5.getGroup("leftBackground").setVisible(true);
-				this.controlP5.getGroup("leftBackground").bringToFront();
-
-			} else {
-
-				//				this.fillHSBColors();
-				// TODO: might need to fillOriginalColors here, too, at some point?				
-
-				this.controlP5.setAutoDraw(true);
-				this.controlP5.getGroup("leftBackground").setVisible(false);
-				//				this.displaySidebar(false);
-			}
-
-			this.controlP5.getController("button" + (controlEvent.getId())).bringToFront();
-			this.controlP5.getController("colorWheel" + (controlEvent.getId() + 100)).bringToFront();
-			this.controlP5.getController("textfield" + (controlEvent.getId() + 200)).bringToFront();
-
-			this.controlP5.getController("colorWheel" + (controlEvent.getId() + 100)).setVisible(curButton.getBooleanValue());
-			this.controlP5.getController("textfield" + (controlEvent.getId() + 200)).setVisible(curButton.getBooleanValue());
-
-			this.buttonEvent(id);
-		} // CW Buttons
-
-		// ColorWheels
-		if(id > 299 && id < 400)
-		{
-			// get current color:
-			ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
-
-			int	rgbColor	= curCW.getRGB();
-			Color	color	= new Color(rgbColor);
-
-			// Set corresponding Textfield with color value:
-			Textfield	curColorTF	= (Textfield)this.controlP5.getController("textfield" + (controlEvent.getId() + 100));
-			curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
-
-			this.colorWheelEvent(id, color);
-		} // ColorWheels
-
-		// ColorWheel Textfields
-		if(id > 399 && id < 500)
-		{
-			id	= controlEvent.getId();
-			System.out.println("controlEvent: event for a ColorWheel Textfield, id " + id);
-
-			// Getting color value from the Textfield:
-			String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
-			for(int i = 0; i < tfValues.length; i++)
-			{
-				tfValues[i]	= tfValues[i].trim().toLowerCase();
-			} // for
-
-			try
-			{
-				if(tfValues[0].equals("rgb"))
+				if((Textfield)this.controlP5.getController("textfield" + (id + 100)) != null)
 				{
-					// Get color values:
-					int	red		= Integer.parseInt(tfValues[1]);
-					int	green	= Integer.parseInt(tfValues[2]);
-					int	blue	= Integer.parseInt(tfValues[3]);
+					Textfield	curTextfield	= (Textfield)this.controlP5.getController("textfield" + (id + 100));
 
-					// Constrain to 0-255:
-					red		= Math.min(255, Math.max(0, red));
-					green	= Math.min(255, Math.max(0, green));
-					blue	= Math.min(255, Math.max(0, blue));
+					String	sliderValString	= this.decimalFormat.format(curSlider.getValue());
 
-					// Set corresponding ColorWheel:
-					Color	rgbColor	= new Color(red, green, blue);
-					int		rgbInt		= rgbColor.getRGB();
-					((ColorWheel)this.controlP5.getController("colorWheel" + (id - 100))).setRGB(rgbInt);
+					curTextfield.setText(sliderValString);			
+				} // if connected to Textfield
 
-				} // if - rgb
+				this.sliderEvent(id, sliderValFloat);
+			} // Sliders
 
-			} catch(Exception e) {
-				System.out.println("Sorry, '" + controlEvent.getStringValue() + "' is not recognized as a valid color (note that colors must be defined by Integer values). Exception message: "
-						+ e.getMessage());
-			} // catch
-		} // ColorWheel Textfields
+			// Textfields
+			if(id > 99 && id < 200)
+			{
+				Textfield	curTextfield	= (Textfield)this.controlP5.getController("textfield" + id);
+				Slider		curSlider		= (Slider)this.controlP5.getController("slider" + (id - 100));
+
+				try	{
+					curSlider.setValue(Float.parseFloat(curTextfield.getStringValue()));
+
+				} catch(NumberFormatException nfe) {
+					System.out.println("ModuleTemplate.controlEvent: string value " + curTextfield.getStringValue() + 
+							"for controller " + curTextfield + " cannot be parsed to a float.  Please enter a number.");
+				} // catch
+			} // textField
+
+			// Color Select Buttons (to show ColorWheel)
+			if(id > 199 && id < 300)
+			{
+				Button	curButton	= (Button)controlEvent.getController();
+
+				// draw slightly transparent rectangle:
+				if(curButton.getBooleanValue())
+				{
+
+					this.controlP5.getGroup("leftBackground").setVisible(true);
+					this.controlP5.getGroup("leftBackground").bringToFront();
+
+				} else {
+
+					//				this.fillHSBColors();
+					// TODO: might need to fillOriginalColors here, too, at some point?				
+
+					this.controlP5.setAutoDraw(true);
+					this.controlP5.getGroup("leftBackground").setVisible(false);
+					//				this.displaySidebar(false);
+				}
+
+				this.controlP5.getController("button" + (controlEvent.getId())).bringToFront();
+				this.controlP5.getController("colorWheel" + (controlEvent.getId() + 100)).bringToFront();
+				this.controlP5.getController("textfield" + (controlEvent.getId() + 200)).bringToFront();
+
+				this.controlP5.getController("colorWheel" + (controlEvent.getId() + 100)).setVisible(curButton.getBooleanValue());
+				this.controlP5.getController("textfield" + (controlEvent.getId() + 200)).setVisible(curButton.getBooleanValue());
+
+				this.buttonEvent(id);
+			} // CW Buttons
+
+			// ColorWheels
+			if(id > 299 && id < 400)
+			{
+				// get current color:
+				ColorWheel	curCW	= (ColorWheel)controlEvent.getController();
+
+				int	rgbColor	= curCW.getRGB();
+				Color	color	= new Color(rgbColor);
+
+				// Set corresponding Textfield with color value:
+				Textfield	curColorTF	= (Textfield)this.controlP5.getController("textfield" + (controlEvent.getId() + 100));
+				curColorTF.setText("rgb(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + ")");
+
+				this.colorWheelEvent(id, color);
+			} // ColorWheels
+
+			// ColorWheel Textfields
+			if(id > 399 && id < 500)
+			{
+				id	= controlEvent.getId();
+				System.out.println("controlEvent: event for a ColorWheel Textfield, id " + id);
+
+				// Getting color value from the Textfield:
+				String[]	tfValues	= controlEvent.getStringValue().split("[(,)]");
+				for(int i = 0; i < tfValues.length; i++)
+				{
+					tfValues[i]	= tfValues[i].trim().toLowerCase();
+				} // for
+
+				try
+				{
+					if(tfValues[0].equals("rgb"))
+					{
+						// Get color values:
+						int	red		= Integer.parseInt(tfValues[1]);
+						int	green	= Integer.parseInt(tfValues[2]);
+						int	blue	= Integer.parseInt(tfValues[3]);
+
+						// Constrain to 0-255:
+						red		= Math.min(255, Math.max(0, red));
+						green	= Math.min(255, Math.max(0, green));
+						blue	= Math.min(255, Math.max(0, blue));
+
+						// Set corresponding ColorWheel:
+						Color	rgbColor	= new Color(red, green, blue);
+						int		rgbInt		= rgbColor.getRGB();
+						((ColorWheel)this.controlP5.getController("colorWheel" + (id - 100))).setRGB(rgbInt);
+
+					} // if - rgb
+
+				} catch(Exception e) {
+					System.out.println("Sorry, '" + controlEvent.getStringValue() + "' is not recognized as a valid color (note that colors must be defined by Integer values). Exception message: "
+							+ e.getMessage());
+				} // catch
+			} // ColorWheel Textfields
+
+		}//isTab()
 	} // controlEvent
 
 
@@ -397,6 +388,8 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected void addSliderGroup(int xVal, int yVal, String labelText, float lowRange, float highRange, float startingVals, String tab)
 	{
+		if(!this.isTab()) throw new IllegalArgumentException ("PANIC!!!");
+		
 		this.addSliderGroup(xVal, yVal, labelText, (xVal + this.leftAlign), this.sliderWidth, lowRange, highRange, startingVals, this.textfieldWidth, tab);
 	} // addSliderGroup - specify tab but use default width
 
@@ -418,6 +411,8 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected void addSliderGroup(int xVal, int yVal, String labelText, int sliderX, int sliderWidth, float lowRange, float highRange, float startingVals, int textfieldWidth, String tab)
 	{
+		if(!this.isTab()) throw new IllegalArgumentException ("PANIC!!!");
+		
 		this.controlP5.addLabel("label" + this.nextSliderId)
 		.setPosition(xVal + this.labelX, yVal + 4)
 		.setWidth(labelWidth)
@@ -461,6 +456,8 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, int[] rgbColor, String tab)
 	{
+		if(!this.isTab()) throw new IllegalArgumentException ("PANIC!!!");
+		
 		if(rgbColor == null) {
 			throw new IllegalArgumentException("ModuleTemplate.addColorWheelGroup: int[] parameter is null.");
 		}
@@ -484,6 +481,8 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color, String tab)
 	{
+		if(!this.isTab()) throw new IllegalArgumentException ("PANIC!!!");
+		
 		Button		button;
 		ColorWheel	colorWheel;
 		Textfield	textfield;
@@ -531,8 +530,9 @@ public abstract class MenuTemplate implements ControlListener {
 		return this.controlP5;
 	}
 	
-	public Group getGroup()
+	public boolean isTab()
 	{
-		return (Group) this.getControlP5().getGroup(this.getMenuTitle());
+		return this.makeTab;
 	}
+
 } // MenuTemplate

@@ -4,6 +4,8 @@ import processing.core.PApplet;
 
 public class Canvas 
 {
+	private PApplet			parent;
+	
 	private int				displayX;
 	private int				displayY;
 	private int 			displayWidth;
@@ -12,8 +14,11 @@ public class Canvas
 	private boolean			isFullscreen;
 	
 	
-	public Canvas()
+	public Canvas(PApplet parent)
 	{
+		if(parent == null) throw new IllegalArgumentException("PApplet must not be null.");
+		
+		this.parent = parent;
 		this.fullScreen();
 	}
 	
@@ -23,6 +28,8 @@ public class Canvas
 		this.displayY = yPos;
 		this.displayWidth = width;
 		this.displayHeight = height;
+		
+		System.out.println("Display settings: " + xPos + " " + yPos + " " + width + " " + height);
 		
 		this.isFullscreen = false;
 	}
@@ -36,70 +43,55 @@ public class Canvas
 	
 	public void fullScreen()
 	{
-		PApplet pApp = ModuleDriver.getModuleDriver();
-		
 		this.displayX = 0;
 		this.displayY = 0;
-		this.displayWidth = pApp.width;
-		this.displayHeight = pApp.height;
+		this.displayWidth = this.parent.width;
+		this.displayHeight = this.parent.height;
 
 		this.isFullscreen = true;
 	}
 	
 	public void background()
 	{
-		PApplet pApp = ModuleDriver.getModuleDriver();
-		
-		pApp.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
+		this.parent.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
 	}
 	
 	public void rect(int xPos, int yPos, int width, int height)
 	{
-		PApplet pApp = ModuleDriver.getModuleDriver();
+		width = width*(this.displayWidth/this.parent.width);
+		height = height*(this.displayHeight/this.parent.height);
 		
-		width = width*(this.displayWidth/pApp.width);
-		height = height*(this.displayHeight/pApp.height);
-		
-		pApp.rect(this.displayX + xPos, this.displayY + yPos, width, height);
+		this.parent.rect(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
 	public void ellipse(int xPos, int yPos, int width, int height)
 	{
-		PApplet pApp = ModuleDriver.getModuleDriver();
+		width = width*(this.displayWidth/this.parent.width);
+		height = height*(this.displayHeight/this.parent.height);
 		
-		width = width*(this.displayWidth/pApp.width);
-		height = height*(this.displayHeight/pApp.height);
-		
-		pApp.ellipse(this.displayX + xPos, this.displayY + yPos, width, height);
+		this.parent.ellipse(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
 	public void line(int xPos, int yPos, int width, int height)
 	{
-		PApplet pApp = ModuleDriver.getModuleDriver();
+		width = width*(this.displayWidth/this.parent.width);
+		height = height*(this.displayHeight/this.parent.height);
 		
-		width = width*(this.displayWidth/pApp.width);
-		height = height*(this.displayHeight/pApp.height);
-		
-		pApp.line(this.displayX + xPos, this.displayY + yPos, width, height);
+		this.parent.line(this.displayX + xPos, this.displayY + yPos, width, height);
 	}
 	
 	public void drawAppletBackground()
 	{
-		PApplet pApp = ModuleDriver.getModuleDriver();
-		
 		if(!this.isFullscreen)
 		{
-			pApp.rect(0, 0, this.displayX, this.displayHeight);
-			pApp.rect(	this.displayX + this.displayWidth, 
-							0, 
-							pApp.width - (this.displayX + this.displayWidth), 
-							this.displayHeight);
+			this.parent.fill(30);
+			this.parent.noStroke();
 			
-			pApp.rect(this.displayX, 0, this.displayWidth, this.displayY);
-			pApp.rect(	this.displayX, 
-							this.displayY + this.displayHeight, 
-							this.displayWidth,
-							pApp.height - (this.displayY + this.displayHeight));
+			this.parent.rect(0, 0, this.parent.width, this.displayY);
+			this.parent.rect(0, 0, this.displayX, this.parent.height);
+			this.parent.rect(this.parent.width, this.parent.height, - this.parent.width, -(this.parent.height - (this.displayHeight + this.displayY) ));
+			this.parent.rect(this.parent.width, this.parent.height, -(this.parent.width - (this.displayWidth + this.displayX)), -this.parent.height );
+
 		}
 	}//drawAppletBackground()
 	

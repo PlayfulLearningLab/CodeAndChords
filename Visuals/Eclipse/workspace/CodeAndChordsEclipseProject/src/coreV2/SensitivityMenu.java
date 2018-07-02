@@ -123,17 +123,9 @@ public class SensitivityMenu extends MenuTemplate
 
 
 
-	public SensitivityMenu() 
+	public SensitivityMenu(ModuleDriver driver) 
 	{
-		//super(pApplet, appWidth, appHeight, controlP5, moduleDriver);
-		super("Sensitivity");
-
-		this.controlP5.addTab("sensitivity")
-		.setLabel("Sensitivity\nMenu")
-		.setWidth(50)
-		.setHeight(this.tabHeight)
-		.activateEvent(true)
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		super("Sensitivity", driver, true);
 
 		// TODO: convenience method in MenuTemplate to calculate spacing;
 		// then each MenuTemplate will be responsible for passing its own values.

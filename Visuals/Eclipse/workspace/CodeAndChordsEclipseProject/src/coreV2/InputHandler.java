@@ -3,39 +3,44 @@ package coreV2;
 import core.input.Input;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
+import net.beadsproject.beads.core.AudioContext;
 
 public class InputHandler 
 {
 	private static InputHandler		inputHandler;
-	
+
+	private ModuleDriver 			driver;
+
 	private	static final int		REAL_TIME_INPUT	= 0;
 	private	static final int		PLAYABLE_INPUT	= 1;
 
 	private	Input[]					inputs;
 	private	int						curInputNumber;	// 0 - realTimeInput; 1 - playableInput
-	
-	// TODO - initialize these:
-	private	int	curNumInputs;
-	private	int	totalNumInputs;
 
-	private InputHandler()
+	//TODO: How could we make it so that these variables are in InputHandler
+	private int						totalNumRealTimeInputs;
+	private int[]					activeRealTimeInputs;
+
+	private InputHandler(ModuleDriver driver)
 	{
 		System.out.println("Remember to set your inputs!");
 
-		this.inputs			= new Input[2];
+		this.driver = driver;
 		
+		this.inputs			= new Input[2];
 
-		this.totalNumInputs = numInputs;
-		this.curNumInputs = this.totalNumInputs;
-		this.activeInputs = new int[this.totalNumInputs];
-		this.currentInput	= 0;
+		this.totalNumRealTimeInputs = 1;
+		this.activeRealTimeInputs = new int[] {0};
+		this.curInputNumber = 0;
+		
+		this.setRealTimeInput(new RealTimeInput(1, new AudioContext(), false, this.driver.getParent()));
 	}
 
-	public static InputHandler getInputHandler()
+	public static InputHandler getInputHandler(ModuleDriver driver)
 	{
 		if(InputHandler.inputHandler == null)
 		{
-			InputHandler.inputHandler = new InputHandler();
+			InputHandler.inputHandler = new InputHandler(driver);
 		}
 
 		return InputHandler.inputHandler;
@@ -52,52 +57,12 @@ public class InputHandler
 		this.curInputNumber	= InputHandler.REAL_TIME_INPUT;
 
 	}
-	
-
-	//TODO: talk to Emily about how we handle input numbers.  I know we are using an int[]
-	//		so that we can account for a board that skips numbers (just one example), but
-	//		how do we make sure that this model is unbreakable when we don't know the board
-	//		configuration?
-	public void setTotalNumInputs(int totalNumInputs)
-	{
-		if(totalNumInputs < 1) throw new IllegalArgumentException("There must be at least one input.");
-
-		this.totalNumInputs = totalNumInputs;
-		this.curNumInputs = this.totalNumInputs;
-		this.activeInputs = new int[this.totalNumInputs];
-
-		for(int i = 0; i < this.totalNumInputs; i++)
-		{
-			this.activeInputs[i] = i;
-		}
-	}
-	
-
-	public void setActiveInputs(int[] activeInputs)
-	{
-		if(activeInputs.length != this.totalNumInputs)
-		{
-			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array of the wrong size.  There are " + this.totalNumInputs + " inputs total.");
-
-		}
-		for(int i = 0; i < activeInputs.length; i++)
-		{
-			if(activeInputs[i] > this.totalNumInputs)
-			{
-				throw new IllegalArgumentException("One of your inputs does not exist. Input num " + activeInputs[i] + " is too high.");
-
-			}
-		}
-
-		this.activeInputs = activeInputs;
-		this.curNumInputs = this.activeInputs.length;
-	}
 
 	public void playableInput(Input playableInput)
 	{
 		this.inputs[1]		= playableInput;
 		this.curInputNumber	= InputHandler.PLAYABLE_INPUT;
-		
+
 	}
 
 	public Input getRealTimeInput()
@@ -129,19 +94,61 @@ public class InputHandler
 
 		this.curInputNumber	= InputHandler.PLAYABLE_INPUT;
 	}
-	
+
 
 	public void switchInputs()
 	{
 		// Pause the current Input:
 		this.inputs[this.curInputNumber].pause(true);
-		
+
 		// Go to the next Input and start it:
 		this.curInputNumber	= (this.curInputNumber + 1) % 2;
 		this.inputs[this.curInputNumber].pause(false);
 	} // switch(boolean)
 
+	public void setTotalNumRealTimeInputs(int totalNumInputs)
+	{
+		if(totalNumInputs < 1) throw new IllegalArgumentException("There must be at least one input.");
 
+		this.totalNumRealTimeInputs = totalNumInputs;
+		this.activeRealTimeInputs = new int[this.totalNumRealTimeInputs];
+
+		for(int i = 0; i < this.totalNumRealTimeInputs; i++)
+		{
+			this.activeRealTimeInputs[i] = i;
+		}
+	}
+
+	public void setActiveRealTimeInputs(int[] activeInputs)
+	{
+		if(activeInputs.length > this.totalNumRealTimeInputs)
+		{
+			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array that is too big.  There are " + this.totalNumRealTimeInputs + " inputs total.");
+
+		}
+		
+		for(int i = 0; i < activeInputs.length; i++)
+		{
+			if(activeInputs[i] > this.totalNumRealTimeInputs)
+			{
+				throw new IllegalArgumentException("One of your inputs does not exist. Input num " + activeInputs[i] + " is too high.");
+			}
+		}
+
+		this.activeRealTimeInputs = activeInputs;
+	}
+
+
+	public int getCurNumRealTimeInputs()
+	{
+		return this.activeRealTimeInputs.length;
+	}
+	
+	public int[] getActiveRealTimeInputs()
+	{
+		return this.activeRealTimeInputs;
+	}
+	
 	public float getMidiNote(int inputNum)
 	{
 		if(this.inputs[this.curInputNumber] == null)

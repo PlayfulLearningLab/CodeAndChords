@@ -7,15 +7,11 @@ import processing.core.PImage;
 
 public class CanvasMenu extends MenuTemplate
 {
-	
-	public CanvasMenu() 
+	public CanvasMenu(ModuleDriver driver) 
 	{
-		super("Canvas Menu");
+		super("Canvas Menu", driver, false);
 		
 		this.addOutsideButtons();
-		this.getGroup().show();
-		
-		System.out.println("Done");
 	}
 	
 	/**
@@ -23,9 +19,9 @@ public class CanvasMenu extends MenuTemplate
 	 */
 	public void addOutsideButtons()
 	{
-		PApplet parent = ModuleDriver.getModuleDriver();
+		this.controlP5.addGroup(this.getMenuTitle());
 		
-		int	playX		= parent.width - 45;
+		int	playX		= this.parent.width - 45;
 		int	playY		= 15;
 		int	playWidth	= 30;
 		int	playHeight	= 30;
@@ -45,14 +41,17 @@ public class CanvasMenu extends MenuTemplate
 		.setPosition(playX, playY)
 		.setImages(images)
 		.updateSize()
-		.setGroup(this.getGroup());
-
+		.setClickable(true)
+		.setGroup(this.getMenuTitle())
+		.setTab("global");
+		
 		this.getControlP5().addToggle("pause")
 		.setPosition((playX - playWidth - 10), playY)
 		.setImages(pauseImage, images[0])
 		.updateSize()
 		.setVisible(false)
-		.setGroup(this.getGroup());
+		.setGroup(this.getMenuTitle())
+		.setTab("global");
 
 		// Add hamburger and menuX:
 		int	hamburgerX		= 10;
@@ -79,10 +78,17 @@ public class CanvasMenu extends MenuTemplate
 		.setPosition(hamburgerX, hamburgerY)
 		.setImages(hamXImages)
 		.setClickable(true)
-		.moveTo("global")	// "global" means it will show in all tabs
 		.updateSize()
-		.setGroup(this.getGroup());
+		.setGroup(this.getMenuTitle())
+		.setTab("global");
+		
 	} // addOutsideButtons
+	
+	@Override
+	public void setCanvasSize()
+	{
+		this.driver.getCanvas().fullScreen();
+	}
 
 	@Override
 	public void sliderEvent(int id, float val) {
@@ -91,8 +97,9 @@ public class CanvasMenu extends MenuTemplate
 	}
 
 	@Override
-	public void buttonEvent(int id) {
-		// TODO Auto-generated method stub
+	public void buttonEvent(int id) 
+	{
+		
 		
 	}
 
