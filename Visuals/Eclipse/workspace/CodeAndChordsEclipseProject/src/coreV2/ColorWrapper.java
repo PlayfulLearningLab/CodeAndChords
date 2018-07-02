@@ -8,6 +8,22 @@ public class ColorWrapper
 
 	private int		alpha;
 
+	public ColorWrapper(int r, int g, int b)
+	{
+		this.red 	=	r;
+		this.green 	= 	g;
+		this.blue 	= 	b;
+		this.alpha 	= 	255;
+	}
+	
+	public ColorWrapper(int[] RGB)
+	{
+		this.red 	=	RGB[0];
+		this.green 	= 	RGB[1];
+		this.blue 	= 	RGB[2];
+		this.alpha 	= 	255;
+	}
+	
 	public ColorWrapper(int r, int g, int b, int alpha)
 	{
 		this.red 	=	r;
@@ -22,6 +38,11 @@ public class ColorWrapper
 		this.green 	= 	g;
 		this.blue 	= 	b;
 		this.alpha 	= 	alpha;
+	}
+	
+	public void fadeColor(int[] RGB, int transitionSpeed)
+	{
+		this.fadeColor(RGB[0], RGB[1], RGB[2], transitionSpeed);
 	}
 
 	public void fadeColor(int goalRed, int goalGreen, int goalBlue, int transitionSpeed)

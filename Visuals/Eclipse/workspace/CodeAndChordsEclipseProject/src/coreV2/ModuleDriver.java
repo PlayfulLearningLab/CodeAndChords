@@ -76,7 +76,7 @@ public class ModuleDriver implements PConstants
 
 	private boolean					useFollowers;
 
-	private ColorHandler			colorHandler;
+	private ColorHandler2			colorHandler;
 
 	private Canvas 					canvas;
 
@@ -95,7 +95,7 @@ public class ModuleDriver implements PConstants
 		this.parent.registerMethod("keyEvent", this);
 
 		this.inputHandler = InputHandler.getInputHandler(this);
-		this.colorHandler = new ColorHandler(this);
+		this.colorHandler = new ColorHandler2(this, 0);
 		this.canvas = new Canvas(this.parent);
 
 
@@ -128,7 +128,7 @@ public class ModuleDriver implements PConstants
 
 		if(this.colorHandler != null)
 		{
-			//update color handler
+			this.colorHandler.fadeColor();
 		}
 
 		this.canvas.drawAppletBackground();
@@ -190,7 +190,7 @@ public class ModuleDriver implements PConstants
 		return this.canvas;
 	}
 
-	public ColorHandler getColorHandler()
+	public ColorHandler2 getColorHandler()
 	{
 		return this.colorHandler;
 	}

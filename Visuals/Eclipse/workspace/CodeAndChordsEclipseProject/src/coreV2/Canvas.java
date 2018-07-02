@@ -53,6 +53,7 @@ public class Canvas
 	
 	public void background()
 	{
+		this.parent.noStroke();
 		this.parent.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
 	}
 	
