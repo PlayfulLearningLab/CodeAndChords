@@ -1,107 +1,129 @@
 package coreV2;
 
-public class ColorWrapper 
+import processing.core.PApplet;
+import processing.core.PConstants;
+
+public class ColorWrapper implements PConstants
 {
-	private int		red;
-	private int		green;
-	private int		blue;
+	private PApplet		parent;
 
-	private int		alpha;
+	private int[]		RGB;
+	private int			alpha;
 
-	public ColorWrapper(int r, int g, int b)
-	{
-		this.red 	=	r;
-		this.green 	= 	g;
-		this.blue 	= 	b;
-		this.alpha 	= 	255;
-	}
+	private int[]		lastRGB;
+	private int[]		targetRGB;
+	private int			targetAlpha;
+
+	private int			checkpoint;
+
+	private int			transitionStartTime;
+	private int			transitionDuration;
+	private int			transitionIndex;
+
+	private int[]		distance;
+
 	
-	public ColorWrapper(int[] RGB)
+	public void pre()
 	{
-		this.red 	=	RGB[0];
-		this.green 	= 	RGB[1];
-		this.blue 	= 	RGB[2];
-		this.alpha 	= 	255;
-	}
-	
-	public ColorWrapper(int r, int g, int b, int alpha)
+		if(this.parent.millis() < this.transitionStartTime + this.transitionDuration)
+		{
+			this.transitionIndex = (this.parent.millis() - this.transitionStartTime);
+
+			for(int i = 0; i < 3; i++)
+			{
+				this.RGB[i] = (this.lastRGB[i]) + (int)(this.distance[i] * (float)((float)this.transitionIndex/(float)this.transitionDuration));
+				this.RGB[i] = Math.max(0, this.RGB[i]);
+				this.RGB[i] = Math.min(255, this.RGB[i]);
+			}
+		}
+		else if(this.RGB != this.targetRGB)
+		{
+			this.RGB = this.targetRGB;
+		}
+		
+	}//pre()
+
+	public ColorWrapper(int r, int g, int b, int alpha, PApplet parent)
 	{
-		this.red 	=	r;
-		this.green 	= 	g;
-		this.blue 	= 	b;
+		this.parent = parent;
+
+		this.RGB = new int[] {0, 0, 0};
+		this.lastRGB = new int[] {0, 0, 0};
+		this.targetRGB = new int[] {0, 0, 0};;
+		this.distance = new int[] {0,0,0};
+
+		this.RGB[0] 	=	r;
+		this.RGB[1] 	= 	g;
+		this.RGB[2] 	= 	b;
 		this.alpha 	= 	alpha;
+
+		this.transitionDuration = 1000;
+
+		this.checkpoint = this.parent.millis();
+		this.parent.registerMethod("pre", this);
+
 	}
 
-	public void setColor(int r, int g, int b, int alpha)
+	public ColorWrapper(int r, int g, int b, PApplet parent)
 	{
-		this.red 	=	r;
-		this.green 	= 	g;
-		this.blue 	= 	b;
-		this.alpha 	= 	alpha;
+		this(r, g, b, 255, parent);
 	}
-	
-	public void fadeColor(int[] RGB, int transitionSpeed)
+
+	public ColorWrapper(int[] RGB, PApplet parent)
 	{
-		this.fadeColor(RGB[0], RGB[1], RGB[2], transitionSpeed);
+		this(RGB[0], RGB[1], RGB[2], 255, parent);
 	}
 
-	public void fadeColor(int goalRed, int goalGreen, int goalBlue, int transitionSpeed)
+	public void setCurrentColor(int r, int g, int b)
 	{
-		int[] curRGB = new int[] {this.red, this.green, this.blue};
-		int[] goalRGB = new int[] {goalRed, goalGreen, goalBlue};
+		this.targetRGB = RGB;
 
-		for(int i = 0; i < curRGB.length; i++)
-		{
-			if(curRGB[i] == goalRGB[i])
-			{
-				//Goal value already reached.  No action necessary.
-			}
-			else if(curRGB[i] < (goalRGB[i] - transitionSpeed))
-			{
-				curRGB[i] += transitionSpeed;
-				curRGB[i] = Math.min(curRGB[i], goalRGB[i]);
-
-			}
-			else if(curRGB[i] > (goalRGB[i] + transitionSpeed))
-			{
-				curRGB[i] -= transitionSpeed;
-				curRGB[i] = Math.max(curRGB[i], goalRGB[i]);
-			}
-			else
-			{
-				curRGB[i] = goalRGB[i];
-			}
-		}
-
-		this.red = curRGB[0];
-		this.green = curRGB[1];
-		this.blue = curRGB[2];
-
+		this.RGB[0] 	=	r;
+		this.RGB[1] 	= 	g;
+		this.RGB[2] 	= 	b;
 	}
 
-	public void fadeAlpha(int goalAlpha, int transitionSpeed)
+	public void setCurrentColor(int[] RGB)
 	{
-		if(this.alpha == goalAlpha)
-		{
-			//Goal value already reached.  No action necessary.
-		}
-		else if(this.alpha < (goalAlpha - transitionSpeed))
-		{
-			this.alpha += transitionSpeed;
+		this.setCurrentColor(RGB[0], RGB[1], RGB[2]);
+	}
 
-			this.alpha = Math.min(this.alpha, goalAlpha);
-		}
-		else if(this.alpha > (goalAlpha + transitionSpeed))
+	public void setCurrentAlpha(int alpha)
+	{
+		this.alpha = alpha;
+	}
+
+	public void setTargetColor(int r, int g, int b)
+	{
+		this.setTargetColor(new int[] {r, g, b});
+	}
+
+	public void setTargetColor(int[] targetColorRGB)
+	{
+		for(int i = 0; i < 3; i++)
 		{
-			this.alpha -= transitionSpeed;
-			this.alpha = Math.max(this.alpha, goalAlpha);
+			this.lastRGB[i] = this.RGB[i];
+			this.targetRGB[i] = targetColorRGB[i];
+			this.distance[i] = this.targetRGB[i] - this.lastRGB[i];
 		}
+		
+		this.transitionStartTime = this.parent.millis();
+	}
+
+	public void setTargetAlpha()
+	{
 
 	}
+
 
 	public int[] getColor()
 	{
-		return new int[] {this.red, this.green, this.blue, this.alpha};
+		return new int[] {this.RGB[0], this.RGB[1], this.RGB[2], this.alpha};
+	}
+
+	public int[] getTargetColor()
+	{
+		return this.targetRGB;
 	}
 
 

@@ -14,7 +14,7 @@ import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
 import processing.core.PApplet;
 
-public abstract class Input {
+public abstract class Input implements MusicalInput {
 
 	/**
 	 * 08/30/2017

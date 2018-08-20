@@ -82,6 +82,7 @@ public class ModuleDriver implements PConstants
 
 	private MenuGroup				menuGroup;
 
+	
 	public ModuleDriver(PApplet parent)
 	{		
 		if(parent == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
@@ -116,6 +117,7 @@ public class ModuleDriver implements PConstants
 
 	public void pre()
 	{
+
 		if(this.useFollowers)
 		{
 			int inputNum;
@@ -128,12 +130,11 @@ public class ModuleDriver implements PConstants
 
 		if(this.colorHandler != null)
 		{
-			this.colorHandler.fadeColor();
+			this.colorHandler.setColorToMatchPitch();
 		}
 
 		this.canvas.drawAppletBackground();
-
-	}//draw()
+	}//pre()
 
 	public void keyEvent(KeyEvent e)
 	{	

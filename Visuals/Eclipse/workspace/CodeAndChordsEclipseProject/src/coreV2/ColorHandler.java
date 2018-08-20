@@ -347,4 +347,3 @@ public class ColorHandler {
 	} // getColorStyle
 
 } // ColorHandler
->>>>>>> library
