@@ -1,19 +1,16 @@
-package coreV2;
+package module_01_05;
 
-import controlP5.ControlEvent;
-import core.input.MidiStreamInput;
+import coreV2.*;
 import processing.core.PApplet;
-import processing.event.KeyEvent;
 
-public class TestModule extends PApplet
-{	
+public class Module_01_05_PolyphonicMidi extends PApplet
+{
 	private ModuleDriver driver;
-
 	private InputHandler inputHandler;
 
 	public static void main(String[] args)
 	{
-		PApplet.main("coreV2.TestModule");
+		PApplet.main("module_01_05.Module_01_05_PolyphonicMidi");
 	}
 
 	public void settings()
@@ -24,6 +21,13 @@ public class TestModule extends PApplet
 	public void setup()
 	{
 		this.driver = new ModuleDriver(this);
+		
+		this.inputHandler = InputHandler.getInputHandler();
+		
+		this.inputHandler.useMidiStreamInput();
+		
+		MenuGroup menus = this.driver.getMenuGroup();
+		menus.addMenu(new InputMenu(this.driver));
 	}
 
 	public void draw()
@@ -37,6 +41,4 @@ public class TestModule extends PApplet
 		this.fill(r, g, b);
 		this.driver.getCanvas().background();
 	}
-
-
 }

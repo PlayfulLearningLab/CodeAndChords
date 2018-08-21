@@ -356,4 +356,10 @@ public class RealTimeInput extends Input {
 		this.uGenArray = uGenArray;
 	}
 
+	@Override
+	public int getMidiNote() 
+	{
+		return (int) Math.round(this.getAdjustedFundAsMidiNote());
+	}
+
 } // Input class

@@ -48,8 +48,11 @@ public class ColorWrapper implements PConstants
 		this.parent = parent;
 
 		this.RGB = new int[] {0, 0, 0};
+		
 		this.lastRGB = new int[] {0, 0, 0};
-		this.targetRGB = new int[] {0, 0, 0};;
+		
+		this.targetRGB = new int[] {0, 0, 0};
+		
 		this.distance = new int[] {0,0,0};
 
 		this.RGB[0] 	=	r;

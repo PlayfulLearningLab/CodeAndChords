@@ -76,7 +76,7 @@ public class ModuleDriver implements PConstants
 
 	private boolean					useFollowers;
 
-	private ColorHandler2			colorHandler;
+	private ColorScheme				colorHandler;
 
 	private Canvas 					canvas;
 
@@ -95,14 +95,14 @@ public class ModuleDriver implements PConstants
 		this.parent.registerMethod("pre", this);
 		this.parent.registerMethod("keyEvent", this);
 
-		this.inputHandler = InputHandler.getInputHandler(this);
-		this.colorHandler = new ColorHandler2(this, 0);
+		this.inputHandler = InputHandler.makeInputHandler(this.parent);
+		this.colorHandler = new ColorScheme(this, 0);
 		this.canvas = new Canvas(this.parent);
 
 
 		this.menuGroup = new MenuGroup(this);
-		this.menuGroup.addMenu(new ColorMenu(this));
-		this.menuGroup.addMenu(new InputMenu(this));
+		//this.menuGroup.addMenu(new InputMenu(this));
+		//this.menuGroup.addMenu(new ColorMenu(this));
 		//this.menu.addMenu(new SensitivityMenu(this));
 
 
@@ -117,17 +117,6 @@ public class ModuleDriver implements PConstants
 
 	public void pre()
 	{
-
-		if(this.useFollowers)
-		{
-			int inputNum;
-			for(int i = 0; i < this.inputHandler.getCurNumRealTimeInputs(); i++)
-			{
-				inputNum = this.inputHandler.getActiveRealTimeInputs()[i];
-				this.follower[inputNum].update(this.inputHandler.getAmplitude(inputNum));
-			}
-		}
-
 		if(this.colorHandler != null)
 		{
 			this.colorHandler.setColorToMatchPitch();
@@ -167,11 +156,6 @@ public class ModuleDriver implements PConstants
 		return this.cp5;
 	}
 
-	public InputHandler getInputHandler()
-	{
-		return this.inputHandler;
-	}
-
 
 	/*
 	public Follower getFollower(int inputNum)
@@ -191,7 +175,7 @@ public class ModuleDriver implements PConstants
 		return this.canvas;
 	}
 
-	public ColorHandler2 getColorHandler()
+	public ColorScheme getColorScheme()
 	{
 		return this.colorHandler;
 	}

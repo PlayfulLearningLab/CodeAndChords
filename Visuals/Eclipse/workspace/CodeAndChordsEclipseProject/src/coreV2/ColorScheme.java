@@ -8,9 +8,12 @@ import java.util.ArrayList;
  * 
  */
 
-public class ColorHandler2 
+public class ColorScheme 
 {
 	private ModuleDriver 					driver;
+	
+	private InputHandler					inputHandler;
+	
 	private int								inputNum;
 
 	private ColorWrapper					currentColor;
@@ -18,20 +21,22 @@ public class ColorHandler2
 
 	private int [][]						pitchColors;
 
+	//  int[preset number][note number][RGB]
 	private int[][][]						colorPresetsLibrary;
 
 	public final int 						RAINBOW_CHROMATIC 	= 0;
 	public final int 						RAINBOW_MAJOR 		= 1;
 	public final int 						RAINBOW_MINOR		= 2;
 
-
 	private int								pianoThreshold;
 	private int								curMidiNote;
 
 
-	public ColorHandler2(ModuleDriver driver, int inputIndexNumber)
+	public ColorScheme(ModuleDriver driver, int inputIndexNumber)
 	{
 		this.driver = driver;
+		this.inputHandler = InputHandler.getInputHandler();
+		
 		this.initializeColorLibrary();
 
 		this.pitchColors = new int [12][3];
@@ -57,12 +62,12 @@ public class ColorHandler2
 
 	public void setColorToMatchPitch()
 	{
-		int midiNote = (int) this.driver.getInputHandler().getMidiNote(this.inputNum);
+		int midiNote = (int) this.inputHandler.getMidiNote(this.inputNum);
 		midiNote = midiNote % 12;
 
 		if(midiNote != this.curMidiNote)
 		{
-			if(this.driver.getInputHandler().getAmplitude(0) > this.pianoThreshold)
+			if(this.inputHandler.getAmplitude(0) > this.pianoThreshold)
 			{
 				this.currentColor.setTargetColor(this.pitchColors[midiNote]);
 				this.curMidiNote = midiNote;

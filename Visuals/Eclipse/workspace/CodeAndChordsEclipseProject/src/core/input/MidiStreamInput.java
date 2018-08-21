@@ -18,21 +18,29 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		MidiStreamInput midi = new MidiStreamInput();
 	}
 
-	private MidiDevice		device;
-	private Transmitter		transmitter;
+	private MidiDevice			device;
+	private Transmitter			transmitter;
 
-	private int				numNotes;
-	private int[][]			curNotes;
+	private int					numNotes;
+	private int[][]				curNotes;
+
+	private int					monophonicType;
+
+	public static final int		LAST_NOTE = 0;
+	public static final int		LOUDEST_NOTE = 1;
+	public static final int		FIRST_NOTE = 2;
 
 	public MidiStreamInput()
 	{
 		this.curNotes = new int[127][2];
-
+		
 		for(int i = 0; i < this.curNotes.length; i++)
 		{
 			this.curNotes[i][0] = -1;
 			this.curNotes[i][1] = 0;
 		}
+		
+		this.monophonicType = 0;
 
 		MidiDevice device;
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -70,19 +78,6 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			}
 		}
 
-	}
-
-	public int[][] getCurNotes()
-	{
-		int[][] subArray = new int[this.numNotes][2];
-
-		for(int i = 0; i < this.numNotes; i++)
-		{
-			subArray[i][0] = this.curNotes[i][0];
-			subArray[i][1] = this.curNotes[i][1];
-		}
-
-		return subArray;
 	}
 
 
@@ -138,7 +133,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 					this.curNotes[index - 1][1] = this.curNotes[index][1];
 					this.curNotes[index][1] = 0;
-					
+
 					index++;
 				}
 
@@ -146,7 +141,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		}
 
 	}//send()
-	
+
 	public void printCurrentNotes()
 	{
 		System.out.println("----------------------------------------");
@@ -155,9 +150,9 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		{
 			System.out.print(this.curNotes[i][0] + ",\t");
 		}
-		
+
 		System.out.println("");
-		
+
 		System.out.print("Velocity     : ");
 		for(int i = 0; i < 10; i++)
 		{
@@ -165,7 +160,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		}
 
 		System.out.println("\n----------------------------------------");
-		
+
 	}
 
 	@Override
@@ -174,6 +169,14 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		this.transmitter.close();
 		this.device.close();
 
+	}
+
+	public void setMonophonicType(int type)
+	{
+		if(type < 0 || type > 2) 
+			throw new IllegalArgumentException("MidiStreamInput setMonophonicType() int argument out of bounds");
+
+		this.monophonicType = type;
 	}
 
 	@Override
@@ -196,6 +199,43 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			val = this.curNotes[this.numNotes-1][1];
 
 		return val;
+	}
+
+	public int[] getAllMidiNotes()
+	{
+		int[] subArray = new int[this.numNotes];
+
+		for(int i = 0; i < this.numNotes; i++)
+		{
+			subArray[i] = this.curNotes[i][0];
+		}
+
+		return subArray;
+	}
+
+	public int[] getAllAmplitudes()
+	{
+		int[] subArray = new int[this.numNotes];
+
+		for(int i = 0; i < this.numNotes; i++)
+		{
+			subArray[i] = this.curNotes[i][1];
+		}
+
+		return subArray;
+	}
+
+	public int[][] getAllNotesAndAmps()
+	{
+		int[][] subArray = new int[this.numNotes][2];
+
+		for(int i = 0; i < this.numNotes; i++)
+		{
+			subArray[i][0] = this.curNotes[i][0];
+			subArray[i][1] = this.curNotes[i][1];
+		}
+
+		return subArray;
 	}
 
 }

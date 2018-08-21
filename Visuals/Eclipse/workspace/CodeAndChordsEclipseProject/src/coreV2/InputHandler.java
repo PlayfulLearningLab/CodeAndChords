@@ -6,48 +6,55 @@ import core.input.MusicalInput;
 import core.input.RealTimeInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
+import processing.core.PApplet;
 
 public class InputHandler 
 {
 	private static InputHandler		inputHandler;
-
-	private ModuleDriver 			driver;
 
 	public	static final int		REAL_TIME_INPUT	= 0;
 	public	static final int		PLAYABLE_INPUT	= 1;
 	public  static final int		MIDI_STREAM_INPUT = 2;
 
 	private	MusicalInput[]			inputs;
-	private	int						curInputNum;	// 0 - realTimeInput; 1 - playableInput
+	private	int						inputType;	// 0 - RealTimeInput; 1 - PlayableInput; 2  MidiStream
 
 	private int						totalNumRealTimeInputs;
 	private int[]					activeRealTimeInputs;
 
-	private InputHandler(ModuleDriver driver)
+	private InputHandler(PApplet parent)
 	{
-		System.out.println("Remember to set your inputs!");
-
-		this.driver = driver;
+		System.out.println("InputHandler created!  Defaulting to single RealTimeInput.");
 		
 		this.inputs			= new MusicalInput[3];
+		
+		this.inputType = this.REAL_TIME_INPUT;
+		
+		this.inputs[this.REAL_TIME_INPUT] = new RealTimeInput(1, new AudioContext(), false, parent);
 
 		this.totalNumRealTimeInputs = 1;
 		this.activeRealTimeInputs = new int[] {0};
 		
-		//this.curInputNum = InputHandler.REAL_TIME_INPUT;
-		//this.setRealTimeInput(new RealTimeInput(1, new AudioContext(), false, this.driver.getParent()));
-		
-		this.inputs[InputHandler.MIDI_STREAM_INPUT] = new MidiStreamInput();
-		this.curInputNum = InputHandler.MIDI_STREAM_INPUT;
 	}
 
-	public static InputHandler getInputHandler(ModuleDriver driver)
+	public static InputHandler makeInputHandler(PApplet parent)
 	{
 		if(InputHandler.inputHandler == null)
 		{
-			InputHandler.inputHandler = new InputHandler(driver);
+			InputHandler.inputHandler = new InputHandler(parent);
 		}
 
+		return InputHandler.inputHandler;
+	}
+	
+	public static InputHandler getInputHandler()
+	{
+		if(InputHandler.inputHandler == null)
+		{
+			throw new IllegalArgumentException("No InputHandler has been created yet.  "
+												+ "Call 'makeInputHandler(PApplet parent)' to initialize the InputHandler");
+		}
+		
 		return InputHandler.inputHandler;
 	}
 
@@ -59,20 +66,15 @@ public class InputHandler
 		}
 
 		this.inputs[0]		= realTimeInput;
-		this.curInputNum	= InputHandler.REAL_TIME_INPUT;
+		this.inputType	= InputHandler.REAL_TIME_INPUT;
 
 	}
 
 	public void setPlayableInput(Input playableInput)
 	{
 		this.inputs[1]		= playableInput;
-		this.curInputNum	= InputHandler.PLAYABLE_INPUT;
+		this.inputType	= InputHandler.PLAYABLE_INPUT;
 
-	}
-	
-	public void setMidiStreamInput(MidiStreamInput midiStreamInput)
-	{
-		this.inputs[InputHandler.MIDI_STREAM_INPUT] = midiStreamInput;
 	}
 
 	public MusicalInput getRealTimeInput()
@@ -92,7 +94,7 @@ public class InputHandler
 			throw new IllegalArgumentException("RealTimeInput is null");
 		}
 
-		this.curInputNum	= InputHandler.REAL_TIME_INPUT;
+		this.inputType	= InputHandler.REAL_TIME_INPUT;
 	}
 
 	public void useRecordedInput()
@@ -102,29 +104,20 @@ public class InputHandler
 			throw new IllegalArgumentException("recorded input is null");
 		}
 
-		this.curInputNum	= InputHandler.PLAYABLE_INPUT;
+		this.inputType	= InputHandler.PLAYABLE_INPUT;
 	}
 	
 	public void useMidiStreamInput()
 	{
 		if(this.inputs[InputHandler.MIDI_STREAM_INPUT] == null)
 		{
-			throw new IllegalArgumentException("Midi Stream input is null");
+			this.inputs[InputHandler.MIDI_STREAM_INPUT] = new MidiStreamInput();
 		}
 
-		this.curInputNum	= InputHandler.MIDI_STREAM_INPUT;
+		this.inputType = InputHandler.MIDI_STREAM_INPUT;
+		System.out.println("***** Input Type: " + this.inputType);
 	}
 
-//TODO: fixes for new interface
-	public void switchInputs()
-	{
-		// Pause the current Input:
-		//this.inputs[this.curInputNum].pause(true);
-
-		// Go to the next Input and start it:
-		this.curInputNum	= (this.curInputNum + 1) % 2;
-		//this.inputs[this.curInputNum].pause(false);
-	} // switch(boolean)
 
 	public void setActiveRealTimeInputs(int[] activeInputs)
 	{
@@ -158,17 +151,17 @@ public class InputHandler
 	
 	public int[][] getAllMidiNotes(int inputNum)
 	{
-		return ((MidiStreamInput) this.inputs[2]).getCurNotes();
+		return ((MidiStreamInput) this.inputs[2]).getAllNotesAndAmps();
 	}
 	
 	public int getMidiNote(int inputNum)
 	{
-		return this.inputs[this.curInputNum].getMidiNote();
+		return this.inputs[this.inputType].getMidiNote();
 	}
 
 	public float getAmplitude(int inputNum)
 	{
-		return this.inputs[this.curInputNum].getAmplitude();
+		return this.inputs[this.inputType].getAmplitude();
 	}
 
 }
