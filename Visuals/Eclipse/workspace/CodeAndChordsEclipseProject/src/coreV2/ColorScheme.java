@@ -60,7 +60,7 @@ public class ColorScheme
 		}
 	}
 
-	public void setColorToMatchPitch()
+	public void setColorToMatchMonoPitch()
 	{
 		int midiNote = (int) this.inputHandler.getMidiNote(this.inputNum);
 		midiNote = midiNote % 12;
@@ -85,6 +85,11 @@ public class ColorScheme
 	public int[] getCurrentColor()
 	{
 		return this.currentColor.getColor();
+	}
+	
+	public int[] getPitchColor(int midiNote)
+	{
+		return this.pitchColors[midiNote%12];
 	}
 
 

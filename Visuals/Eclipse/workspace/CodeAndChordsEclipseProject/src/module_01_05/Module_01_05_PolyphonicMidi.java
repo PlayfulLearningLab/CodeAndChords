@@ -5,8 +5,9 @@ import processing.core.PApplet;
 
 public class Module_01_05_PolyphonicMidi extends PApplet
 {
-	private ModuleDriver driver;
-	private InputHandler inputHandler;
+	private ModuleDriver 	driver;
+	private InputHandler 	inputHandler;
+	private Canvas			canvas;
 
 	public static void main(String[] args)
 	{
@@ -21,24 +22,46 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 	public void setup()
 	{
 		this.driver = new ModuleDriver(this);
-		
+
 		this.inputHandler = InputHandler.getInputHandler();
-		
+
 		this.inputHandler.useMidiStreamInput();
 		
+		this.canvas = this.driver.getCanvas();
+
 		MenuGroup menus = this.driver.getMenuGroup();
 		menus.addMenu(new InputMenu(this.driver));
+		
+		this.noStroke();
 	}
 
 	public void draw()
 	{
-		int[] RGB = this.driver.getColorScheme().getCurrentColor();
+		int[][] activeNotes = this.inputHandler.getAllMidiNotes();
+		int numNotes = activeNotes.length;
 
-		int r = RGB[0];
-		int g = RGB[1];
-		int b = RGB[2];
+		if(numNotes > 0)
+		{
+			for(int i = 0; i < numNotes; i++)
+			{
+				int[] rgb = this.driver.getColorScheme().getPitchColor(activeNotes[i][0]);
+				
+				this.fill(rgb[0], rgb[1], rgb[2]);
+				
+				
+				this.canvas.rect(	i * (this.width/numNotes), 
+									0, 
+									this.width/numNotes, 
+									this.height);
+			}
+		}
+		else
+		{
+			this.fill(0,0,0);;
+			this.canvas.background();
+			
+		}
 
-		this.fill(r, g, b);
-		this.driver.getCanvas().background();
-	}
+
+	}//draw()
 }

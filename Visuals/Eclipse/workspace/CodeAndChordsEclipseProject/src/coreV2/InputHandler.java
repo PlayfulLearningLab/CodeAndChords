@@ -149,7 +149,7 @@ public class InputHandler
 		return this.activeRealTimeInputs;
 	}
 	
-	public int[][] getAllMidiNotes(int inputNum)
+	public int[][] getAllMidiNotes()
 	{
 		return ((MidiStreamInput) this.inputs[2]).getAllNotesAndAmps();
 	}

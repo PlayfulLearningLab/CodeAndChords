@@ -119,7 +119,7 @@ public class ModuleDriver implements PConstants
 	{
 		if(this.colorHandler != null)
 		{
-			this.colorHandler.setColorToMatchPitch();
+			this.colorHandler.setColorToMatchMonoPitch();
 		}
 
 		this.canvas.drawAppletBackground();

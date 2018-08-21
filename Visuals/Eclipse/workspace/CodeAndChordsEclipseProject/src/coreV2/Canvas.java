@@ -6,10 +6,10 @@ public class Canvas
 {
 	private PApplet			parent;
 	
-	private int				displayX;
-	private int				displayY;
-	private int 			displayWidth;
-	private int 			displayHeight;
+	private float			displayX;
+	private float			displayY;
+	private float 			displayWidth;
+	private float 			displayHeight;
 	
 	private boolean			isFullscreen;
 	
@@ -36,7 +36,7 @@ public class Canvas
 	
 	public int[] getCanvasDimensions()
 	{
-		return new int[] { this.displayX, this.displayY, this.displayWidth, this.displayHeight };
+		return new int[] { (int)this.displayX, (int)this.displayY, (int)this.displayWidth, (int)this.displayHeight };
 	}
 	
 	//TODO:  Create a method that returns a PShape covering all of the area not covered by the canvas
@@ -59,26 +59,26 @@ public class Canvas
 	
 	public void rect(int xPos, int yPos, int width, int height)
 	{
-		width = width*(this.displayWidth/this.parent.width);
-		height = height*(this.displayHeight/this.parent.height);
+		float x = (this.displayWidth/this.parent.width);
+		float y = (this.displayHeight/this.parent.height);
 		
-		this.parent.rect(this.displayX + xPos, this.displayY + yPos, width, height);
+		this.parent.rect(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
 	}
 	
 	public void ellipse(int xPos, int yPos, int width, int height)
 	{
-		width = width*(this.displayWidth/this.parent.width);
-		height = height*(this.displayHeight/this.parent.height);
+		float x = (this.displayWidth/this.parent.width);
+		float y = (this.displayHeight/this.parent.height);
 		
-		this.parent.ellipse(this.displayX + xPos, this.displayY + yPos, width, height);
+		this.parent.ellipse(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
 	}
 	
 	public void line(int xPos, int yPos, int width, int height)
 	{
-		width = width*(this.displayWidth/this.parent.width);
-		height = height*(this.displayHeight/this.parent.height);
+		float x = (this.displayWidth/this.parent.width);
+		float y = (this.displayHeight/this.parent.height);
 		
-		this.parent.line(this.displayX + xPos, this.displayY + yPos, width, height);
+		this.parent.line(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
 	}
 	
 	public void drawAppletBackground()

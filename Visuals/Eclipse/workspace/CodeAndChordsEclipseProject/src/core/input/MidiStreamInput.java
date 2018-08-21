@@ -227,12 +227,21 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 	public int[][] getAllNotesAndAmps()
 	{
-		int[][] subArray = new int[this.numNotes][2];
-
-		for(int i = 0; i < this.numNotes; i++)
+		int[][] notes = this.curNotes.clone();
+		
+		int count = 0;
+		
+		while(notes[count][0] != -1)
 		{
-			subArray[i][0] = this.curNotes[i][0];
-			subArray[i][1] = this.curNotes[i][1];
+			count++;
+		}
+		
+		int[][] subArray = new int[count][2];
+
+		for(int i = 0; i < count; i++)
+		{
+			subArray[i][0] = notes[i][0];
+			subArray[i][1] = notes[i][1];
 		}
 
 		return subArray;
