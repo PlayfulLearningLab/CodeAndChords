@@ -108,7 +108,7 @@ public abstract class MenuTemplate implements ControlListener, ControlP5Constant
 	 */
 	public MenuTemplate(String menuTitle, ModuleDriver driver, boolean makeTab)
 	{
-		if(driver == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
+		if(driver == null) throw new IllegalArgumentException("Driver parameter must not be null.");
 
 		this.driver = driver;
 		this.parent = driver.getParent();

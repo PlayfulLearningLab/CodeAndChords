@@ -12,11 +12,6 @@ public class ColorScheme
 {
 	private ModuleDriver 					driver;
 	
-	private InputHandler					inputHandler;
-	
-	private int								inputNum;
-
-	private ColorWrapper					currentColor;
 	private int[]							canvasColor;
 
 	private int [][]						pitchColors;
@@ -28,27 +23,17 @@ public class ColorScheme
 	public final int 						RAINBOW_MAJOR 		= 1;
 	public final int 						RAINBOW_MINOR		= 2;
 
-	private int								pianoThreshold;
-	private int								curMidiNote;
 
-
-	public ColorScheme(ModuleDriver driver, int inputIndexNumber)
+	public ColorScheme(ModuleDriver driver)
 	{
 		this.driver = driver;
-		this.inputHandler = InputHandler.getInputHandler();
 		
 		this.initializeColorLibrary();
 
 		this.pitchColors = new int [12][3];
 		this.setPitchColors(this.RAINBOW_CHROMATIC);
 
-		this.currentColor = new ColorWrapper(0, 0, 0, this.driver.getParent());
-
-		this.pianoThreshold = 1;
 		this.canvasColor = new int[] {0, 0, 0};
-
-		this.inputNum = inputIndexNumber;
-
 
 	}
 
@@ -59,37 +44,15 @@ public class ColorScheme
 			this.pitchColors[i] = this.colorPresetsLibrary[colorSchemePreset][i];
 		}
 	}
-
-	public void setColorToMatchMonoPitch()
-	{
-		int midiNote = (int) this.inputHandler.getMidiNote(this.inputNum);
-		midiNote = midiNote % 12;
-
-		if(midiNote != this.curMidiNote)
-		{
-			if(this.inputHandler.getAmplitude(0) > this.pianoThreshold)
-			{
-				this.currentColor.setTargetColor(this.pitchColors[midiNote]);
-				this.curMidiNote = midiNote;
-			}
-			else
-			{
-				this.currentColor.setTargetColor(this.canvasColor);
-				this.curMidiNote = midiNote;
-			}
-		}//if(is new midi note)
-
-
-	}
-
-	public int[] getCurrentColor()
-	{
-		return this.currentColor.getColor();
-	}
 	
 	public int[] getPitchColor(int midiNote)
 	{
 		return this.pitchColors[midiNote%12];
+	}
+	
+	public int[] getCanvasColor()
+	{
+		return this.canvasColor;
 	}
 
 

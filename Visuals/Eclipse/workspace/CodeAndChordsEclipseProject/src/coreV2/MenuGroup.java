@@ -16,7 +16,7 @@ public class MenuGroup implements ControlListener
 	private ModuleDriver		driver;
 
 	private CanvasMenu			canvasMenu;
-
+	
 	private MenuTemplate[] 		menuGroup;
 
 	private MenuTemplate 		activeMenu;

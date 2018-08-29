@@ -362,4 +362,10 @@ public class RealTimeInput extends Input {
 		return (int) Math.round(this.getAdjustedFundAsMidiNote());
 	}
 
+	@Override
+	public boolean isRealTime() 
+	{
+		return true;
+	}
+
 } // Input class

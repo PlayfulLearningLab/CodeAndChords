@@ -44,7 +44,7 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 		{
 			for(int i = 0; i < numNotes; i++)
 			{
-				int[] rgb = this.driver.getColorScheme().getPitchColor(activeNotes[i][0]);
+				int[] rgb = this.driver.getColorScheme(0).getPitchColor(activeNotes[i][0]);
 				
 				this.fill(rgb[0], rgb[1], rgb[2]);
 				
@@ -54,6 +54,11 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 									this.width/numNotes, 
 									this.height);
 			}
+			
+			this.canvas.rect(	(numNotes-1) * (this.width/numNotes) + (this.width/numNotes), 
+								0, 
+								5, 
+								this.height);
 		}
 		else
 		{

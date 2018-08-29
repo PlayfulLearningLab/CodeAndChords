@@ -28,7 +28,7 @@ public class TestModule extends PApplet
 
 	public void draw()
 	{
-		int[] RGB = this.driver.getColorScheme().getCurrentColor();
+		int[] RGB = this.driver.getCurrentColor(0);
 
 		int r = RGB[0];
 		int g = RGB[1];

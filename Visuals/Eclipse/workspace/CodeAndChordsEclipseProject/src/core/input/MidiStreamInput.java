@@ -247,4 +247,11 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		return subArray;
 	}
 
+
+	@Override
+	public boolean isRealTime() 
+	{
+		return true;
+	}
+
 }

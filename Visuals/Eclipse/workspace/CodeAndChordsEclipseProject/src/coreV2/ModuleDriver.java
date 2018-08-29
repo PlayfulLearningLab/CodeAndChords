@@ -67,63 +67,70 @@ public class ModuleDriver implements PConstants
 	 * The Parent PApplet that is passed in by the user.
 	 */
 	private PApplet 				parent;
+	
+	private InputHandler			inputHandler;
 
 	private ControlP5 				cp5;
-
-	private InputHandler		 	inputHandler;
-
-	private Follower[]				follower;
-
-	private boolean					useFollowers;
-
-	private ColorScheme				colorHandler;
 
 	private Canvas 					canvas;
 
 	private MenuGroup				menuGroup;
-
 	
+	private ColorScheme[]			colorSchemes;
+	private ColorWrapper[]			currentColors;
+
+
 	public ModuleDriver(PApplet parent)
-	{		
+	{
 		if(parent == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
 
 		this.parent = parent;
-
+		
 		this.cp5 = new ControlP5(this.parent);
 		this.cp5.getTab("default").hide();
 
 		this.parent.registerMethod("pre", this);
 		this.parent.registerMethod("keyEvent", this);
 
-		this.inputHandler = InputHandler.makeInputHandler(this.parent);
-		this.colorHandler = new ColorScheme(this, 0);
+		this.inputHandler = new InputHandler(this);
 		this.canvas = new Canvas(this.parent);
 
-
 		this.menuGroup = new MenuGroup(this);
-		//this.menuGroup.addMenu(new InputMenu(this));
+		this.menuGroup.addMenu(new InputMenu(this));
 		//this.menuGroup.addMenu(new ColorMenu(this));
 		//this.menu.addMenu(new SensitivityMenu(this));
 
-
-		this.useFollowers = true;
-		this.follower = new Follower[this.inputHandler.getActiveRealTimeInputs().length];
-		for(int i = 0; i < this.follower.length; i++)
-		{
-			this.follower[i] = new Follower();
-		}
-
+		this.colorSchemes = new ColorScheme[]{ new ColorScheme(this)};
+		this.currentColors = new ColorWrapper[] {new ColorWrapper(0, 0, 0, parent)};
 	}
 
 	public void pre()
 	{
-		if(this.colorHandler != null)
+		for(int i = 0; i < this.inputHandler.getCurNumInputs(); i++)
 		{
-			this.colorHandler.setColorToMatchMonoPitch();
+			this.setColorToMatchMonoPitch(i);
 		}
-
+			
 		this.canvas.drawAppletBackground();
 	}//pre()
+
+	private void setColorToMatchMonoPitch(int inputNum)
+	{
+		InputHandler inputHandler = this.inputHandler;
+
+		int midiNote = (int) inputHandler.getMidiNote(inputNum);
+		midiNote = midiNote % 12;
+
+		if(inputHandler.getAmplitude(inputNum) > this.getInputMenu().getPianoThreshold())
+		{
+			this.currentColors[inputNum].setTargetColor(this.colorSchemes[inputNum].getPitchColor(midiNote));
+		}
+		else
+		{
+			this.currentColors[inputNum].setTargetColor(this.colorSchemes[inputNum].getCanvasColor());
+		}
+
+	}
 
 	public void keyEvent(KeyEvent e)
 	{	
@@ -156,33 +163,61 @@ public class ModuleDriver implements PConstants
 		return this.cp5;
 	}
 
-
-	/*
-	public Follower getFollower(int inputNum)
-	{
-		if(inputNum > this.totalNumInputs)
-		{
-			throw new IllegalArgumentException("input number is invalid: it is too high");
-		}
-
-		return this.follower[inputNum];
-	}
-
-	 */
-
 	public Canvas getCanvas()
 	{
 		return this.canvas;
 	}
-
-	public ColorScheme getColorScheme()
+	
+	public InputHandler getInputHandler()
 	{
-		return this.colorHandler;
+		return this.inputHandler;
 	}
 
 	public MenuGroup getMenuGroup()
 	{
 		return this.menuGroup;
+	}
+	
+	public void updateNumInputs()
+	{
+		int numInputs = this.inputHandler.getCurNumInputs();
+		
+		ColorScheme[] newSchemes = new ColorScheme[numInputs];
+		ColorWrapper[] newWrappers = new ColorWrapper[numInputs];
+		
+		if(numInputs > this.colorSchemes.length)
+		{
+			for(int i = 0; i < this.colorSchemes.length; i++)
+			{
+				newSchemes[i] = this.colorSchemes[i];
+				newWrappers[i] = this.currentColors[i];
+			}
+			
+			for(int i = this.colorSchemes.length; i < numInputs; i++)
+			{
+				newSchemes[i] = new ColorScheme(this);
+				newWrappers[i] = new ColorWrapper(0, 0, 0, this.parent);
+			}
+			
+			this.colorSchemes = newSchemes;
+			this.currentColors = newWrappers;
+		}
+
+	}
+	
+	public int[] getCurrentColor(int inputNum)
+	{
+		return this.currentColors[inputNum].getColor();
+	}
+	
+	public ColorScheme getColorScheme(int inputNum)
+	{
+		return this.colorSchemes[inputNum];
+	}
+	
+	public InputMenu getInputMenu()
+	{
+		return (InputMenu) this.menuGroup.getMenus()[0];
 	}
 
 }
