@@ -4569,6 +4569,12 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.recInput;
 	}
-
+	
+	public void invert()
+	{
+		this.curHue[0][0] = 255 - getCurHue()[0][0];
+		this.curHue[0][1] = 255 - getCurHue()[0][1];
+		this.curHue[0][2] = 255 - getCurHue()[0][2];
+	}
 
 } // ModuleMenu
