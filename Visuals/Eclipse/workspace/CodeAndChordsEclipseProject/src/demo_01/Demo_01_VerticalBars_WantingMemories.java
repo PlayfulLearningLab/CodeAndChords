@@ -1,10 +1,8 @@
 package demo_01;
 
 import controlP5.ControlP5;
-import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
 import core.input.RecordedInput;
 import processing.core.PApplet;
 
@@ -12,16 +10,12 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 	/**
 	 * 
 	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
-	 * Emily Meuer
-
+	 * Emily Meuer, Dan Mahota
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Each vertical bar changes hue based on the pitch and height based on the amplitude of its 
+	 * respective input;
+	 * see Demo_01_VerticalBars.java for in-text explanatory comments.
 	 */
 
 	private float[]	barVel;
@@ -62,9 +56,6 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 			this.barVel[i] = 0;
 		}
 
-		// TODO: test with more inputs than are supported
-		//		this.input	= new Input(2, this);
-//		this.input	= new RealTimeInput(16, true, this);
 		
 		this.recordedInput	= new RecordedInput(this, new String[] { 
 				"WantingMemories_Melody.wav",
@@ -79,15 +70,6 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.recordedInput, 12);
-		/*
-		 * 		this.shapes	= new Shape[12];
-		for(int i = 0; i < this.shapes.length; i++)
-		{
-			this.shapes[i]	= new Shape(this);
-			this.shapes[i].setCurrentShape("supershape", 
-					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
-		} // for - i
-		 */
 
 		this.setSquareValues();
 
@@ -127,7 +109,7 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 				((this.width / 3) * 2) - 40	
 		};
 
-		// call add methods:
+		// call add methods (as of 2018, this is the old way to do it):
 
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
 
@@ -191,11 +173,9 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		.setLabel("Dynamic Bar Height")
 		.getCaptionLabel()
 		.align(ControlP5.CENTER, ControlP5.CENTER);
-//		.setVisible(false);
 		
 
 		this.menu.getOutsideButtonsCP5().getController("play").hide();
-//		this.menu.getOutsideButtonsCP5().getController("play").setVisible(false);
 
 		this.scaleDegree	= 0;
 	} // setup()
@@ -208,20 +188,16 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			this.amplitude[i] = this.recordedInput.getAmplitude(i);
-		}
 
-		
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 
 			if(this.amplitude[i] > this.menu.getPianoThreshold(i))
 			{
-				this.scaleDegree	= (round(this.recordedInput.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;				
+				this.scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;				
 			}
 
-			this.menu.fade(this.scaleDegree, i);
+			this.menu.fadeColor(this.scaleDegree, i);
 
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 
@@ -294,17 +270,6 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 		} // for
 
 		this.menu.runMenu();
-
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
 
 	} // draw()
 

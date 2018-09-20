@@ -4,9 +4,16 @@ import controlP5.ControlP5;
 import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 
+/**
+ * For Catholic Studies Talent Show, Spring 2018.
+ * Pretty much just Demo_01_VerticalBars, with scenes and definable input numbers for convenience.
+ * 
+ * @author Emily Meuer
+ *
+ */
 public class TalentShow extends Module {
 
 	private	static final int	SCENE_DEMO				= 0;
@@ -42,7 +49,7 @@ public class TalentShow extends Module {
 	public void setup()
 	{
 		this.totalNumInputs	= 24;
-		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
+		this.input			= new MicrophoneInput(this.totalNumInputs, false, this);
 		// Setting this to 1 so that we have a nicely sized legend for the demo; no one else will use it.
 		this.curNumInputs	= 1;
 
@@ -57,10 +64,8 @@ public class TalentShow extends Module {
 
 		this.menu.setAlphaSlider(255);
 
-		// Starts on "If I Were A Boy":
 		this.menu.showColorMenu();
 
-		//			this.menu.setGlobal(true);
 		((Toggle)this.menu.getControlP5().getController("global")).setValue(true);
 		this.menu.setCurKey(this.menu.getCurKey(), 2);	// set to Chromatic
 
@@ -116,7 +121,7 @@ public class TalentShow extends Module {
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.demoInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
-			this.menu.fade(scaleDegree, this.demoInput);
+			this.menu.fadeColor(scaleDegree, this.demoInput);
 
 			this.fill(this.menu.getCurHue()[this.demoInput][0], this.menu.getCurHue()[this.demoInput][1], this.menu.getCurHue()[this.demoInput][2], this.menu.getAlphaVal());
 
@@ -131,7 +136,7 @@ public class TalentShow extends Module {
 			{					
 				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(inputNums[i])) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
-				this.menu.fade(scaleDegree, inputNums[i]);
+				this.menu.fadeColor(scaleDegree, inputNums[i]);
 
 				this.fill(this.menu.getCurHue()[inputNums[i]][0], this.menu.getCurHue()[inputNums[i]][1], this.menu.getCurHue()[inputNums[i]][2], this.menu.getAlphaVal());
 

@@ -204,7 +204,7 @@ public class Demo_01_VerticalBars_WantingMemories extends Module {
 
 			scaleDegree	= (round(recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
 

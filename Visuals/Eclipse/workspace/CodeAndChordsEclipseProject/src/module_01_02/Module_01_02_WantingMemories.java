@@ -10,16 +10,11 @@ public class Module_01_02_WantingMemories extends Module
 	/**
 	 * 
 	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
 	 * Emily Meuer
-
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Square for each input, and the background color changes hue based on pitch; plays Wanting Memories;
+	 * see Module_01_PitchHue.java for explanatory comments.
 	 */
 
 	public static void main(String[] args)
@@ -29,15 +24,6 @@ public class Module_01_02_WantingMemories extends Module
 
 	private	RecordedInput	recInput;
 	
-	private	int[]	canvasColor;
-	
-/*	private	int		numInputs;
-
-	private	int[]	xVals;
-	private	int[]	yVals;
-	private	int[]	rectWidths;
-	private	int[]	rectHeights;
-*/
 	
 	public void setup() 
 	{
@@ -58,6 +44,7 @@ public class Module_01_02_WantingMemories extends Module
 		
 		this.menu	= new ModuleMenu(this, this, this.recInput, 12);
 
+		// Determines the size and (x, y) positions of each square based on the current number of inputs:
 		this.setSquareValues();
 
 		// call add methods:
@@ -69,9 +56,9 @@ public class Module_01_02_WantingMemories extends Module
 	
 	public void draw()
 	{
-		this.canvasColor	= this.menu.getCanvasColor();
-		this.background(canvasColor[0], canvasColor[1], canvasColor[2]);
 		int	scaleDegree;
+		int	curX;
+		int	curY;
 		
 		// The following line is necessary so that key press shows the menu button
 		if (keyPressed == true && !this.menu.getIsRunning()) 
@@ -83,19 +70,14 @@ public class Module_01_02_WantingMemories extends Module
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 //					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
-			
-//			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i + 1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			scaleDegree	= (round(this.recInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 
-			this.menu.fade(scaleDegree, i);
+			this.menu.fadeColor(scaleDegree, i);
 			
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
-			
-			int	curX;
-			int	curY;
-			
+
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 			this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
@@ -112,6 +94,11 @@ public class Module_01_02_WantingMemories extends Module
 	} // draw()
 	
 	
+	/**
+	 * Every Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());

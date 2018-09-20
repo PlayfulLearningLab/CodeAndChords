@@ -1,28 +1,19 @@
 package demo_01;
 
 import controlP5.ControlP5;
-import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
-import core.input.RecordedInput;
-import net.beadsproject.beads.core.AudioContext;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 
 public class Demo_01_VerticalBars extends Module {
 	/**
 	 * 
 	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
-	 * Emily Meuer
-
+	 * Emily Meuer, Dan Mahota
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Each vertical bar changes hue based on the pitch and height based on the amplitude of its respective input.
 	 */
 
 	private float[]	barVel;
@@ -32,8 +23,6 @@ public class Demo_01_VerticalBars extends Module {
 	{
 		PApplet.main("demo_01.Demo_01_VerticalBars");
 	} // main
-
-//	private RealTimeInput  input;
 
 	public void settings()
 	{
@@ -54,22 +43,11 @@ public class Demo_01_VerticalBars extends Module {
 			this.barVel[i] = 0;
 		}
 
-//		this.input	= new RealTimeInput(1, new AudioContext(), false, this);
-//		this.input	= new RealTimeInput(1, this);
-		this.input	= new RealTimeInput(16, true, this);
+		this.input	= new MicrophoneInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
-		/*
-		 * 		this.shapes	= new Shape[12];
-		for(int i = 0; i < this.shapes.length; i++)
-		{
-			this.shapes[i]	= new Shape(this);
-			this.shapes[i].setCurrentShape("supershape", 
-					new float[] { 1, 1, 4, 4, 1, 1, 1 } );
-		} // for - i
-		 */
 
 		this.setSquareValues();
 
@@ -108,7 +86,7 @@ public class Demo_01_VerticalBars extends Module {
 				((this.width / 3) * 2) - 40	
 		};
 
-		// call add methods:
+		// Call add methods (as of 2018, this is the old way to do it - use add____Menu() instead):
 
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
 
@@ -135,7 +113,6 @@ public class Demo_01_VerticalBars extends Module {
 		modulateYVals[2]	= textYVals[12];
 
 		// Adding ColorSelect first since everything to do with colors depends on that:
-
 		this.menu.addColorSelect(controllerXVals[0], new int[] { textYVals[15], textYVals[16], textYVals[17] }, this.menu.noteNames, "Custom Pitch\nColor Select", false, "color");
 
 
@@ -157,8 +134,6 @@ public class Demo_01_VerticalBars extends Module {
 
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 
-//		this.menu.setMenuList(new String[] {"Canvas", "Module Menu"});
-		
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
 		.setPosition(700, 20)
@@ -167,11 +142,8 @@ public class Demo_01_VerticalBars extends Module {
 		.setLabel("Dynamic Bar Height")
 		.getCaptionLabel()
 		.align(ControlP5.CENTER, ControlP5.CENTER);
-//		.setVisible(false);
 		
-
 		this.menu.getOutsideButtonsCP5().getController("play").hide();
-//		this.menu.getOutsideButtonsCP5().getController("play").setVisible(false);
 
 	} // setup()
 
@@ -179,38 +151,35 @@ public class Demo_01_VerticalBars extends Module {
 	public void draw()
 	{
 		int	scaleDegree;
+		int	curX;
+		int	curY;
 
 		this.background(0);
 
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
 			this.amplitude[i] = this.input.getAmplitude(i);
-		}
-
-		
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
+			
 			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i + 1) + ") = " + input.getAdjustedFundAsMidiNote(i + 1) + 
 			//					"; input.getAmplitude(" + (i + 1) + ") = " + input.getAmplitude(1 + 1));
 
+			// Get the current pitch for this input:
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(scaleDegree, i);
+			// Send that pitch to set the current color:
+			this.menu.fadeColor(scaleDegree, i);
 
+			// Use current color:
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-
-			int	curX;
-			int	curY;
 
 			curX	= (int)this.menu.mapCurrentXPos(this.xVals[i]);
 			curY	= (int)this.menu.mapCurrentYPos(this.yVals[i]);
 
-			
+			// getDynamicBars = bars controlled by amplitude, else they are simply the height of the screen.
 			if(this.menu.getDynamicBars())
 			{
 				//Value from 0 to 1 to act as a percent of the screen that should be covered
-				float amp = (float) Math.min(1, this.amplitude[i] / 100/*max amp*/);
-				//amp = (float) Math.max(amp, .1);
+				float amp = (float) Math.min(1, this.amplitude[i] / 100);
 
 				if(amp > this.barPos[i])
 				{
@@ -231,37 +200,37 @@ public class Demo_01_VerticalBars extends Module {
 					}
 				}
 
-
 				//this.barPos[i] = Math.max(this.barPos[i] + this.barVel[i], 0);
 				this.barPos[i] = this.barPos[i] + (amp - this.barPos[i])/10;
-
 
 				//System.out.println("Input number " + i + " - Amplitude = " + this.amplitude[i]);
 				//System.out.println("Input number " + i + " - amp = " + this.barPos[i]);
 
 				this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[i]*(this.height/2)), this.rectWidths[i], this.height*this.barPos[i]);
-			}
-			else
-			{
+			} else {
 				this.rect(curX, curY, this.rectWidths[i], this.rectHeights[i]);
 			}
-			
 
-		
+
+			// Draw the legend (if we haven't chosen to hide it - that's controlled in the Menu):
 			if(this.menu.isShowScale())
 			{
 				this.legend(scaleDegree, i);
-				System.out.println("drawing legend; scaleDegree = " + scaleDegree + "; i = " + i);
 			}
 
 		} // for
 
+		// Must be called each time through draw)( for every Module with a Menu (this will change Summer 2018):
 		this.menu.runMenu();
-
 
 	} // draw()
 
 
+	/**
+	 * Every Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());

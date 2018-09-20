@@ -2,13 +2,18 @@ package module_01_04;
 
 import core.Module;
 import core.ModuleMenu;
-import core.Shape;
-import core.ShapeEditor;
-import core.input.RealTimeInput;
-import core.input.RecordedInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
+/**
+ * A cool accident when trying to make Module_01_04 multi-input:
+ * same colored bars, but each input goes diagonally down the screen a few times.
+ * Kind of confusing right now, but could be fun to play with.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Module_01_04_VerticalHue extends Module {
 
 	int[][] move;
@@ -24,7 +29,7 @@ public class Module_01_04_VerticalHue extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		this.input	= new MicrophoneInput(16, new AudioContext(), true, this);
 		//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 3;
@@ -81,7 +86,7 @@ public class Module_01_04_VerticalHue extends Module {
 			{
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
 
-			this.menu.fade(scaleDegree, j);
+			this.menu.fadeColor(scaleDegree, j);
 
 
 		
@@ -117,14 +122,9 @@ public class Module_01_04_VerticalHue extends Module {
 		}
 		
 
-
-
 		//rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0), width - this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(height));
 
 		//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
-
-
-
 
 		//if(this.menu.isShowScale())
 	//{
@@ -132,12 +132,6 @@ public class Module_01_04_VerticalHue extends Module {
 			//this.legend(scaleDegree, j);
 		//}
 
-		
-
-
-
-
-		//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
 
 
@@ -148,12 +142,6 @@ public class Module_01_04_VerticalHue extends Module {
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-
-	public void mouseDragged()
-	{
-		this.mousePressed();
-	}
-
 
 
 }

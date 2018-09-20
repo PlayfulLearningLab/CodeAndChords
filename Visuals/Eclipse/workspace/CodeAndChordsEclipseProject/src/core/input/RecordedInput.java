@@ -149,4 +149,10 @@ public class RecordedInput extends Input {
 		} catch(NullPointerException npe)  {}
 	} // setFund
 
+	@Override
+	public int getMidiNote() 
+	{
+		return (int) Math.round(this.getAdjustedFundAsMidiNote());
+	}
+
 }

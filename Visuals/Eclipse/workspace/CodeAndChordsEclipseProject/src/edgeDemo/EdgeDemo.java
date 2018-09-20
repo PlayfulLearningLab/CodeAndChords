@@ -4,11 +4,19 @@ import controlP5.ControlP5;
 import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 
+/**
+ * Demo for Edgertones (Feb. 2017)
+ * 
+ * Same as Demo_01_VerticalBars.java, but with different colors and hidden Menu.
+ * @author codeandchords
+ *
+ */
 public class EdgeDemo extends Module {
 
+	// Keycodes of each scene (49 = 1, 50 = 2) to enable scene change on key press:
 	private	static final int	SCENE_BOY			= 49;	// 1
 	private	static final int	SCENE_BOY_DYNAMIC	= 50;	// 2
 
@@ -32,10 +40,9 @@ public class EdgeDemo extends Module {
 
 	public void setup()
 	{
-		// Giving it 13 so that it will skip 5-8 and end up with 9 total:
 		this.totalNumInputs	= 4;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
+		this.input			= new MicrophoneInput(this.totalNumInputs, false, this);
 		this.curNumInputs	= this.input.getAdjustedNumInputs();
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
@@ -49,8 +56,7 @@ public class EdgeDemo extends Module {
 		this.menu.setTrichromFlag(true);
 
 		this.menu.setAlphaSlider(255);
-
-		// Starts on "If I Were A Boy":
+		
 		this.menu.showColorMenu();
 
 		//			this.menu.setGlobal(true);
@@ -83,6 +89,7 @@ public class EdgeDemo extends Module {
 
 		this.setSquareValues();
 
+		// This Button allows the dynamicBar functionality to be turned on or off in the Menu:
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
 		.setPosition(700, 20)
@@ -110,9 +117,18 @@ public class EdgeDemo extends Module {
 
 		this.drawScene();
 		this.menu.runMenu();
+		
+		int	fadeThis	= 0;
 
+		this.menu.universalFade(fadeThis);
+		
+		System.out.println("fadeThis = " + fadeThis);
 	} // draw
 
+	/*
+	 * The body of each if() is the part of the program that would be in the draw() method 
+	 * if that particular scene was an independent Module.
+	 */
 	private void drawScene()
 	{
 		if(this.curScene == EdgeDemo.SCENE_BOY)
@@ -122,7 +138,7 @@ public class EdgeDemo extends Module {
 
 				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
-				this.menu.fade(scaleDegree, i);
+				this.menu.fadeColor(scaleDegree, i);
 
 				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -144,7 +160,7 @@ public class EdgeDemo extends Module {
 			{					
 				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
 
-				this.menu.fade(scaleDegree, i);
+				this.menu.fadeColor(scaleDegree, i);
 
 				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -187,6 +203,10 @@ public class EdgeDemo extends Module {
 	} // drawScene
 
 
+	/*
+	 * Scene changes happen on key press;
+	 * each if() body is essentially the setup() for that particular scene.
+	 */
 	public void keyPressed()
 	{
 		int	key	= (int)this.key;

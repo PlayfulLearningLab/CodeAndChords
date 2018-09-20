@@ -16,7 +16,7 @@ import controlP5.Textfield;
 import controlP5.Toggle;
 import core.Instrument;
 import core.Melody;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -84,7 +84,7 @@ public class ModuleTemplate_01_04 {
 	private	PApplet		parent;
 	//	public ControlP5 	nonSidebarCP5;
 	private ControlP5 	sidebarCP5;
-	private	RealTimeInput		input;
+	private	MicrophoneInput		input;
 
 
 	private	int			leftAlign;
@@ -237,7 +237,7 @@ public class ModuleTemplate_01_04 {
 	private	int			firstColorSelectId	= canvasColorSelectId;
 	private	int			lastColorSelectId	= 74;
 
-	public ModuleTemplate_01_04(PApplet parent, RealTimeInput input, String sidebarTitle)
+	public ModuleTemplate_01_04(PApplet parent, MicrophoneInput input, String sidebarTitle)
 	{
 		this.parent	= parent;
 		this.input	= input;

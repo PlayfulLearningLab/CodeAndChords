@@ -2,13 +2,18 @@ package module_01_04;
 
 import core.Module;
 import core.ModuleMenu;
-import core.Shape;
-import core.ShapeEditor;
-import core.input.RealTimeInput;
-import core.input.RecordedInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
+/**
+ * Kristina's intro to C+C;
+ * colored bars move across the screen, with color determined by pitch.
+ * Currently supports only one input.
+ * 
+ * @author codeandchords
+ *
+ */
 public class Module_01_04_PitchHue_Kristina extends Module {
 
 	int[][][] move;
@@ -24,7 +29,8 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		this.input	= new MicrophoneInput(16, new AudioContext(), true, this);
+
 		//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 7;
@@ -39,7 +45,6 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
 
-		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 		background(255);
 		int[] color;
 
@@ -53,9 +58,6 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 		checkpoint = this.millis(); 
 		//System.out.println(this.width + ";" + (this.width/185) + ";" + (this.height));
 
-
-
-		//		this.menu.shapeEditor = this.shapeEditor;
 
 	} // setup()
 
@@ -75,87 +77,66 @@ public class Module_01_04_PitchHue_Kristina extends Module {
 
 		//System.out.println("****** CurNumInputs = " + this.curNumInputs + "  *******");
 
-		
-		if(checkpoint < this.millis())
+
+		for(int i = 0; i < this.getCurNumInputs(); i++)
 		{
-			for(int j = 0; j < move.length; j++)
+
+			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+
+			this.menu.fadeColor(scaleDegree, i);
+
+			hold2[0] = this.menu.getCurHue()[0][0];
+			hold2[1] = this.menu.getCurHue()[0][1];
+			hold2[2] = this.menu.getCurHue()[0][2];
+
+			if(checkpoint < this.millis())
 			{
-				if(this.menu.getUseRecInput())
+				for(int j = 0; j < move.length; j++)
 				{
-					scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
-				} else {
-					scaleDegree	= (round(input.getAdjustedFundAsMidiNote(j)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) %12;
+					hold1[0] = move[i][j][0];
+					hold1[1] = move[i][j][1];
+					hold1[2] = move[i][j][2];
+
+
+					move[i][j][0] = hold2[0];
+					move[i][j][1] = hold2[1];
+					move[i][j][2] = hold2[2];
+
+					//System.out.println(this.width/move.length);
+					fill(move[i][j][0], move[i][j][1], move[i][j][2]);
+					rect(((this.width/move.length)*(j)), (this.height/3) * i, (this.width/move.length), this.height/3);
+
+					hold2[0] = hold1[0];
+					hold2[1] = hold1[1];
+					hold2[2] = hold1[2];
+
 				}
-
-			this.menu.fade(scaleDegree, j);
-
-
-		
-			
-			hold2[0] = this.menu.getCurHue()[j][0];
-			hold2[1] = this.menu.getCurHue()[j][1];
-			hold2[2] = this.menu.getCurHue()[j][2];
-			
-			for(int i = 0; i < move[j].length; i++)
-			{	
-
-				hold1[0] = move[j][i][0];
-				hold1[1] = move[j][i][1];
-				hold1[2] = move[j][i][2];
-
-
-				move[j][i][0] = hold2[0];
-				move[j][i][1] = hold2[1];
-				move[j][i][2] = hold2[2];
-
-			
-				fill(move[j][i][0], move[j][i][1], move[j][i][2]);
-				rect(((this.width/move[j].length)*(i)),(this.height/this.curNumInputs)*j,(this.width/move.length), this.height/this.curNumInputs);
-			
-				
-				hold2[0] = hold1[0];
-				hold2[1] = hold1[1];
-				hold2[2] = hold1[2];
-			
+				//checkpoint = this.millis() + 100;
 			}
-			//checkpoint = this.millis() + 100;
-			}
-		}
+		} // for - numInputs
+
+		//rect(((this.width/move.length)*(i)),(this.height/3)*1 ,(this.width/move.length), this.height/3);
+		//rect(((this.width/move.length)*(i)),(this.height/3)*2 ,(this.width/move.length), this.height/3);
+
+
+
 		//rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0), width - this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(height));
 
 		//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
-
-
-
-		//if(this.menu.isShowScale())
-	//{
-			//draws the legend along the bottom of the screen:
-			//this.legend(scaleDegree, j);
-		//}
-
-		
-
-
-
-
 		//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
 
-
 	} // draw()
 
-
+	/**
+	 * Each Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-
-	public void mouseDragged()
-	{
-		this.mousePressed();
-	}
-
-
 
 }

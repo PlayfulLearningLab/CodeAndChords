@@ -3,24 +3,17 @@ package demo_02;
 import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
-import core.input.RecordedInput;
+import core.input.MicrophoneInput;
 
 public class Demo_02_PitchHueCircles extends Module
 {
 	/**
 	 * 
 	 * 
- 1/4/2016
- Emily
-
 	 * 08/01/2016
 	 * Emily Meuer
-
 	 *
-	 * Background changes hue based on pitch.
-	 *
-	 * (Adapted from Examples => Color => Hue.)
+	 * Concentric circles, each corresponding to a particular input, with background color controlled by pitch.
 	 */
 
 	public static void main(String[] args)
@@ -31,14 +24,18 @@ public class Demo_02_PitchHueCircles extends Module
 	
 	private	int[]	circleDiams;
 	
+	/**
+	 * Overrides the usual Module size.
+	 */
 	public void settings()
 	{
 		fullScreen();
 	}
 	
+	
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(4, this);
+		this.input	= new MicrophoneInput(4, this);
 
 		
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
@@ -83,16 +80,12 @@ public class Demo_02_PitchHueCircles extends Module
 				((this.width / 3) * 2) - 40	
 			};
 
-		// call add methods:
+		// Call add methods (old version; use add____Menu() [which may also change after Summer 2018]):
 		
 		this.menu.addHideButtons(controllerXVals[0], textYVals[1]);
 		
-//		this.menu.addSliders(textYVals[1], textYVals[2], textYVals[3], textYVals[4]);
 		this.menu.addPianoThresholdSlider(controllerXVals[0], textYVals[2]);
 		this.menu.addForteThresholdSlider(controllerXVals[0], textYVals[3]);
-
-		// Adding inputNumSelect first so that inputSelect can be in front:
-//		this.menu.addInputNumSelect(controllerXVals[0], textYVals[5]);
 		
 		this.menu.addGuideTonePopout(controllerXVals[0], textYVals[5]);
 
@@ -139,59 +132,56 @@ public class Demo_02_PitchHueCircles extends Module
 		this.menu.addThresholdSliders(controllerXVals[2], textYVals[1], 5);
 		this.menu.setBrightnessPercentSlider(1);
 
-//		this.menu.setColorStyle(ModuleTemplate01.CS_RAINBOW);
-
 		this.menu.getControlP5().getController("keyDropdown").bringToFront();
 		
 		this.menu.getOutsideButtonsCP5().getController("play").hide();
-
 
 	} // setup()
 
 	
 	public void draw()
 	{
-		int	scaleDegree;			
+		int	scaleDegree;					
+		int	curX;
+		int	curY;
 		
 		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 		
-		
+		// Going down backwards so that the circles layer, smallest on top:
 		for(int i = (this.curNumInputs - 1); i >= 0; i--)
-//		for(int i = 0; i < this.curNumInputs; i++)
 		{
 //			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + recordedInput.getAdjustedFundAsMidiNote(i) + 
 //					"; input.getAmplitude(" + (i) + ") = " + recordedInput.getAmplitude(i));
 		
-			scaleDegree	= (round(input.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-//			scaleDegree	= (round(this.recordedInput.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			
-//			System.out.println(i + ": scaleDegree = " + scaleDegree);
-			
-			this.menu.fade(scaleDegree, i);
-			
+			// The usual drill: get the current pitch; use it to determine the color; get that color:
+			scaleDegree	= (round(input.getFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;			
+			this.menu.fadeColor(scaleDegree, i);
 			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2]);
-
-			int	curX;
-			int	curY;
 			
 			curX	= (int)this.menu.mapCurrentXPos(this.width / 2);
 			curY	= (int)this.menu.mapCurrentYPos(this.height / 2);
 			this.ellipse(curX, curY, this.circleDiams[i], this.circleDiams[i]);
 			
+			// Draw the legend (if we haven't chosen to hide it - that's controlled in the Menu):
 			if(this.menu.isShowScale())
 			{
-//				this.legend(scaleDegree, i);
+				// This legend has two inputs on the top and two on the bottom in an attempt
+				// to match a little more intuitively with the circles:
 				this.okGoLegend(scaleDegree, i);
 			}
 
 		} // for
-		
-		this.menu.runMenu();
 
+		// Must be called each time through draw)( for every Module with a Menu (this will change Summer 2018):
+		this.menu.runMenu();
 
 	} // draw()
 	
-	
+	/**
+	 * Every Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());

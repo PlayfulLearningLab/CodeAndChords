@@ -14,7 +14,7 @@ import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
 import processing.core.PApplet;
 
-public abstract class Input {
+public abstract class Input implements MusicalInput {
 
 	/**
 	 * 08/30/2017
@@ -537,7 +537,8 @@ public abstract class Input {
 		{
 			for(int i = 0; i < newVal.length; i++)
 			{
-				this.amplitudeArray[i]	= newVal[i];
+				this.amplitudeArray[i]	= newVal[i] * 10000;
+				// TODO
 			} // for
 		} // if
 	} // setAmplitudeArray

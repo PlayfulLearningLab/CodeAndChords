@@ -6,13 +6,17 @@ import core.Module;
 import core.ModuleMenu;
 import core.Shape;
 import core.ShapeEditor;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
 public class SMM_Demo extends Module {
+
+
+	//////////////////////////////////////////////////////////////////
+	// Keycodes of each scene to enable scene change on key press:
 
 	// Initial demos:
 	private	static final int	SCENE_OPEN			= 57;	// 9
@@ -50,15 +54,17 @@ public class SMM_Demo extends Module {
 	private	static final int	SCENE_WINGS_DYNAMIC		= 91;	// [
 
 	private	int	curScene							= SMM_Demo.SCENE_OPEN;
-	
+
+	//////////////////////////////////////////////////////////////////
+	// Convenience variables to allow quick change of mic assignments:
 	private int talentShowInput	= 4;
 
 	private	int	clapInput0	= 0;
 	//	private	int	clapShape0	= 0;
-	
-	private	int	ampDemoInput	= 16;
+
+	private	int	ampDemoInput	= 0;
 	private	int	soloistInput	= 0;
-	private	int	lullabyInput	= 16;
+	private	int	lullabyInput	= 0;
 
 	private	int	trioInput0	= 0;	// Shahzore
 	private	int	trioInput1	= 1;	// Taylor
@@ -74,7 +80,7 @@ public class SMM_Demo extends Module {
 	//	private	int	rainbowRoundShape0	= 0;
 	private	int	rainbowRoundInput1	= 1;
 	//	private	int	rainbowRoundShape1	= 1;
-	private	int	rainbowRoundInput2	= this.betsieInput;
+	private	int	rainbowRoundInput2	= 2;
 	//	private	int	rainbowRoundShape2	= 2;
 
 	private	int	beatBoxInput	= 0;
@@ -102,15 +108,17 @@ public class SMM_Demo extends Module {
 
 	public void settings()
 	{
+		// The 2 sends it to the second monitor, which was projected:
 		this.fullScreen(2);
 	} // settings
 
 	public void setup()
 	{
+		// The 24 is from experiments with the OEC Auditorium sound board:
 		this.totalNumInputs	= 24;
 		this.curNumInputs	= 1;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
+		this.input			= new MicrophoneInput(this.totalNumInputs, false, this);
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
@@ -123,9 +131,6 @@ public class SMM_Demo extends Module {
 		this.menu.setDichromFlag(true);
 		this.menu.setTrichromFlag(true);
 
-		//		this.menu.addColorMenu(new String[] { "white" }, 1, null, false, null, 0, 0, "OneColor");
-
-
 		// Have to add this last, else it overwrites Controllers and causes an infinite loop:
 		this.menu.addShapeMenu(28);
 		this.shapeEditor	= this.menu.getShapeEditor();	// for convenience/speed
@@ -136,6 +141,7 @@ public class SMM_Demo extends Module {
 		this.shapeEditor.getShape().setShapeScale(3);
 		 */
 
+		//////////////////////////////////////////////////////////////////
 		// Starts on Betsie's scene:
 		this.curNumInputs	= 1;
 		//this.setSquareValues();
@@ -155,7 +161,7 @@ public class SMM_Demo extends Module {
 		this.menu.getOutsideButtonsCP5().getController("hamburger").hide();
 		this.menu.getOutsideButtonsCP5().getController("play").hide();	
 
-		//
+		//////////////////////////////////////////////////////////////////
 
 		this.verticalBarsDemo = true;
 		this.amplitude = new float[16];
@@ -169,6 +175,7 @@ public class SMM_Demo extends Module {
 			this.barVel[i] = 0;
 		}
 
+		// (Vertical bars still not incorporated into the Menu automatically at this point.)
 		this.menu.getControlP5().addToggle("dynamicBars")
 		.setSize(100, 40)
 		.setPosition(700, 20)
@@ -189,6 +196,7 @@ public class SMM_Demo extends Module {
 		this.noStroke();
 	} // setup
 
+
 	public void draw()
 	{
 		this.background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
@@ -198,12 +206,17 @@ public class SMM_Demo extends Module {
 
 	} // draw
 
+
+	/*
+	 * The body of each if() is the part of the program that would be in the draw() method 
+	 * if that particular scene was an independent Module.
+	 */
 	private void drawScene()
 	{
 		if(this.curScene == SMM_Demo.SCENE_OPEN)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.betsieInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.betsieInput);
+			this.menu.fadeColor(this.scaleDegree, this.betsieInput);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -213,7 +226,7 @@ public class SMM_Demo extends Module {
 
 		else if(this.curScene == SMM_Demo.SCENE_CLAP)
 		{
-			this.menu.fade(0, this.clapInput0);
+			this.menu.fadeColor(0, this.clapInput0);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -222,14 +235,12 @@ public class SMM_Demo extends Module {
 		} // SCENE_CLAP
 
 
-		if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
+		else if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
 		{
 
 			// First:
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(rainbowRoundInput0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, rainbowRoundInput0);
-
-			//			this.fill(this.menu.getCurHue()[rainbowRoundInput0][0], this.menu.getCurHue()[rainbowRoundInput0][1], this.menu.getCurHue()[rainbowRoundInput0][2]);
+			this.menu.fadeColor(this.scaleDegree, rainbowRoundInput0);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -238,9 +249,7 @@ public class SMM_Demo extends Module {
 
 			// Second:
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(rainbowRoundInput1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, rainbowRoundInput1);
-
-			//			this.fill(this.menu.getCurHue()[rainbowRoundInput1][0], this.menu.getCurHue()[rainbowRoundInput1][1], this.menu.getCurHue()[rainbowRoundInput1][2]);
+			this.menu.fadeColor(this.scaleDegree, rainbowRoundInput1);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -249,9 +258,7 @@ public class SMM_Demo extends Module {
 
 			// Third:
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(rainbowRoundInput2)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, rainbowRoundInput2);
-
-			//			this.fill(this.menu.getCurHue()[rainbowRoundInput2][0], this.menu.getCurHue()[rainbowRoundInput2][1], this.menu.getCurHue()[rainbowRoundInput2][2]);
+			this.menu.fadeColor(this.scaleDegree, rainbowRoundInput2);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -259,7 +266,7 @@ public class SMM_Demo extends Module {
 			}
 
 			// Draw the square over the bottom to make these a rainbow:
-			this.menu.fade(this.scaleDegree, 4);
+			this.menu.fadeColor(this.scaleDegree, 4);
 			if(!this.shapeEditor.getIsRunning())
 			{
 				this.shapeEditor.drawShape(4);
@@ -276,8 +283,8 @@ public class SMM_Demo extends Module {
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.soloistInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			System.out.println("scaleDegree = " + this.scaleDegree + "; amp = " + this.input.getAmplitude(this.soloistInput));
-			this.menu.fade(this.scaleDegree, this.soloistInput);
+			this.menu.fadeColor(this.scaleDegree, this.soloistInput);
+
 			this.curHue	= this.menu.getCurHue()[this.soloistInput];
 			this.fill(this.curHue[0], this.curHue[1], this.curHue[2]);
 
@@ -287,17 +294,17 @@ public class SMM_Demo extends Module {
 			if(this.menu.isShowScale())
 			{
 				// draws the legend along the bottom of the screen:
-//				this.legend(scaleDegree, this.soloistInput);
+				//				this.legend(scaleDegree, this.soloistInput);
 				this.legend(scaleDegree, 0);
 			} // if showScale
-		} // SCENE_SOLOIST et alia
+		} // SCENE_SOLOIST
 
 
 		else if(this.curScene == SMM_Demo.SCENE_LULLABY)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.lullabyInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(this.scaleDegree, this.lullabyInput);
+			this.menu.fadeColor(this.scaleDegree, this.lullabyInput);
 			this.curHue	= this.menu.getCurHue()[this.lullabyInput];
 			this.fill(this.curHue[0], this.curHue[1], this.curHue[2]);
 
@@ -307,7 +314,7 @@ public class SMM_Demo extends Module {
 			if(this.menu.isShowScale())
 			{
 				// draws the legend along the bottom of the screen:
-//				this.legend(scaleDegree, this.lullabyInput);
+				//				this.legend(scaleDegree, this.lullabyInput);
 				this.legend(scaleDegree, 0);
 			} // if showScale
 		} // SCENE_LULLABY
@@ -315,13 +322,13 @@ public class SMM_Demo extends Module {
 		if(this.curScene == SMM_Demo.SCENE_TRIO )
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.trioInput0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.trioInput0);
+			this.menu.fadeColor(this.scaleDegree, this.trioInput0);
 
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.trioInput1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.trioInput1);
+			this.menu.fadeColor(this.scaleDegree, this.trioInput1);
 
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.trioInput2)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.trioInput2);
+			this.menu.fadeColor(this.scaleDegree, this.trioInput2);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -335,7 +342,7 @@ public class SMM_Demo extends Module {
 		else if(this.curScene == SMM_Demo.SCENE_SHAH_HAL)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.shahInput0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.shahInput0);
+			this.menu.fadeColor(this.scaleDegree, this.shahInput0);
 
 			//				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -347,7 +354,7 @@ public class SMM_Demo extends Module {
 
 
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.shahInput1)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.shahInput1);
+			this.menu.fadeColor(this.scaleDegree, this.shahInput1);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -359,13 +366,13 @@ public class SMM_Demo extends Module {
 		else if(this.curScene == SMM_Demo.SCENE_SHAH_GIFTS)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.shahInput0)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.shahInput0);
+			this.menu.fadeColor(this.scaleDegree, this.shahInput0);
 
 			this.curHue	= this.menu.getCurHue()[this.shahInput0];
 			this.fill(this.curHue[0], this.curHue[1], this.curHue[2]);
 			this.rect(this.menu.mapCurrentXPos(0), this.menu.mapCurrentYPos(0),this.width, this.height);
 
-			this.menu.fade(this.scaleDegree, 4);
+			this.menu.fadeColor(this.scaleDegree, 4);
 			if(!this.shapeEditor.getIsRunning())
 			{
 				this.shapeEditor.drawShape(4);
@@ -376,7 +383,7 @@ public class SMM_Demo extends Module {
 				this.shapeEditor.drawShape(this.shahInput0);
 			}
 
-			
+
 			// TODO - did this actually set the attack?
 			// (Should the next one un-set it?)
 			this.menu.setAttRelTranVal(0, this.shahInput0, 100);
@@ -388,7 +395,7 @@ public class SMM_Demo extends Module {
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.taylorInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
-			this.menu.fade(this.scaleDegree, this.taylorInput);
+			this.menu.fadeColor(this.scaleDegree, this.taylorInput);
 
 			//				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -403,10 +410,10 @@ public class SMM_Demo extends Module {
 		else if(this.curScene == SMM_Demo.SCENE_CAT)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.taylorInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.taylorInput);
+			this.menu.fadeColor(this.scaleDegree, this.taylorInput);
 
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.betsieInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.betsieInput);
+			this.menu.fadeColor(this.scaleDegree, this.betsieInput);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -427,7 +434,7 @@ public class SMM_Demo extends Module {
 		else if(this.curScene == SMM_Demo.SCENE_RIVER)
 		{
 			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.taylorInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-			this.menu.fade(this.scaleDegree, this.taylorInput);
+			this.menu.fadeColor(this.scaleDegree, this.taylorInput);
 
 			if(!this.shapeEditor.getIsRunning())
 			{
@@ -437,79 +444,82 @@ public class SMM_Demo extends Module {
 
 		else if(this.curScene == SMM_Demo.SCENE_PRAYER)
 		{
+			// This scene is taken straight from Demo_01_VerticalBars.java;
+			// each bar is drawn individually so that we can specify this.taylorInput and this.betsieInput at the top.
+			
 			// Taylor:
-				this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.taylorInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-				this.menu.fade(scaleDegree, this.taylorInput);
+			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.taylorInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			this.menu.fadeColor(scaleDegree, this.taylorInput);
 
-				this.curHue	= this.menu.getCurHue()[this.taylorInput];
-				this.fill(this.curHue[0], this.curHue[1], this.curHue[2], this.menu.getAlphaVal());
+			this.curHue	= this.menu.getCurHue()[this.taylorInput];
+			this.fill(this.curHue[0], this.curHue[1], this.curHue[2], this.menu.getAlphaVal());
 
-				int	curX	= (int)this.menu.mapCurrentXPos(this.xVals[0]);
-				int	curY	= (int)this.menu.mapCurrentYPos(this.yVals[0]);
+			int	curX	= (int)this.menu.mapCurrentXPos(this.xVals[0]);
+			int	curY	= (int)this.menu.mapCurrentYPos(this.yVals[0]);
 
-					//Value from 0 to 1 to act as a percent of the screen that should be covered
-					float amp = (float) Math.min(1, this.input.getAmplitude(this.taylorInput) / 100/*max amp*/);
-					//amp = (float) Math.max(amp, .1);
+			//Value from 0 to 1 to act as a percent of the screen that should be covered
+			float amp = (float) Math.min(1, this.input.getAmplitude(this.taylorInput) / 100/*max amp*/);
+			//amp = (float) Math.max(amp, .1);
 
-					if(amp > this.barPos[0])
-					{
-						this.barVel[0] = (float) Math.min(this.barVel[0] + .02, .2);
+			if(amp > this.barPos[0])
+			{
+				this.barVel[0] = (float) Math.min(this.barVel[0] + .02, .2);
 
-						if(this.barVel[0] < 0)
-						{
-							this.barVel[0] = 0;
-						}
-					}
-					else
-					{
-						this.barVel[0] = (float) Math.max(this.barVel[0] - .02, -.2);
+				if(this.barVel[0] < 0)
+				{
+					this.barVel[0] = 0;
+				}
+			}
+			else
+			{
+				this.barVel[0] = (float) Math.max(this.barVel[0] - .02, -.2);
 
-						if(this.barVel[0] > 0)
-						{
-							this.barVel[0] = 0;
-						}
-					}
+				if(this.barVel[0] > 0)
+				{
+					this.barVel[0] = 0;
+				}
+			}
 
-					this.barPos[0] = this.barPos[0] + (amp - this.barPos[0])/10;
+			this.barPos[0] = this.barPos[0] + (amp - this.barPos[0])/10;
 
-					this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[0]*(this.height/2)), this.rectWidths[0], this.height*this.barPos[0]);
-	
-					// Betsie:
-					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.betsieInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
-					this.menu.fade(scaleDegree, this.betsieInput);
+			this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[0]*(this.height/2)), this.rectWidths[0], this.height*this.barPos[0]);
 
-					this.curHue	= this.menu.getCurHue()[this.betsieInput];
-					this.fill(this.curHue[0], this.curHue[1], this.curHue[2], this.menu.getAlphaVal());
+			// Betsie:
+			this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(this.betsieInput)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
+			this.menu.fadeColor(scaleDegree, this.betsieInput);
 
-					curX	= (int)this.menu.mapCurrentXPos(this.xVals[1]);
-					curY	= (int)this.menu.mapCurrentYPos(this.yVals[1]);
+			this.curHue	= this.menu.getCurHue()[this.betsieInput];
+			this.fill(this.curHue[0], this.curHue[1], this.curHue[2], this.menu.getAlphaVal());
 
-						//Value from 0 to 1 to act as a percent of the screen that should be covered
-						amp = (float) Math.min(1, this.input.getAmplitude(this.betsieInput) / 100/*max amp*/);
-						//amp = (float) Math.max(amp, .1);
+			curX	= (int)this.menu.mapCurrentXPos(this.xVals[1]);
+			curY	= (int)this.menu.mapCurrentYPos(this.yVals[1]);
 
-						if(amp > this.barPos[1])
-						{
-							this.barVel[1] = (float) Math.min(this.barVel[1] + .02, .2);
+			//Value from 0 to 1 to act as a percent of the screen that should be covered
+			amp = (float) Math.min(1, this.input.getAmplitude(this.betsieInput) / 100/*max amp*/);
+			//amp = (float) Math.max(amp, .1);
 
-							if(this.barVel[1] < 0)
-							{
-								this.barVel[1] = 0;
-							}
-						}
-						else
-						{
-							this.barVel[1] = (float) Math.max(this.barVel[1] - .02, -.2);
+			if(amp > this.barPos[1])
+			{
+				this.barVel[1] = (float) Math.min(this.barVel[1] + .02, .2);
 
-							if(this.barVel[1] > 0)
-							{
-								this.barVel[1] = 0;
-							}
-						}
+				if(this.barVel[1] < 0)
+				{
+					this.barVel[1] = 0;
+				}
+			}
+			else
+			{
+				this.barVel[1] = (float) Math.max(this.barVel[1] - .02, -.2);
 
-						this.barPos[1] = this.barPos[1] + (amp - this.barPos[1])/10;
+				if(this.barVel[1] > 0)
+				{
+					this.barVel[1] = 0;
+				}
+			}
 
-						this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[1]*(this.height/2)), this.rectWidths[1], this.height*this.barPos[1]);
+			this.barPos[1] = this.barPos[1] + (amp - this.barPos[1])/10;
+
+			this.rect(curX,this.menu.mapCurrentYPos((this.height/2)- this.barPos[1]*(this.height/2)), this.rectWidths[1], this.height*this.barPos[1]);
 
 		} // SCENE_PRAYER
 
@@ -526,8 +536,8 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				//					this.menu.fade(this.scaleDegree, i);
-				this.menu.fade(this.scaleDegree, i);
+				//					this.menu.fadeColor(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -541,8 +551,8 @@ public class SMM_Demo extends Module {
 		{
 			for(int i = 0; i < this.totalNumInputs; i++)
 			{
-				System.out.println("amp(" + i + ") = " + this.input.getAmplitude(i));
-				
+				//System.out.println("amp(" + i + ") = " + this.input.getAmplitude(i));
+
 				if(!this.menu.getRecInputPlaying())
 				{
 					this.scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;						
@@ -550,8 +560,8 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				//					this.menu.fade(this.scaleDegree, i);
-				this.menu.fade(this.scaleDegree, i);
+				//					this.menu.fadeColor(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				this.shapeEditor.getShapes()[i/* % this.shapeEditor.getShapes().length*/].setRotation(this.shapeEditor.getShapes()[i].getRotation() + (this.input.getAmplitude(i) / 1000));
 
@@ -574,8 +584,8 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				//					this.menu.fade(this.scaleDegree, i);
-				this.menu.fade(this.scaleDegree, i);
+				//					this.menu.fadeColor(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -596,7 +606,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(scaleDegree, i);
+				this.menu.fadeColor(scaleDegree, i);
 
 				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -619,7 +629,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(scaleDegree, i);
+				this.menu.fadeColor(scaleDegree, i);
 
 				this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
 
@@ -667,7 +677,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -689,7 +699,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -724,7 +734,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -759,7 +769,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -794,7 +804,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				if(!this.shapeEditor.getIsRunning())
 				{
@@ -829,7 +839,7 @@ public class SMM_Demo extends Module {
 					this.scaleDegree	= (round(this.menu.getRecInput().getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;												
 				}
 
-				this.menu.fade(this.scaleDegree, i);
+				this.menu.fadeColor(this.scaleDegree, i);
 
 				this.shapeEditor.getShapes()[i].setShapeScale(5 * ( Math.min((this.input.getAmplitude(i) / 1000), 1) ) );
 
@@ -856,21 +866,36 @@ public class SMM_Demo extends Module {
 	} // drawScene
 
 	
+	/*
+	 * Scene changes happen on key press;
+	 * each if() body is essentially the setup() for that particular scene.
+	 * 
+	 * Many places that would typically use a loop do each one manually instead
+	 * to allow specific definition of inputs (e.g., betsieInput, shahInput0, etc.).
+	 * 
+	 * As always, values are controlled by changing the controller (which will update the 
+	 * corresponding internal value) to keep the "model" and "view" in sync with each other.
+	 */
 	public void keyPressed()
 	{
 		int	key	= (int)this.key;
 
+		// Most scenes will not want the hamburger, so if they do, its their job to re-show it:
 		this.menu.getOutsideButtonsCP5().getController("hamburger").hide();
 		this.menu.setCanvasColor(new int[] { 0, 0, 0 });
 
+		// Resetting attack and release in case we were on either of the scenes that change that
+		// (Shahzore-Hallelujah and clapping):
 		this.menu.setAttRelTranVal(0, this.shahInput0, 400);
 		this.menu.setAttRelTranVal(1, this.shahInput0, 400);
-		
+
 		this.menu.setAttRelTranVal(0, this.clapInput0, 400);
 		this.menu.setAttRelTranVal(1, this.clapInput0, 400);
 
-		System.out.println("key = " + key);
+		System.out.println("key = " + key);	// Makes life easier
 
+		// That particular key turned on the dynamic bars (for Cadenza-Killing and B/T-Prayer);
+		// most of the other keys were set to a particular scene:
 		if(key == 107)
 		{
 			//			this.menu.setDynamicBars(!this.menu.getDynamicBars());
@@ -917,14 +942,14 @@ public class SMM_Demo extends Module {
 			this.menu.hideColorMenu();
 			//			this.menu.showColorMenu("OneColor");
 			this.menu.setColor(0, new int[] { 255,  255, 255 }, true);	
-			
+
 			this.menu.setAttRelTranVal(0, this.clapInput0, 50);
 			this.menu.setAttRelTranVal(1, this.clapInput0, 50);
 		}
 
 		else if(this.curScene == SMM_Demo.SCENE_RAINBOW_ROUND)
 		{
-			this.curNumInputs	= 3;
+			this.curNumInputs	= 5;
 			//this.setSquareValues();
 
 			this.menu.showShapeMenu();
@@ -1108,7 +1133,7 @@ public class SMM_Demo extends Module {
 
 			this.menu.setCurKey("F", 2);
 		} // SCENE_SHAH_HAL
-		
+
 		else if(this.curScene == SMM_Demo.SCENE_SHAH_GIFTS)
 		{
 			this.curNumInputs	= 1;
@@ -1246,8 +1271,8 @@ public class SMM_Demo extends Module {
 			this.menu.setAttRelTranVal(0, this.betsieInput, 400);
 			this.menu.setAttRelTranVal(1, this.betsieInput, 400);
 			this.menu.setAttRelTranVal(2, this.betsieInput, 400);
-			
-			this.curNumInputs	= 2;
+
+			this.curNumInputs	= 6;
 			this.setSquareValues();
 			this.menu.setCurKey(this.menu.getCurKey(), 2);
 
@@ -1272,7 +1297,7 @@ public class SMM_Demo extends Module {
 		//////////////////////////// Cadenza: ////////////////////////////
 		else if(this.curScene == SMM_Demo.SCENE_KILLING)
 		{
-			this.curNumInputs	= 7;
+			this.curNumInputs	= 6;
 			this.setSquareValues();
 
 			this.menu.showColorMenu();
@@ -1299,7 +1324,7 @@ public class SMM_Demo extends Module {
 
 		else if (this.curScene == SMM_Demo.SCENE_KILLING_DYNAMIC)
 		{
-			this.curNumInputs	= 7;
+			this.curNumInputs	= 6;
 			this.menu.setDynamicBars(true);
 			this.setSquareValues();
 
@@ -1347,7 +1372,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1390,7 +1415,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1433,7 +1458,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1476,7 +1501,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1514,7 +1539,7 @@ public class SMM_Demo extends Module {
 
 				curShape.setRotation(0.3f + (-0.6f * (i%2)));
 				//curShape.setRotation( (PConstants.HALF_PI / 4) + (PConstants.HALF_PI * 4 * (i % 2)) );
-				System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
+				//System.out.println(i + ": rotation = " + (PConstants.HALF_PI / 4));
 
 				//System.out.println("i = " + i + "; rotation = " + ( ( (PConstants.PI) / 4 ) + ( (PConstants.PI / 2) * (i % 2) ) ));
 
@@ -1583,8 +1608,7 @@ public class SMM_Demo extends Module {
 			this.menu.showShapeMenu();
 			this.menu.showColorMenu();
 
-//			this.curNumInputs	= 7;
-			this.curNumInputs	= 4;
+			this.curNumInputs	= 7;
 			//this.setSquareValues();
 
 			Shape	curShape;
@@ -1645,8 +1669,7 @@ public class SMM_Demo extends Module {
 			this.menu.showShapeMenu();
 			this.menu.showColorMenu();
 
-//			this.curNumInputs	= 7;
-			this.curNumInputs	= 4;
+			this.curNumInputs	= 7;
 			//this.setSquareValues();
 
 			Shape	curShape;
@@ -1703,6 +1726,11 @@ public class SMM_Demo extends Module {
 
 	} // keyPressed
 
+	/**
+	 * Every Module instance has to define what to show as the legend (scale) along the bottom.
+	 * 
+	 * @return	String[] of the current scale
+	 */
 	public String[] getLegendText()
 	{
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());

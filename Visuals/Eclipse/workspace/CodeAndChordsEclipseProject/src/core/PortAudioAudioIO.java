@@ -19,6 +19,9 @@ import net.beadsproject.beads.core.UGen;
  * Class to interface with C's PortAudio library.
  * 
  * (Adapted from the Bead's library's AudioIO class.)
+ * 
+ * Notate bene: the actual reading in from the input stream happens in the PortAudioInput
+ * inner class, within the calculateBuffer() method.
  */
 
 public class PortAudioAudioIO extends AudioIO {
@@ -30,7 +33,7 @@ public class PortAudioAudioIO extends AudioIO {
 	private Thread audioThread;
 
 	/** The priority of the audio thread. */
-	private int threadPriority; 
+	private int threadPriority;
 
 	private	BlockingStream	outStream;
 	private	BlockingStream	inStream;
@@ -38,10 +41,20 @@ public class PortAudioAudioIO extends AudioIO {
 	private	int				numInChannels;
 	private	int				numOutChannels;
 
+	/**
+	 * Constructor that creates an instance with 2 input and output channels.
+	 */
 	public PortAudioAudioIO() {
 		this(2);
 	}
 
+	/**
+	 * Constructor that creates an instance with the given number of channels.
+	 * 
+	 * @param numChannels int indicating the number of input channels and the number of output channels;
+	 * 						if one of the numbers is larger than the supported number of either input or 
+	 * 						output channels, it will be changed in create() to match the supported number.
+	 */
 	public PortAudioAudioIO(int numChannels) {
 		//		this.systemBufferSizeInFrames = systemBufferSize;
 		this.numInChannels	= numChannels;
@@ -49,9 +62,9 @@ public class PortAudioAudioIO extends AudioIO {
 
 		setThreadPriority(Thread.MAX_PRIORITY);
 	}
-
+	
 	/**
-	 * Initializes PortAudio.
+	 * Initializes PortAudio and opens/starts the outStream BlockingStream instance variable.
 	 */ 
 	public boolean create() {
 		PortAudio.initialize();
@@ -98,7 +111,7 @@ public class PortAudioAudioIO extends AudioIO {
 		return this.threadPriority;
 	}
 
-	/** Shuts down PortAudio elements, SourceDataLine and Mixer. */
+	/** Shuts down PortAudio elements and inStream and outStream BlockingStream objects. */
 	protected boolean destroy() {
 		if(this.inStream != null)
 		{
@@ -117,7 +130,9 @@ public class PortAudioAudioIO extends AudioIO {
 		return true;
 	}
 
-	/** Starts the audio system running. */
+	/** 
+	 * Starts the audio system running in a new Thread.
+	 * */
 	@Override
 	protected boolean start() {
 		audioThread = new Thread(new Runnable() {
@@ -133,6 +148,9 @@ public class PortAudioAudioIO extends AudioIO {
 		return true;
 	}
 
+	/**
+	 * Stops the thread and calls destroy() to trigger shutdown of BlockingStreams.
+	 */
 	@Override
 	public boolean stop()
 	{
@@ -152,7 +170,9 @@ public class PortAudioAudioIO extends AudioIO {
 		return true;
 	} // stop
 
-	/** Update loop called from within audio thread (created in start() method). */
+	/** 
+	 * Update loop called from within audio thread (created in start() method). 
+	 */
 	private void runRealTime() {		
 		AudioContext context = getContext();
 
@@ -179,6 +199,10 @@ public class PortAudioAudioIO extends AudioIO {
 
 	} // runRealTime
 
+
+	/**
+	 * @return PortAudioInput with the AudioContext, matching AudioFormat, and current inStream and number of input and output channels.
+	 */
 	@Override
 	protected UGen getAudioInput(int[] channels) {
 		IOAudioFormat ioAudioFormat = getContext().getAudioFormat();
@@ -233,7 +257,7 @@ public class PortAudioAudioIO extends AudioIO {
 		} // constructor
 
 		/**
-		 * Set up JavaSound. Requires that JavaSound has been set up in AudioContext.
+		 * Starts the inStream BlockingStream instance variable.
 		 */
 		public void initPortAudio() {
 			StreamParameters inParameters = new StreamParameters();
@@ -262,8 +286,8 @@ public class PortAudioAudioIO extends AudioIO {
 		} // initPortAudio
 
 
-		/* (non-Javadoc)
-		 * @see com.olliebown.beads.core.UGen#calculateBuffer()
+		/**
+		 * Read from inStream; this is called repeatedly through the UGen chain.
 		 */
 		@Override
 		public void calculateBuffer() {
