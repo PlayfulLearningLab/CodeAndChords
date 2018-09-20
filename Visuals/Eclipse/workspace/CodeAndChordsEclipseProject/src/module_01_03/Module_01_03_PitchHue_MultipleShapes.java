@@ -8,6 +8,10 @@ import core.input.RealTimeInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
+/**
+	Same basic idea as Module_01_PitchHue, where each note of the scale maps to a particular color,
+	but there are multiple inputs, each corresponding to a different shape.
+*/
 public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 
@@ -18,8 +22,9 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(1, new AudioContext(), this);
-//		this.input	= new RealTimeInput(16, true, this);
+		// 1 input for testing:
+//		this.input	= new RealTimeInput(1, new AudioContext(), this);
+		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 
@@ -37,15 +42,11 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		this.menu.addShapeMenu(16);
 
-//		this.menu.shapeEditor = this.shapeEditor;
-
 	} // setup()
 
 
 	public void draw()
 	{
-//		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
-
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		int	scaleDegree;
@@ -56,19 +57,11 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 			this.menu.setMenuVal();
 		} // if keyPressed
 
-		//System.out.println("****** CurNumInputs = " + this.curNumInputs + "  *******");
-
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + input.getAdjustedFundAsMidiNote(i) + 
-			//					"; input.getAmplitude(" + (i) + ") = " + input.getAmplitude(1));
-
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			this.menu.fadeColor(scaleDegree, i);
-
-//			this.fill(this.menu.getCurHue()[i][0], this.menu.getCurHue()[i][1], this.menu.getCurHue()[i][2], this.menu.getAlphaVal());
-
 
 			if(!this.menu.getShapeEditor().getIsRunning())
 			{
@@ -85,28 +78,7 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		} // for
 
-
-		if(this.menu.isShowScale() && !this.menu.getShapeEditor().getIsRunning())
-		{
-			// draws the legend along the bottom of the screen:
-			//this.legend(goalHuePos, 0);
-
-		} // if showScale
-
-//		this.shapeEditor.runMenu();
 		this.menu.runMenu();
-
-		// TODO - trying to find the trichromatic major/minor customPitchColor bug:
-		/*	if(this.menu.getCurColorStyle() == ModuleTemplate01.CS_TRICHROM)
-				{
-					for(int i = 0; i < menu.trichromColors.length; i++)
-					{
-						this.fill(menu.trichromColors[i][0], menu.trichromColors[i][1], menu.trichromColors[i][2]);
-						this.ellipse(this.width / 2, i * 30 + 60, 30, 30);
-					}
-				} // if		
-		 */
-
 	} // draw()
 
 
@@ -129,7 +101,6 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 		this.menu.setPApplet(fsm);
 		 */
 
-		//TODO: Is the hamburger button in a ControlP5 object not in this if statement?
 		if(!this.menu.getShapeEditor().getControlP5().isMouseOver() && !this.menu.getControlP5().isMouseOver() && !this.menu.getOutsideButtonsCP5().isMouseOver())
 		{
 			ShapeEditor	shapeEditor	= this.menu.getShapeEditor();
