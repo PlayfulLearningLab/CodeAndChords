@@ -91,7 +91,7 @@ public class ColorScheme
 	private void initializeColorLibrary()
 	{
 		this.colorPresetsLibrary = new int[3][12][3];
-
+	//  int[preset number][note number][RGB] colorPresetsLibrary[][][]
 		this.colorPresetsLibrary[0][0] = new int[] { 255, 0, 0 };
 		this.colorPresetsLibrary[0][1] = new int[] { 255, 127, 0 };
 		this.colorPresetsLibrary[0][2] = new int[] { 255, 255, 0 };
@@ -147,9 +147,8 @@ public class ColorScheme
 		 */
 
 
-
-
 	}
+	
 
 
 }

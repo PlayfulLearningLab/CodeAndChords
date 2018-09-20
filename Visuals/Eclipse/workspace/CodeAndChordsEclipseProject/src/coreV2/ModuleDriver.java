@@ -102,7 +102,7 @@ public class ModuleDriver implements PConstants
 
 		this.menuGroup = new MenuGroup(this);
 		//this.menuGroup.addMenu(new InputMenu(this));
-		//this.menuGroup.addMenu(new ColorMenu(this));
+		this.menuGroup.addMenu(new ColorMenu(this));
 		//this.menu.addMenu(new SensitivityMenu(this));
 
 
