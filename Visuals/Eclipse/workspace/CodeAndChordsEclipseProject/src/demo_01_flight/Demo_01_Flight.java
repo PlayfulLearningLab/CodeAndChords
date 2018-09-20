@@ -4,7 +4,7 @@ import controlP5.ControlP5;
 import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
@@ -49,7 +49,7 @@ public class Demo_01_Flight extends Module {
 		}
 
 		this.totalNumInputs	= 2;
-		this.input	= new RealTimeInput(this.totalNumInputs, new AudioContext(new PortAudioAudioIO(this.totalNumInputs)), this);
+		this.input	= new MicrophoneInput(this.totalNumInputs, new AudioContext(new PortAudioAudioIO(this.totalNumInputs)), this);
 		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);

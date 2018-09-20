@@ -248,10 +248,4 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	}
 
 
-	@Override
-	public boolean isRealTime() 
-	{
-		return true;
-	}
-
 }

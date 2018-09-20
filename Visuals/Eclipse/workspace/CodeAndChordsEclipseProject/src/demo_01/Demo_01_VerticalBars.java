@@ -3,7 +3,7 @@ package demo_01;
 import controlP5.ControlP5;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 
 public class Demo_01_VerticalBars extends Module {
@@ -43,7 +43,7 @@ public class Demo_01_VerticalBars extends Module {
 			this.barVel[i] = 0;
 		}
 
-		this.input	= new RealTimeInput(16, true, this);
+		this.input	= new MicrophoneInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 

@@ -9,7 +9,7 @@ package module_02_02;
 import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 
 /**
@@ -57,7 +57,7 @@ public class Module_02_02_AmplitudeBars extends Module {
 		yvalues = new float[w/xspacing];
 		System.out.println(yvalues.length);
 
-		this.input    = new RealTimeInput(1, new AudioContext(), this);
+		this.input    = new MicrophoneInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 6);
 

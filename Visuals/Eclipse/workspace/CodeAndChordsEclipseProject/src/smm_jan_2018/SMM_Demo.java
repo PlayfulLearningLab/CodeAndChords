@@ -6,7 +6,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.Shape;
 import core.ShapeEditor;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
@@ -118,7 +118,7 @@ public class SMM_Demo extends Module {
 		this.totalNumInputs	= 24;
 		this.curNumInputs	= 1;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
+		this.input			= new MicrophoneInput(this.totalNumInputs, false, this);
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);

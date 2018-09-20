@@ -1,0 +1,14 @@
+Questions to ask:
+
+- InputHandler constructor, problem with CP5
+- Is it a good design to have ModuleDriver holding everything together?
+- CP5 endless loop when assigning input types
+
+
+
+
+
+Things to do before meeting:
+
+1) UML
+2) Comments

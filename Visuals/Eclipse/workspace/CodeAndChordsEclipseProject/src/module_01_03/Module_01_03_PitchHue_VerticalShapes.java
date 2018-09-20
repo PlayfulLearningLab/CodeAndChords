@@ -4,7 +4,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.Shape;
 import core.ShapeEditor;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
@@ -24,7 +24,7 @@ public class Module_01_03_PitchHue_VerticalShapes extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(1, new AudioContext(), this);
+		this.input	= new MicrophoneInput(1, new AudioContext(), this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 

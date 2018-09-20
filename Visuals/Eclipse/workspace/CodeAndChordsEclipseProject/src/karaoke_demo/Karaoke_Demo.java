@@ -6,7 +6,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.Shape;
 import core.ShapeEditor;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -148,7 +148,7 @@ public class Karaoke_Demo extends Module {
 		this.totalNumInputs	= 16;
 		this.curNumInputs	= 1;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, true, this);
+		this.input			= new MicrophoneInput(this.totalNumInputs, true, this);
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);

@@ -11,47 +11,42 @@ import controlP5.ScrollableList;
 
 public class InputMenu extends MenuTemplate
 {
-	private int 	pianoThreshold;
-	private int		forteThreshold;
-		
-	public InputMenu(ModuleDriver driver) 
+
+	public InputMenu(ModuleDriver driver, InputHandler inputHandler) 
 	{
 		super("Input Menu", driver, true);
-				
+						
 		this.controlP5.addScrollableList("realTimeInput")
 		.setPosition(50, 100)
 		.setWidth(200)
 		.setBarHeight(30)
 		.setItemHeight(30)
-		.setItems(new String[] {InputHandler.typeNames[0]})
-		.setValue(0)
+		.setItems(new String[] {"none"})
 		.close()
 		.setTab(this.getMenuTitle());
 		
 		this.controlP5.addScrollableList("playableInput")
-		.setPosition(150, 100)
+		.setPosition(350, 100)
 		.setWidth(200)
 		.setBarHeight(30)
 		.setItemHeight(30)
-		.addItems(new String[] {"none"})
-		.setValue(0)
+		.setItems(new String[] {"none"})
 		.close()
 		.setTab(this.getMenuTitle());
+				
+		System.out.println("String value:  " + this.controlP5.getController("playableInput").getStringValue());
 	}
 	
-	public void addInputType(int inputTypeNumber)
+	public void addRealTimeInput(String inputType)
 	{
-		if(this.driver.getInputHandler().getInput(inputTypeNumber).isRealTime())
-		{
-			ScrollableList list = (ScrollableList) this.controlP5.getController("realTimeInput");
-			list.addItem(InputHandler.typeNames[inputTypeNumber], list.getItems().size() );
-			
-		}
-		else
-		{
-			ScrollableList list = (ScrollableList) this.controlP5.getController("playableInput");
-			list.addItem(InputHandler.typeNames[inputTypeNumber], list.getItems().size() );
-		}
+		((ScrollableList) this.controlP5.get("realTimeInput"))
+		.addItem(inputType, ((ScrollableList) this.controlP5.get("realTimeInput")).getItems().size());
+	}
+	
+	public void addPlayableInput(String inputType)
+	{
+		((ScrollableList) this.controlP5.get("playableInput"))
+		.addItem(inputType, ((ScrollableList) this.controlP5.get("playableInput")).getItems().size());
 	}
 
 	@Override
@@ -59,13 +54,20 @@ public class InputMenu extends MenuTemplate
 	{
 		super.controlEvent(theEvent);
 		
-		System.out.println("Control Event");
+		System.out.println("EVENT!!!");
 		
-		if(theEvent.getController().getName() == "inputType");
+		if(theEvent.getName() == "realTimeInput")
 		{
-			System.out.println("Setting input type");
-			this.driver.getInputHandler().setCurInput(theEvent.getStringValue());
+			System.out.println("Current Real Time Input: " + this.getCurRealTimeInput());
+			//this.inputHandler.setRealTimeInput(this.getCurRealTimeInput());
 		}
+		
+		if(theEvent.getName() == "playableInput")
+		{
+			System.out.println("Current Playable Input: " + this.getCurPlayableInput());
+			//this.inputHandler.setPlayableInput(this.getCurPlayableInput());
+		}
+			
 	}
 
 	@Override
@@ -85,15 +87,41 @@ public class InputMenu extends MenuTemplate
 	{
 		
 	}
+
 	
-	public int getPianoThreshold()
+	public String getCurRealTimeInput()
 	{
-		return this.pianoThreshold;
+		ScrollableList controller = (ScrollableList) this.controlP5.getController("realTimeInput");
+		int val = (int) controller.getValue();
+		
+		String itemText = controller.getItem(val).toString();
+		
+		int textStart = itemText.indexOf("text=") + 5;
+		int textEnd = itemText.indexOf(',', textStart);
+		
+		String listText = itemText.substring(textStart, textEnd);
+
+		return listText;
 	}
 	
-	public int getForteThreshold()
+	public String getCurPlayableInput()
 	{
-		return this.forteThreshold;
+		ScrollableList controller = (ScrollableList) this.controlP5.getController("playableInput");
+		int val = (int) controller.getValue();
+		
+		String itemText = controller.getItem(val).toString();
+		
+		int textStart = itemText.indexOf("text=") + 5;
+		int textEnd = itemText.indexOf(',', textStart);
+		
+		String listText = itemText.substring(textStart, textEnd);
+
+		return listText;
+	}
+	
+	public ControlP5 getCP5()
+	{
+		return this.getControlP5();
 	}
 
 }

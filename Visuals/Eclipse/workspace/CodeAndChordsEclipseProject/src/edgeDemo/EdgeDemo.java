@@ -4,7 +4,7 @@ import controlP5.ControlP5;
 import controlP5.Toggle;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import processing.core.PApplet;
 
 /**
@@ -42,7 +42,7 @@ public class EdgeDemo extends Module {
 	{
 		this.totalNumInputs	= 4;
 
-		this.input			= new RealTimeInput(this.totalNumInputs, false, this);
+		this.input			= new MicrophoneInput(this.totalNumInputs, false, this);
 		this.curNumInputs	= this.input.getAdjustedNumInputs();
 		//		this.input			= new RealTimeInput(1, new AudioContext(), this);
 

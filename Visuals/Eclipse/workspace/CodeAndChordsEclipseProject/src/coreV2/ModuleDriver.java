@@ -77,7 +77,7 @@ public class ModuleDriver implements PConstants
 	private MenuGroup				menuGroup;
 	
 	private ColorScheme[]			colorSchemes;
-	private ColorWrapper[]			currentColors;
+	private ColorFader[]			currentColors;
 
 
 	public ModuleDriver(PApplet parent)
@@ -86,22 +86,29 @@ public class ModuleDriver implements PConstants
 
 		this.parent = parent;
 		
+		this.colorSchemes = new ColorScheme[]{ new ColorScheme(this)};
+		this.currentColors = new ColorFader[] {new ColorFader(0, 0, 0, parent)};
+		
 		this.cp5 = new ControlP5(this.parent);
 		this.cp5.getTab("default").hide();
 
 		this.parent.registerMethod("pre", this);
 		this.parent.registerMethod("keyEvent", this);
+		
+		this.menuGroup = new MenuGroup(this);
 
 		this.inputHandler = new InputHandler(this);
+		this.menuGroup.addMenu(this.inputHandler);
+		
 		this.canvas = new Canvas(this.parent);
+		
+		this.getInputMenu().getControlP5().get("realTimeInput").setValue(2);
 
-		this.menuGroup = new MenuGroup(this);
-		this.menuGroup.addMenu(new InputMenu(this));
+		
 		//this.menuGroup.addMenu(new ColorMenu(this));
 		//this.menu.addMenu(new SensitivityMenu(this));
 
-		this.colorSchemes = new ColorScheme[]{ new ColorScheme(this)};
-		this.currentColors = new ColorWrapper[] {new ColorWrapper(0, 0, 0, parent)};
+		
 	}
 
 	public void pre()
@@ -121,7 +128,7 @@ public class ModuleDriver implements PConstants
 		int midiNote = (int) inputHandler.getMidiNote(inputNum);
 		midiNote = midiNote % 12;
 
-		if(inputHandler.getAmplitude(inputNum) > this.getInputMenu().getPianoThreshold())
+		if(inputHandler.getAmplitude(inputNum) > 10)
 		{
 			this.currentColors[inputNum].setTargetColor(this.colorSchemes[inputNum].getPitchColor(midiNote));
 		}
@@ -169,7 +176,7 @@ public class ModuleDriver implements PConstants
 	}
 	
 	public InputHandler getInputHandler()
-	{
+	{			
 		return this.inputHandler;
 	}
 
@@ -178,12 +185,10 @@ public class ModuleDriver implements PConstants
 		return this.menuGroup;
 	}
 	
-	public void updateNumInputs()
-	{
-		int numInputs = this.inputHandler.getCurNumInputs();
-		
+	public void updateNumInputs(int numInputs)
+	{		
 		ColorScheme[] newSchemes = new ColorScheme[numInputs];
-		ColorWrapper[] newWrappers = new ColorWrapper[numInputs];
+		ColorFader[] newWrappers = new ColorFader[numInputs];
 		
 		if(numInputs > this.colorSchemes.length)
 		{
@@ -196,7 +201,7 @@ public class ModuleDriver implements PConstants
 			for(int i = this.colorSchemes.length; i < numInputs; i++)
 			{
 				newSchemes[i] = new ColorScheme(this);
-				newWrappers[i] = new ColorWrapper(0, 0, 0, this.parent);
+				newWrappers[i] = new ColorFader(0, 0, 0, this.parent);
 			}
 			
 			this.colorSchemes = newSchemes;
@@ -215,9 +220,9 @@ public class ModuleDriver implements PConstants
 		return this.colorSchemes[inputNum];
 	}
 	
-	public InputMenu getInputMenu()
+	public InputHandler getInputMenu()
 	{
-		return (InputMenu) this.menuGroup.getMenus()[0];
+		return (InputHandler) this.menuGroup.getMenus()[0];
 	}
 
 }

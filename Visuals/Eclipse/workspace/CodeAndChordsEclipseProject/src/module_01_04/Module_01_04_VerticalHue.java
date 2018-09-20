@@ -2,7 +2,7 @@ package module_01_04;
 
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
@@ -29,7 +29,7 @@ public class Module_01_04_VerticalHue extends Module {
 
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		this.input	= new MicrophoneInput(16, new AudioContext(), true, this);
 		//		this.input	= new RealTimeInput(16, true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 3;

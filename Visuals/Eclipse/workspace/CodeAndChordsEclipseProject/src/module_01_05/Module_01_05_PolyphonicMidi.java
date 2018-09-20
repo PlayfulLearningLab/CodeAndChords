@@ -23,21 +23,19 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 	{
 		this.driver = new ModuleDriver(this);
 
-		this.inputHandler = InputHandler.getInputHandler();
 
-		this.inputHandler.useMidiStreamInput();
 		
 		this.canvas = this.driver.getCanvas();
 
 		MenuGroup menus = this.driver.getMenuGroup();
-		menus.addMenu(new InputMenu(this.driver));
+		this.inputHandler = this.driver.getInputHandler();
 		
 		this.noStroke();
 	}
 
 	public void draw()
 	{
-		int[][] activeNotes = this.inputHandler.getAllMidiNotes();
+		int[][] activeNotes = this.inputHandler.getPolyMidiNotes();
 		int numNotes = activeNotes.length;
 
 		if(numNotes > 0)

@@ -3,7 +3,7 @@ package demo_02;
 import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 
 public class Demo_02_PitchHueCircles extends Module
 {
@@ -35,7 +35,7 @@ public class Demo_02_PitchHueCircles extends Module
 	
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(4, this);
+		this.input	= new MicrophoneInput(4, this);
 
 		
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();

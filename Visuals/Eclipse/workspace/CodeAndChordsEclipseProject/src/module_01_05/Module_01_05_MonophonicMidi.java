@@ -26,12 +26,9 @@ public class Module_01_05_MonophonicMidi extends PApplet
 	{
 		this.driver = new ModuleDriver(this);
 
-		this.inputHandler = InputHandler.getInputHandler();
-
-		this.inputHandler.useMidiStreamInput();
+		this.inputHandler = this.driver.getInputHandler();
 
 		MenuGroup menus = this.driver.getMenuGroup();
-		menus.addMenu(new InputMenu(this.driver));
 	}
 
 	public void draw()

@@ -2,7 +2,7 @@ package cadenza;
 
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
@@ -65,7 +65,7 @@ public class Here extends Module
 	public void setup() 
 	{
 
-		this.input	= new RealTimeInput(15, false, this);
+		this.input	= new MicrophoneInput(15, false, this);
 		
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		//this.curNumInputs	= 7;

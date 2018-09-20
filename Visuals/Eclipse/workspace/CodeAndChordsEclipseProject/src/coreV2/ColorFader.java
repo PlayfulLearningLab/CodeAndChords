@@ -3,7 +3,7 @@ package coreV2;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
-public class ColorWrapper implements PConstants
+public class ColorFader implements PConstants
 {
 	private PApplet		parent;
 
@@ -43,7 +43,7 @@ public class ColorWrapper implements PConstants
 		
 	}//pre()
 
-	public ColorWrapper(int r, int g, int b, int alpha, PApplet parent)
+	public ColorFader(int r, int g, int b, int alpha, PApplet parent)
 	{
 		this.parent = parent;
 
@@ -67,12 +67,12 @@ public class ColorWrapper implements PConstants
 
 	}
 
-	public ColorWrapper(int r, int g, int b, PApplet parent)
+	public ColorFader(int r, int g, int b, PApplet parent)
 	{
 		this(r, g, b, 255, parent);
 	}
 
-	public ColorWrapper(int[] RGB, PApplet parent)
+	public ColorFader(int[] RGB, PApplet parent)
 	{
 		this(RGB[0], RGB[1], RGB[2], 255, parent);
 	}

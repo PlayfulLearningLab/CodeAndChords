@@ -4,7 +4,7 @@ package module_02_03;
 import core.Module;
 import core.ModuleMenu;
 import processing.core.PApplet;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 /**
  * 
@@ -47,7 +47,7 @@ public class Module_02_03_AmplitudeBars extends Module /*implements ShapeEditorI
 		dx = (TWO_PI / period) * xspacing;
 		yvalues = new float[w/xspacing];
 
-		this.input    = new RealTimeInput(1, new AudioContext(), this);
+		this.input    = new MicrophoneInput(1, new AudioContext(), this);
 		this.totalNumInputs = this.input.getAdjustedNumInputs();
 		//this.curNumInputs = 4;
 		this.curNumInputs	= 1;

@@ -5,7 +5,7 @@ import core.ModuleMenu;
 import processing.core.PApplet;
 import core.Shape;
 import core.ShapeEditor;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
@@ -38,7 +38,7 @@ public class Module_02_AmplitudeHSB extends Module {
 	{
 		// Not specifying an AudioContext will use the PortAudioAudioIO:
 		//		this.input	= new Input(this);
-		this.input    = new RealTimeInput(1, new AudioContext(), this);
+		this.input    = new MicrophoneInput(1, new AudioContext(), this);
 
 		this.menu	= new ModuleMenu(this, this, this.input, 6);
 

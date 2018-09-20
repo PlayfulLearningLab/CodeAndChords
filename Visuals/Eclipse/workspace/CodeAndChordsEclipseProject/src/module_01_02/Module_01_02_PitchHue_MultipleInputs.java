@@ -3,7 +3,7 @@ package module_01_02;
 import processing.core.*;
 import core.Module;
 import core.ModuleMenu;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import net.beadsproject.beads.core.AudioContext;
 
 public class Module_01_02_PitchHue_MultipleInputs extends Module
@@ -25,7 +25,7 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	
 	public void setup() 
 	{
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this);
+		this.input	= new MicrophoneInput(16, new AudioContext(), true, this);
 		this.totalNumInputs	= this.input.getAdjustedNumInputs();
 		this.curNumInputs	= 2;
 		

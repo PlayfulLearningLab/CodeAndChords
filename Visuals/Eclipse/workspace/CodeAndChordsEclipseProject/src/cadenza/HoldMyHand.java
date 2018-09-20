@@ -10,7 +10,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.PortAudioAudioIO;
 import processing.core.PApplet;
-import core.input.RealTimeInput;
+import core.input.MicrophoneInput;
 import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
 
@@ -90,7 +90,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 
 	//	this.input    = new RealTimeInput(9, new AudioContext(), this);
 //		this.input	= new RealTimeInput(20, new AudioContext(new PortAudioAudioIO()) , this);
-		this.input	= new RealTimeInput(25, false, this);
+		this.input	= new MicrophoneInput(25, false, this);
 		this.totalNumInputs = this.input.getNumInputs();
 		this.curNumInputs	= this.totalNumInputs;
 		//		this.curNumInputs = 4;

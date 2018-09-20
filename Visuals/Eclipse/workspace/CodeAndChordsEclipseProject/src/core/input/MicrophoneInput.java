@@ -55,7 +55,7 @@ import org.jaudiolibs.beads.AudioServerIO;
 
 import core.PortAudioAudioIO;
 
-public class RealTimeInput extends Input {
+public class MicrophoneInput extends Input {
 	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
 //	private UGen[]                 uGenArray;
 	// TODO: make private after testing
@@ -69,7 +69,7 @@ public class RealTimeInput extends Input {
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
-	public RealTimeInput(int numInputs, PApplet pa)
+	public MicrophoneInput(int numInputs, PApplet pa)
 	{
 //		this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), pa);
@@ -83,7 +83,7 @@ public class RealTimeInput extends Input {
 	 *
 	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
 	 */
-	public RealTimeInput(int numInputs, boolean skip5thru8, PApplet pa)
+	public MicrophoneInput(int numInputs, boolean skip5thru8, PApplet pa)
 	{
 		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8, pa);
 
@@ -95,7 +95,7 @@ public class RealTimeInput extends Input {
 	 *  @param  numInputs     an int specifying the number of lines in the AudioFormat.
 	 *  @param  audioContext  an AudioContext whose input lines will be procured as a UGen and used for the analysis calculations.
 	 */
-	public RealTimeInput(int numInputs, AudioContext audioContext, PApplet pa)
+	public MicrophoneInput(int numInputs, AudioContext audioContext, PApplet pa)
 	{
 		this(numInputs, audioContext, false, pa);
 	} // int, AudioContext
@@ -108,7 +108,7 @@ public class RealTimeInput extends Input {
 	 * @param audioContext
 	 * @param skip5thru8
 	 */
-	public RealTimeInput(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
+	public MicrophoneInput(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
 	{
 		if(numInputs < 1)  {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
@@ -142,7 +142,7 @@ public class RealTimeInput extends Input {
 	 * from the machine's default audio input device;
 	 * does not require Jack.
 	 */
-	public RealTimeInput(PApplet pa)
+	public MicrophoneInput(PApplet pa)
 	{
 		this(2, pa); //, new AudioContext());
 	} // constructor()
@@ -360,12 +360,6 @@ public class RealTimeInput extends Input {
 	public int getMidiNote() 
 	{
 		return (int) Math.round(this.getAdjustedFundAsMidiNote());
-	}
-
-	@Override
-	public boolean isRealTime() 
-	{
-		return true;
 	}
 
 } // Input class
