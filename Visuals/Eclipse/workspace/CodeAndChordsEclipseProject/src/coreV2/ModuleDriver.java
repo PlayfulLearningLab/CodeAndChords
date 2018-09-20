@@ -104,8 +104,8 @@ public class ModuleDriver implements PConstants
 		
 		this.getInputMenu().getControlP5().get("realTimeInput").setValue(2);
 
-		
-		//this.menuGroup.addMenu(new ColorMenu(this));
+
+		this.menuGroup.addMenu(new ColorMenu(this));
 		//this.menu.addMenu(new SensitivityMenu(this));
 
 		

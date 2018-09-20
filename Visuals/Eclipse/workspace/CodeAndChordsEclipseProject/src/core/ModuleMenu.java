@@ -105,7 +105,7 @@ public class ModuleMenu extends MenuTemplate  {
 			{ 0, 0, 255 },
 			{ 127, 0, 255 },
 			{ 127, 0, 255 }
-		}, // minor
+		}, // minor 
 		new int[][] {
 			{ 255, 0, 0 }, 
 			{ 255, 127, 0 }, 
