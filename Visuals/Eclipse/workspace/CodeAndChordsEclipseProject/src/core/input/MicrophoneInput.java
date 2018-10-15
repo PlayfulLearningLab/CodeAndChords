@@ -362,4 +362,22 @@ public class MicrophoneInput extends Input {
 		return (int) Math.round(this.getAdjustedFundAsMidiNote());
 	}
 
+	@Override
+	public String getInputType() 
+	{
+		return "Microphone Input";
+	}
+
+	@Override
+	public boolean isRealTimeInput() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isPolyphonic() 
+	{
+		return false;
+	}
+
 } // Input class

@@ -25,22 +25,16 @@ public class InputHandler extends MenuTemplate
 {
 	//Using a the real time input or playable input?
 	private boolean					useRealTimeInput;
-	
+
 	//Real Time Inputs
 	private	MusicalInput[]			realTimeInputs;
-	
-	public static final String[] 	realTimeInputNames = new String[] {	"Microphone Input",
-																		"MIDI Stream Input"};
+
 	//Playable Inputs
 	private	MusicalInput[]			playableInputs;
 
-	public static final String[] 	playableInputNames = new String[] {	"Recorded Input"};
-	
-	//For real time input control
-	private int						totalNumRealTimeInputs;
-	private int[]					activeRealTimeInputs;
 
-	
+
+
 	/**
 	 * Constructor
 	 * 
@@ -50,191 +44,107 @@ public class InputHandler extends MenuTemplate
 	{
 		super("Input Menu", driver, true);
 		this.makeControls();
-						
-		//Set up the real time inputs
-		this.realTimeInputs	= new MusicalInput[2];
-		
-		this.setMicrophoneInput(new MicrophoneInput(1, new AudioContext(), false, this.driver.getParent()));
-		this.setMidiStreamInput(new MidiStreamInput());	
-		
-		this.controlP5.get("realTimeInput").setValue(2);
-		
-		this.totalNumRealTimeInputs = 1;
-		this.activeRealTimeInputs = new int[] {0};
-		
-		this.useRealTimeInput = true;
-		
-		//set up the playableInputs
-		this.playableInputs = new MusicalInput[1];
-		
-			
 
-		
+		this.realTimeInputs = new MusicalInput[0];
+		this.playableInputs = new MusicalInput[0];
+
+
+		this.addMusicalInput(new MicrophoneInput(1, new AudioContext(), false, this.driver.getParent()));
+		this.addMusicalInput(new MidiStreamInput());
+
+		this.useRealTimeInput = true;
+
+		this.controlP5.get("realTimeInput").setValue(1);
+
+
 	}
-	
-	
+
+	// Setter for useRealTimeInput boolean
+
 	public void setUseRealTimeInput(boolean useRealTimeInput)
 	{
 		this.useRealTimeInput = useRealTimeInput;
 	}
-	
-	
-	public void setMicrophoneInput(MicrophoneInput microphoneInput)
-	{
-		if(this.realTimeInputs[0] == null)
-		{
-			this.addRealTimeInput(InputHandler.realTimeInputNames[0]);
-		}
-		
-		this.realTimeInputs[0] = microphoneInput;
-	}
-	
-	public void setMidiStreamInput(MidiStreamInput midiStreamInput)
-	{
-		if(this.realTimeInputs[1] == null)
-		{
-			this.addRealTimeInput(InputHandler.realTimeInputNames[1]);
-		}
-		
-		this.realTimeInputs[1] = midiStreamInput;
-	}
-	
-	public void setRecordedInput(RecordedInput recordedInput)
-	{
-		if(this.playableInputs[0] == null)
-		{
-			this.addPlayableInput(InputHandler.playableInputNames[0]);
-		}
-		
-		this.playableInputs[0] = recordedInput;
-	}
-	
-	
-	
-	
+
+
+
+
+	//Stuff for dealing with input channels.  Needs some changes and different names
+
+
+
+
+
+	// Get different note values
+
 	private MusicalInput getCurInput()
 	{
-		MusicalInput input = null;
-		
+		MusicalInput curInput = null;
+
 		if(this.useRealTimeInput)
 		{
-			if(this.controlP5.getController("realTimeInput").getValue() - 1 != -1)
-				input = this.realTimeInputs[(int) this.controlP5.getController("realTimeInput").getValue() - 1];
+			curInput = this.realTimeInputs[(int) this.controlP5.getController("realTimeInput").getValue()];
 		}
 		else
 		{
-			if(this.controlP5.getController("realTimeInput").getValue() - 1 != -1)
-				input = this.playableInputs[(int) this.controlP5.getController("playableInput").getValue() - 1];
+			curInput = this.playableInputs[(int) this.controlP5.getController("playableInput").getValue()];
 		}
 		
-		return input;
-	}
-
-
-	public void setActiveRealTimeInputs(int[] activeInputs)
-	{
-		if(activeInputs.length > this.totalNumRealTimeInputs)
-		{
-			throw new IllegalArgumentException("ModuleDriver.setActiveInputs: You passed in an array that is too big.  There are " + this.totalNumRealTimeInputs + " inputs total.");
-
-		}
-
-		for(int i = 0; i < activeInputs.length; i++)
-		{
-			if(activeInputs[i] > this.totalNumRealTimeInputs)
-			{
-				throw new IllegalArgumentException("One of your inputs does not exist. Input num " + activeInputs[i] + " is too high.");
-			}
-		}
-
-		this.activeRealTimeInputs = activeInputs;
-
-		this.driver.updateNumInputs(this.getCurNumInputs());
-	}
-
-
-	public int getCurNumRealTimeInputs()
-	{
-		return this.activeRealTimeInputs.length;
-	}
-
-	public int[] getActiveRealTimeInputs()
-	{		
-		return this.activeRealTimeInputs;
-	}
-
-	public int[][] getPolyMidiNotes()
-	{
-		return ((MidiStreamInput) this.realTimeInputs[1]).getAllNotesAndAmps();
+		return curInput;
 	}
 
 	public int getMidiNote()
 	{
-		int defaultInputNum = 0;
-
-		if(this.useRealTimeInput)// && this.rtIndex == 0)
-		{
-			defaultInputNum = this.activeRealTimeInputs[0];
-		}
-
-		return this.getMidiNote(defaultInputNum);
-	}
-
-	public int getMidiNote(int inputNum)
-	{
-		int val = 0;
+		MusicalInput curInput = this.getCurInput();		
+		if(curInput == null) throw new IllegalArgumentException("Current input is null");
 		
-		if(this.getCurInput() != null)
-			val = this.getCurInput().getMidiNote();
-		
-		return val;
+		return curInput.getMidiNote();
 	}
 
 	public float getAmplitude()
 	{
-		int defaultInputNum = 0;
-
-		if(this.useRealTimeInput)// && this.rtIndex == 0)
-		{
-			defaultInputNum = this.activeRealTimeInputs[0];
-		}
-
-		return this.getAmplitude(defaultInputNum);
-	}
-
-	public float getAmplitude(int inputNum)
-	{
-		int val = 0;
+		MusicalInput curInput = this.getCurInput();		
+		if(curInput == null) throw new IllegalArgumentException("Current input is null");
 		
-		if(this.getCurInput() != null)
-			val = (int) this.getCurInput().getAmplitude();
-		
-		return val;
+		return curInput.getAmplitude();
 	}
+	
 
-	public int getCurNumInputs()
+	public int[][] getPolyMidiNotes()
 	{
-		int num = 1;
-
-		if(!(this.useRealTimeInput))// && this.rtIndex == 1))
+		MusicalInput curInput = this.getCurInput();
+		if(curInput == null) throw new IllegalArgumentException("Current input is null");
+		
+		int[][] midiNotes;
+		
+		if(curInput.isPolyphonic())
 		{
-			num = ( (Input)this.getCurInput() ).getAdjustedNumInputs();
+			midiNotes = ((MidiStreamInput) curInput).getAllNotesAndAmps();
 		}
-
-		return num;
+		else
+		{
+			midiNotes = new int[1][2];
+			midiNotes[0][0] = this.getMidiNote();
+			midiNotes[0][1] = (int) this.getAmplitude();
+		}
+		
+		return midiNotes;
 	}
+
+
+
 
 	@Override
 	public void controlEvent(ControlEvent theEvent)
 	{
 		super.controlEvent(theEvent);
-			
+
 	}
 
 	@Override
 	public void sliderEvent(int id, float val) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -242,7 +152,7 @@ public class InputHandler extends MenuTemplate
 	@Override
 	public void buttonEvent(int id) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -250,51 +160,80 @@ public class InputHandler extends MenuTemplate
 	@Override
 	public void colorWheelEvent(int id, Color color) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public String getCurRealTimeInput()
 	{
 		ScrollableList controller = (ScrollableList) this.controlP5.getController("realTimeInput");
 		int val = (int) controller.getValue();
-		
+
 		String itemText = controller.getItem(val).toString();
-		
+
 		int textStart = itemText.indexOf("text=") + 5;
 		int textEnd = itemText.indexOf(',', textStart);
-		
+
 		String listText = itemText.substring(textStart, textEnd);
 
 		return listText;
 	}
-	
+
 	public String getCurPlayableInput()
 	{
 		ScrollableList controller = (ScrollableList) this.controlP5.getController("playableInput");
 		int val = (int) controller.getValue();
-		
+
 		String itemText = controller.getItem(val).toString();
-		
+
 		int textStart = itemText.indexOf("text=") + 5;
 		int textEnd = itemText.indexOf(',', textStart);
-		
+
 		String listText = itemText.substring(textStart, textEnd);
 
 		return listText;
 	}
-	
-	public void addRealTimeInput(String inputType)
+
+	public void addMusicalInput(MusicalInput musicalInput)
 	{
-		((ScrollableList) this.controlP5.get("realTimeInput"))
-		.addItem(inputType, ((ScrollableList) this.controlP5.get("realTimeInput")).getItems().size());
+		ScrollableList inputList = ((ScrollableList) this.controlP5.get("playableInput"));
+
+		if(musicalInput.isRealTimeInput())
+		{
+			inputList = ((ScrollableList) this.controlP5.get("realTimeInput"));
+		}
+
+		inputList.addItem(musicalInput.getInputType(), inputList.getItems().size());
+
+
+
+		MusicalInput[] oldList = this.playableInputs;
+		MusicalInput[] newList;
+
+		if(musicalInput.isRealTimeInput())
+		{
+			oldList = this.realTimeInputs;
+		}
+
+		newList = new MusicalInput[oldList.length + 1];
+
+		for(int i = 0; i < oldList.length; i++)
+		{
+			newList[i] = oldList[i];
+		}
+
+		newList[oldList.length] = musicalInput;
+
+		if(musicalInput.isRealTimeInput())
+		{
+			this.realTimeInputs = newList;
+		}
+		else
+		{
+			this.playableInputs = newList;
+		}
+		
 	}
-	
-	public void addPlayableInput(String inputType)
-	{
-		((ScrollableList) this.controlP5.get("playableInput"))
-		.addItem(inputType, ((ScrollableList) this.controlP5.get("playableInput")).getItems().size());
-	}
-	
+
 	private void makeControls()
 	{
 		this.controlP5.addScrollableList("realTimeInput")
@@ -302,17 +241,17 @@ public class InputHandler extends MenuTemplate
 		.setWidth(200)
 		.setBarHeight(30)
 		.setItemHeight(30)
-		.setItems(new String[] {"none"})
+		.setItems(new String[] {})
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());
-		
+
 		this.controlP5.addScrollableList("playableInput")
 		.setPosition(350, 100)
 		.setWidth(200)
 		.setBarHeight(30)
 		.setItemHeight(30)
-		.setItems(new String[] {"none"})
+		.setItems(new String[] {})
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());

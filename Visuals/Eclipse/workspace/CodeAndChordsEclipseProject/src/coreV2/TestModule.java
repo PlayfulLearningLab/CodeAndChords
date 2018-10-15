@@ -9,8 +9,6 @@ public class TestModule extends PApplet
 {	
 	private ModuleDriver driver;
 
-	private InputHandler inputHandler;
-
 	public static void main(String[] args)
 	{
 		PApplet.main("coreV2.TestModule");

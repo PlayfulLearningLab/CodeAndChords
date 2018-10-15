@@ -30,8 +30,9 @@ public class MenuGroup implements ControlListener
 		this.menuGroup = new MenuTemplate[0];
 
 		this.canvasMenu = new CanvasMenu(driver);
-
 		this.activeMenu = this.canvasMenu;
+		
+		this.addMenu(new InputHandler(driver));
 
 		this.driver.getCP5().controlWindow.setPositionOfTabs(40, 7);
 	}
