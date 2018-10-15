@@ -147,7 +147,7 @@ public class ModuleDriver implements PConstants
 	
 	public InputHandler getInputHandler()
 	{			
-		return (InputHandler) this.menuGroup.getMenus()[1];
+		return (InputHandler) this.menuGroup.getMenus()[0];
 	}
 
 

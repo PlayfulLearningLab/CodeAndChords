@@ -56,14 +56,26 @@ public class InputHandler extends MenuTemplate
 
 		this.controlP5.get("realTimeInput").setValue(1);
 
+		
+		//recorded inputs
+		
+		RecordedInput recInput	= new RecordedInput(driver.getParent(), new String[] {	"WantingMemories_Melody.wav",
+																						"WMBass_Later_Quiet.wav",
+																						"WantingMemories_Alto.wav",
+																						"WantingMemories_Soprano.wav",
+																						"WMTenor_Medium.wav"});
 
+		this.addMusicalInput(recInput);
+		
+		this.controlP5.get("playableInput").setValue(0);
+		
 	}
 
 	// Setter for useRealTimeInput boolean
 
 	public void setUseRealTimeInput(boolean useRealTimeInput)
-	{
-		this.useRealTimeInput = useRealTimeInput;
+	{		
+		this.useRealTimeInput = useRealTimeInput;	
 	}
 
 
@@ -138,6 +150,40 @@ public class InputHandler extends MenuTemplate
 	public void controlEvent(ControlEvent theEvent)
 	{
 		super.controlEvent(theEvent);
+		
+		if(theEvent.getName() == "play")
+		{
+			if(theEvent.getValue() == 1)
+			{
+				this.setUseRealTimeInput(false);
+				((Input) this.getCurInput()).pause(false);
+			}
+			else
+			{
+				this.setUseRealTimeInput(true);
+				
+				for(int i = 0; i < this.playableInputs.length; i++)
+				{
+					if(this.playableInputs[i].getInputType() == "Recorded Input")
+					{
+						((Input) this.playableInputs[i]).pause(true);
+					}
+				}//for loop
+					
+			}//else
+		}
+		
+		if(theEvent.getName() == "pause"  && !this.useRealTimeInput)
+		{
+			if(theEvent.getValue() == 1)
+			{
+				((Input) this.getCurInput()).pause(true);
+			}
+			else
+			{
+				((Input) this.getCurInput()).pause(false);
+			}
+		}
 
 	}
 

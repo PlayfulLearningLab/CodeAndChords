@@ -154,8 +154,6 @@ public class MenuGroup implements ControlListener
 			{
 				if(this.driver.getCP5().getController("pause").isVisible())
 				{
-
-
 					this.driver.getCP5().getController("pause").hide();
 				}
 				else

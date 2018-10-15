@@ -39,6 +39,8 @@ public class RecordedInput extends Input {
 		this.disposeHandler	= new DisposeHandler(this.pa, this);
 		
 		this.uGenArrayFromSamples(samples);
+		
+		this.pause(true);
 	}
 	
 	// Constructor w/one String
