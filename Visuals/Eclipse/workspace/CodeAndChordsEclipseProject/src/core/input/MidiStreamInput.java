@@ -248,4 +248,31 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	}
 
 
+	@Override
+	public String getInputType() 
+	{
+		return "Midi Stream Input";
+	}
+
+
+	@Override
+	public boolean isRealTimeInput() 
+	{
+		return true;
+	}
+
+
+	@Override
+	public boolean isPolyphonic() 
+	{
+		return true;
+	}
+
+
+	@Override
+	public String getInputName() {
+		return "";
+	}
+
+
 }

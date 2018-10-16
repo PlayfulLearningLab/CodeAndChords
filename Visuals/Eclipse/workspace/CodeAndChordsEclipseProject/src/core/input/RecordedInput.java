@@ -13,6 +13,8 @@ public class RecordedInput extends Input {
 	
 	SampleManager	sampleManager;
 	
+	private String  inputName;
+	
 	public RecordedInput(PApplet pApplet, String sample)
 	{
 		this(pApplet, new String[] { sample } );
@@ -39,6 +41,10 @@ public class RecordedInput extends Input {
 		this.disposeHandler	= new DisposeHandler(this.pa, this);
 		
 		this.uGenArrayFromSamples(samples);
+		
+		this.inputName = samples[0];
+		
+		this.pause(true);
 	}
 	
 	// Constructor w/one String
@@ -148,11 +154,41 @@ public class RecordedInput extends Input {
 			}
 		} catch(NullPointerException npe)  {}
 	} // setFund
+	
+	public void setInputName(String name)
+	{
+		if(name == null) throw new IllegalArgumentException("Name must not be null");
+		
+		this.inputName = name;
+	}
 
 	@Override
 	public int getMidiNote() 
 	{
 		return (int) Math.round(this.getAdjustedFundAsMidiNote());
+	}
+
+	@Override
+	public String getInputType() 
+	{
+		return "Recorded Input";
+	}
+
+	@Override
+	public boolean isRealTimeInput() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isPolyphonic() 
+	{
+		return false;
+	}
+
+	@Override
+	public String getInputName() {
+		return this.inputName;
 	}
 
 }
