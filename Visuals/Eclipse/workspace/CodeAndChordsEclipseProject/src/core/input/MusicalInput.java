@@ -2,6 +2,7 @@ package core.input;
 
 public interface MusicalInput 
 {
+	public String getInputName();
 		
 	public String getInputType();
 	

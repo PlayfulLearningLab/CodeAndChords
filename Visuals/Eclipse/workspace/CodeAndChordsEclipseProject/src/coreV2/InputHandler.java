@@ -65,6 +65,7 @@ public class InputHandler extends MenuTemplate
 																						"WantingMemories_Soprano.wav",
 																						"WMTenor_Medium.wav"});
 
+		recInput.setInputName("Wanting Memories");
 		this.addMusicalInput(recInput);
 		
 		this.controlP5.get("playableInput").setValue(0);
@@ -248,7 +249,7 @@ public class InputHandler extends MenuTemplate
 			inputList = ((ScrollableList) this.controlP5.get("realTimeInput"));
 		}
 
-		inputList.addItem(musicalInput.getInputType(), inputList.getItems().size());
+		inputList.addItem(  "" + musicalInput.getInputName() + "   ( " + musicalInput.getInputType() + " )", inputList.getItems().size());
 
 
 
@@ -283,8 +284,8 @@ public class InputHandler extends MenuTemplate
 	private void makeControls()
 	{
 		this.controlP5.addScrollableList("realTimeInput")
-		.setPosition(50, 100)
-		.setWidth(200)
+		.setPosition(350, 125)
+		.setWidth(250)
 		.setBarHeight(30)
 		.setItemHeight(30)
 		.setItems(new String[] {})
@@ -293,8 +294,8 @@ public class InputHandler extends MenuTemplate
 		.setTab(this.getMenuTitle());
 
 		this.controlP5.addScrollableList("playableInput")
-		.setPosition(350, 100)
-		.setWidth(200)
+		.setPosition(625, 125)
+		.setWidth(250)
 		.setBarHeight(30)
 		.setItemHeight(30)
 		.setItems(new String[] {})

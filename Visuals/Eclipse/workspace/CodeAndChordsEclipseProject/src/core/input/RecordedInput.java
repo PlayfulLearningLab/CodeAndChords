@@ -13,6 +13,8 @@ public class RecordedInput extends Input {
 	
 	SampleManager	sampleManager;
 	
+	private String  inputName;
+	
 	public RecordedInput(PApplet pApplet, String sample)
 	{
 		this(pApplet, new String[] { sample } );
@@ -39,6 +41,8 @@ public class RecordedInput extends Input {
 		this.disposeHandler	= new DisposeHandler(this.pa, this);
 		
 		this.uGenArrayFromSamples(samples);
+		
+		this.inputName = samples[0];
 		
 		this.pause(true);
 	}
@@ -150,6 +154,13 @@ public class RecordedInput extends Input {
 			}
 		} catch(NullPointerException npe)  {}
 	} // setFund
+	
+	public void setInputName(String name)
+	{
+		if(name == null) throw new IllegalArgumentException("Name must not be null");
+		
+		this.inputName = name;
+	}
 
 	@Override
 	public int getMidiNote() 
@@ -173,6 +184,11 @@ public class RecordedInput extends Input {
 	public boolean isPolyphonic() 
 	{
 		return false;
+	}
+
+	@Override
+	public String getInputName() {
+		return this.inputName;
 	}
 
 }

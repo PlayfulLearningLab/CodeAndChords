@@ -380,4 +380,9 @@ public class MicrophoneInput extends Input {
 		return false;
 	}
 
+	@Override
+	public String getInputName() {
+		return "";
+	}
+
 } // Input class

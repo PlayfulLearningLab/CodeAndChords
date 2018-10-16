@@ -269,4 +269,10 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	}
 
 
+	@Override
+	public String getInputName() {
+		return "";
+	}
+
+
 }
