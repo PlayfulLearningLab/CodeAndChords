@@ -7,7 +7,7 @@ import controlP5.Label;
 
 public class ColorMenu extends MenuTemplate
 {
-	
+	String[] noteNames;
 	
 	ColorScheme[] colorSchemes;
 	
@@ -15,13 +15,16 @@ public class ColorMenu extends MenuTemplate
 	public ColorMenu(ModuleDriver driver) 
 	{
 		super("Color Menu", driver, true);
+		
+		this.noteNames = new String[] {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
+
+		
 		this.addDannyButtons();
 	}
 	
 
 	public void addDannyButtons()
 	{
-		String[] noteNames = new String[] {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
 
 		Label.setUpperCaseDefault(false);
 		
