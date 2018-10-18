@@ -3,62 +3,47 @@ package coreV2;
 import java.awt.Color;
 
 import controlP5.ControlP5;
+import controlP5.Label;
 
 public class ColorMenu extends MenuTemplate
 {
+	
+	
+	ColorScheme[] colorSchemes;
+	
 
 	public ColorMenu(ModuleDriver driver) 
 	{
 		super("Color Menu", driver, true);
-		this.addButtons();
-		this.addSliders();
+		this.addDannyButtons();
 	}
 	
-	/*public void addGroup1Sliders (int xVal, int hueY, int saturY, int brightY)
+
+	public void addDannyButtons()
 	{
+		String[] noteNames = new String[] {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
+
+		Label.setUpperCaseDefault(false);
 		
-		String[]	labels	= new String[] {
-				"Hue",
-				"Saturation",
-				"Brightness",
-		}; // labels
+		int buttonWidth = 40;
+		int buttonHeight = 20;
 
-		int[]		yVals	= new int[] {
-				hueY,
-				saturY,
-				brightY,
-		}; // yVals
+		int x = 20;
 
-		this.firstStyleButtonId	= this.nextStyleButtonId;
+		int yStart = 190;
+		int yIncrament = buttonHeight + 6;
 
-		for(int i = 0; i < labels.length; i++)
+		for(int i = 0; i < noteNames.length; i++)
 		{
-			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 400, "color");
+			this.controlP5.addToggle(noteNames[i])
+			.setPosition(x, yStart + (i * yIncrament))
+			.setSize(buttonWidth, buttonHeight)
+			.setCaptionLabel(noteNames[i])
+			.setValue(false)
+			.setTab(this.getMenuTitle())
+			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		}
 	}
-	
-	/*public void addGroup2Sliders (int xVal, int redY, int greenY, int blueY)
-	{
-		
-		String[]	labels	= new String[] {
-				"Red Mod.",
-				"Green Mod.",
-				"Blue Mod.",
-		}; // labels
-
-		int[]		yVals	= new int[] {
-				redY,
-				greenY,
-				blueY,
-		}; // yVals
-
-		this.firstStyleButtonId	= this.nextStyleButtonId;
-
-		for(int i = 0; i < labels.length; i++)
-		{
-			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 400, "color");
-		}
-	}*/
 		
 	public void addButtons()
 	{

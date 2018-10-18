@@ -59,14 +59,24 @@ public class InputHandler extends MenuTemplate
 		
 		//recorded inputs
 		
-		RecordedInput recInput	= new RecordedInput(driver.getParent(), new String[] {	"WantingMemories_Melody.wav",
+		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
+																						"6_Part_Scale2.wav", 
+																						"6_Part_Scale3.wav", 
+																						"6_Part_Scale4.wav"});
+
+		recInput1.setInputName("Scale");
+		this.addMusicalInput(recInput1);
+		
+		
+		
+		RecordedInput recInput2	= new RecordedInput(driver.getParent(), new String[] {	"WantingMemories_Melody.wav",
 																						"WMBass_Later_Quiet.wav",
 																						"WantingMemories_Alto.wav",
 																						"WantingMemories_Soprano.wav",
 																						"WMTenor_Medium.wav"});
 
-		recInput.setInputName("Wanting Memories");
-		this.addMusicalInput(recInput);
+		recInput2.setInputName("Wanting Memories");
+		this.addMusicalInput(recInput2);
 		
 		this.controlP5.get("playableInput").setValue(0);
 		
@@ -172,6 +182,7 @@ public class InputHandler extends MenuTemplate
 				}//for loop
 					
 			}//else
+			
 		}
 		
 		if(theEvent.getName() == "pause"  && !this.useRealTimeInput)
@@ -185,8 +196,20 @@ public class InputHandler extends MenuTemplate
 				((Input) this.getCurInput()).pause(false);
 			}
 		}
+		
+		if(theEvent.getName() == "playableInput")
+		{
+			System.out.println("step 1");
+			
+			if(this.controlP5.getController("play").getValue() == 1)
+			{
+				System.out.println("step 2");
+				
+				this.controlP5.getController("play").setValue(0);
+			}
+		}
 
-	}
+	}//ControlEvent
 
 	@Override
 	public void sliderEvent(int id, float val) {
