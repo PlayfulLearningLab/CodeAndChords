@@ -33,6 +33,7 @@ public class MenuGroup implements ControlListener
 		this.activeMenu = this.canvasMenu;
 		
 		this.addMenu(new InputHandler(driver));
+		this.addMenu(new ColorMenu(driver));
 
 		this.driver.getCP5().controlWindow.setPositionOfTabs(40, 7);
 	}
@@ -63,6 +64,11 @@ public class MenuGroup implements ControlListener
 	public MenuTemplate getActiveMenu()
 	{
 		return this.activeMenu;
+	}
+	
+	public ColorMenu getColorMenu()
+	{
+		return (ColorMenu) this.menuGroup[1];
 	}
 
 	public boolean canvasMenuActive()

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import controlP5.ControlEvent;
 import controlP5.ScrollableList;
+import controlP5.Textlabel;
 import core.input.Input;
 import core.input.MidiStreamInput;
 import core.input.MusicalInput;
@@ -59,14 +60,24 @@ public class InputHandler extends MenuTemplate
 		
 		//recorded inputs
 		
-		RecordedInput recInput	= new RecordedInput(driver.getParent(), new String[] {	"WantingMemories_Melody.wav",
+		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
+																						"6_Part_Scale2.wav", 
+																						"6_Part_Scale3.wav", 
+																						"6_Part_Scale4.wav"});
+
+		recInput1.setInputName("4 Part Scale");
+		this.addMusicalInput(recInput1);
+		
+		
+		
+		RecordedInput recInput2	= new RecordedInput(driver.getParent(), new String[] {	"WantingMemories_Melody.wav",
 																						"WMBass_Later_Quiet.wav",
 																						"WantingMemories_Alto.wav",
 																						"WantingMemories_Soprano.wav",
 																						"WMTenor_Medium.wav"});
 
-		recInput.setInputName("Wanting Memories");
-		this.addMusicalInput(recInput);
+		recInput2.setInputName("Wanting Memories");
+		this.addMusicalInput(recInput2);
 		
 		this.controlP5.get("playableInput").setValue(0);
 		
@@ -172,6 +183,7 @@ public class InputHandler extends MenuTemplate
 				}//for loop
 					
 			}//else
+			
 		}
 		
 		if(theEvent.getName() == "pause"  && !this.useRealTimeInput)
@@ -185,8 +197,28 @@ public class InputHandler extends MenuTemplate
 				((Input) this.getCurInput()).pause(false);
 			}
 		}
+		
+		if(theEvent.getName() == "playableInput")
+		{
+			if(this.controlP5.getController("play").getValue() == 1)
+			{				
+				this.controlP5.getController("play").setValue(0);
+			}
+			MusicalInput curPlayableInput = this.playableInputs[(int) this.controlP5.getController("playableInput").getValue()];
+			if(!curPlayableInput.equals(null))
+				((Textlabel) this.controlP5.get("playableInfo")).setText(this.makeInfoString(curPlayableInput));
+		}
+		
+		if(theEvent.getName() == "realTimeInput")
+		{
 
-	}
+			MusicalInput curRealTimeInput = this.realTimeInputs[(int) this.controlP5.getController("realTimeInput").getValue()];
+			if(!curRealTimeInput.equals(null))
+				((Textlabel) this.controlP5.get("realTimeInfo")).setText(this.makeInfoString(curRealTimeInput));
+		}
+		
+
+	}//ControlEvent
 
 	@Override
 	public void sliderEvent(int id, float val) {
@@ -283,8 +315,18 @@ public class InputHandler extends MenuTemplate
 
 	private void makeControls()
 	{
+		this.controlP5.addLabel("Real Time Inputs", 30, this.parent.height/3)
+		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addLabel("realTimeInfo")
+		.setTab(this.getMenuTitle())
+		.setMultiline(true)
+		.setPosition(40, this.parent.height/3 + 60)
+		.setSize(this.parent.width/3 - 50, this.parent.height/3 - 40)
+		.setText("info here");
+		
 		this.controlP5.addScrollableList("realTimeInput")
-		.setPosition(350, 125)
+		.setPosition(30, this.parent.height/3 + 15)
 		.setWidth(250)
 		.setBarHeight(30)
 		.setItemHeight(30)
@@ -292,9 +334,19 @@ public class InputHandler extends MenuTemplate
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addLabel("Playable Inputs (Play Button)", 30, this.parent.height * 2/3)
+		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addLabel("playableInfo")
+		.setTab(this.getMenuTitle())
+		.setMultiline(true)
+		.setPosition(40, this.parent.height*2/3 + 60)
+		.setSize(this.parent.width/3 - 50, this.parent.height/3 - 40)
+		.setText("info here");
 
 		this.controlP5.addScrollableList("playableInput")
-		.setPosition(625, 125)
+		.setPosition(30, this.parent.height * 2/3 + 15)
 		.setWidth(250)
 		.setBarHeight(30)
 		.setItemHeight(30)
@@ -419,6 +471,16 @@ public class InputHandler extends MenuTemplate
 			currentScale[11] = key + 1;
 		}
 		return currentScale;
+	}
+	
+	private String makeInfoString(MusicalInput input)
+	{
+		String info = "";
+		
+		info += "Number of Inputs:   " + input.getTotalNumInputs() +"\n\n";
+		info += "Polyphonic?         " + input.isPolyphonic() +"\n\n";
+		
+		return info;
 	}
 
 }

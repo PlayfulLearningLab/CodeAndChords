@@ -3,12 +3,15 @@ package core.input;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.midi.Instrument;
+import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
 
 public class MidiStreamInput implements Receiver, MusicalInput
@@ -20,6 +23,9 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 	private MidiDevice			device;
 	private Transmitter			transmitter;
+	
+	private Instrument[]		midiInstruments;
+	private MidiChannel[]		midiChannels;
 
 	private int					numNotes;
 	private int[][]				curNotes;
@@ -71,6 +77,18 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				//if code gets this far without throwing an exception
 				//print a success message
 				System.out.println(device.getDeviceInfo()+" Was Opened");
+				
+				
+				//Trying to play sound
+				Synthesizer midiSynth = MidiSystem.getSynthesizer(); 
+		        midiSynth.open();
+
+		        //get and load default instrument and channel lists
+		        this.midiInstruments = midiSynth.getDefaultSoundbank().getInstruments();
+		        this.midiChannels = midiSynth.getChannels();
+
+		        midiSynth.loadInstrument(this.midiInstruments[0]);//load an instrument
+
 			}
 			catch (MidiUnavailableException e)
 			{
@@ -106,6 +124,8 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				this.curNotes[this.numNotes][0] = note;
 				this.curNotes[this.numNotes][1] = amp;
 				this.numNotes++;
+				
+				this.midiChannels[0].noteOn(note, amp);
 			}
 			else
 			{
@@ -122,6 +142,8 @@ public class MidiStreamInput implements Receiver, MusicalInput
 						this.curNotes[index][1] = 0;
 
 						this.numNotes--;
+						
+						this.midiChannels[0].noteOff(note);
 					}
 					index++;
 				}
@@ -273,6 +295,14 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public String getInputName() {
 		return "";
 	}
+	
+	@Override
+	public int getTotalNumInputs()
+	{
+		return 1;
+	}
+	
+
 
 
 }

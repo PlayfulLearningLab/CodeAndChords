@@ -547,6 +547,14 @@ public abstract class Input implements MusicalInput {
 	{
 		return this.ac;
 	}
+	
+	@Override
+	public int getTotalNumInputs()
+	{
+		return this.numInputs;
+	}
+	
+
 
 	/**
 	 * 08/01/2017

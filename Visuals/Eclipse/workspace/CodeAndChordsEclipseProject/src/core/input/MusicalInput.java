@@ -2,17 +2,22 @@ package core.input;
 
 public interface MusicalInput 
 {
-	public String getInputName();
+	//Instrument Info
+	public String 	getInputName();
 		
-	public String getInputType();
+	public String 	getInputType();
 	
-	public boolean isRealTimeInput();
+	public boolean 	isRealTimeInput();
 	
-	public boolean isPolyphonic();
+	public boolean 	isPolyphonic();
 	
-	public int getMidiNote();
+	public int		getTotalNumInputs();
+		
 	
-	public float getAmplitude();
+	//Instrument Input
+	public int 		getMidiNote();
+	
+	public float 	getAmplitude();
 	
 	
 

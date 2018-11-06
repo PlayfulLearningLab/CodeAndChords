@@ -1,5 +1,7 @@
 package coreV2;
 
+import java.awt.Color;
+
 import controlP5.ControlP5;
 import controlP5.Tab;
 
@@ -74,33 +76,34 @@ public class ModuleDriver implements PConstants
 
 	private MenuGroup				menuGroup;
 	
+	
 
 
 	public ModuleDriver(PApplet parent)
 	{
 		if(parent == null) throw new IllegalArgumentException("PApplet parameter must not be null.");
-
+		
 		this.parent = parent;
 
 		this.cp5 = new ControlP5(this.parent);
 		this.cp5.getTab("default").hide();
-
-		this.parent.registerMethod("pre", this);
-		this.parent.registerMethod("keyEvent", this);
+		
+		this.cp5.hide();
 		
 		this.menuGroup = new MenuGroup(this);
 		
 		this.canvas = new Canvas(this.parent);
-
-		this.menuGroup.addMenu(new ColorMenu(this));
-		//this.menu.addMenu(new SensitivityMenu(this));
-
 		
+		this.parent.registerMethod("pre", this);
+		this.parent.registerMethod("keyEvent", this);
+		
+		this.cp5.show();
 	}
 
 	public void pre()
 	{
 		this.canvas.drawAppletBackground();
+		
 	}//pre()
 
 
@@ -141,7 +144,7 @@ public class ModuleDriver implements PConstants
 	}
 	
 	public MenuGroup getMenuGroup()
-	{
+	{	
 		return this.menuGroup;
 	}
 	

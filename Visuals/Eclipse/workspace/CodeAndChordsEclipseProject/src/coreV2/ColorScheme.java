@@ -1,5 +1,6 @@
 package coreV2;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 /*
@@ -53,6 +54,20 @@ public class ColorScheme
 	public int[] getCanvasColor()
 	{
 		return this.canvasColor;
+	}
+	
+	public void setColor(int colorNumber, int r, int g, int b)
+	{
+		this.pitchColors[colorNumber][0] = r;
+		this.pitchColors[colorNumber][1] = g;
+		this.pitchColors[colorNumber][2] = b;
+	}
+	
+	public void setColor(int colorNumber, int RGB)
+	{
+		Color newColor = new Color(RGB);
+		
+		this.setColor(colorNumber, newColor.getRed(), newColor.getGreen(), newColor.getBlue());
 	}
 
 

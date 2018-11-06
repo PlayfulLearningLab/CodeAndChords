@@ -2,63 +2,146 @@ package coreV2;
 //Make buttons, Implementing control event method-->tells program what to do when buttons are clicked, no save/load color, add color wheel group method next to add sllider wheel group method
 import java.awt.Color;
 
+import controlP5.ColorWheel;
+import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.Controller;
+import controlP5.Label;
 
 public class ColorMenu extends MenuTemplate
 {
+	String[] noteNames;
+	
+	ColorScheme[] colorSchemes;
+	
+	private boolean setupComplete = false;
+	
+	//parameters for button placement
+	
+	private int buttonWidth = 40;
+	private int buttonHeight = 20;
+
+	private int xPos = 10;
+
+	private int yStart = 190;
+	private int yIncrament = buttonHeight + 6;
+	
 
 	public ColorMenu(ModuleDriver driver) 
 	{
 		super("Color Menu", driver, true);
-		this.addButtons();
-		this.addSliders();
+		
+		this.noteNames = new String[] {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
+
+		this.colorSchemes = new ColorScheme[] {new ColorScheme(this.driver)};
+		this.parent.registerMethod("draw", this);
+		
+		this.addDannyButtons();
+		this.addColorCustomizationControls();
+		
+		this.setupComplete = true;
 	}
 	
-	/*public void addGroup1Sliders (int xVal, int hueY, int saturY, int brightY)
+
+	public void addDannyButtons()
 	{
-		
-		String[]	labels	= new String[] {
-				"Hue",
-				"Saturation",
-				"Brightness",
-		}; // labels
 
-		int[]		yVals	= new int[] {
-				hueY,
-				saturY,
-				brightY,
-		}; // yVals
+		Label.setUpperCaseDefault(false);
 
-		this.firstStyleButtonId	= this.nextStyleButtonId;
-
-		for(int i = 0; i < labels.length; i++)
+		for(int i = 0; i < this.noteNames.length; i++)
 		{
-			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 400, "color");
+			this.controlP5.addToggle(this.noteNames[i])
+			.setPosition(xPos, yStart + (i * yIncrament))
+			.setSize(buttonWidth, buttonHeight)
+			.setCaptionLabel(this.noteNames[i])
+			.setValue(false)
+			.setTab(this.getMenuTitle())
+			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		}
 	}
 	
-	/*public void addGroup2Sliders (int xVal, int redY, int greenY, int blueY)
+	public void draw()
 	{
-		
-		String[]	labels	= new String[] {
-				"Red Mod.",
-				"Green Mod.",
-				"Blue Mod.",
-		}; // labels
-
-		int[]		yVals	= new int[] {
-				redY,
-				greenY,
-				blueY,
-		}; // yVals
-
-		this.firstStyleButtonId	= this.nextStyleButtonId;
-
-		for(int i = 0; i < labels.length; i++)
+		if(this.driver.getMenuGroup().getActiveMenu().equals(this))
 		{
-			this.addSliderGroup(xVal, yVals[i], labels[i], 100, 3000, 400, "color");
+			this.drawColorIndicators();
 		}
-	}*/
+	}
+	
+	public void drawColorIndicators()
+	{	
+		System.out.println("drawing");
+		
+		for(int i = 0; i < this.noteNames.length; i++)
+		{
+			int[] RGB = this.colorSchemes[0].getPitchColor(i);
+			
+			this.parent.fill(RGB[0], RGB[1], RGB[2]);
+			this.parent.rect(xPos + buttonWidth + 10, yStart +i*yIncrament, 70, buttonHeight);
+		}
+	}
+	
+	private void addColorCustomizationControls()
+	{
+		this.controlP5.addColorWheel("colorPicker", 150, yStart, 140)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		int sliderX = 150;
+		int sliderY = yStart + 180;
+		
+		int sliderH = 20;
+		int sliderW = 140;
+		
+		int yPadding = 20;
+		
+		this.controlP5.addSlider("redSlider")
+		.setMin(0)
+		.setMax(255)
+		.setPosition(sliderX, sliderY)
+		.setSize(sliderW, sliderH)
+		.setDecimalPrecision(0)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().setVisible(false);
+		
+		this.controlP5.addLabel("Red")
+		.setPosition(sliderX, sliderY - 12)
+		.setColor(255)
+		.setTab(this.getMenuTitle());
+		
+		sliderY += (sliderH + yPadding);
+		
+		this.controlP5.addSlider("greenSlider")
+		.setMin(0)
+		.setMax(255)
+		.setPosition(sliderX, sliderY)
+		.setSize(sliderW, sliderH)
+		.setDecimalPrecision(0)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().setVisible(false);
+		
+		this.controlP5.addLabel("Green")
+		.setPosition(sliderX, sliderY - 12)
+		.setColor(255)
+		.setTab(this.getMenuTitle());
+		
+		sliderY += (sliderH + yPadding);
+		
+		this.controlP5.addSlider("blueSlider")
+		.setMin(0)
+		.setMax(255)
+		.setPosition(sliderX, sliderY)
+		.setSize(sliderW, sliderH)
+		.setDecimalPrecision(0)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().setVisible(false);
+		
+		this.controlP5.addLabel("Blue")
+		.setPosition(sliderX, sliderY - 12)
+		.setColor(255)
+		.setTab(this.getMenuTitle());
+	}
 		
 	public void addButtons()
 	{
@@ -326,6 +409,79 @@ public class ColorMenu extends MenuTemplate
 		
 	}
 	
+	public void controlEvent(ControlEvent theEvent)
+	{
+		int pitchButtonIndex = this.isPitchButton(theEvent);
+		if(pitchButtonIndex != -1 && theEvent.getController().getValue() == 1)
+		{
+			for(int i = 0; i < this.noteNames.length; i++)
+			{
+				if(i != pitchButtonIndex && this.controlP5.getController(this.noteNames[i]).getValue() == 1)
+				{
+					this.controlP5.getController(this.noteNames[i]).setValue(0);
+				}
+			}
+			
+			int[] curRGB = this.colorSchemes[0].getPitchColor(pitchButtonIndex);
+			int curColor = new Color(curRGB[0], curRGB[1], curRGB[2]).getRGB();
+			
+			ColorWheel cw = (ColorWheel) this.controlP5.getController("colorPicker");
+			
+			cw.setRGB(curColor);
+			
+			if(cw.r() != this.controlP5.getController("redSlider").getValue())
+				this.controlP5.getController("redSlider").setValue(cw.r());
+			
+			if(cw.g() != this.controlP5.getController("greenSlider").getValue())
+				this.controlP5.getController("greenSlider").setValue(cw.g());
+			
+			if(cw.b() != this.controlP5.getController("blueSlider").getValue())
+				this.controlP5.getController("blueSlider").setValue(cw.b());
+		}
+		
+		if(this.isColorSlider(theEvent) && this.setupComplete && (this.controlP5.getController("redSlider").isMousePressed() || this.controlP5.getController("greenSlider").isMousePressed() || this.controlP5.getController("blueSlider").isMousePressed()))
+				
+		{
+			int[] RGB = new int[] {		(int) this.controlP5.getController("redSlider").getValue(),
+										(int) this.controlP5.getController("greenSlider").getValue(),
+										(int) this.controlP5.getController("blueSlider").getValue()};
+			
+			int newColor = new Color(RGB[0], RGB[1], RGB[2]).getRGB();
+			
+			if(newColor != ((ColorWheel)this.controlP5.getController("colorPicker")).getRGB())
+				( (ColorWheel)this.controlP5.getController("colorPicker")).setRGB(newColor);
+						
+		}
+		
+		if(theEvent.getName() == "colorPicker" && this.controlP5.getController("colorPicker").isMousePressed())
+		{
+			ColorWheel cw = (ColorWheel) this.controlP5.getController("colorPicker");
+			
+			if(cw.r() != this.controlP5.getController("redSlider").getValue())
+				this.controlP5.getController("redSlider").setValue(cw.r());
+			
+			if(cw.g() != this.controlP5.getController("greenSlider").getValue())
+				this.controlP5.getController("greenSlider").setValue(cw.g());
+			
+			if(cw.b() != this.controlP5.getController("blueSlider").getValue())
+				this.controlP5.getController("blueSlider").setValue(cw.b());
+		}
+		
+		if(this.getActivePitchColor() != -1 && this.isNewColor())
+		{			
+			int newColor = ((ColorWheel)this.controlP5.getController("colorPicker")).getRGB();
+			
+			int[] curRGB = this.colorSchemes[0].getPitchColor(this.getActivePitchColor());
+			int curColor = new Color(curRGB[0], curRGB[1], curRGB[2]).getRGB();
+			
+			if(newColor != curColor)
+			{
+				this.colorSchemes[0].setColor(this.getActivePitchColor(), newColor);
+			}
+		}
+		
+	}
+	
 	@Override
 	public void sliderEvent(int id, float val) 
 	{
@@ -342,5 +498,57 @@ public class ColorMenu extends MenuTemplate
 	public void colorWheelEvent(int id, Color color) 
 	{
 		
+	}
+	
+	private int isPitchButton(ControlEvent theEvent)
+	{
+		int value = -1;
+		
+		for(int i = 0; i < this.noteNames.length; i++)
+		{
+			if(theEvent.getName() == this.noteNames[i])
+			{
+				value = i;
+			}
+		}
+		
+		return value;
+	}
+	
+	private boolean isColorSlider(ControlEvent theEvent)
+	{
+		boolean value = theEvent.isFrom("redSlider") || theEvent.isFrom("greenSlider") || theEvent.isFrom("blueSlider");
+		
+		return value;
+	}
+	
+	private int getActivePitchColor()
+	{
+		int val = -1;
+		
+		for(int i = 0; val == -1 && i < this.noteNames.length ; i++)
+		{
+			if(this.setupComplete && this.controlP5.getController(this.noteNames[i]).getValue() == 1)
+			{
+				val = i;
+			}
+		}
+		
+		return val;
+	}
+	
+	private boolean isNewColor()
+	{
+		boolean val = this.controlP5.getController("colorPicker").isMouseOver()
+				||	this.controlP5.getController("redSlider").isMouseOver()
+				||	this.controlP5.getController("greenSlider").isMouseOver()
+				||	this.controlP5.getController("blueSlider").isMouseOver();
+		
+		return val;
+	}
+	
+	public ColorScheme[] getColorSchemes()
+	{
+		return this.colorSchemes;
 	}
 }
