@@ -9,8 +9,6 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 	private InputHandler 	inputHandler;
 	private Canvas			canvas;
 	
-	private ColorScheme colorScheme;
-
 	public static void main(String[] args)
 	{
 		PApplet.main("module_01_05.Module_01_05_PolyphonicMidi");
@@ -29,9 +27,7 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 
 		MenuGroup menus = this.driver.getMenuGroup();
 		this.inputHandler = this.driver.getInputHandler();
-		
-		this.colorScheme = new ColorScheme(driver);
-		
+				
 		this.noStroke();
 	}
 
@@ -42,9 +38,11 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 
 		if(numNotes > 0)
 		{
+			ColorScheme cs = this.driver.getMenuGroup().getColorMenu().getColorSchemes()[0];
+			
 			for(int i = 0; i < numNotes; i++)
 			{
-				int[] rgb = this.colorScheme.getPitchColor(activeNotes[i][0]);
+				int[] rgb = cs.getPitchColor(activeNotes[i][0]);
 				
 				this.fill(rgb[0], rgb[1], rgb[2]);
 				

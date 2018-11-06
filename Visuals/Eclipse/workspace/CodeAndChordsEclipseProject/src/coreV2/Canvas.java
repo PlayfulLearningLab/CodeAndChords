@@ -73,12 +73,12 @@ public class Canvas
 		this.parent.ellipse(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
 	}
 	
-	public void line(int xPos, int yPos, int width, int height)
+	public void line(int x1, int y1, int x2, int y2)
 	{
 		float x = (this.displayWidth/this.parent.width);
 		float y = (this.displayHeight/this.parent.height);
 		
-		this.parent.line(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
+		this.parent.line(this.displayX + (x1 * x), this.displayY + (y1 * y), this.displayX + (x2 * x), this.displayY + (y2 * y));
 	}
 	
 	public void drawAppletBackground()
