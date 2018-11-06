@@ -123,7 +123,7 @@ public class ColorFader implements PConstants
 	{
 		return new int[] {this.RGB[0], this.RGB[1], this.RGB[2], this.alpha};
 	}
-
+	
 	public int[] getTargetColor()
 	{
 		return this.targetRGB;

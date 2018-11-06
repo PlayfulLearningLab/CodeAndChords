@@ -302,6 +302,123 @@ public class InputHandler extends MenuTemplate
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addScrollableList("Key Change")
+		.setPosition(30, 70)
+		.setWidth(100)
+		.setBarHeight(30)
+		.setItemHeight(30)
+		.setItems(new String[] {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
+		.setValue(0)
+		.close()
+		.setTab(this.getMenuTitle());
+		
+		
+		this.controlP5.addScrollableList("Keys")
+		.setPosition(30, 250)
+		.setWidth(100)
+		.setBarHeight(30)
+		.setItemHeight(30)
+		.setItems(new String[] {"Major", "Minor", "Chromatic", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic"})
+		.setValue(0)
+		.close()
+		.setTab(this.getMenuTitle());
+	}
+	
+	private int[] getScale()
+	{
+		int[] currentScale;
+		ScrollableList controller1 = (ScrollableList) this.controlP5.getController("Key Change");
+		int key = (int) controller1.getValue();
+		
+		ScrollableList controller2 = (ScrollableList) this.controlP5.getController("realTimeInput");
+		int scale = (int) controller2.getValue();
+		
+		if(scale == 0)//major
+		{
+			currentScale = new int[8];
+			currentScale[0] = key;
+			currentScale[1] = key + 2;
+			currentScale[2] = key + 2;
+			currentScale[3] = key + 1;
+			currentScale[4] = key + 2;
+			currentScale[5] = key + 2;
+			currentScale[6] = key + 2;
+			currentScale[7] = key + 1;
+		}
+		else if(scale == 1)//minor
+		{
+			currentScale = new int[8];
+			currentScale[0] = key;
+			currentScale[1] = key + 2;
+			currentScale[2] = key + 1;
+			currentScale[3] = key + 2;
+			currentScale[4] = key + 2;
+			currentScale[5] = key + 1;
+			currentScale[6] = key + 2;
+			currentScale[7] = key + 2;
+		}
+		else if(scale == 3)//harmonic minor
+		{
+			currentScale = new int[8];
+			currentScale[0] = key;
+			currentScale[1] = key + 2;
+			currentScale[2] = key + 1;
+			currentScale[3] = key + 2;
+			currentScale[4] = key + 2;
+			currentScale[5] = key + 1;
+			currentScale[6] = key + 2;
+			currentScale[7] = key + 1;
+		}
+		else if(scale == 4)//melodic minor
+		{
+			currentScale = new int[8];
+			currentScale[0] = key;
+			currentScale[1] = key + 2;
+			currentScale[2] = key + 1;
+			currentScale[3] = key + 2;
+			currentScale[4] = key + 2;
+			currentScale[5] = key + 2;
+			currentScale[6] = key + 2;
+			currentScale[7] = key + 1;
+		}
+		else if(scale == 5)//major pentatonic
+		{
+			currentScale = new int[6];
+			currentScale[0] = key;
+			currentScale[1] = key + 2;
+			currentScale[2] = key + 2;
+			currentScale[3] = key + 3;
+			currentScale[4] = key + 2;
+			currentScale[5] = key + 3;
+		}
+		else if(scale == 6)//minor pentatonic
+		{
+			currentScale = new int[6];
+			currentScale[0] = key;
+			currentScale[1] = key + 3;
+			currentScale[2] = key + 2;
+			currentScale[3] = key + 2;
+			currentScale[4] = key + 3;
+			currentScale[5] = key + 2;
+		}
+		else//chromatic
+		{
+			currentScale = new int[12];
+			currentScale[0] = key;
+			currentScale[1] = key + 1;
+			currentScale[2] = key + 1;
+			currentScale[3] = key + 1;
+			currentScale[4] = key + 1;
+			currentScale[5] = key + 1;
+			currentScale[6] = key + 1;
+			currentScale[7] = key + 1;
+			currentScale[8] = key + 1;
+			currentScale[9] = key + 1;
+			currentScale[10] = key + 1;
+			currentScale[11] = key + 1;
+		}
+		return currentScale;
 	}
 
 }
