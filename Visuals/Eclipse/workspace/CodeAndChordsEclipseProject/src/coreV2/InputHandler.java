@@ -59,7 +59,6 @@ public class InputHandler extends MenuTemplate
 
 		
 		//recorded inputs
-		
 		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
 																						"6_Part_Scale2.wav", 
 																						"6_Part_Scale3.wav", 
@@ -367,7 +366,7 @@ public class InputHandler extends MenuTemplate
 		
 		
 		this.controlP5.addScrollableList("Keys")
-		.setPosition(30, 250)
+		.setPosition(200, 70)
 		.setWidth(100)
 		.setBarHeight(30)
 		.setItemHeight(30)
