@@ -53,8 +53,6 @@ import javax.sound.sampled.Mixer;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
-import core.PortAudioAudioIO;
-
 public class MicrophoneInput extends Input {
 	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
 //	private UGen[]                 uGenArray;
@@ -97,6 +95,7 @@ public class MicrophoneInput extends Input {
 	 */
 	public MicrophoneInput(int numInputs, AudioContext audioContext, PApplet pa)
 	{
+		
 		this(numInputs, audioContext, false, pa);
 	} // int, AudioContext
 	
@@ -116,6 +115,10 @@ public class MicrophoneInput extends Input {
 		if(audioContext == null) {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
 		} // if(numInputs < 1)
+		
+		System.err.println("Note that you must build your own AudioContext when using this constructor.\n"
+				+ "If new AudioContext() is used without parameters it won't set up PortAudio\n"
+				+ "Look at the other constructors to see an example of good AudioContext setup.");
 
 		this.numInputs  = numInputs;
 		this.ac 		= audioContext;

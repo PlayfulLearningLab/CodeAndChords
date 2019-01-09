@@ -3,8 +3,8 @@ package demo_01_flight;
 import controlP5.ControlP5;
 import core.Module;
 import core.ModuleMenu;
-import core.PortAudioAudioIO;
 import core.input.MicrophoneInput;
+import core.input.PortAudioAudioIO;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 

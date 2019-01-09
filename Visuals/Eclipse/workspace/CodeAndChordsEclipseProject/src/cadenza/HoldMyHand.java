@@ -8,9 +8,9 @@ package cadenza;
 //import core.Input;
 import core.Module;
 import core.ModuleMenu;
-import core.PortAudioAudioIO;
 import processing.core.PApplet;
 import core.input.MicrophoneInput;
+import core.input.PortAudioAudioIO;
 import coreV2.Follower;
 import net.beadsproject.beads.core.AudioContext;
 

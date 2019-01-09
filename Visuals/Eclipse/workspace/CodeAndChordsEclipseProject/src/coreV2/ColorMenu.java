@@ -70,7 +70,7 @@ public class ColorMenu extends MenuTemplate
 	
 	public void drawColorIndicators()
 	{	
-		System.out.println("drawing");
+		//System.out.println("drawing");
 		
 		for(int i = 0; i < this.noteNames.length; i++)
 		{

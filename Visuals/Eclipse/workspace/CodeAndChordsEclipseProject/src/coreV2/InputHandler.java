@@ -50,7 +50,7 @@ public class InputHandler extends MenuTemplate
 		this.playableInputs = new MusicalInput[0];
 
 
-		this.addMusicalInput(new MicrophoneInput(1, new AudioContext(), false, this.driver.getParent()));
+		this.addMusicalInput(new MicrophoneInput(1, false, this.driver.getParent()));
 		this.addMusicalInput(new MidiStreamInput());
 
 		this.useRealTimeInput = true;

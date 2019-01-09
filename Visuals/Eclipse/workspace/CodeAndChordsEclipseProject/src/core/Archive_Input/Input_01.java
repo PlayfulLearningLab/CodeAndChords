@@ -55,7 +55,7 @@ import javax.sound.sampled.Mixer;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
-import core.PortAudioAudioIO;
+import core.input.PortAudioAudioIO;
 
 public class Input_01 extends PApplet {
 	/*

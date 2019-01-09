@@ -1,4 +1,4 @@
-package core;
+package core.input;
 
 import javax.sound.sampled.AudioFormat;
 
