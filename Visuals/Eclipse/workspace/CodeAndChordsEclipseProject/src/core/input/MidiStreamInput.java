@@ -31,6 +31,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	private int[][]				curNotes;
 
 	private int					monophonicType;
+	private boolean				isPolyphonic;
 
 	public static final int		LAST_NOTE = 0;
 	public static final int		LOUDEST_NOTE = 1;
@@ -47,6 +48,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		}
 		
 		this.monophonicType = 0;
+		this.isPolyphonic = false;
 
 		MidiDevice device;
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -200,6 +202,41 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 		this.monophonicType = type;
 	}
+	
+	private int getMonoNote()
+	{
+		int noteIndex = -1;
+		
+		switch(this.monophonicType)
+		{
+		case 0: //last
+			noteIndex = this.numNotes -1;
+			break;
+			
+		case 1: //loudest
+			int max = 0;
+			
+			for(int i = 0; i < this.numNotes; i++)
+			{
+				if(this.curNotes[i][1] > max)
+				{
+					max = this.curNotes[i][1];
+					noteIndex = i;
+				}
+			}
+			break;
+			
+		case 2: //first
+			noteIndex = 0;
+			break;
+			
+		default: //error
+				
+			break;
+		}
+		
+		return noteIndex;
+	}
 
 	@Override
 	public int getMidiNote() 
@@ -225,48 +262,77 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 	public int[] getAllMidiNotes()
 	{
-		int[] subArray = new int[this.numNotes];
-
-		for(int i = 0; i < this.numNotes; i++)
+		int[] subArray;
+		
+		if(this.isPolyphonic)
 		{
-			subArray[i] = this.curNotes[i][0];
+			subArray = new int[this.numNotes];
+
+			for(int i = 0; i < this.numNotes; i++)
+			{
+				subArray[i] = this.curNotes[i][0];
+			}
 		}
+		else
+		{
+			subArray = new int[] {this.getMidiNote()};
+		}		
 
 		return subArray;
 	}
 
 	public int[] getAllAmplitudes()
 	{
-		int[] subArray = new int[this.numNotes];
-
-		for(int i = 0; i < this.numNotes; i++)
+		int[] subArray;
+		
+		if(this.isPolyphonic)
 		{
-			subArray[i] = this.curNotes[i][1];
+			subArray = new int[this.numNotes];
+
+			for(int i = 0; i < this.numNotes; i++)
+			{
+				subArray[i] = this.curNotes[i][1];
+			}
 		}
+		else
+		{
+			subArray = new int[] {(int) this.getAmplitude()};
+		}		
 
 		return subArray;
 	}
 
 	public int[][] getAllNotesAndAmps()
 	{
-		int[][] notes = this.curNotes.clone();
+		int[][] subArray;
 		
-		int count = 0;
-		
-		while(notes[count][0] != -1)
+		if(this.isPolyphonic)
 		{
-			count++;
-		}
-		
-		int[][] subArray = new int[count][2];
+		subArray = new int[this.numNotes][2];
 
-		for(int i = 0; i < count; i++)
+		for(int i = 0; i < this.numNotes; i++)
 		{
-			subArray[i][0] = notes[i][0];
-			subArray[i][1] = notes[i][1];
+			subArray[i][0] = this.curNotes[i][0];
+			subArray[i][1] = this.curNotes[i][1];
+		}
+		}
+		else if(this.numNotes > 0)
+		{
+			subArray = new int[1][2];
+			subArray[0][0] = this.getMidiNote();
+			subArray[0][1] = (int) this.getAmplitude();
+		}
+		else
+		{
+			subArray = new int[0][0];
 		}
 
 		return subArray;
+	}
+	
+	public void setIsPolyphonic(boolean isPolyphonic)
+	{
+		this.isPolyphonic = isPolyphonic;
 	}
 
 

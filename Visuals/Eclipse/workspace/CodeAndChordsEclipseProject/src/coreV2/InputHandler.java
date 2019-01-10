@@ -34,6 +34,8 @@ public class InputHandler extends MenuTemplate
 	private	MusicalInput[]			playableInputs;
 
 
+	private String[]				polyMidiButtonText;
+	private String[]				monoMidiTypeButtonText;
 
 
 	/**
@@ -79,6 +81,9 @@ public class InputHandler extends MenuTemplate
 		this.addMusicalInput(recInput2);
 		
 		this.controlP5.get("playableInput").setValue(0);
+		
+		this.polyMidiButtonText = new String[] {"Polyphonic", "Monophonic"};
+		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
 		
 	}
 
@@ -144,11 +149,15 @@ public class InputHandler extends MenuTemplate
 		{
 			midiNotes = ((MidiStreamInput) curInput).getAllNotesAndAmps();
 		}
-		else
+		else if(this.getMidiNote() != -1)
 		{
 			midiNotes = new int[1][2];
 			midiNotes[0][0] = this.getMidiNote();
 			midiNotes[0][1] = (int) this.getAmplitude();
+		}
+		else
+		{
+			midiNotes = new int[0][0];
 		}
 		
 		return midiNotes;
@@ -161,7 +170,7 @@ public class InputHandler extends MenuTemplate
 	public void controlEvent(ControlEvent theEvent)
 	{
 		super.controlEvent(theEvent);
-		
+						
 		if(theEvent.getName() == "play")
 		{
 			if(theEvent.getValue() == 1)
@@ -199,6 +208,8 @@ public class InputHandler extends MenuTemplate
 		
 		if(theEvent.getName() == "playableInput")
 		{
+			theEvent.getController().bringToFront();
+			
 			if(this.controlP5.getController("play").getValue() == 1)
 			{				
 				this.controlP5.getController("play").setValue(0);
@@ -210,10 +221,67 @@ public class InputHandler extends MenuTemplate
 		
 		if(theEvent.getName() == "realTimeInput")
 		{
+			theEvent.getController().bringToFront();
 
 			MusicalInput curRealTimeInput = this.realTimeInputs[(int) this.controlP5.getController("realTimeInput").getValue()];
 			if(!curRealTimeInput.equals(null))
 				((Textlabel) this.controlP5.get("realTimeInfo")).setText(this.makeInfoString(curRealTimeInput));
+			
+			//If MIDI is selected
+			if(theEvent.getValue() == 1)
+			{
+				((Textlabel) this.controlP5.get("realTimeInfo")).hide();
+				this.controlP5.getController("polyMidiButton").show();
+				this.controlP5.getController("monoMidiTypeButton").show();
+			}
+			else
+			{
+				((Textlabel) this.controlP5.get("realTimeInfo")).show();
+				this.controlP5.getController("polyMidiButton").hide();
+				this.controlP5.getController("monoMidiTypeButton").hide();
+			}
+		}
+		
+		if(theEvent.getName() == "polyMidiButton")
+		{
+			if(theEvent.getLabel() == "Polyphonic")
+			{
+				theEvent.getController().setLabel("Monophonic");
+				this.controlP5.getController("monoMidiTypeButton").setColorBackground(theEvent.getController().getColor().getBackground());
+				this.controlP5.getController("monoMidiTypeButton").setColorForeground(theEvent.getController().getColor().getForeground());
+				this.controlP5.getController("monoMidiTypeButton").setColorActive(theEvent.getController().getColor().getActive());
+			}
+			else
+			{
+				theEvent.getController().setLabel("Polyphonic");
+				this.controlP5.getController("monoMidiTypeButton").setColorBackground(Color.DARK_GRAY.getRGB());
+				this.controlP5.getController("monoMidiTypeButton").setColorForeground(Color.GRAY.getRGB());
+				this.controlP5.getController("monoMidiTypeButton").setColorActive(Color.LIGHT_GRAY.getRGB());
+				
+			}
+			
+			
+		}
+		
+		if(theEvent.getName() == "monoMidiTypeButton")
+		{
+			int index = 0;
+			while(index < this.monoMidiTypeButtonText.length && this.monoMidiTypeButtonText[index] != theEvent.getLabel())
+			{
+				index++;
+			}
+			
+			if(index == this.monoMidiTypeButtonText.length) throw new IllegalArgumentException("error with monoMidiTypeButton");
+			
+			index = (index + 1) % (this.monoMidiTypeButtonText.length);
+			theEvent.getController().setLabel(this.monoMidiTypeButtonText[index]);
+			((MidiStreamInput)this.realTimeInputs[1]).setMonophonicType(index);
+		}
+		
+		if(theEvent.getName() == "Key Change" || theEvent.getName() == "Keys")
+		{
+			//System.out.println("FRONT");
+			theEvent.getController().bringToFront();
 		}
 		
 
@@ -374,6 +442,18 @@ public class InputHandler extends MenuTemplate
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addButton("polyMidiButton")
+		.setPosition(30, 230)
+		.setSize(100, 30)
+		.setTab(this.menuTitle)
+		.setLabel("Monophonic");
+		
+		this.controlP5.addButton("monoMidiTypeButton")
+		.setPosition(30, 270)
+		.setSize(100, 30)
+		.setTab(this.menuTitle)
+		.setLabel("First");
 	}
 	
 	private int[] getScale()

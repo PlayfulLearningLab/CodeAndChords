@@ -60,7 +60,7 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 		}
 		else
 		{
-			this.fill(0,0,0);;
+			this.fill(0,0,0);
 			this.canvas.background();
 			
 		}
