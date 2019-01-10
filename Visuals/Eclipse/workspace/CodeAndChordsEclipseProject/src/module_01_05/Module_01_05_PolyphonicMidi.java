@@ -35,9 +35,11 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 	{
 		int[][] activeNotes = this.inputHandler.getPolyMidiNotes();
 		int numNotes = activeNotes.length;
+		
+		
 
 		if(numNotes > 0)
-		{
+		{			
 			ColorScheme cs = this.driver.getMenuGroup().getColorMenu().getColorSchemes()[0];
 			
 			for(int i = 0; i < numNotes; i++)

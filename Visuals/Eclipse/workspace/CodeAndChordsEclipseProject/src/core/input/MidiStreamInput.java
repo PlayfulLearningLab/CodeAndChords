@@ -23,7 +23,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 	private MidiDevice			device;
 	private Transmitter			transmitter;
-	
+
 	private Instrument[]		midiInstruments;
 	private MidiChannel[]		midiChannels;
 
@@ -40,13 +40,13 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public MidiStreamInput()
 	{
 		this.curNotes = new int[127][2];
-		
+
 		for(int i = 0; i < this.curNotes.length; i++)
 		{
 			this.curNotes[i][0] = -1;
 			this.curNotes[i][1] = 0;
 		}
-		
+
 		this.monophonicType = 0;
 		this.isPolyphonic = false;
 
@@ -79,17 +79,17 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				//if code gets this far without throwing an exception
 				//print a success message
 				System.out.println(device.getDeviceInfo()+" Was Opened");
-				
-				
+
+
 				//Trying to play sound
 				Synthesizer midiSynth = MidiSystem.getSynthesizer(); 
-		        midiSynth.open();
+				midiSynth.open();
 
-		        //get and load default instrument and channel lists
-		        this.midiInstruments = midiSynth.getDefaultSoundbank().getInstruments();
-		        this.midiChannels = midiSynth.getChannels();
+				//get and load default instrument and channel lists
+				this.midiInstruments = midiSynth.getDefaultSoundbank().getInstruments();
+				this.midiChannels = midiSynth.getChannels();
 
-		        midiSynth.loadInstrument(this.midiInstruments[0]);//load an instrument
+				midiSynth.loadInstrument(this.midiInstruments[0]);//load an instrument
 
 			}
 			catch (MidiUnavailableException e)
@@ -126,7 +126,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				this.curNotes[this.numNotes][0] = note;
 				this.curNotes[this.numNotes][1] = amp;
 				this.numNotes++;
-				
+
 				this.midiChannels[0].noteOn(note, amp);
 			}
 			else
@@ -144,7 +144,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 						this.curNotes[index][1] = 0;
 
 						this.numNotes--;
-						
+
 						this.midiChannels[0].noteOff(note);
 					}
 					index++;
@@ -201,21 +201,22 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			throw new IllegalArgumentException("MidiStreamInput setMonophonicType() int argument out of bounds");
 
 		this.monophonicType = type;
+		System.out.println("MIDI mode - " + this.monophonicType);
 	}
-	
+
 	private int getMonoNote()
 	{
 		int noteIndex = -1;
-		
+
 		switch(this.monophonicType)
 		{
 		case 0: //last
 			noteIndex = this.numNotes -1;
 			break;
-			
+
 		case 1: //loudest
 			int max = 0;
-			
+
 			for(int i = 0; i < this.numNotes; i++)
 			{
 				if(this.curNotes[i][1] > max)
@@ -225,16 +226,16 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				}
 			}
 			break;
-			
+
 		case 2: //first
 			noteIndex = 0;
 			break;
-			
+
 		default: //error
-				
+
 			break;
 		}
-		
+
 		return noteIndex;
 	}
 
@@ -244,7 +245,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		int val = -1;
 
 		if(this.numNotes != 0)
-			val = this.curNotes[this.numNotes-1][0];
+			val = this.curNotes[this.getMonoNote()][0];
 
 		return val;
 	}
@@ -255,7 +256,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		float val = 0;
 
 		if(this.numNotes != 0)
-			val = this.curNotes[this.numNotes-1][1];
+			val = this.curNotes[this.getMonoNote()][1];
 
 		return val;
 	}
@@ -263,7 +264,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public int[] getAllMidiNotes()
 	{
 		int[] subArray;
-		
+
 		if(this.isPolyphonic)
 		{
 			subArray = new int[this.numNotes];
@@ -284,7 +285,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public int[] getAllAmplitudes()
 	{
 		int[] subArray;
-		
+
 		if(this.isPolyphonic)
 		{
 			subArray = new int[this.numNotes];
@@ -305,16 +306,16 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public int[][] getAllNotesAndAmps()
 	{
 		int[][] subArray;
-		
+
 		if(this.isPolyphonic)
 		{
-		subArray = new int[this.numNotes][2];
+			subArray = new int[this.numNotes][2];
 
-		for(int i = 0; i < this.numNotes; i++)
-		{
-			subArray[i][0] = this.curNotes[i][0];
-			subArray[i][1] = this.curNotes[i][1];
-		}
+			for(int i = 0; i < this.numNotes; i++)
+			{
+				subArray[i][0] = this.curNotes[i][0];
+				subArray[i][1] = this.curNotes[i][1];
+			}
 		}
 		else if(this.numNotes > 0)
 		{
@@ -329,7 +330,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 		return subArray;
 	}
-	
+
 	public void setIsPolyphonic(boolean isPolyphonic)
 	{
 		this.isPolyphonic = isPolyphonic;
@@ -361,13 +362,13 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public String getInputName() {
 		return "";
 	}
-	
+
 	@Override
 	public int getTotalNumInputs()
 	{
 		return 1;
 	}
-	
+
 
 
 

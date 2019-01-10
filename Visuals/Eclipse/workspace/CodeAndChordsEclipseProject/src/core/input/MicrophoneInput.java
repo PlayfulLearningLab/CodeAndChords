@@ -115,10 +115,6 @@ public class MicrophoneInput extends Input {
 		if(audioContext == null) {
 			throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
 		} // if(numInputs < 1)
-		
-		System.err.println("Note that you must build your own AudioContext when using this constructor.\n"
-				+ "If new AudioContext() is used without parameters it won't set up PortAudio\n"
-				+ "Look at the other constructors to see an example of good AudioContext setup.");
 
 		this.numInputs  = numInputs;
 		this.ac 		= audioContext;

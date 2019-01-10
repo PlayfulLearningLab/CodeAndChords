@@ -250,6 +250,8 @@ public class InputHandler extends MenuTemplate
 				this.controlP5.getController("monoMidiTypeButton").setColorBackground(theEvent.getController().getColor().getBackground());
 				this.controlP5.getController("monoMidiTypeButton").setColorForeground(theEvent.getController().getColor().getForeground());
 				this.controlP5.getController("monoMidiTypeButton").setColorActive(theEvent.getController().getColor().getActive());
+				
+				((MidiStreamInput) this.realTimeInputs[1]).setIsPolyphonic(false);
 			}
 			else
 			{
@@ -258,6 +260,7 @@ public class InputHandler extends MenuTemplate
 				this.controlP5.getController("monoMidiTypeButton").setColorForeground(Color.GRAY.getRGB());
 				this.controlP5.getController("monoMidiTypeButton").setColorActive(Color.LIGHT_GRAY.getRGB());
 				
+				((MidiStreamInput) this.realTimeInputs[1]).setIsPolyphonic(true);
 			}
 			
 			
@@ -266,7 +269,7 @@ public class InputHandler extends MenuTemplate
 		if(theEvent.getName() == "monoMidiTypeButton")
 		{
 			int index = 0;
-			while(index < this.monoMidiTypeButtonText.length && this.monoMidiTypeButtonText[index] != theEvent.getLabel())
+			while(index < this.monoMidiTypeButtonText.length && this.monoMidiTypeButtonText[index] != theEvent.getController().getLabel())
 			{
 				index++;
 			}
@@ -453,7 +456,7 @@ public class InputHandler extends MenuTemplate
 		.setPosition(30, 270)
 		.setSize(100, 30)
 		.setTab(this.menuTitle)
-		.setLabel("First");
+		.setLabel("Last");
 	}
 	
 	private int[] getScale()
