@@ -152,6 +152,11 @@ public class ModuleDriver implements PConstants
 	{			
 		return (InputHandler) this.menuGroup.getMenus()[0];
 	}
+	
+	public ColorMenu getColorMenu()
+	{			
+		return (ColorMenu) this.menuGroup.getMenus()[1];
+	}
 
 
 }

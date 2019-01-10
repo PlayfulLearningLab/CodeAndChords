@@ -42,7 +42,7 @@ public class ColorScheme
 	{
 		for(int i = 0; i < this.pitchColors.length; i++)
 		{
-			this.pitchColors[i] = this.colorPresetsLibrary[colorSchemePreset][i];
+			this.pitchColors[i] = this.colorPresetsLibrary[colorSchemePreset][i].clone();
 		}
 	}
 	

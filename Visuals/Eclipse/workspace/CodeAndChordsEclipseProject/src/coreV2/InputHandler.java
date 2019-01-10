@@ -34,7 +34,10 @@ public class InputHandler extends MenuTemplate
 	private	MusicalInput[]			playableInputs;
 
 
-
+	protected	int	xVals;
+	protected	int	yVals;
+	protected	int	rectWidths;
+	protected	int	rectHeights;
 
 	/**
 	 * Constructor
@@ -43,6 +46,7 @@ public class InputHandler extends MenuTemplate
 	 */
 	public InputHandler(ModuleDriver driver)
 	{
+
 		super("Input Menu", driver, true);
 		this.makeControls();
 
@@ -54,6 +58,7 @@ public class InputHandler extends MenuTemplate
 		this.addMusicalInput(new MidiStreamInput());
 
 		this.useRealTimeInput = true;
+		this.parent.registerMethod("draw", this);
 
 		this.controlP5.get("realTimeInput").setValue(1);
 
@@ -90,7 +95,20 @@ public class InputHandler extends MenuTemplate
 		this.useRealTimeInput = useRealTimeInput;	
 	}
 
+	public void draw()
+	{
 
+	
+
+			if(this.controlP5.getController("Legend").getValue() == 1)
+			{
+				this.legend();
+			}
+			if(this.controlP5.getController("Legend").getValue() == 0)
+			{
+				
+			}
+	}
 
 
 	//Stuff for dealing with input channels.  Needs some changes and different names
@@ -217,6 +235,7 @@ public class InputHandler extends MenuTemplate
 				((Textlabel) this.controlP5.get("realTimeInfo")).setText(this.makeInfoString(curRealTimeInput));
 		}
 		
+
 
 	}//ControlEvent
 
@@ -356,7 +375,7 @@ public class InputHandler extends MenuTemplate
 		.setTab(this.getMenuTitle());
 		
 		this.controlP5.addScrollableList("Key Change")
-		.setPosition(30, 70)
+		.setPosition(550, 10)
 		.setWidth(100)
 		.setBarHeight(30)
 		.setItemHeight(30)
@@ -367,13 +386,18 @@ public class InputHandler extends MenuTemplate
 		
 		
 		this.controlP5.addScrollableList("Keys")
-		.setPosition(30, 250)
+		.setPosition(700, 10)
 		.setWidth(100)
 		.setBarHeight(30)
 		.setItemHeight(30)
-		.setItems(new String[] {"Major", "Minor", "Chromatic", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic"})
-		.setValue(0)
+		.setItems(new String[] {"Major", "Minor", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic", "Chromatic"})
+		.setValue(6)
 		.close()
+		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addToggle("Legend")
+		.setPosition(450, 15)
+		.setValue(0)
 		.setTab(this.getMenuTitle());
 	}
 	
@@ -383,94 +407,164 @@ public class InputHandler extends MenuTemplate
 		ScrollableList controller1 = (ScrollableList) this.controlP5.getController("Key Change");
 		int key = (int) controller1.getValue();
 		
-		ScrollableList controller2 = (ScrollableList) this.controlP5.getController("realTimeInput");
+		ScrollableList controller2 = (ScrollableList) this.controlP5.getController("Keys");
 		int scale = (int) controller2.getValue();
 		
 		if(scale == 0)//major
 		{
 			currentScale = new int[8];
 			currentScale[0] = key;
-			currentScale[1] = key + 2;
-			currentScale[2] = key + 2;
-			currentScale[3] = key + 1;
-			currentScale[4] = key + 2;
-			currentScale[5] = key + 2;
-			currentScale[6] = key + 2;
-			currentScale[7] = key + 1;
+			currentScale[1] = (currentScale[0] + 2)% 8;
+			currentScale[2] = (currentScale[1] + 2)% 8;
+			currentScale[3] = (currentScale[2] + 1)% 8;
+			currentScale[4] = (currentScale[3] + 2)% 8;
+			currentScale[5] = (currentScale[4] + 2)% 8;
+			currentScale[6] = (currentScale[5] + 2)% 8;
+			currentScale[7] = (currentScale[6] + 1)% 8;
 		}
 		else if(scale == 1)//minor
 		{
 			currentScale = new int[8];
 			currentScale[0] = key;
-			currentScale[1] = key + 2;
-			currentScale[2] = key + 1;
-			currentScale[3] = key + 2;
-			currentScale[4] = key + 2;
-			currentScale[5] = key + 1;
-			currentScale[6] = key + 2;
-			currentScale[7] = key + 2;
+			currentScale[1] = (key + 2)% 8;
+			currentScale[2] = (key + 1)% 8;
+			currentScale[3] = (key + 2)% 8;
+			currentScale[4] = (key + 2)% 8;
+			currentScale[5] = (key + 1)% 8;
+			currentScale[6] = (key + 2)% 8;
+			currentScale[7] = (key + 2)% 8;
 		}
-		else if(scale == 3)//harmonic minor
+		else if(scale == 2)//harmonic minor
 		{
 			currentScale = new int[8];
 			currentScale[0] = key;
-			currentScale[1] = key + 2;
-			currentScale[2] = key + 1;
-			currentScale[3] = key + 2;
-			currentScale[4] = key + 2;
-			currentScale[5] = key + 1;
-			currentScale[6] = key + 2;
-			currentScale[7] = key + 1;
+			currentScale[1] = (key + 2)% 8;
+			currentScale[2] = (key + 1)% 8;
+			currentScale[3] = (key + 2)% 8;
+			currentScale[4] = (key + 2)% 8;
+			currentScale[5] = (key + 1)% 8;
+			currentScale[6] = (key + 2)% 8;
+			currentScale[7] = (key + 1)% 8;
 		}
-		else if(scale == 4)//melodic minor
+		else if(scale == 3)//melodic minor
 		{
 			currentScale = new int[8];
 			currentScale[0] = key;
-			currentScale[1] = key + 2;
-			currentScale[2] = key + 1;
-			currentScale[3] = key + 2;
-			currentScale[4] = key + 2;
-			currentScale[5] = key + 2;
-			currentScale[6] = key + 2;
-			currentScale[7] = key + 1;
+			currentScale[1] = (currentScale[0] + 2) % 8;
+			currentScale[2] = (currentScale[1] + 1) % 8;
+			currentScale[3] = (currentScale[2] + 2) % 8;
+			currentScale[4] = (currentScale[3] + 2) % 8;
+			currentScale[5] = (currentScale[4] + 2) % 8;
+			currentScale[6] = (currentScale[5] + 2) % 8;
+			currentScale[7] = (currentScale[6] + 1) % 8;
 		}
-		else if(scale == 5)//major pentatonic
+		else if(scale == 4)//major pentatonic
 		{
 			currentScale = new int[6];
 			currentScale[0] = key;
-			currentScale[1] = key + 2;
-			currentScale[2] = key + 2;
-			currentScale[3] = key + 3;
-			currentScale[4] = key + 2;
-			currentScale[5] = key + 3;
+			currentScale[1] = (currentScale[0] + 2) % 6;
+			currentScale[2] = (currentScale[1] + 2) % 6;
+			currentScale[3] = (currentScale[2] + 3) % 6;
+			currentScale[4] = (currentScale[3] + 2) % 6;
+			currentScale[5] = (currentScale[4] + 3) % 6;
 		}
-		else if(scale == 6)//minor pentatonic
+		else if(scale == 5)//minor pentatonic
 		{
 			currentScale = new int[6];
 			currentScale[0] = key;
-			currentScale[1] = key + 3;
-			currentScale[2] = key + 2;
-			currentScale[3] = key + 2;
-			currentScale[4] = key + 3;
-			currentScale[5] = key + 2;
+			currentScale[1] = (currentScale[0] + 3) % 6;
+			currentScale[2] = (currentScale[1] + 2) % 6;
+			currentScale[3] = (currentScale[2] + 2) % 6;
+			currentScale[4] = (currentScale[3] + 3) % 6;
+			currentScale[5] = (currentScale[4] + 2) % 6;
 		}
 		else//chromatic
 		{
 			currentScale = new int[12];
 			currentScale[0] = key;
-			currentScale[1] = key + 1;
-			currentScale[2] = key + 1;
-			currentScale[3] = key + 1;
-			currentScale[4] = key + 1;
-			currentScale[5] = key + 1;
-			currentScale[6] = key + 1;
-			currentScale[7] = key + 1;
-			currentScale[8] = key + 1;
-			currentScale[9] = key + 1;
-			currentScale[10] = key + 1;
-			currentScale[11] = key + 1;
+			currentScale[1] = (currentScale[0] + 1)% 12;
+			currentScale[2] = (currentScale[1] + 1)% 12;
+			currentScale[3] = (currentScale[2] + 1)% 12;
+			currentScale[4] = (currentScale[3] + 1)% 12;
+			currentScale[5] = (currentScale[4] + 1)% 12;
+			currentScale[6] = (currentScale[5] + 1)% 12;
+			currentScale[7] = (currentScale[6] + 1)% 12;
+			currentScale[8] = (currentScale[7] + 1)% 12;
+			currentScale[9] = (currentScale[8] + 1)% 12;
+			currentScale[10] = (currentScale[9] + 1)% 12;
+			currentScale[11] = (currentScale[10] + 1)% 12;
 		}
 		return currentScale;
+	}
+	
+	public void legend()
+	{ 
+		int inputNum;
+		String[] legendText;
+		int[] scale;
+		int rectWidths;
+		int rectHeights;
+		int xVals;
+		int yVals;
+		int note;
+		
+		scale = this.getScale();
+		inputNum = scale.length;
+		legendText = this.scaleLetters(scale);
+		rectHeights =  50;
+		rectWidths = parent.width / inputNum;
+		xVals = 0;
+		yVals = parent.height - rectHeights;
+		Canvas canvas = this.driver.getCanvas();
+		note = this.getMidiNote();
+		
+		for(int i = 0; i < inputNum + 1; i++)
+		{ 
+			ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
+			int[] colors = schemes[0].getPitchColor(i);
+			this.parent.fill(colors[0], colors[1], colors[2]);
+			this.parent.stroke(0,0,0);
+			if((note%12) == i)
+			{
+				canvas.rect(xVals, (yVals - 30), rectWidths, (rectHeights+ 30));
+			}
+			else
+			{
+				canvas.rect(xVals, yVals, rectWidths, rectHeights);
+			}
+			xVals = xVals + rectWidths;
+		}
+		xVals = 0;
+		for(int i = 0; i < inputNum; i++)
+		{ 
+			this.parent.fill(0,0,0);
+			this.parent.textSize(15);
+			this.parent.text(legendText[i], xVals + (rectWidths/3), parent.height - (rectHeights/2));
+			xVals = xVals + rectWidths;
+		}
+			
+	} // legend
+	
+	private String[] scaleLetters(int[] scale)
+	{
+		String[] newScale;
+		String[] letters;
+		int number;
+		
+		letters = new String[] {"C", "C#/Db","D", "D#/Eb", "E", "F","F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
+		newScale = new String[scale.length];
+		number = 0; 
+		for(int i = 0; i < scale.length; i++)
+		{
+			number = scale[i];
+			newScale[i] = letters[number];
+			
+		}
+		return newScale;
+	}
+	private void calculateLegendValues(int numinputs)
+	{
+		
 	}
 	
 	private String makeInfoString(MusicalInput input)
