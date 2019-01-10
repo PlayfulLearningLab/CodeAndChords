@@ -119,7 +119,7 @@ public class ModuleMenu extends MenuTemplate  {
 			{ 127, 0, 255 }, 
 			{ 255, 0, 255 }, 
 			{ 255, 0, 127 }
-		} // chromatic
+		} 
 	}; // rainbowColors
 
 	/**

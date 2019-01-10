@@ -7,6 +7,7 @@ import controlP5.ControlEvent;
 import controlP5.ControlP5;
 import controlP5.Controller;
 import controlP5.Label;
+import controlP5.ScrollableList;
 
 public class ColorMenu extends MenuTemplate
 {
@@ -26,6 +27,8 @@ public class ColorMenu extends MenuTemplate
 	private int yStart = 190;
 	private int yIncrament = buttonHeight + 6;
 	
+	private int[][]  colors = new int[3][3];
+	
 
 	public ColorMenu(ModuleDriver driver) 
 	{
@@ -35,14 +38,70 @@ public class ColorMenu extends MenuTemplate
 
 		this.colorSchemes = new ColorScheme[] {new ColorScheme(this.driver)};
 		this.parent.registerMethod("draw", this);
-		
+		this.addChromatic();
 		this.addDannyButtons();
 		this.addColorCustomizationControls();
 		
 		this.setupComplete = true;
 	}
 	
+	public void addChromatic()
+	{
+		this.controlP5.addButton("Generate")
+		.setPosition(150, 50)
+		.setSize(50, 25)
+		.setCaptionLabel("Generate")
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		
+		this.controlP5.addColorWheel("Wheel", 300, 50, 100)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel()
+		.setVisible(false);
+		
+		this.controlP5.addToggle("1st Color")
+		.setPosition(100, 100)
+		.setSize(50, 25)
+		.setCaptionLabel("1st Color")
+		.setValue(false)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.controlP5.addToggle("2nd Color")
+		.setPosition(100, 130)
+		.setSize(50, 25)
+		.setCaptionLabel("2nd Color")
+		.setValue(false)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.controlP5.addToggle("3rd Color")
+		.setPosition(100, 160)
+		.setSize(50, 25)
+		.setCaptionLabel("3rd Color")
+		.setValue(false)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		this.controlP5.getController("1st Color").hide();
+		this.controlP5.getController("2nd Color").hide();
+		this.controlP5.getController("3rd Color").hide();
+		
+		this.controlP5.addScrollableList("Colors")
+		.setPosition(10, 70)
+		.setWidth(100)
+		.setBarHeight(30)
+		.setItemHeight(30)
+		.setItems(new String[] {"DiChromatic", "TriChromatic", "Rainbow"})
+		.setValue(2)
+		.close()
+		.setTab(this.getMenuTitle());
+		
 
+	}
+	
+	
 	public void addDannyButtons()
 	{
 
@@ -66,8 +125,37 @@ public class ColorMenu extends MenuTemplate
 		{
 			this.drawColorIndicators();
 		}
+		
+		if(this.driver.getMenuGroup().getActiveMenu().equals(this))
+		{
+			this.drawChromatic();
+		}
 	}
 	
+	
+	public void drawChromatic()
+	{
+		if(this.controlP5.getController("Colors").getValue() == 0)
+		{
+			this.parent.fill(colors[0][0],colors[0][1],colors[0][2]);
+			this.parent.rect(150, 100, 25, 25);
+			
+			this.parent.fill(colors[1][0],colors[1][1],colors[1][2]);
+			this.parent.rect(150, 130, 25, 25);
+		}
+		if(this.controlP5.getController("Colors").getValue() == 1)
+		{
+			this.parent.fill(colors[0][0],colors[0][1],colors[0][2]);
+			this.parent.rect(150, 100, 25, 25);
+			
+			this.parent.fill(colors[1][0],colors[1][1],colors[1][2]);
+			this.parent.rect(150, 130, 25, 25);
+			
+			this.parent.fill(colors[2][0],colors[2][1],colors[2][2]);
+			this.parent.rect(150, 160, 25, 25);
+		}
+		
+	}
 	public void drawColorIndicators()
 	{	
 		//System.out.println("drawing");
@@ -424,7 +512,7 @@ public class ColorMenu extends MenuTemplate
 			
 			int[] curRGB = this.colorSchemes[0].getPitchColor(pitchButtonIndex);
 			int curColor = new Color(curRGB[0], curRGB[1], curRGB[2]).getRGB();
-			
+
 			ColorWheel cw = (ColorWheel) this.controlP5.getController("colorPicker");
 			
 			cw.setRGB(curColor);
@@ -449,7 +537,10 @@ public class ColorMenu extends MenuTemplate
 			int newColor = new Color(RGB[0], RGB[1], RGB[2]).getRGB();
 			
 			if(newColor != ((ColorWheel)this.controlP5.getController("colorPicker")).getRGB())
+			{
 				( (ColorWheel)this.controlP5.getController("colorPicker")).setRGB(newColor);
+			}
+				
 						
 		}
 		
@@ -480,6 +571,156 @@ public class ColorMenu extends MenuTemplate
 			}
 		}
 		
+		
+		if(theEvent.getName() == "Colors")
+		{
+			if(this.controlP5.getController("Colors").getValue() == 0)
+			{
+				this.controlP5.getController("1st Color").show();
+				this.controlP5.getController("2nd Color").show();
+				this.controlP5.getController("3rd Color").hide();
+			}
+			
+			if(this.controlP5.getController("Colors").getValue() == 1)
+			{
+				this.controlP5.getController("1st Color").show();
+				this.controlP5.getController("2nd Color").show();
+				this.controlP5.getController("3rd Color").show();
+			}
+			
+			if(this.controlP5.getController("Colors").getValue() == 2)
+			{
+				this.controlP5.getController("1st Color").hide();
+				this.controlP5.getController("2nd Color").hide();
+				this.controlP5.getController("3rd Color").hide();
+			}
+		}
+		
+
+		if(theEvent.getName() == "1st Color" && setupComplete != false)
+		{
+			if(this.controlP5.getController("2nd Color").getValue() == 1)
+			{
+				this.controlP5.getController("2nd Color").setValue(0);
+			}
+			if(this.controlP5.getController("3rd Color").getValue() == 1)
+			{
+				this.controlP5.getController("3rd Color").setValue(0);
+			}
+		}
+		
+		
+		if(theEvent.getName() == "2nd Color" && setupComplete != false)
+		{
+			if(this.controlP5.getController("1st Color").getValue() == 1)
+			{
+				this.controlP5.getController("1st Color").setValue(0);
+			}
+			if(this.controlP5.getController("3rd Color").getValue() == 1)
+			{
+				this.controlP5.getController("3rd Color").setValue(0);
+			}
+		}
+		
+		if(theEvent.getName() == "3rd Color" && setupComplete != false)
+		{
+			if(this.controlP5.getController("2nd Color").getValue() == 1)
+			{
+				this.controlP5.getController("2nd Color").setValue(0);
+			}
+			if(this.controlP5.getController("1st Color").getValue() == 1)
+			{
+				this.controlP5.getController("1st Color").setValue(0);
+			}
+		}
+		
+		if(theEvent.getName() == "Wheel")
+		{
+			ColorWheel wheel = (ColorWheel) this.controlP5.getController("Wheel");
+			if(this.controlP5.getController("1st Color").getValue() == 1)
+			{
+				colors[0][0] = wheel.r();
+				colors[0][1] = wheel.g();
+				colors[0][2] = wheel.b();
+			}
+			if(this.controlP5.getController("2nd Color").getValue() == 1)
+			{
+				colors[1][0] = wheel.r();
+				colors[1][1] = wheel.g();
+				colors[1][2] = wheel.b();				
+			}
+			if(this.controlP5.getController("3rd Color").getValue() == 1)
+			{
+				colors[2][0] = wheel.r();
+				colors[2][1] = wheel.g();
+				colors[2][2] = wheel.b();				
+			}
+		}
+		if(theEvent.getName() == "Generate" && setupComplete != false)
+		{
+			if(this.controlP5.getController("Colors").getValue() == 0)
+			{
+				float	rDif	= colors[0][0] - colors[1][0];
+				float	gDif	= colors[0][1] - colors[1][1];
+				float	bDif	= colors[0][2] - colors[1][2];
+				
+				float	percent		= 100 / 11;
+				colorSchemes[0].setColor(0, colors[0][0], colors[0][1], colors[0][2]);
+				colorSchemes[0].setColor(11, colors[1][0], colors[1][1], colors[1][2]);
+				
+				for(int i = 1; i < 11; i++)
+				{
+					colorSchemes[0].setColor(i, Math.round(colors[0][0] - (rDif * i * percent / 100)), Math.round(colors[0][1] - (gDif * i * percent / 100)), Math.round(colors[0][2] - (bDif * i * percent / 100)));
+				} 
+			}
+			
+			if(this.controlP5.getController("Colors").getValue() == 1)
+			{
+				int	color1pos	= 0;
+				int	color2pos;
+				int	color3pos;
+
+				int	divideBy1;
+				int	divideBy2;
+				int	divideBy3;
+				
+				color2pos	= 6;	// subdominant
+				color3pos	= 11;
+				divideBy1	= 6;
+				divideBy2	= 6;
+				
+				
+				int	redDelta1	= (int)((colors[0][0] - colors[1][0]) / divideBy1);
+				int	greenDelta1	= (int)((colors[0][1] - colors[1][1]) / divideBy1);
+				int	blueDelta1	= (int)((colors[0][2] - colors[1][2]) / divideBy1);
+
+				int	redDelta2	= (int)((colors[1][0] - colors[2][0]) / divideBy2);
+				int	greenDelta2	= (int)((colors[1][1] - colors[2][1]) / divideBy2);
+				int	blueDelta2	= (int)((colors[1][2] - colors[2][2]) / divideBy2);
+
+				
+				colorSchemes[0].setColor(0, colors[0][0], colors[0][1], colors[0][2]);
+				for(int i = 1; i < color2pos; i++)
+				{
+					int[] list = colorSchemes[0].getPitchColor(i-1);
+					colorSchemes[0].setColor(i, list[0] - redDelta1, list[1] - greenDelta1, list[2] - blueDelta1);
+
+				} // for - first color to second color
+				colorSchemes[0].setColor(6, colors[1][0], colors[1][1], colors[1][2]);
+				for(int i = color2pos + 1; i < color3pos; i++)
+				{
+					int[] list = colorSchemes[0].getPitchColor(i-1);
+					colorSchemes[0].setColor(i, list[0] - redDelta2, list[1] - greenDelta2, list[2] - blueDelta2);
+				} // for - first color to second color
+
+				colorSchemes[0].setColor(11, colors[2][0], colors[2][1], colors[2][2]);
+			}
+			if(this.controlP5.getController("Colors").getValue() == 2)
+			{
+				colorSchemes[0].setPitchColors(0);
+			
+			}
+		}
 	}
 	
 	@Override
@@ -497,7 +738,7 @@ public class ColorMenu extends MenuTemplate
 	@Override
 	public void colorWheelEvent(int id, Color color) 
 	{
-		
+
 	}
 	
 	private int isPitchButton(ControlEvent theEvent)
