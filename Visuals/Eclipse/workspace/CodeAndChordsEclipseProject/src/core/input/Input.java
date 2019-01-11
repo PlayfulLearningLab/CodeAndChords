@@ -43,6 +43,8 @@ public abstract class Input implements MusicalInput {
 	protected ShortFrameSegmenter[] sfsArray;
 	protected boolean pause;
 	protected	float	sensitivity;
+	
+	protected String inputName = "";
 
 	public Input() {
 		super();

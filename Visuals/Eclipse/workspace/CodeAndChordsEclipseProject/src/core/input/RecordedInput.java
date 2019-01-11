@@ -12,9 +12,7 @@ import processing.core.PApplet;
 public class RecordedInput extends Input {
 	
 	SampleManager	sampleManager;
-	
-	private String  inputName;
-	
+		
 	public RecordedInput(PApplet pApplet, String sample)
 	{
 		this(pApplet, new String[] { sample } );
