@@ -64,6 +64,15 @@ public class Module_01_PitchHue2 extends PApplet
 		result = colorFader.getColor();
 		this.fill(result[0], result[1], result[2]);
 		this.canvas.background();
+		
+		if(inputHandler.getAmplitude() == 0)
+		{
+			colorFader.setTargetAlpha(0);
+		}
+		else
+		{
+			colorFader.setTargetAlpha(255);
+		}
 	}
 	
 	public class visualMenu extends MenuTemplate
