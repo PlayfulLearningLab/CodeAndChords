@@ -14,6 +14,7 @@ import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 /*
  * Danny's TODO List:
@@ -71,6 +72,9 @@ public class InputHandler extends MenuTemplate
 		catch( NoClassDefFoundError e ){
 			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
 					+ "Multiple Inputs will NOT be enabled.");
+			
+			
+			
 			ac = new AudioContext();
 			numInputs = 1;
 		}
@@ -639,11 +643,23 @@ public class InputHandler extends MenuTemplate
 			xVals = xVals + rectWidths;
 		}
 		xVals = 0;
+		
+		this.parent.fill(0,0,0);
+		
+		/*
+		this.parent.textAlign(CENTER, CENTER);
+		String[] fontList = PFont.list();
+		
+		for(int i = 0; i < fontList.length; i++)
+		{
+			System.out.println(fontList[i]);
+		}
+		*/
+		
 		for(int i = 0; i < inputNum; i++)
 		{ 
-			this.parent.fill(0,0,0);
-			this.parent.textSize(15);
-			this.parent.text(legendText[i], xVals + (rectWidths/3), parent.height - (rectHeights/2));
+			
+			this.driver.getCanvas().text(20, legendText[i], xVals + (rectWidths/2), parent.height - (rectHeights/2));
 			xVals = xVals + rectWidths;
 		}
 

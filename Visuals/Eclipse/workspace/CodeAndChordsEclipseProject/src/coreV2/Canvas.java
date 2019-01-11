@@ -81,6 +81,17 @@ public class Canvas
 		this.parent.line(this.displayX + (x1 * x), this.displayY + (y1 * y), this.displayX + (x2 * x), this.displayY + (y2 * y));
 	}
 	
+	public void text(int textSize, String text, int x, int y)
+	{
+		float Kx = (this.displayWidth/this.parent.width);
+		float Ky = (this.displayHeight/this.parent.height);
+		float Kt = (Kx + Ky) / 2;
+		
+		this.parent.textSize(textSize*Kt);
+		
+		this.parent.text(text, Kx * x + this.displayX, Ky * y + this.displayY);
+	}
+	
 	public void drawAppletBackground()
 	{
 		if(!this.isFullscreen)
