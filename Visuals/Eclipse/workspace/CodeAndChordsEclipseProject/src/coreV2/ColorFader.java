@@ -118,9 +118,9 @@ public class ColorFader implements PConstants
 		this.transitionStartTime = this.parent.millis();
 	}
 
-	public void setTargetAlpha()
+	public void setTargetAlpha(int amp)
 	{
-
+		this.targetAlpha = amp;
 	}
 
 
@@ -136,17 +136,17 @@ public class ColorFader implements PConstants
 	
 	public void setTransitionDuration(int time)
 	{
-		transitionDuration = time;
+		this.transitionDuration = time;
 	}
 	
 	public void setAttackDuration(int time)
 	{
-		attackDuration = time;
+		this.attackDuration = time;
 	}
 	
 	public void setReleaseDuration(int time)
 	{
-		releaseDuration = time;
+		this.releaseDuration = time;
 	}
 
 

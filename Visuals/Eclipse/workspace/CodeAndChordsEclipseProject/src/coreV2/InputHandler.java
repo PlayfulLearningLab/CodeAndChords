@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.portaudio.PortAudio;
 
 import controlP5.ControlEvent;
+import controlP5.ControlP5;
 import controlP5.ScrollableList;
 import controlP5.Textlabel;
 import core.input.Input;
@@ -179,10 +180,15 @@ public class InputHandler extends MenuTemplate
 	{
 		MusicalInput curInput = this.getCurInput();		
 		if(curInput == null) throw new IllegalArgumentException("Current input is null");
-
-		return curInput.getAmplitude();
+		
+		float answer = curInput.getAmplitude();
+		
+		if(this.controlP5.getController("piano").getValue() > answer)
+		{
+			answer = 0;
+		}
+		return answer;
 	}
-
 
 	public int[][] getPolyMidiNotes()
 	{
@@ -208,7 +214,9 @@ public class InputHandler extends MenuTemplate
 
 		return midiNotes;
 	}
-
+	
+	
+	
 
 
 
@@ -332,9 +340,7 @@ public class InputHandler extends MenuTemplate
 			//System.out.println("FRONT");
 			theEvent.getController().bringToFront();
 		}
-
-
-
+		
 	}//ControlEvent
 
 	@Override
@@ -484,7 +490,7 @@ public class InputHandler extends MenuTemplate
 
 
 		this.controlP5.addScrollableList("Keys")
-		.setPosition(200, 70)
+		.setPosition(670, 10)
 
 		.setWidth(100)
 		.setBarHeight(30)
@@ -508,7 +514,42 @@ public class InputHandler extends MenuTemplate
 
 		this.controlP5.addToggle("Legend")
 		.setPosition(450, 15)
+		.setSize(50, 25)
 		.setValue(0)
+		.setCaptionLabel("Legend")
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		
+		
+		this.controlP5.addSlider("forte")
+		.setMin(20)
+		.setMax(5000)
+		.setPosition(10, 70)
+		.setSize(140, 20)
+		.setValue(1000)
+		.setDecimalPrecision(0)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().setVisible(false);
+		
+		this.controlP5.addLabel("Forte Threshold")
+		.setPosition(10, 60)
+		.setColor(255)
+		.setTab(this.getMenuTitle());
+		
+		
+		this.controlP5.addSlider("piano")
+		.setMin(0)
+		.setMax(100)
+		.setPosition(10, 120)
+		.setSize(140, 20)
+		.setValue(10)
+		.setDecimalPrecision(0)
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().setVisible(false);
+		
+		this.controlP5.addLabel("Piano Threshold")
+		.setPosition(10, 110)
+		.setColor(255)
 		.setTab(this.getMenuTitle());
 	}
 	
