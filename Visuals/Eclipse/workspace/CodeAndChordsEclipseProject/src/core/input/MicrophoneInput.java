@@ -381,7 +381,12 @@ public class MicrophoneInput extends Input {
 
 	@Override
 	public String getInputName() {
-		return "";
+		return this.inputName;
+	}
+	
+	public void setInputName(String inputName)
+	{
+		this.inputName = inputName;
 	}
 	
 

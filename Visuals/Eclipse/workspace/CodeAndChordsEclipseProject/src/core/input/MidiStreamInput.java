@@ -36,6 +36,8 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public static final int		LAST_NOTE = 0;
 	public static final int		LOUDEST_NOTE = 1;
 	public static final int		FIRST_NOTE = 2;
+	
+	private String 				inputName = "";
 
 	public MidiStreamInput()
 	{
@@ -360,13 +362,21 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 	@Override
 	public String getInputName() {
-		return "";
+		return this.inputName;
 	}
 
 	@Override
 	public int getTotalNumInputs()
 	{
 		return 1;
+	}
+
+
+	@Override
+	public void setInputName(String inputName) 
+	{
+		this.inputName = inputName;
+		
 	}
 
 

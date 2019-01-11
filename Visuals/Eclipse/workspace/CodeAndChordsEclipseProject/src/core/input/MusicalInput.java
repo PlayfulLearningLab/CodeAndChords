@@ -4,6 +4,8 @@ public interface MusicalInput
 {
 	//Instrument Info
 	public String 	getInputName();
+	
+	public void		setInputName(String inputName);
 		
 	public String 	getInputType();
 	
