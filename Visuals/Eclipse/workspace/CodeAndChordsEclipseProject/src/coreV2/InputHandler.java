@@ -67,12 +67,14 @@ public class InputHandler extends MenuTemplate
 
 		//Number of Microphone Channels
 		int numInputs = 1;
+		
+		System.out.println("starting try");
 
 		try{
 			PortAudio.getVersion();
 			ac = new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs));
 		}
-		catch( NoClassDefFoundError e ){
+		catch( UnsatisfiedLinkError e ){
 			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
 					+ "Multiple Inputs will NOT be enabled.");
 			
