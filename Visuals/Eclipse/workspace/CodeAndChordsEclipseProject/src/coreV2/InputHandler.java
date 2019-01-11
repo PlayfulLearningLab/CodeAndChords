@@ -486,7 +486,7 @@ public class InputHandler extends MenuTemplate
 		.setTab(this.getMenuTitle());
 	}
 	
-	private int[] getScale()
+	public int[] getScale()
 	{
 		int[] currentScale;
 		ScrollableList controller1 = (ScrollableList) this.controlP5.getController("Key Change");

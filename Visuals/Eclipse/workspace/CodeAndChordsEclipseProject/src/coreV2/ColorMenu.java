@@ -273,7 +273,7 @@ public class ColorMenu extends MenuTemplate
 		
 		this.controlP5.getController("custom")
 		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
+	
 		this.getControlP5().addToggle("canvas")
 		.setPosition(50, 150)
 		.setWidth(50)
