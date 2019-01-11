@@ -21,13 +21,15 @@ public class ColorFader implements PConstants
 	private int			transitionIndex;
 
 	private int[]		distance;
-	
+		
+	private int			alphaStartTime;
 	private int			attackDuration;
 	private int			releaseDuration;
 
 	
 	public void pre()
 	{
+		//Color
 		if(this.parent.millis() < this.transitionStartTime + this.transitionDuration)
 		{
 			this.transitionIndex = (this.parent.millis() - this.transitionStartTime);
@@ -43,6 +45,30 @@ public class ColorFader implements PConstants
 		{
 			this.RGB = this.targetRGB.clone();
 		}
+		
+		
+	/*
+		float percentComplete = this.alpha/255;
+		float remainingAlpha = 255 - this.alpha;
+
+		float timeLeft = percentComplete*this.attackDuration;
+		
+		//Alpha
+		if(this.targetAlpha == 255 && this.alpha != 255 && this.parent.millis() < this.alphaStartTime + timeLeft)
+		{
+			float ellapsedTime = (this.parent.millis() - this.alphaStartTime);			
+			
+			float percentTime = ellapsedTime/this.attackDuration;
+			
+			this.alpha =
+			
+		}
+		else if(this.RGB != this.targetRGB)
+		{
+			this.RGB = this.targetRGB.clone();
+		}
+		
+	*/
 		
 	}//pre()
 
@@ -69,6 +95,8 @@ public class ColorFader implements PConstants
 
 		this.checkpoint = this.parent.millis();
 		this.parent.registerMethod("pre", this);
+		
+		this.alphaStartTime = 0;
 
 	}
 

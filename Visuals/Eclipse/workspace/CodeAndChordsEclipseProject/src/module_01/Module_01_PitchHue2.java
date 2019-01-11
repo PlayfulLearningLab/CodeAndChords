@@ -10,8 +10,8 @@ public class Module_01_PitchHue2 extends PApplet
 {
 	private ModuleDriver	driver;
 	private InputHandler	inputHandler;
-	private Canvas	canvas;
-	private ColorFader colorFader;
+	private Canvas			canvas;
+	private ColorFader 		colorFader;
 	
 	public static void main(String[] args)
 	{
