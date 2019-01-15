@@ -60,19 +60,19 @@ public class Module_01_PitchHue2 extends PApplet
 			}
 		}
 		
-		colorFader.setTargetColor(colors[0], colors[1], colors[2]);
+		if(this.inputHandler.getAmplitude() > 0)
+		{
+			colorFader.setTargetColor(colors[0], colors[1], colors[2]);
+		}
+		else
+		{
+			colorFader.setTargetColor(schemes[0].getCanvasColor());
+		}
+		
 		result = colorFader.getColor();
 		this.fill(result[0], result[1], result[2]);
 		this.canvas.background();
 		
-		if(inputHandler.getAmplitude() == 0)
-		{
-			colorFader.setTargetAlpha(0);
-		}
-		else
-		{
-			colorFader.setTargetAlpha(255);
-		}
 	}
 	
 	public class visualMenu extends MenuTemplate
@@ -93,6 +93,7 @@ public class Module_01_PitchHue2 extends PApplet
 			.setPosition(10, 70)
 			.setSize(140, 20)
 			.setDecimalPrecision(0)
+			.setValue(500)
 			.setTab(this.getMenuTitle())
 			.getCaptionLabel().setVisible(false);
 			
@@ -108,6 +109,7 @@ public class Module_01_PitchHue2 extends PApplet
 			.setPosition(10, 120)
 			.setSize(140, 20)
 			.setDecimalPrecision(0)
+			.setValue(50)
 			.setTab(this.getMenuTitle())
 			.getCaptionLabel().setVisible(false);
 			
@@ -122,6 +124,7 @@ public class Module_01_PitchHue2 extends PApplet
 			.setPosition(10, 180)
 			.setSize(140, 20)
 			.setDecimalPrecision(0)
+			.setValue(1500)
 			.setTab(this.getMenuTitle())
 			.getCaptionLabel().setVisible(false);
 			

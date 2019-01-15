@@ -93,7 +93,7 @@ public class InputHandler extends MenuTemplate
 		this.useRealTimeInput = true;
 		this.parent.registerMethod("draw", this);
 
-		this.controlP5.get("realTimeInput").setValue(1);
+		this.controlP5.get("realTimeInput").setValue(0);
 
 
 		
@@ -515,7 +515,7 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.addToggle("Legend")
 		.setPosition(450, 15)
 		.setSize(50, 25)
-		.setValue(0)
+		.setValue(1)
 		.setCaptionLabel("Legend")
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
@@ -542,7 +542,7 @@ public class InputHandler extends MenuTemplate
 		.setMax(100)
 		.setPosition(10, 120)
 		.setSize(140, 20)
-		.setValue(10)
+		.setValue(1)
 		.setDecimalPrecision(0)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().setVisible(false);
@@ -670,14 +670,17 @@ public class InputHandler extends MenuTemplate
 		Canvas canvas = this.driver.getCanvas();
 		note = this.getMidiNote();
 
-		for(int i = 0; i < inputNum + 1; i++)
+		//Why the +1 here?
+		//Removed it because I don't think it was doing anything
+		for(int i = 0; i < inputNum; i++)
 		{ 
 			ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
 			int[] colors = schemes[0].getPitchColor(i);
 			this.parent.fill(colors[0], colors[1], colors[2]);
-			this.parent.stroke(0,0,0);
-			if((note%12) == i)
+			this.parent.noStroke();
+			if((note%12) == i && this.getAmplitude() > this.controlP5.getController("piano").getValue())
 			{
+				
 				canvas.rect(xVals, (yVals - 30), rectWidths, (rectHeights+ 30));
 			}
 			else
@@ -686,12 +689,12 @@ public class InputHandler extends MenuTemplate
 			}
 			xVals = xVals + rectWidths;
 		}
-		xVals = 0;
 		
-		this.parent.fill(0,0,0);
 		
-		/*
-		this.parent.textAlign(CENTER, CENTER);
+		
+		
+		/*    FONT STUFF
+		
 		String[] fontList = PFont.list();
 		
 		for(int i = 0; i < fontList.length; i++)
@@ -700,10 +703,15 @@ public class InputHandler extends MenuTemplate
 		}
 		*/
 		
+		this.parent.fill(0,0,0);
+		this.parent.noStroke();
+		this.parent.textAlign(CENTER, CENTER);
+		
+		xVals = rectWidths/2;
 		for(int i = 0; i < inputNum; i++)
 		{ 
 			
-			this.driver.getCanvas().text(20, legendText[i], xVals + (rectWidths/2), parent.height - (rectHeights/2));
+			this.driver.getCanvas().text(14, legendText[i], xVals, parent.height - (rectHeights/2));
 			xVals = xVals + rectWidths;
 		}
 
