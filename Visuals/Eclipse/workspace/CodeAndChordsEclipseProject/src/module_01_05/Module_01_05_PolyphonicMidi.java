@@ -27,6 +27,8 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 
 		MenuGroup menus = this.driver.getMenuGroup();
 		this.inputHandler = this.driver.getInputHandler();
+		
+		this.driver.getCP5().getController("realTimeInput").setValue(1);
 				
 		this.noStroke();
 	}

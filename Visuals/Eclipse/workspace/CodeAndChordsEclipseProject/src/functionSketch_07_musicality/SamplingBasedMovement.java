@@ -2,21 +2,22 @@ package functionSketch_07_musicality;
 
 import processing.core.PApplet;
 
-public class Sampling extends PApplet
+public class SamplingBasedMovement extends PApplet
 {
 
-	private int 	sampleMode;
+	private int 		sampleMode;
+	private String[] 	modeName;
 
-	private int 	barWidth;
+	private int 		barWidth;
 
-	private int 	lastSampleTime;
-	private int 	samplePeriod;
+	private int 		lastSampleTime;
+	private int 		samplePeriod;
 
-	private int		sampleValue;
+	private int			sampleValue;
 
-	private int[] 	barValues;
+	private int[] 		barValues;
 
-	private float	vel;
+	private float		vel;
 
 	//PID Controller stuff
 	private int		lastLoopStartTime;
@@ -25,7 +26,7 @@ public class Sampling extends PApplet
 
 	public static void main(String[] args)
 	{
-		PApplet.main("functionSketch_07_musicality.Sampling");
+		PApplet.main("functionSketch_07_musicality.SamplingBasedMovement");
 	}
 
 	public void settings()
@@ -35,6 +36,8 @@ public class Sampling extends PApplet
 
 	public void setup()
 	{
+		this.modeName = new String[] {"Instant", "Constant Velocity test test test test test test", "Acceleration and Decay"};
+		
 		this.lastSampleTime = 0;
 		this.samplePeriod = 3000;
 		this.sampleValue = this.mouseY;
@@ -151,6 +154,19 @@ public class Sampling extends PApplet
 		this.strokeWeight(6);
 		this.stroke(170, 5, 100);
 		this.line(0, this.mouseY, this.width, this.mouseY);
+		
+		
+		//Draw Mode Name
+		
+		this.textSize(20);
+		this.stroke(0);
+		this.fill(255);
+		this.textAlign(CENTER, CENTER);
+		
+		for(int i = 0; i < this.sampleMode; i++)
+		{
+			this.text(this.modeName[i], i*this.barWidth + 25, 50, this.barWidth - 50, 100);
+		}
 
 
 	}
@@ -181,10 +197,13 @@ public class Sampling extends PApplet
 
 	private int getColor(int barNum)
 	{
-		int color = 60*barNum;
-
+		int color = (int) (50 + 120* ((float)barNum/(float)this.modeName.length));
+		
+		color = Math.max(0, color);
+		color = Math.min(255, color);
 
 		return color;
 	}
+
 
 }
