@@ -36,12 +36,12 @@ public class SamplingBasedMovement extends PApplet
 
 	public void setup()
 	{
-		this.modeName = new String[] {"Instant", "Constant Velocity test test test test test test", "Acceleration and Decay"};
+		this.modeName = new String[] {"Instant", "Constant Velocity", "Acceleration and Decay"};
 		
 		this.lastSampleTime = 0;
 		this.samplePeriod = 3000;
 		this.sampleValue = this.mouseY;
-		this.setSampleMode(1);
+		this.setSampleMode(3);
 
 		this.barValues = new int[] {this.sampleValue,this.sampleValue,this.sampleValue};
 
@@ -173,7 +173,8 @@ public class SamplingBasedMovement extends PApplet
 
 	public void keyPressed()
 	{
-		if(key == '1'){
+
+		if (key == '1'){
 			this.setSampleMode(1);
 		}
 		else if (key == '2'){
@@ -182,6 +183,7 @@ public class SamplingBasedMovement extends PApplet
 		else if (key == '3'){
 			this.setSampleMode(3);
 		}
+
 	}
 
 	private void setSampleMode(int mode)
