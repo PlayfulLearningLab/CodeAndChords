@@ -41,7 +41,6 @@ public class ColorMenu extends MenuTemplate
 		this.addChromatic();
 		this.addDannyButtons();
 		this.addColorCustomizationControls();
-		
 		this.setupComplete = true;
 	}
 	
