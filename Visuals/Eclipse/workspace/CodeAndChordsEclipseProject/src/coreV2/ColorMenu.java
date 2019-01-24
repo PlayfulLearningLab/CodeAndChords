@@ -229,217 +229,6 @@ public class ColorMenu extends MenuTemplate
 		.setColor(255)
 		.setTab(this.getMenuTitle());
 	}
-		
-	public void addButtons()
-	{
-		this.controlP5.addToggle("rainbow")
-		.setPosition(50, 100)
-		.setWidth(50)
-		.setCaptionLabel("Rainbow")
-		.setValue(true)
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("rainbow")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("dichrom")
-		.setPosition(100, 100)
-		.setWidth(50)
-		.setCaptionLabel("Dichrom")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("dichrom")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("trichrom")
-		.setPosition(150, 100)
-		.setWidth(50)
-		.setCaptionLabel("Trichrom")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("trichrom")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("custom")
-		.setPosition(200, 100)
-		.setWidth(50)
-		.setCaptionLabel("Custom")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("custom")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-	
-		this.getControlP5().addToggle("canvas")
-		.setPosition(50, 150)
-		.setWidth(50)
-		.setCaptionLabel("Canvas")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("canvas")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("tonic")
-		.setPosition(100, 150)
-		.setWidth(100)
-		.setCaptionLabel("Tonic")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("tonic")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("2ndcolor")
-		.setPosition(150, 150)
-		.setWidth(50)
-		.setCaptionLabel("2nd Color")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("2ndcolor")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("3rdcolor")
-		.setPosition(200, 150)
-		.setWidth(50)
-		.setCaptionLabel("3rd Color")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("3rdcolor")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("a")
-		.setPosition(50, 200)
-		.setWidth(50)
-		.setCaptionLabel("A")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("a")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("a#/bb")
-		.setPosition(100, 200)
-		.setWidth(50)
-		.setCaptionLabel("A#/Bb")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("a#/bb")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("b")
-		.setPosition(150, 200)
-		.setWidth(50)
-		.setCaptionLabel("B")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("b")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("c")
-		.setPosition(200, 200)
-		.setWidth(50)
-		.setCaptionLabel("C")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("c")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("c#/db")
-		.setPosition(50, 220)
-		.setWidth(50)
-		.setCaptionLabel("C#/Db")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("c#/db")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("d")
-		.setPosition(100, 220)
-		.setWidth(50)
-		.setCaptionLabel("D")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("d")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		
-		this.getControlP5().addToggle("d#/db")
-		.setPosition(150, 220)
-		.setWidth(50)
-		.setCaptionLabel("D#/Db")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("d#/db")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("e")
-		.setPosition(200, 220)
-		.setWidth(50)
-		.setCaptionLabel("E")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("e")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("f")
-		.setPosition(50, 240)
-		.setWidth(50)
-		.setCaptionLabel("F")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("f")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("f#/gb")
-		.setPosition(100, 240)
-		.setWidth(50)
-		.setCaptionLabel("F#/Gb")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("f#/gb")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("g")
-		.setPosition(150, 240)
-		.setWidth(50)
-		.setCaptionLabel("G")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("g")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-		
-		this.getControlP5().addToggle("g#/ab")
-		.setPosition(200, 240)
-		.setWidth(50)
-		.setCaptionLabel("G#/Ab")
-		.setTab(this.getMenuTitle())
-		.setInternalValue(0);
-		
-		this.controlP5.getController("g#/ab")
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-	}
 	
 	public void addSliders()
 	{
@@ -720,6 +509,48 @@ public class ColorMenu extends MenuTemplate
 			
 			}
 		}
+		
+		if(theEvent.getName() == "Key Change" || theEvent.getName() == "Keys")
+		{
+			int[] scale = this.driver.getInputHandler().getScale();
+			
+			for(int i = 0; i < 12; i++)
+			{
+				if(contains(i, scale) == false)
+				{
+					//can't use button
+					this.controlP5.getController(this.noteNames[i]).setColorBackground(Color.DARK_GRAY.getRGB());
+					this.controlP5.getController(this.noteNames[i]).setColorForeground(Color.GRAY.getRGB());
+					this.controlP5.getController(this.noteNames[i]).setColorActive(Color.LIGHT_GRAY.getRGB());
+					this.controlP5.getController(this.noteNames[i]).lock();
+				}
+				else
+				{
+					//can use button
+					this.controlP5.getController(this.noteNames[i]).setColorBackground(theEvent.getController().getColor().getBackground());
+					this.controlP5.getController(this.noteNames[i]).setColorForeground(theEvent.getController().getColor().getForeground());
+					this.controlP5.getController(this.noteNames[i]).setColorActive(theEvent.getController().getColor().getActive());
+					this.controlP5.getController(this.noteNames[i]).unlock();
+				}
+			}
+				
+		}
+	}
+
+	
+	private boolean contains(int number, int[] array)
+	{ 
+		boolean result;
+		result = false;
+		
+		for(int i = 0; i < array.length; i++)
+		{
+			if(number == array[i])
+			{
+				result = true;
+			}
+		}
+		return result;
 	}
 	
 	@Override

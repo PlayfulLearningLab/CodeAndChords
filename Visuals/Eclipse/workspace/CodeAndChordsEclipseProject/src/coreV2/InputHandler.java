@@ -320,6 +320,7 @@ public class InputHandler extends MenuTemplate
 
 		}
 
+
 		if(theEvent.getName() == "monoMidiTypeButton")
 		{
 			int index = 0;
@@ -670,7 +671,7 @@ public class InputHandler extends MenuTemplate
 		for(int i = 0; i < inputNum; i++)
 		{ 
 			ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
-			int[] colors = schemes[0].getPitchColor(i);
+			int[] colors = schemes[0].getPitchColor(scale[i]);
 			this.parent.fill(colors[0], colors[1], colors[2]);
 			this.parent.noStroke();
 			if((note%12) == scale[i] && this.getAmplitude() > this.controlP5.getController("piano").getValue())

@@ -2,6 +2,7 @@ package coreV2;
 
 import java.awt.Color;
 
+import controlP5.ControlEvent;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -84,26 +85,31 @@ public class CanvasMenu extends MenuTemplate
 		
 	} // addOutsideButtons
 	
+	public void controlEvent(ControlEvent controlEvent)
+	{
+		
+	}
+	
 	@Override
 	public void setCanvasSize()
 	{
 		this.driver.getCanvas().fullScreen();
 	}
 
-	@Override
+	//@Override
 	public void sliderEvent(int id, float val) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	//@Override
 	public void buttonEvent(int id) 
 	{
 		
 		
 	}
 
-	@Override
+	//@Override
 	public void colorWheelEvent(int id, Color color) {
 		// TODO Auto-generated method stub
 		
