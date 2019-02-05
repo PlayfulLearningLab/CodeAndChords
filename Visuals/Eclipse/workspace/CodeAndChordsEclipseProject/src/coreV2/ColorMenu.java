@@ -522,7 +522,7 @@ public class ColorMenu extends MenuTemplate
 					this.controlP5.getController(this.noteNames[i]).setColorBackground(Color.DARK_GRAY.getRGB());
 					this.controlP5.getController(this.noteNames[i]).setColorForeground(Color.GRAY.getRGB());
 					this.controlP5.getController(this.noteNames[i]).setColorActive(Color.LIGHT_GRAY.getRGB());
-					this.controlP5.getController(this.noteNames[i]).lock();
+					this.controlP5.getController(this.noteNames[i]).setUserInteraction(false);
 				}
 				else
 				{
@@ -530,7 +530,7 @@ public class ColorMenu extends MenuTemplate
 					this.controlP5.getController(this.noteNames[i]).setColorBackground(theEvent.getController().getColor().getBackground());
 					this.controlP5.getController(this.noteNames[i]).setColorForeground(theEvent.getController().getColor().getForeground());
 					this.controlP5.getController(this.noteNames[i]).setColorActive(theEvent.getController().getColor().getActive());
-					this.controlP5.getController(this.noteNames[i]).unlock();
+					this.controlP5.getController(this.noteNames[i]).setUserInteraction(true);
 				}
 			}
 				
