@@ -2,6 +2,7 @@ package core.input;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiChannel;
@@ -19,6 +20,9 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public static void main(String[] args)
 	{
 		MidiStreamInput midi = new MidiStreamInput();
+		
+		
+		midi.test(); 
 	}
 
 	private MidiDevice			device;
@@ -52,10 +56,14 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		this.monophonicType = 0;
 		this.isPolyphonic = false;
 
-		MidiDevice device;
+		MidiDevice device = null;
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-		for (int i = 0; i < infos.length; i++) 
+		
+		Scanner reader = new Scanner(System.in);
+		boolean inputFound = false;
+		for (int i = 0; !inputFound && i < infos.length; i++) 
 		{
+			inputFound = true;
 			try 
 			{
 				device = MidiSystem.getMidiDevice(infos[i]);
@@ -96,7 +104,29 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			}
 			catch (MidiUnavailableException e)
 			{
-				System.out.println("error");
+				inputFound = false;
+				System.out.println("\n\nerror in midi setup\n");
+				System.out.println(e + "\n\n");
+			}
+			
+			if(inputFound)
+			{
+				System.out.println("Use this input?");
+				String input = reader.nextLine();
+				
+				System.out.println("Input = [" + input + "]");
+				
+				if(input.contains("y"))
+				{
+					inputFound = true;
+					reader.close();
+					System.out.println("\n\ninput selected");
+				}
+				else
+				{
+					inputFound = false;
+					device.close();
+				}
 			}
 		}
 
@@ -129,7 +159,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				this.curNotes[this.numNotes][1] = amp;
 				this.numNotes++;
 
-				this.midiChannels[0].noteOn(note, amp);
+				//this.midiChannels[0].noteOn(note, amp);
 			}
 			else
 			{
@@ -377,6 +407,15 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	{
 		this.inputName = inputName;
 		
+	}
+	
+	public void test()
+	{
+		for(int i = 0; i < 100000; i++)
+		{
+			System.out.println("running");
+			this.printCurrentNotes();
+		}
 	}
 
 

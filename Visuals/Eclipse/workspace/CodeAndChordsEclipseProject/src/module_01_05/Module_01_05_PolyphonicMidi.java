@@ -10,7 +10,7 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 	private ColorScheme		cs;
 	private Canvas			canvas;
 
-	private boolean[]		active;
+	private boolean[]		active; 
 	private boolean[]		turningOn;
 	private boolean[]		turningOff;
 
