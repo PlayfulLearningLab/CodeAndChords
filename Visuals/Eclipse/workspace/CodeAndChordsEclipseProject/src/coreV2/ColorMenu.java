@@ -11,9 +11,9 @@ import controlP5.ScrollableList;
 
 public class ColorMenu extends MenuTemplate
 {
-	String[] noteNames;
+	private String[] noteNames;
 	
-	ColorScheme[] colorSchemes;
+	private ColorScheme[] colorSchemes;
 	
 	private boolean setupComplete = false;
 	
