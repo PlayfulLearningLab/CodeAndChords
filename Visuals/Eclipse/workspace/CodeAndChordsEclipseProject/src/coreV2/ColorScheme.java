@@ -48,8 +48,24 @@ public class ColorScheme
 	
 	public int[] getPitchColor(int midiNote)
 	{
-		return this.pitchColors[midiNote%12];
+		int[] result; 
+		int[] scale = this.driver.getInputHandler().getScale();
+		
+		if(this.driver.getColorMenu().contains(midiNote%12, scale) == false)
+		{
+			//not in scale
+			result=  new int[] {this.canvasColor[0], this.canvasColor[1], this.canvasColor[2], 0};
+			//System.out.println("alpha = 0");
+		}
+		else
+		{
+			//if in scale
+			result=  new int[] {this.pitchColors[midiNote%12][0], this.pitchColors[midiNote%12][1], this.pitchColors[midiNote%12][2], 255};
+			//System.out.println("alpha = 255");
+		}
+		return result;
 	}
+	
 	
 	public int[] getCanvasColor()
 	{

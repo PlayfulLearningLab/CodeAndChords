@@ -52,14 +52,11 @@ public class Module_01_PitchHue2 extends PApplet
 		int[] 	pitchColor 	= new int[] {-1,-1,-1};
 		ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
 
-		//check if the note is in the scale
-		for(int i = 0; i < scale.length; i++)
-		{ 
-			if((note%12) == i)
+
+			if((note) != -1)
 			{
-				pitchColor = schemes[0].getPitchColor(i);
+				pitchColor = schemes[0].getPitchColor(note);
 			}
-		}
 		
 		//if the note was in the scale then set the color in the colorFader
 		if(pitchColor[0] != -1)
