@@ -446,23 +446,29 @@ public class ColorMenu extends MenuTemplate
 		}
 		if(theEvent.getName() == "Generate" && setupComplete != false)
 		{
-			if(this.controlP5.getController("Colors").getValue() == 0)
+			int[] scale = this.driver.getInputHandler().getScale();
+			if(this.controlP5.getController("Colors").getValue() == 0)//dichromatic
 			{
 				float	rDif	= colors[0][0] - colors[1][0];
 				float	gDif	= colors[0][1] - colors[1][1];
 				float	bDif	= colors[0][2] - colors[1][2];
-				
-				float	percent		= 100 / 11;
-				colorSchemes[0].setColor(0, colors[0][0], colors[0][1], colors[0][2]);
-				colorSchemes[0].setColor(11, colors[1][0], colors[1][1], colors[1][2]);
-				
-				for(int i = 1; i < 11; i++)
+
+				float	percent		= 100 / scale.length;
+				colorSchemes[0].setColor(scale[0], colors[0][0], colors[0][1], colors[0][2]);
+				colorSchemes[0].setColor(scale[scale.length - 1], colors[1][0], colors[1][1], colors[1][2]);
+				int j = 1;
+
+				for(int i = scale[0] + 1; i <= scale[scale.length - 2]; i++)
 				{
-					colorSchemes[0].setColor(i, Math.round(colors[0][0] - (rDif * i * percent / 100)), Math.round(colors[0][1] - (gDif * i * percent / 100)), Math.round(colors[0][2] - (bDif * i * percent / 100)));
+					if(contains(i, scale) == true)
+					{
+						colorSchemes[0].setColor(i, Math.round(colors[0][0] - (rDif * j * percent / 100)), Math.round(colors[0][1] - (gDif * j * percent / 100)), Math.round(colors[0][2] - (bDif * j * percent / 100)));
+						j = j + 1;
+					}
 				} 
 			}
 			
-			if(this.controlP5.getController("Colors").getValue() == 1)
+			if(this.controlP5.getController("Colors").getValue() == 1)//trichromatic
 			{
 				int	color1pos	= 0;
 				int	color2pos;
@@ -472,12 +478,11 @@ public class ColorMenu extends MenuTemplate
 				int	divideBy2;
 				int	divideBy3;
 				
-				color2pos	= 6;	// subdominant
-				color3pos	= 11;
-				divideBy1	= 6;
-				divideBy2	= 6;
-				
-				
+				color2pos	= scale.length / 2;	// subdominant
+				color3pos	= scale.length - 1;
+				divideBy1	= (scale.length / 2);
+				divideBy2	= (scale.length / 2);
+
 				int	redDelta1	= (int)((colors[0][0] - colors[1][0]) / divideBy1);
 				int	greenDelta1	= (int)((colors[0][1] - colors[1][1]) / divideBy1);
 				int	blueDelta1	= (int)((colors[0][2] - colors[1][2]) / divideBy1);
@@ -485,25 +490,35 @@ public class ColorMenu extends MenuTemplate
 				int	redDelta2	= (int)((colors[1][0] - colors[2][0]) / divideBy2);
 				int	greenDelta2	= (int)((colors[1][1] - colors[2][1]) / divideBy2);
 				int	blueDelta2	= (int)((colors[1][2] - colors[2][2]) / divideBy2);
-
 				
-				colorSchemes[0].setColor(0, colors[0][0], colors[0][1], colors[0][2]);
-				for(int i = 1; i < color2pos; i++)
-				{
-					int[] list = colorSchemes[0].getPitchColor(i-1);
-					colorSchemes[0].setColor(i, list[0] - redDelta1, list[1] - greenDelta1, list[2] - blueDelta1);
-
+				colorSchemes[0].setColor(scale[0], colors[0][0], colors[0][1], colors[0][2]);
+				
+				int j = scale[0];
+				for(int i = scale[color1pos] + 1; i < scale[color2pos]; i++)
+				{	
+					if(contains(i, scale) == true)
+					{
+						
+						int[] list = colorSchemes[0].getPitchColor(j);
+						j = i;
+						colorSchemes[0].setColor(i, list[0] - redDelta1, list[1] - greenDelta1, list[2] - blueDelta1);
+					}
 				} // for - first color to second color
-				colorSchemes[0].setColor(6, colors[1][0], colors[1][1], colors[1][2]);
-				for(int i = color2pos + 1; i < color3pos; i++)
+				colorSchemes[0].setColor(scale[(scale.length/2)], colors[1][0], colors[1][1], colors[1][2]);
+				j = scale[(scale.length/2)];
+				for(int i = scale[color2pos] + 1; i < scale[color3pos]; i++)
 				{
-					int[] list = colorSchemes[0].getPitchColor(i-1);
-					colorSchemes[0].setColor(i, list[0] - redDelta2, list[1] - greenDelta2, list[2] - blueDelta2);
-				} // for - first color to second color
+					if(contains(i, scale) == true)
+					{
+						int[] list = colorSchemes[0].getPitchColor(j);
+						j = i;
+						colorSchemes[0].setColor(i, list[0] - redDelta2, list[1] - greenDelta2, list[2] - blueDelta2);
+					}
+				} // for - second color to third color
 
-				colorSchemes[0].setColor(11, colors[2][0], colors[2][1], colors[2][2]);
+				colorSchemes[0].setColor(scale[color3pos], colors[2][0], colors[2][1], colors[2][2]);
 			}
-			if(this.controlP5.getController("Colors").getValue() == 2)
+			if(this.controlP5.getController("Colors").getValue() == 2)//rainbow
 			{
 				colorSchemes[0].setPitchColors(0);
 			
