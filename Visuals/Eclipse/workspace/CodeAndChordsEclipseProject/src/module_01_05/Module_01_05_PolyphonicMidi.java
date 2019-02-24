@@ -60,7 +60,7 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 
 	public void draw()
 	{		
-		int[][] activeMIDI = this.inputHandler.getPolyMidiNotes();
+		int[][] activeMIDI = this.inputHandler.getAllMidiNotes();
 		int numNotes = activeMIDI.length;
 
 		int[] notes = new int[numNotes];

@@ -51,6 +51,8 @@ public class VisualMenu extends MenuTemplate {
 	
 	public void pre()
 	{
+		this.parent.fill(0);
+		this.driver.getCanvas().background();
 		this.visuals[this.curVisual].drawVisual();
 	}
 	
@@ -67,7 +69,7 @@ public class VisualMenu extends MenuTemplate {
 		.setTab(this.getMenuTitle());
 	}
 	
-	private void addVisual(Visual visual)
+	public void addVisual(Visual visual)
 	{
 		if(visual.equals(null)) throw new IllegalArgumentException("Visual object is null");
 		

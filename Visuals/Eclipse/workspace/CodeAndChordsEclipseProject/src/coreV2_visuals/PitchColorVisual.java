@@ -91,7 +91,7 @@ public class PitchColorVisual extends Visual {
 		this.canvas.background();
 
 
-		int 	note 		= this.moduleDriver.getInputHandler().getMidiNote();
+		int 	note 		= this.moduleDriver.getInputHandler().getAllMidiNotes()[0][0];
 		int[] 	scale 		= this.moduleDriver.getInputHandler().getScale();
 		int[] 	pitchColor 	= new int[] {-1,-1,-1};
 		ColorScheme[] schemes = this.moduleDriver.getColorMenu().getColorSchemes();
@@ -112,7 +112,7 @@ public class PitchColorVisual extends Visual {
 		}
 
 		//if the velocity is greater than the piano threshold then set the alpha to 255
-		if(this.moduleDriver.getInputHandler().getAmplitude() > this.moduleDriver.getCP5().getController("piano").getValue())
+		if(this.moduleDriver.getInputHandler().getAllMidiNotes()[0][1] > 0)
 		{
 			colorFader.setTargetAlpha(255);
 		}

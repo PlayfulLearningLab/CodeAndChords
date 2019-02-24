@@ -355,6 +355,13 @@ public class MicrophoneInput extends Input {
 		this.uGenArray = uGenArray;
 	}
 
+	
+	public int getMidiNote(int channelIndex) 
+	{
+		if(channelIndex > this.numInputs) throw new IllegalArgumentException("that input does not exist");
+		return (int) Math.round(this.getAdjustedFundAsMidiNote(channelIndex));
+	}
+	
 	@Override
 	public int getMidiNote() 
 	{
