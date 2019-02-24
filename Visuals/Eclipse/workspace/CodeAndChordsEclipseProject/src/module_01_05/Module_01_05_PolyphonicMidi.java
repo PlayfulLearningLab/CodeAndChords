@@ -197,13 +197,17 @@ public class Module_01_05_PolyphonicMidi extends PApplet
 			{
 				if		(this.curCenter < this.targetCenter)		this.curCenter += this.speed;
 				else if	(this.curCenter > this.targetCenter)		this.curCenter -= this.speed;
-			}
+				
+				if(Math.abs(this.curCenter - this.targetCenter) < this.speed) this.curCenter = this.targetCenter;
+							}
 
 			//Width
 			if(this.curWidth != this.targetWidth)
 			{
 				if		(this.curWidth < this.targetWidth)		this.curWidth += this.speed;
 				else if	(this.curWidth > this.targetWidth)		this.curWidth -= this.speed;
+				
+				this.curWidth = Math.max(0, this.curWidth);
 			}
 
 

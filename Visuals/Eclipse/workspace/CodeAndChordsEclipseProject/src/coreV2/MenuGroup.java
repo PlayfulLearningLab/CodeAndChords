@@ -34,6 +34,7 @@ public class MenuGroup implements ControlListener
 		
 		this.addMenu(new InputHandler(driver));
 		this.addMenu(new ColorMenu(driver));
+		this.addMenu(new VisualMenu(driver));
 
 		this.driver.getCP5().controlWindow.setPositionOfTabs(40, 7);
 	}
