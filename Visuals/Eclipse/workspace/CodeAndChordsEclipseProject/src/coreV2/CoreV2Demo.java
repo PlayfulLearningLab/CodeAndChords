@@ -23,9 +23,7 @@ public class CoreV2Demo extends PApplet
 	
 	public void draw()
 	{
-		this.fill(0);
-		this.noStroke();
-		this.driver.getCanvas().background();
+
 	}
 	
 }

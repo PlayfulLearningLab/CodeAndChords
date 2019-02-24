@@ -41,7 +41,9 @@ public class ColorFader implements PConstants
 
 		this.alpha 	= 	alpha;
 
-		this.transitionDuration = 1000;
+		this.transitionDuration = 500;
+		this.releaseDuration = 500;
+		this.attackDuration = 500;
 
 		this.parent.registerMethod("pre", this);
 	}

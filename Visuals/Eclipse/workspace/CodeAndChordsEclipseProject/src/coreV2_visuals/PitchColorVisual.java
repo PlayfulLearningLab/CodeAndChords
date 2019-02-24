@@ -3,32 +3,37 @@ package coreV2_visuals;
 import controlP5.ControlEvent;
 import controlP5.Controller;
 import controlP5.Slider;
+import coreV2.Canvas;
+import coreV2.ColorFader;
+import coreV2.ColorScheme;
+import coreV2.InputHandler;
 import coreV2.ModuleDriver;
 import coreV2.Visual;
 
 public class PitchColorVisual extends Visual {
-	
+
+	private Canvas			canvas;
+	private ColorFader 		colorFader;
 
 	public PitchColorVisual(ModuleDriver moduleDriver) 
 	{
 		super(moduleDriver, "Pitch Color");
-		
-		
+
 		this.addSliders();
-		
-		this.cp5.getGroup(this.name).setVisible(true);
+		this.canvas = this.moduleDriver.getCanvas();
+		this.colorFader = new ColorFader(this.parent);
 	}
-	
+
 	private void addSliders()
 	{
 		this.controllers = new String[] {"transition", "attack", "release"};
 		this.labels = new String[] {"Transition Time (ms)", "Attack Time (ms)", "Release Time (ms)"};
-		
+
 		for(int i = 0; i < this.labels.length; i++)
 		{
 			this.cp5.addLabel(this.labels[i]).setTab(this.tabName);
 		}
-		
+
 		this.cp5.addSlider("transition")
 		.setMin(30)
 		.setMax(1500)
@@ -36,8 +41,8 @@ public class PitchColorVisual extends Visual {
 		.setValue(500)
 		.setTab(this.tabName)
 		.getCaptionLabel().setVisible(false);
-		
-				
+
+
 		this.cp5.addSlider("attack")
 		.setMin(30)
 		.setMax(1500)
@@ -45,7 +50,7 @@ public class PitchColorVisual extends Visual {
 		.setValue(500)
 		.setTab(this.tabName)
 		.getCaptionLabel().setVisible(false);
-		
+
 		this.cp5.addSlider("release")
 		.setMin(30)
 		.setMax(1500)
@@ -59,13 +64,67 @@ public class PitchColorVisual extends Visual {
 	@Override
 	public void controlEvent(ControlEvent theEvent) 
 	{
-		
+		if(theEvent.getName() == "transition" && this.colorFader != null)
+		{
+			System.out.println("Setting " + theEvent.getName());
+			this.colorFader.setTransitionDuration((int)theEvent.getValue());
+		}
+
+		if(theEvent.getName() == "attack" && this.colorFader != null)
+		{
+			System.out.println("Setting " + theEvent.getName());
+			this.colorFader.setAttackDuration((int)theEvent.getValue());
+		}
+
+		if(theEvent.getName() == "release" && this.colorFader != null)
+		{
+			System.out.println("Setting " + theEvent.getName());
+			this.colorFader.setReleaseDuration((int)theEvent.getValue());
+		}
 	}
 
 	@Override
 	public void drawVisual() 
 	{
-		
+		//draw the background
+		this.parent.fill(0);
+		this.canvas.background();
+
+
+		int 	note 		= this.moduleDriver.getInputHandler().getMidiNote();
+		int[] 	scale 		= this.moduleDriver.getInputHandler().getScale();
+		int[] 	pitchColor 	= new int[] {-1,-1,-1};
+		ColorScheme[] schemes = this.moduleDriver.getColorMenu().getColorSchemes();
+
+		//check if the note is in the scale
+		for(int i = 0; i < scale.length; i++)
+		{ 
+			if((note%12) == i)
+			{
+				pitchColor = schemes[0].getPitchColor(i);
+			}
+		}
+
+		//if the note was in the scale then set the color in the colorFader
+		if(pitchColor[0] != -1)
+		{
+			colorFader.setTargetColor(pitchColor.clone());
+		}
+
+		//if the velocity is greater than the piano threshold then set the alpha to 255
+		if(this.moduleDriver.getInputHandler().getAmplitude() > this.moduleDriver.getCP5().getController("piano").getValue())
+		{
+			colorFader.setTargetAlpha(255);
+		}
+		else // if not, set the alpha to 0
+		{
+			colorFader.setTargetAlpha(0);
+		}
+
+		//get the current color from color fader and fill it into the canvas
+		int[] curColor = colorFader.getColor();
+		this.parent.fill(curColor[0], curColor[1], curColor[2], curColor[3]);
+		this.canvas.background();
 	}
 
 	@Override

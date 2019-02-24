@@ -45,11 +45,11 @@ public class VisualMenu extends MenuTemplate {
 		this.curVisual = 0;
 		this.controlP5.getController("VisualSelect").setValue(0);
 		
-		this.parent.registerMethod("draw", this);
+		this.parent.registerMethod("pre", this);
 		
 	}
 	
-	public void draw()
+	public void pre()
 	{
 		this.visuals[this.curVisual].drawVisual();
 	}

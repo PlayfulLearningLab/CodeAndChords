@@ -8,7 +8,7 @@ import processing.core.PApplet;
 
 public abstract class Visual implements ControlListener
 {
-	protected ModuleDriver 		modulelDriver;
+	protected ModuleDriver 		moduleDriver;
 	
 	protected PApplet 			parent;
 	
@@ -23,12 +23,12 @@ public abstract class Visual implements ControlListener
 	
 	public Visual(ModuleDriver moduleDriver, String name)
 	{
-		this.modulelDriver = moduleDriver;
+		this.moduleDriver = moduleDriver;
 		this.parent = moduleDriver.getParent();
-		this.cp5 = this.modulelDriver.getCP5();
+		this.cp5 = this.moduleDriver.getCP5();
 		this.name = name;
-		this.cp5.addGroup(this.name);
 		this.tabName = "Visual Menu";
+		this.cp5.addListener(this);
 	}
 	
 	public abstract void drawVisual();
