@@ -147,6 +147,61 @@ public class InputHandler extends MenuTemplate
 		{
 
 		}
+		
+		if(this.driver.getMenuGroup().getActiveMenu() == this)
+		{
+			float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("piano").getValue()/this.controlP5.getController("forte").getValue());
+			float forteWidth = parent.width/3 - 90;
+			
+			float barWidth = (this.getMaxAmp()/100) * (this.parent.width/3 - 60);
+			barWidth = Math.min(barWidth, this.parent.width/3 - 60);
+			
+			this.parent.noStroke();
+			
+			if(barWidth > forteWidth)
+			{
+				this.parent.fill(255,0,0);
+				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
+				
+				this.parent.fill(0,255,0);
+				this.parent.rect(30, this.parent.height * 4/9, forteWidth, 30);
+				
+				this.parent.fill(255,255,51);
+				this.parent.rect(30, this.parent.height * 4/9, pianoWidth, 30);
+			}
+			else if(barWidth > pianoWidth)
+			{
+				this.parent.fill(0,255,0);
+				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
+				
+				this.parent.fill(255,255,51);
+				this.parent.rect(30, this.parent.height * 4/9, pianoWidth, 30);
+			}
+			else
+			{
+				this.parent.fill(255,255,51);
+				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
+			}
+			
+			
+			
+			this.parent.noFill();
+			this.parent.stroke(0);
+			this.parent.strokeWeight(3);
+			this.parent.line(30 + forteWidth, 
+							this.parent.height * 4/9, 
+							30 + forteWidth, 
+							this.parent.height * 4/9 + 30);
+			
+			this.parent.line(	30 + pianoWidth, 
+								this.parent.height * 4/9, 
+								30 + pianoWidth, 
+								this.parent.height * 4/9 + 30);
+			
+			this.parent.rect(30, this.parent.height * 4/9, this.parent.width/3 - 60, 30);
+			
+			
+		}
 
 
 	}
@@ -196,6 +251,45 @@ public class InputHandler extends MenuTemplate
 			answer = 0;
 		}
 		return answer;
+	}
+	
+	private float getMaxAmp()
+	{
+		int[][] notes = new int[this.numChannels][2];
+		
+		if(this.getCurInput().getInputType() != "Midi Stream Input")
+		{
+			MusicalInput curInput = this.getCurInput();
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumInputs())
+				{
+					notes[i][0] = ((Input)curInput).getMidiNote(i);
+					notes[i][1] = (int) (((Input)curInput).getAmplitude(i)/this.controlP5.getController("forte").getValue()*100);
+				}
+				else
+				{
+					notes[i][0] = -1;
+					notes[i][1] = 0;
+				}
+			}
+		}
+		else
+		{
+			notes = this.getAllMidiNotes();
+		}
+		
+		float maxAmp = 0;
+		
+		for(int i = 0; i < notes.length; i++)
+		{
+			if(notes[i][1] > maxAmp)
+			{
+				maxAmp = notes[i][1];
+			}
+		}
+
+		return maxAmp;
 	}
 
 	public int[][] getAllMidiNotes()
@@ -509,28 +603,6 @@ public class InputHandler extends MenuTemplate
 		.close()
 		.setTab(this.getMenuTitle());
 
-		this.controlP5.addScrollableList("Key Change")
-		.setPosition(550, 10)
-		.setWidth(100)
-		.setBarHeight(30)
-		.setItemHeight(30)
-		.setItems(new String[] {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
-		.setValue(0)
-		.close()
-		.setTab(this.getMenuTitle());
-
-
-		this.controlP5.addScrollableList("Keys")
-		.setPosition(670, 10)
-
-		.setWidth(100)
-		.setBarHeight(30)
-		.setItemHeight(30)
-		.setItems(new String[] {"Major", "Minor", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic", "Chromatic"})
-		.setValue(6)
-		.close()
-		.setTab(this.getMenuTitle());
-
 		this.controlP5.addButton("polyMidiButton")
 		.setPosition(30, this.parent.height * 5/9 + 60)
 		.setSize(115, 30)
@@ -543,18 +615,10 @@ public class InputHandler extends MenuTemplate
 		.setTab(this.menuTitle)
 		.setLabel("Last");
 
-		this.controlP5.addToggle("Legend")
-		.setPosition(450, 15)
-		.setSize(50, 25)
-		.setValue(1)
-		.setCaptionLabel("Legend")
-		.setTab(this.getMenuTitle())
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
-
 		this.controlP5.addSlider("forte")
 		.setMin(20)
 		.setMax(5000)
-		.setPosition(30, this.parent.height * 4/9)
+		.setPosition(this.parent.width/3 - (30 + 150), this.parent.height * 7/18)
 		.setSize(150, 20)
 		.setValue(1000)
 		.setDecimalPrecision(0)
@@ -562,7 +626,7 @@ public class InputHandler extends MenuTemplate
 		.getCaptionLabel().setVisible(false);
 
 		this.controlP5.addLabel("Forte Threshold")
-		.setPosition(30, this.parent.height * 4/9 - 15)
+		.setPosition(30, this.parent.height * 7/18 + 7)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
 
@@ -570,7 +634,7 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.addSlider("piano")
 		.setMin(0)
 		.setMax(100)
-		.setPosition(30, this.parent.height * 1/9 + 30)
+		.setPosition(this.parent.width/3 - (30 + 150), this.parent.height * 3/9)
 		.setSize(150, 20)
 		.setValue(1)
 		.setDecimalPrecision(0)
@@ -578,8 +642,39 @@ public class InputHandler extends MenuTemplate
 		.getCaptionLabel().setVisible(false);
 
 		this.controlP5.addLabel("Piano Threshold")
-		.setPosition(30, this.parent.height * 1/9 + 15)
+		.setPosition(30, this.parent.height * 3/9 + 7)
 		.setColor(255)
+		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addToggle("Legend")
+		.setPosition(30, this.parent.height * 2/9)
+		.setSize(50, 25)
+		.setValue(1)
+		.setCaptionLabel("Legend")
+		.setTab(this.getMenuTitle())
+		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+
+		this.controlP5.addScrollableList("Key Change")
+		.setPosition(100, this.parent.height * 2/9)
+		.setWidth(50)
+		.setBarHeight(25)
+		.setItemHeight(25)
+		.setHeight(100)
+		.setItems(new String[] {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
+		.setValue(0)
+		.close()
+		.setTab(this.getMenuTitle());
+
+
+		this.controlP5.addScrollableList("Keys")
+		.setPosition(170, this.parent.height * 2/9)
+		.setWidth(this.parent.width/3 - (60 + 140))
+		.setBarHeight(25)
+		.setItemHeight(25)
+		.setHeight(100)
+		.setItems(new String[] {"Major", "Minor", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic", "Chromatic"})
+		.setValue(6)
+		.close()
 		.setTab(this.getMenuTitle());
 	}
 
