@@ -153,7 +153,7 @@ public class InputHandler extends MenuTemplate
 			float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("piano").getValue()/this.controlP5.getController("forte").getValue());
 			float forteWidth = parent.width/3 - 90;
 			
-			float barWidth = (this.getMaxAmp()/100) * (this.parent.width/3 - 60);
+			float barWidth = (this.getMaxAmp()/100) * (forteWidth);
 			barWidth = Math.min(barWidth, this.parent.width/3 - 60);
 			
 			this.parent.noStroke();
@@ -320,13 +320,14 @@ public class InputHandler extends MenuTemplate
 			}
 		}
 		else
-		{
+		{	
 			for(int i = 0; i < this.numChannels; i++)
 			{
-				if(i < curInput.getTotalNumInputs() && midiNotes[i][1] < this.controlP5.getController("piano").getValue())
+				if(i < curInput.getTotalNumInputs() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
 				{
+					System.out.println(i);
 					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
-					midiNotes[i][1] = (int) (((Input)curInput).getAmplitude(i)/this.controlP5.getController("forte").getValue()*100);
+					midiNotes[i][1] = (int) ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100);
 				}
 				else
 				{
@@ -334,6 +335,7 @@ public class InputHandler extends MenuTemplate
 					midiNotes[i][1] = 0;
 				}
 			}
+			
 		}
 
 

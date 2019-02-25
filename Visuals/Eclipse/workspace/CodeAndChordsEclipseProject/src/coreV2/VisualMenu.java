@@ -59,7 +59,7 @@ public class VisualMenu extends MenuTemplate {
 	private void makeVisualDropdown()
 	{
 		this.controlP5.addScrollableList("VisualSelect")
-		.setPosition(30, 50)
+		.setPosition(30, this.parent.height * 1/9)
 		.setWidth(250)
 		.setBarHeight(30)
 		.setItemHeight(30)
