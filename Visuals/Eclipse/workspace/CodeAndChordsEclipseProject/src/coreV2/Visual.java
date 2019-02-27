@@ -18,8 +18,7 @@ public abstract class Visual implements ControlListener
 		
 	protected String			tabName;
 	
-	protected String[]			controllers;
-	protected String[]			labels;
+	protected boolean			autoFormatControllers;
 	
 	public Visual(ModuleDriver moduleDriver, String name)
 	{
@@ -29,33 +28,33 @@ public abstract class Visual implements ControlListener
 		this.name = name;
 		this.tabName = "Visual Menu";
 		this.cp5.addListener(this);
+		this.autoFormatControllers = true;
 	}
 	
 	public abstract void drawVisual();
 	
 	public abstract int getNumControllers();
 	
-	public String getControllerName(int controllerNum)
-	{
-		return this.controllers[controllerNum];
-	}
+	public abstract String getControllerName(int controllerNum);
 	
-	public String getLabelName(int controllerNum)
-	{
-		return this.labels[controllerNum];
-	}
+	public abstract String getLabelName(int controllerNum);
 	
 	public String getName()
 	{
 		return this.name;
 	}
 	
+	public boolean getAutoFormatControllers()
+	{
+		return this.autoFormatControllers;
+	}
+	
 	public void hide()
 	{
 		for(int i = 0; i < this.getNumControllers(); i++)
 		{
-			this.cp5.getController(this.controllers[i]).hide();
-			this.cp5.getController(this.labels[i]).hide();
+			this.cp5.getController(this.getControllerName(i)).hide();
+			this.cp5.getController(this.getLabelName(i)).hide();
 		}
 	}
 	
@@ -63,8 +62,8 @@ public abstract class Visual implements ControlListener
 	{
 		for(int i = 0; i < this.getNumControllers(); i++)
 		{
-			this.cp5.getController(this.controllers[i]).show();
-			this.cp5.getController(this.labels[i]).show();
+			this.cp5.getController(this.getControllerName(i)).show();
+			this.cp5.getController(this.getLabelName(i)).show();
 		}
 	}
 }

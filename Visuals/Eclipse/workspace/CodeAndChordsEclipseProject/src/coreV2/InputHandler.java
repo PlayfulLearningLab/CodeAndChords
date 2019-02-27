@@ -20,13 +20,6 @@ import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 import processing.core.PFont;
 
-/*
- * Danny's TODO List:
- * 
- *   1: make all setter methods go through one method
- *   2: add a method that sets the scrollable lists to the right setting
- *   3: clean up moduleDriver
- */
 
 public class InputHandler extends MenuTemplate
 {
@@ -127,6 +120,8 @@ public class InputHandler extends MenuTemplate
 
 		this.polyMidiButtonText = new String[] {"Polyphonic", "Monophonic"};
 		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
+		
+		
 
 	}
 
@@ -152,6 +147,11 @@ public class InputHandler extends MenuTemplate
 		{
 			float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("piano").getValue()/this.controlP5.getController("forte").getValue());
 			float forteWidth = parent.width/3 - 90;
+			
+			this.parent.noStroke();
+			this.parent.fill(0);
+			this.parent.rect(30, this.parent.height * 4/9, this.parent.width/3 - 60, 30);
+			
 			
 			float barWidth = (this.getMaxAmp()/100) * (forteWidth);
 			barWidth = Math.min(barWidth, this.parent.width/3 - 60);
@@ -186,8 +186,8 @@ public class InputHandler extends MenuTemplate
 			
 			
 			this.parent.noFill();
-			this.parent.stroke(0);
-			this.parent.strokeWeight(3);
+			this.parent.stroke(255);
+			this.parent.strokeWeight(2);
 			this.parent.line(30 + forteWidth, 
 							this.parent.height * 4/9, 
 							30 + forteWidth, 
@@ -308,14 +308,13 @@ public class InputHandler extends MenuTemplate
 				if(i < notes.length)
 				{
 					midiNotes[i][0] = notes[i][0];
-					midiNotes[i][1] = (int) (((float)notes[i][1])/127f*100f);
+					midiNotes[i][1] = (int) Math.min(100, (((float)notes[i][1])/127f*100f));
 
-					if(i == 0) System.out.println("vel:  " + midiNotes[i][1]);
 				}
 				else
 				{
-					midiNotes[i][0] = -1;
-					midiNotes[i][1] = 0;
+					midiNotes[i][0] = 0;
+					midiNotes[i][1] = -1;
 				}
 			}
 		}
@@ -325,14 +324,13 @@ public class InputHandler extends MenuTemplate
 			{
 				if(i < curInput.getTotalNumInputs() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
 				{
-					System.out.println(i);
 					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
-					midiNotes[i][1] = (int) ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100);
+					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100));
 				}
 				else
 				{
-					midiNotes[i][0] = -1;
-					midiNotes[i][1] = 0;
+					midiNotes[i][0] = 0;
+					midiNotes[i][1] = -1;
 				}
 			}
 			
@@ -466,6 +464,29 @@ public class InputHandler extends MenuTemplate
 		{
 			//System.out.println("FRONT");
 			theEvent.getController().bringToFront();
+		}
+		
+		if(theEvent.getName() == "maxNumChannels")
+		{
+			this.numChannels = (int) (theEvent.getValue() + 1);
+		}
+		
+		if(theEvent.getName() == "piano")
+		{
+			float val = this.controlP5.getController("piano").getValue();
+			if(val > this.controlP5.getController("forte").getValue())
+			{
+				this.controlP5.getController("forte").setValue(val);
+			}
+		}
+		
+		if(theEvent.getName() == "forte" && this.controlP5.getController("piano") != null)
+		{
+			float val = this.controlP5.getController("forte").getValue();
+			if(val < this.controlP5.getController("piano").getValue())
+			{
+				this.controlP5.getController("piano").setValue(val);
+			}
 		}
 
 	}//ControlEvent
@@ -616,6 +637,10 @@ public class InputHandler extends MenuTemplate
 		.setSize(115, 30)
 		.setTab(this.menuTitle)
 		.setLabel("Last");
+		
+		this.controlP5.getController("monoMidiTypeButton").setColorBackground(Color.DARK_GRAY.getRGB());
+		this.controlP5.getController("monoMidiTypeButton").setColorForeground(Color.GRAY.getRGB());
+		this.controlP5.getController("monoMidiTypeButton").setColorActive(Color.LIGHT_GRAY.getRGB());
 
 		this.controlP5.addSlider("forte")
 		.setMin(20)
@@ -677,6 +702,21 @@ public class InputHandler extends MenuTemplate
 		.setItems(new String[] {"Major", "Minor", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic", "Chromatic"})
 		.setValue(6)
 		.close()
+		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addScrollableList("numChannels")
+		.setPosition(170, this.parent.height * 3/18 -10)
+		.setWidth(this.parent.width/3 - (60 + 140))
+		.setBarHeight(25)
+		.setItemHeight(25)
+		.setHeight(100)
+		.setItems(new String[] {"1", "2", "3", "4", "5", "6", "7", "8",})
+		.setValue(0)
+		.close()
+		.setTab(this.getMenuTitle());
+		
+		this.controlP5.addLabel("Max Number of Channels")
+		.setPosition(30, this.parent.height * 3/18 - 4)
 		.setTab(this.getMenuTitle());
 	}
 
@@ -895,6 +935,11 @@ public class InputHandler extends MenuTemplate
 		info += "Number of Channels:   " + input.getTotalNumInputs() +"\n\n";
 
 		return info;
+	}
+	
+	public int getNumChannels()
+	{
+		return (int) this.controlP5.getController("numChannels").getValue();
 	}
 
 }

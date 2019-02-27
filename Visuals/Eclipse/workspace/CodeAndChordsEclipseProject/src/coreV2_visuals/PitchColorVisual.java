@@ -14,6 +14,9 @@ public class PitchColorVisual extends Visual {
 
 	private Canvas			canvas;
 	private ColorFader 		colorFader;
+	
+	protected String[]			controllers;
+	protected String[]			labels;
 
 	public PitchColorVisual(ModuleDriver moduleDriver) 
 	{
@@ -131,6 +134,18 @@ public class PitchColorVisual extends Visual {
 	public int getNumControllers() 
 	{
 		return this.controllers.length;
+	}
+
+	@Override
+	public String getControllerName(int controllerNum) 
+	{
+		return this.controllers[controllerNum];
+	}
+
+	@Override
+	public String getLabelName(int controllerNum) 
+	{
+		return this.labels[controllerNum];
 	}
 
 }
