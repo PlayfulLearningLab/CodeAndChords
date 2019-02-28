@@ -186,7 +186,7 @@ public abstract class MenuTemplate implements ControlListener, ControlP5Constant
 	public void controlEvent(ControlEvent controlEvent)
 	{
 		//		System.out.println("MenuTemplate.controlEvent: controlEvent = " + controlEvent);
-
+		/*
 		if(!controlEvent.isTab())
 		{
 			int	id	= controlEvent.getController().getId();
@@ -314,7 +314,7 @@ public abstract class MenuTemplate implements ControlListener, ControlP5Constant
 			} // ColorWheel Textfields
 
 		}//isTab()
-	} // controlEvent
+	*/} // controlEvent
 
 
 	/**

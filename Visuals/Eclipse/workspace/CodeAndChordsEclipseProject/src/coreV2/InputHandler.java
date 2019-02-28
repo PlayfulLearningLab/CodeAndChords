@@ -445,6 +445,7 @@ public class InputHandler extends MenuTemplate
 
 		}
 
+
 		if(theEvent.getName() == "monoMidiTypeButton")
 		{
 			int index = 0;
@@ -731,71 +732,66 @@ public class InputHandler extends MenuTemplate
 
 		if(scale == 0)//major
 		{
-			currentScale = new int[8];
+			currentScale = new int[7];
 			currentScale[0] = key;
-			currentScale[1] = (currentScale[0] + 2)% 8;
-			currentScale[2] = (currentScale[1] + 2)% 8;
-			currentScale[3] = (currentScale[2] + 1)% 8;
-			currentScale[4] = (currentScale[3] + 2)% 8;
-			currentScale[5] = (currentScale[4] + 2)% 8;
-			currentScale[6] = (currentScale[5] + 2)% 8;
-			currentScale[7] = (currentScale[6] + 1)% 8;
+			currentScale[1] = (currentScale[0] + 2)% 12;
+			currentScale[2] = (currentScale[1] + 2)% 12;
+			currentScale[3] = (currentScale[2] + 1)% 12;
+			currentScale[4] = (currentScale[3] + 2)% 12;
+			currentScale[5] = (currentScale[4] + 2)% 12;
+			currentScale[6] = (currentScale[5] + 2)% 12;
 		}
 		else if(scale == 1)//minor
 		{
-			currentScale = new int[8];
+			currentScale = new int[7];
 			currentScale[0] = key;
-			currentScale[1] = (key + 2)% 8;
-			currentScale[2] = (key + 1)% 8;
-			currentScale[3] = (key + 2)% 8;
-			currentScale[4] = (key + 2)% 8;
-			currentScale[5] = (key + 1)% 8;
-			currentScale[6] = (key + 2)% 8;
-			currentScale[7] = (key + 2)% 8;
+			currentScale[1] = (currentScale[0] + 2)% 12;
+			currentScale[2] = (currentScale[1] + 1)% 12;
+			currentScale[3] = (currentScale[2] + 2)% 12;
+			currentScale[4] = (currentScale[3] + 2)% 12;
+			currentScale[5] = (currentScale[4] + 1)% 12;
+			currentScale[6] = (currentScale[5] + 2)% 12;
 		}
 		else if(scale == 2)//harmonic minor
 		{
 			currentScale = new int[8];
 			currentScale[0] = key;
-			currentScale[1] = (key + 2)% 8;
-			currentScale[2] = (key + 1)% 8;
-			currentScale[3] = (key + 2)% 8;
-			currentScale[4] = (key + 2)% 8;
-			currentScale[5] = (key + 1)% 8;
-			currentScale[6] = (key + 2)% 8;
-			currentScale[7] = (key + 1)% 8;
+			currentScale[1] = (currentScale[0] + 2)% 12;
+			currentScale[2] = (currentScale[1] + 1)% 12;
+			currentScale[3] = (currentScale[2] + 2)% 12;
+			currentScale[4] = (currentScale[3] + 2)% 12;
+			currentScale[5] = (currentScale[4] + 1)% 12;
+			currentScale[6] = (currentScale[5] + 2)% 12;
+			currentScale[7] = (currentScale[6] + 1)% 12;
 		}
 		else if(scale == 3)//melodic minor
 		{
-			currentScale = new int[8];
+			currentScale = new int[7];
 			currentScale[0] = key;
-			currentScale[1] = (currentScale[0] + 2) % 8;
-			currentScale[2] = (currentScale[1] + 1) % 8;
-			currentScale[3] = (currentScale[2] + 2) % 8;
-			currentScale[4] = (currentScale[3] + 2) % 8;
-			currentScale[5] = (currentScale[4] + 2) % 8;
-			currentScale[6] = (currentScale[5] + 2) % 8;
-			currentScale[7] = (currentScale[6] + 1) % 8;
+			currentScale[1] = (currentScale[0] + 2) % 12;
+			currentScale[2] = (currentScale[1] + 1) % 12;
+			currentScale[3] = (currentScale[2] + 2) % 12;
+			currentScale[4] = (currentScale[3] + 2) % 12;
+			currentScale[5] = (currentScale[4] + 2) % 12;
+			currentScale[6] = (currentScale[5] + 2) % 12;
 		}
 		else if(scale == 4)//major pentatonic
 		{
-			currentScale = new int[6];
+			currentScale = new int[5];
 			currentScale[0] = key;
-			currentScale[1] = (currentScale[0] + 2) % 6;
-			currentScale[2] = (currentScale[1] + 2) % 6;
-			currentScale[3] = (currentScale[2] + 3) % 6;
-			currentScale[4] = (currentScale[3] + 2) % 6;
-			currentScale[5] = (currentScale[4] + 3) % 6;
+			currentScale[1] = (currentScale[0] + 2) % 12;
+			currentScale[2] = (currentScale[1] + 2) % 12;
+			currentScale[3] = (currentScale[2] + 3) % 12;
+			currentScale[4] = (currentScale[3] + 2) % 12;
 		}
 		else if(scale == 5)//minor pentatonic
 		{
-			currentScale = new int[6];
+			currentScale = new int[5];
 			currentScale[0] = key;
-			currentScale[1] = (currentScale[0] + 3) % 6;
-			currentScale[2] = (currentScale[1] + 2) % 6;
-			currentScale[3] = (currentScale[2] + 2) % 6;
-			currentScale[4] = (currentScale[3] + 3) % 6;
-			currentScale[5] = (currentScale[4] + 2) % 6;
+			currentScale[1] = (currentScale[0] + 3) % 12;
+			currentScale[2] = (currentScale[1] + 2) % 12;
+			currentScale[3] = (currentScale[2] + 2) % 12;
+			currentScale[4] = (currentScale[3] + 3) % 12;
 		}
 		else//chromatic
 		{
@@ -856,13 +852,15 @@ public class InputHandler extends MenuTemplate
 		for(int i = 0; i < inputNum; i++)
 		{ 
 			ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
-			int[] colors = schemes[0].getPitchColor(i);
+			int[] colors = schemes[0].getPitchColor(scale[i]);
 			this.parent.fill(colors[0], colors[1], colors[2]);
+
 			this.parent.stroke(0);
 			this.parent.strokeWeight(2);
 
 			noteIsActive = false;
 			for(int i2 = 0; i2 < notes.length; i2++)
+
 			{
 				if(i == notes[i2]) noteIsActive = true;
 			}
@@ -923,10 +921,7 @@ public class InputHandler extends MenuTemplate
 		}
 		return newScale;
 	}
-	private void calculateLegendValues(int numinputs)
-	{
 
-	}
 
 	private String makeInfoString(MusicalInput input)
 	{
