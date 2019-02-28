@@ -18,7 +18,7 @@ public class VerticalRegtanglesVisual extends Visual
 	private ColorFader[]	colors;
 	
 	private int[]		activationOrder;
-	
+		
 	public VerticalRegtanglesVisual(ModuleDriver moduleDriver) 
 	{
 		super(moduleDriver, "Vertical Rectangles");
@@ -36,7 +36,23 @@ public class VerticalRegtanglesVisual extends Visual
 			this.colors[i] = new ColorFader(this.parent);
 		}
 		
+		this.makeControllers();
+				
 		
+	}
+	
+	private void makeControllers()
+	{
+		this.controllers = new String[]{"growthSpeed"};
+		this.labels = new String[]{"Growth Speed"};
+		
+		this.cp5.addSlider("growthSpeed")
+		.setMin(0)
+		.setMax(40)
+		.setValue(25)
+		.getCaptionLabel().setVisible(false);
+		
+		this.cp5.addLabel("Growth Speed");
 	}
 
 	@Override
@@ -45,6 +61,14 @@ public class VerticalRegtanglesVisual extends Visual
 		if(theEvent.getName() == "numChannels")
 		{
 			this.setNumChannels((int) theEvent.getValue() + 1);
+		}
+		
+		if(theEvent.getName() == "growthSpeed")
+		{
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				this.bars[i].growthSpeed = (int) theEvent.getValue();
+			}
 		}
 		
 	}
@@ -125,19 +149,17 @@ public class VerticalRegtanglesVisual extends Visual
 	@Override
 	public int getNumControllers() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public String getControllerName(int controllerNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.controllers[controllerNum];
 	}
 
 	@Override
 	public String getLabelName(int controllerNum) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.labels[controllerNum];
 	}
 	
 	public class vertBar{
@@ -151,6 +173,8 @@ public class VerticalRegtanglesVisual extends Visual
 		
 		private float		wError;
 		
+		private int			growthSpeed;
+		
 		public vertBar(PApplet parent)
 		{
 			this.parent = parent;
@@ -159,13 +183,15 @@ public class VerticalRegtanglesVisual extends Visual
 			this.leftX = 0;
 			this.width = 0;
 			this.targetWidth = 0;
+			
+			this.growthSpeed = 25;
 		}
 		
 		public void pre()
 		{
 			this.wError = this.targetWidth - this.width;
 			
-			this.width += this.wError/20;
+			this.width += this.wError/(50 - this.growthSpeed);
 			
 			if(Math.abs(this.width) < 1) this.width = 0;
 		}

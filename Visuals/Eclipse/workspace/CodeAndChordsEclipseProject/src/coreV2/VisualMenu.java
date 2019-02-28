@@ -5,6 +5,7 @@ import java.awt.Color;
 import controlP5.ControlEvent;
 import controlP5.Controller;
 import controlP5.ScrollableList;
+import controlP5.Slider;
 import coreV2_visuals.PitchColorVisual;
 
 public class VisualMenu extends MenuTemplate {
@@ -96,6 +97,7 @@ public class VisualMenu extends MenuTemplate {
 
 			controller.setSize(this.controllerWH[0], this.controllerWH[1]);
 			controller.setPosition(this.controllerXY[i][0], this.controllerXY[i][1]);
+			controller.setTab(this.getMenuTitle());
 		}
 	}
 
@@ -109,6 +111,7 @@ public class VisualMenu extends MenuTemplate {
 
 			controller.setPosition(this.labelXY[i][0], this.labelXY[i][1]);
 			controller.setSize(this.controllerWH[0], this.controllerWH[1]);
+			controller.setTab(this.getMenuTitle());
 		}
 	}
 
