@@ -116,6 +116,8 @@ public class ColorMenu extends MenuTemplate
 			.setTab(this.getMenuTitle())
 			.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		}
+		
+		Label.setUpperCaseDefault(true);
 	}
 	
 	public void draw()

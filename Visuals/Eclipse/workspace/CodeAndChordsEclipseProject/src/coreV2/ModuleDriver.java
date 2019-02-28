@@ -90,14 +90,15 @@ public class ModuleDriver implements PConstants
 		
 		this.cp5.hide();
 		
-		this.menuGroup = new MenuGroup(this);
-		
 		this.canvas = new Canvas(this.parent);
+		
+		this.menuGroup = new MenuGroup(this);
 		
 		this.parent.registerMethod("pre", this);
 		this.parent.registerMethod("keyEvent", this);
 		
 		this.cp5.show();
+		
 	}
 
 	public void pre()

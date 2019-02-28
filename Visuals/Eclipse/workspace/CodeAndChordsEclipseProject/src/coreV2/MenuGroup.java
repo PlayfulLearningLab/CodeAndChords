@@ -34,8 +34,9 @@ public class MenuGroup implements ControlListener
 		
 		this.addMenu(new InputHandler(driver));
 		this.addMenu(new ColorMenu(driver));
+		this.addMenu(new VisualMenu(driver));
 
-		this.driver.getCP5().controlWindow.setPositionOfTabs(40, 7);
+		this.driver.getCP5().controlWindow.setPositionOfTabs(this.driver.getParent().width/3 + 50, 15);
 	}
 
 	public void addMenu(MenuTemplate newMenu)
@@ -146,13 +147,18 @@ public class MenuGroup implements ControlListener
 
 			if(theEvent.getController().getName() == "hamburger")
 			{
+				int	hamburgerX		= 10;
+				int	hamburgerY		= 13;
+				
 				if(this.canvasMenuActive())
 				{
 					this.open();
+					theEvent.getController().setPosition(this.driver.getParent().width/3 + 16, 23);
 				}
 				else
 				{
 					this.close();
+					theEvent.getController().setPosition(hamburgerX, hamburgerY);
 				}
 			}
 
