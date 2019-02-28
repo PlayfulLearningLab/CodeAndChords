@@ -12,8 +12,8 @@ import coreV2.Visual;
 
 public class PitchColorVisual extends Visual {
 
-	private Canvas			canvas;
-	private ColorFader 		colorFader;
+	private Canvas				canvas;
+	private ColorFader 			colorFader;
 	
 	protected String[]			controllers;
 	protected String[]			labels;
