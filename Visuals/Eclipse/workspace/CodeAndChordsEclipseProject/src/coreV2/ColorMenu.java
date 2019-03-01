@@ -165,6 +165,7 @@ public class ColorMenu extends MenuTemplate
 		{
 			int[] RGB = this.colorSchemes[0].getPitchColor(i);
 			
+			this.parent.noStroke();
 			this.parent.fill(RGB[0], RGB[1], RGB[2]);
 			this.parent.rect(xPos + buttonWidth + 10, yStart +i*yIncrament, 70, buttonHeight);
 		}

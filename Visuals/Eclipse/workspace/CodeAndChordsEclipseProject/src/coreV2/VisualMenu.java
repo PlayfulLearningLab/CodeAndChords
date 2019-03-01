@@ -59,8 +59,12 @@ public class VisualMenu extends MenuTemplate {
 
 	private void makeVisualDropdown()
 	{
+		this.controlP5.addLabel("Current Visual")
+		.setPosition(this.parent.width/3 + 20, this.parent.height * 1/9 + 30)
+		.setTab(this.getMenuTitle());
+		
 		this.controlP5.addScrollableList("VisualSelect")
-		.setPosition(30, this.parent.height * 3/18 - 10)
+		.setPosition(this.parent.width/3 + 20, this.parent.height * 1/9 + 50)
 		.setWidth(250)
 		.setBarHeight(30)
 		.setItemHeight(30)
@@ -119,6 +123,7 @@ public class VisualMenu extends MenuTemplate {
 	{
 		if(theEvent.getName() == "VisualSelect")
 		{
+			theEvent.getController().bringToFront();
 			this.visuals[this.curVisual].hide();
 			this.curVisual = (int) theEvent.getValue();
 
