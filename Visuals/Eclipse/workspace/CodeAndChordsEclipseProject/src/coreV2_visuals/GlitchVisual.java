@@ -100,7 +100,7 @@ public class GlitchVisual extends Visual{
 
 		for(int i = 0; i < this.colorHistory[channelNum].length && midiNotes[channelNum][1] != -1; i++)
 		{
-			curColorIndex = (this.colorIndex - i + this.colorHistory.length)%this.colorHistory.length;
+			curColorIndex = (this.colorIndex - i + this.colorHistory[channelNum].length)%this.colorHistory.length;
 
 			int rand1 = (int) ((Math.random() - .5) * (100 + i*i));
 			int rand2 = (int) ((Math.random() - .5) * (100 + i*i));
