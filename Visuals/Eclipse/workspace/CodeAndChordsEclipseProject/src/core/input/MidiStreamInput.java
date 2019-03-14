@@ -111,6 +111,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			
 			if(inputFound)
 			{
+				/*
 				System.out.println("Use this input?");
 				String input = reader.nextLine();
 				
@@ -127,7 +128,13 @@ public class MidiStreamInput implements Receiver, MusicalInput
 					inputFound = false;
 					device.close();
 				}
+				*/
+				
+				inputFound = true;
+				reader.close();
+				
 			}
+			
 		}
 
 	}

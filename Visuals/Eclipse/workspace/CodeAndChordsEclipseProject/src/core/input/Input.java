@@ -280,13 +280,13 @@ public abstract class Input implements MusicalInput {
 	 *
 	 *  @return  float     amplitude of the particular input line.
 	 */
-	public float getAmplitude(int inputNum) {
-		inputNumErrorCheck(inputNum, "getAmplitude(int)");
+	public float getAmplitude(int channelIndex) {
+		inputNumErrorCheck(channelIndex, "getAmplitude(int)");
 
 		this.setFund();
 
 		//		return this.frequencyArray[inputNum - 1].getAmplitude();
-		return this.amplitudeArray[inputNum];
+		return this.amplitudeArray[channelIndex];
 	} // getAmplitude
 
 	/**
@@ -302,7 +302,9 @@ public abstract class Input implements MusicalInput {
 		this.setFund();
 		return this.amplitudeArray[0];
 	} // getAmplitude()
-
+	
+	public abstract int getMidiNote(int channelIndex);
+	
 
 	/**
 	 * @return  int  number of input channels.

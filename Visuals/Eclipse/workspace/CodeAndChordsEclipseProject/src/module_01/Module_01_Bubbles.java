@@ -6,7 +6,7 @@ import controlP5.ControlEvent;
 import coreV2.*;
 import processing.core.PApplet;
 
-public class Module_01_PitchHue2 extends PApplet
+public class Module_01_Bubbles extends PApplet
 {
 	private ModuleDriver	driver;
 	private InputHandler	inputHandler;
@@ -15,7 +15,7 @@ public class Module_01_PitchHue2 extends PApplet
 
 	public static void main(String[] args)
 	{
-		PApplet.main("module_01.Module_01_PitchHue2");
+		PApplet.main("module_01.Module_01_Bubbles");
 	}
 
 	public void settings()
@@ -38,6 +38,7 @@ public class Module_01_PitchHue2 extends PApplet
 		this.driver.getCP5().getController("realTimeInput").setValue(1);
 
 		this.noStroke();
+		
 	}
 
 	public void draw()
@@ -73,11 +74,14 @@ public class Module_01_PitchHue2 extends PApplet
 		{
 			colorFader.setTargetAlpha(0);
 		}
+		
+		//int[] curColor = colorFader.getColor();
+		//this.fill(curColor[0], curColor[1], curColor[2], curColor[3]);
 
 		//get the current color from color fader and fill it into the canvas
-		int[] curColor = colorFader.getColor();
-		this.fill(curColor[0], curColor[1], curColor[2], curColor[3]);
-		this.canvas.background();
+		//int[] curColor = colorFader.getColor();
+		//this.fill(curColor[0], curColor[1], curColor[2], curColor[3]);
+		//this.canvas.background();
 
 	}
 

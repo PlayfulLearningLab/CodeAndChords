@@ -41,7 +41,9 @@ public class ColorFader implements PConstants
 
 		this.alpha 	= 	alpha;
 
-		this.transitionDuration = 1000;
+		this.transitionDuration = 500;
+		this.releaseDuration = 500;
+		this.attackDuration = 500;
 
 		this.parent.registerMethod("pre", this);
 	}
@@ -135,7 +137,11 @@ public class ColorFader implements PConstants
 
 	public void setTargetColor(int[] targetColorRGB)
 	{
-		if(targetColorRGB.length != 3) throw new IllegalArgumentException("must be array of length 3 - RGB values");
+		if(targetColorRGB.length == 4)
+		{
+			this.setTargetAlpha(targetColorRGB[3]);
+		}
+		else if(targetColorRGB.length != 3) throw new IllegalArgumentException("must be array of length 3 - RGB values");
 
 		if(!this.sameRGB(targetColorRGB, this.targetRGB))
 		{
@@ -204,7 +210,7 @@ public class ColorFader implements PConstants
 	private boolean sameRGB(int[] color1, int[] color2)
 	{
 		boolean val = true;
-		if(color1.length != 3 || color2.length != 3) throw new IllegalArgumentException("sameRGB(int[], int[]) inputs must be RGB values - length 3");
+		//if(color1.length != 3 || color2.length != 3) throw new IllegalArgumentException("sameRGB(int[], int[]) inputs must be RGB values - length 3");
 
 		for(int i = 0; i < 3; i++)
 		{

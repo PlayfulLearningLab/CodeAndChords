@@ -110,6 +110,7 @@ public class Canvas
 		if(!this.isFullscreen)
 		{
 			this.parent.fill(30);
+			
 			this.parent.noStroke();
 			
 			this.parent.rect(0, 0, this.parent.width, this.displayY);
@@ -117,6 +118,20 @@ public class Canvas
 			this.parent.rect(this.parent.width, this.parent.height, - this.parent.width, -(this.parent.height - (this.displayHeight + this.displayY) ));
 			this.parent.rect(this.parent.width, this.parent.height, -(this.parent.width - (this.displayWidth + this.displayX)), -this.parent.height );
 
+			this.parent.stroke(100, 0 , 230);
+			this.parent.strokeWeight(4);
+			this.parent.noFill();
+			
+			this.parent.rect(2, 2, this.displayX - 4, this.parent.height - 4);
+			this.parent.rect(this.displayX-2, 2, this.displayWidth, this.displayY - 4);
+			this.parent.rect(2, 2, this.parent.width - 4, this.parent.height/9);
+			
+			this.parent.stroke(255);
+			this.parent.fill(255);
+			this.parent.textSize(28);
+			this.parent.textAlign(this.parent.CENTER, this.parent.CENTER);
+			this.parent.text("CODE+CHORDS", this.displayX/2, this.parent.height/18);
+			
 		}
 	}//drawAppletBackground()
 	
