@@ -8,6 +8,7 @@ public class Canvas
 	
 	private float			displayX;
 	private float			displayY;
+	private float			displayZ;
 	private float 			displayWidth;
 	private float 			displayHeight;
 	
@@ -22,10 +23,11 @@ public class Canvas
 		this.fullScreen();
 	}
 	
-	public void setDisplay(int xPos, int yPos, int width, int height)
+	public void setDisplay(int xPos, int yPos, int zPos, int width, int height)
 	{
 		this.displayX = xPos;
 		this.displayY = yPos;
+		this.displayZ = zPos;
 		this.displayWidth = width;
 		this.displayHeight = height;
 		
@@ -80,6 +82,17 @@ public class Canvas
 		
 		this.parent.line(this.displayX + (x1 * x), this.displayY + (y1 * y), this.displayX + (x2 * x), this.displayY + (y2 * y));
 	}
+	
+	public void box(int xPos, int yPos, int zPos)
+	{
+		float x = (this.displayWidth/this.parent.width);
+		float y = (this.displayHeight/this.parent.height);
+		this.parent.box(this.displayX + (xPos * x), this.displayY + (yPos * y), this.displayZ + (zPos));
+	}
+	/*public void sphere(int rPos)
+	{
+		this.parent.sphere(this.displayX + (rPos));
+	}*/
 	
 	public void text(int textSize, String text, int x, int y)
 	{
