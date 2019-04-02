@@ -1,6 +1,6 @@
 package coreV2;
 
-import coreV2_visuals.VerticalRegtanglesVisual;
+import coreV2_visuals.BubblesVisual;
 import processing.core.PApplet;
 
 public class CoreV2Demo extends PApplet
@@ -20,7 +20,7 @@ public class CoreV2Demo extends PApplet
 	public void setup()
 	{
 		this.driver = new ModuleDriver(this);
-		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new VerticalRegtanglesVisual(this.driver));
+		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new BubblesVisual(this.driver));
 	}
 	
 	public void draw()
