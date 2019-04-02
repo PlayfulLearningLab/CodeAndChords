@@ -467,8 +467,9 @@ public class InputHandler extends MenuTemplate
 			theEvent.getController().bringToFront();
 		}
 		
-		if(theEvent.getName() == "maxNumChannels")
+		if(theEvent.getName() == "numChannels")
 		{
+			theEvent.getController().bringToFront();
 			this.numChannels = (int) (theEvent.getValue() + 1);
 		}
 		
@@ -934,7 +935,7 @@ public class InputHandler extends MenuTemplate
 	
 	public int getNumChannels()
 	{
-		return (int) this.controlP5.getController("numChannels").getValue();
+		return this.numChannels;
 	}
 
 }
