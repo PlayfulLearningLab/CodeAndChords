@@ -100,7 +100,7 @@ public class InputHandler extends MenuTemplate
 		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
 				"6_Part_Scale2.wav", 
 				"6_Part_Scale3.wav", 
-		"6_Part_Scale4.wav"});
+				"6_Part_Scale4.wav"});
 
 		recInput1.setInputName("4 Part Scale");
 		this.addMusicalInput(recInput1);
