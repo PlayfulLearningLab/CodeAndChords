@@ -12,6 +12,8 @@ public class TestModule extends PApplet
 	private ModuleDriver driver;
 
 	private Canvas canvas;
+	
+	private ModuleDriver moduleDriver;
 
 
 
@@ -183,6 +185,24 @@ public class TestModule extends PApplet
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@SuppressWarnings("unused")
+	public void fake()
+	{
+		int midiNoteFromInputHandler = 0;
+		
+		// make an int array to store a single RGB value 
+		int[] pitchColor; 
+
+		// get the current color scheme. (the object that stores the color associated with each pitch) 
+		ColorScheme colors = this.moduleDriver.getColorMenu().getColorSchemes()[0]; 
+
+		// get the midi note number of the current note being played 
+		int curMidiNote = midiNoteFromInputHandler; 
+
+		// use the note number to get the associated color and store the color 
+		pitchColor = colors.getPitchColor(curMidiNote); 
 	}
 
 
