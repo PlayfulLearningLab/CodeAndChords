@@ -128,11 +128,11 @@ public class MidiStreamInput implements Receiver, MusicalInput
 					inputFound = false;
 					device.close();
 				}
-				*/
+				
 				
 				inputFound = true;
 				reader.close();
-				
+				*/
 			}
 			
 		}

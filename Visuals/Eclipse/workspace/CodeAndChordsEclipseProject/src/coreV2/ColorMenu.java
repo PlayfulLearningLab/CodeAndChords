@@ -1,6 +1,7 @@
 package coreV2;
-//Make buttons, Implementing control event method-->tells program what to do when buttons are clicked, no save/load color, add color wheel group method next to add sllider wheel group method
+//Make buttons, Implementing control event method-->tells program what to do when buttons are clicked, no save/load color, add color wheel group method next to add slider wheel group method
 import java.awt.Color;
+import java.awt.Font;
 
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
@@ -20,11 +21,11 @@ public class ColorMenu extends MenuTemplate
 	//parameters for button placement
 	
 	private int buttonWidth = 40;
-	private int buttonHeight = 20;
+	private int buttonHeight = 17;
 
 	private int xPos = 10;
 
-	private int yStart = 190;
+	private int yStart = 240;
 	private int yIncrament = buttonHeight + 6;
 	
 	private int[][]  colors = new int[3][3];
@@ -41,43 +42,61 @@ public class ColorMenu extends MenuTemplate
 		this.addChromatic();
 		this.addDannyButtons();
 		this.addColorCustomizationControls();
+		this.addHeaders();
 		this.setupComplete = true;
+		
+	}
+	
+	public void addHeaders() {
+		
+		this.controlP5.addTextarea("Set Group Colors", "Set Group Colors", 10, 70, 120, 20)
+		.setColor(255)
+		.enableColorBackground()
+		.setColorBackground(BLUE)
+		.setTab(this.getMenuTitle());
+		
+		
+		this.controlP5.addTextarea("Set Individual Colors", "Set Individual Colors", 10, 215, 120, 20)
+		.setColor(255)
+		.enableColorBackground()
+		.setColorBackground(BLUE)
+		.setTab(this.getMenuTitle());
 	}
 	
 	public void addChromatic()
 	{
 		this.controlP5.addButton("Generate")
-		.setPosition(150, 50)
-		.setSize(50, 25)
-		.setCaptionLabel("Generate")
-		.setTab(this.getMenuTitle())
-		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
+		.setPosition(115, 95)
+		.setSize(35, 25)
+		.setCaptionLabel("Apply")
+		.setTab(this.getMenuTitle());
+		//.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		
-		this.controlP5.addColorWheel("Wheel", 300, 50, 100)
+		this.controlP5.addColorWheel("Wheel", 190, 95, 105)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel()
 		.setVisible(false);
 		
 		this.controlP5.addToggle("1st Color")
-		.setPosition(100, 100)
-		.setSize(50, 25)
+		.setPosition(115, 125)
+		.setSize(50, 20)
 		.setCaptionLabel("1st Color")
 		.setValue(false)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		this.controlP5.addToggle("2nd Color")
-		.setPosition(100, 130)
-		.setSize(50, 25)
+		.setPosition(115, 150)
+		.setSize(50, 20)
 		.setCaptionLabel("2nd Color")
 		.setValue(false)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
 		this.controlP5.addToggle("3rd Color")
-		.setPosition(100, 160)
-		.setSize(50, 25)
+		.setPosition(115, 175)
+		.setSize(50, 20)
 		.setCaptionLabel("3rd Color")
 		.setValue(false)
 		.setTab(this.getMenuTitle())
@@ -88,9 +107,9 @@ public class ColorMenu extends MenuTemplate
 		this.controlP5.getController("3rd Color").hide();
 		
 		this.controlP5.addScrollableList("Colors")
-		.setPosition(10, 70)
+		.setPosition(10, 95)
 		.setWidth(100)
-		.setBarHeight(30)
+		.setBarHeight(25)
 		.setItemHeight(30)
 		.setItems(new String[] {"DiChromatic", "TriChromatic", "Rainbow"})
 		.setValue(2)
@@ -102,7 +121,7 @@ public class ColorMenu extends MenuTemplate
 	
 	
 	public void addDannyButtons()
-	{
+	{//Danny Buttons are the Note name buttons
 
 		Label.setUpperCaseDefault(false);
 
@@ -138,22 +157,22 @@ public class ColorMenu extends MenuTemplate
 	{
 		if(this.controlP5.getController("Colors").getValue() == 0)
 		{
-			this.parent.fill(colors[0][0],colors[0][1],colors[0][2]);
-			this.parent.rect(150, 100, 25, 25);
+			this.parent.fill(colors[0][0],colors[0][1],colors[0][2]);//
+			this.parent.rect(165, 125, 20, 20);
 			
 			this.parent.fill(colors[1][0],colors[1][1],colors[1][2]);
-			this.parent.rect(150, 130, 25, 25);
+			this.parent.rect(165, 150, 20, 20);
 		}
 		if(this.controlP5.getController("Colors").getValue() == 1)
 		{
 			this.parent.fill(colors[0][0],colors[0][1],colors[0][2]);
-			this.parent.rect(150, 100, 25, 25);
+			this.parent.rect(165, 125, 20, 20);
 			
 			this.parent.fill(colors[1][0],colors[1][1],colors[1][2]);
-			this.parent.rect(150, 130, 25, 25);
+			this.parent.rect(165, 150, 20, 20);
 			
 			this.parent.fill(colors[2][0],colors[2][1],colors[2][2]);
-			this.parent.rect(150, 160, 25, 25);
+			this.parent.rect(165, 175, 20, 20);
 		}
 		
 	}
@@ -189,14 +208,14 @@ public class ColorMenu extends MenuTemplate
 		this.controlP5.addSlider("redSlider")
 		.setMin(0)
 		.setMax(255)
-		.setPosition(sliderX, sliderY)
+		.setPosition(sliderX, sliderY-10)
 		.setSize(sliderW, sliderH)
 		.setDecimalPrecision(0)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().setVisible(false);
 		
 		this.controlP5.addLabel("Red")
-		.setPosition(sliderX, sliderY - 12)
+		.setPosition(sliderX, sliderY - 22)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
 		
@@ -205,14 +224,14 @@ public class ColorMenu extends MenuTemplate
 		this.controlP5.addSlider("greenSlider")
 		.setMin(0)
 		.setMax(255)
-		.setPosition(sliderX, sliderY)
+		.setPosition(sliderX, sliderY-10)
 		.setSize(sliderW, sliderH)
 		.setDecimalPrecision(0)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().setVisible(false);
 		
 		this.controlP5.addLabel("Green")
-		.setPosition(sliderX, sliderY - 12)
+		.setPosition(sliderX, sliderY - 22)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
 		
@@ -221,14 +240,14 @@ public class ColorMenu extends MenuTemplate
 		this.controlP5.addSlider("blueSlider")
 		.setMin(0)
 		.setMax(255)
-		.setPosition(sliderX, sliderY)
+		.setPosition(sliderX, sliderY - 10)
 		.setSize(sliderW, sliderH)
 		.setDecimalPrecision(0)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel().setVisible(false);
 		
 		this.controlP5.addLabel("Blue")
-		.setPosition(sliderX, sliderY - 12)
+		.setPosition(sliderX, sliderY - 22)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
 	}
