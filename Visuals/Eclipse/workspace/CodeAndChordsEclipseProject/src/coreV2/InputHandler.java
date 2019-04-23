@@ -65,7 +65,7 @@ public class InputHandler extends MenuTemplate
 		boolean skip4to8 = false;
 
 		//Number of Microphone Channels
-		int numInputs = 1;
+		int numInputs = 4;
 
 		System.out.println("starting try");
 

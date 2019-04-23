@@ -16,6 +16,9 @@ public class GlitchVisual extends Visual{
 	private int				colorIndex;
 
 	private int[]			nextUpdateTime;
+	
+	private String[]		controllers;
+	private String[]		labels;
 
 	public GlitchVisual(ModuleDriver moduleDriver) 
 	{
@@ -31,9 +34,44 @@ public class GlitchVisual extends Visual{
 		{
 			this.colorHistory[0][i] = new int[] {0,0,0};
 		}
+		
+		this.controllers = new String[] {"numRects", "chanceVisibility", "colorDelay", "scatter", "alpha"};
+		this.labels = new String[] {"Number of Rectangles", "Chance of Visibility", "Color Delay", 
+										"Scatter Size", "Alpha"};
 
 		this.colorIndex = 0;
 		this.nextUpdateTime = new int[] {0};
+		
+		
+		this.makeControls();
+	}
+	
+	private void makeControls()
+	{
+		this.cp5.addSlider(this.controllers[0], 50, 200)
+		.setValue(80)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[0]);
+		
+		this.cp5.addSlider(this.controllers[1], 50, 200)
+		.setValue(150)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[1]);
+		
+		this.cp5.addSlider(this.controllers[2], 0, 100)
+		.setValue(80)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[2]);
+		
+		this.cp5.addSlider(this.controllers[3], 100, 255)
+		.setValue(150)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[3]);
+		
+		this.cp5.addSlider(this.controllers[4], 0, 100)
+		.setValue(50)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[4]);
 	}
 
 	@Override
@@ -161,21 +199,21 @@ public class GlitchVisual extends Visual{
 	}
 
 	@Override
-	public int getNumControllers() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getNumControllers() 
+	{
+		return this.controllers.length;
 	}
 
 	@Override
-	public String getControllerName(int controllerNum) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getControllerName(int controllerNum) 
+	{
+		return this.controllers[controllerNum];
 	}
 
 	@Override
-	public String getLabelName(int controllerNum) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getLabelName(int controllerNum) 
+	{
+		return this.labels[controllerNum];
 	}
 
 }
