@@ -106,7 +106,7 @@ public class BubblesVisual extends Visual
 		
 		int xIndex = 0;
 		int channel;
-		//System.out.println(this.activationOrder.length);
+
 		for(int i = this.activationOrder.length-1; i >= 0; i--)
 		{
 			channel = this.activationOrder[i];
@@ -119,17 +119,18 @@ public class BubblesVisual extends Visual
 				//calculate and set goal width
 				this.bubble[channel].targetHeight = (int) (((float)this.parent.height/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
 				
+				this.bubble[channel].targetx = 250;
+				this.bubble[channel].targety = 250;
 				//setColor
 				int[] targetColor = this.moduleDriver.getColorMenu().getColorSchemes()[0].getPitchColor(midiNotes[channel][0%12]);
 				this.colors[channel].setTargetColor(targetColor);
-				
 			}
 			else
 			{
 				this.bubble[channel].targetWidth = 0;
 				this.bubble[channel].targetHeight = 0;
 			}
-			
+
 			//update leftX
 			this.bubble[channel].leftX = xIndex;
 			xIndex += this.bubble[channel].width;
@@ -139,8 +140,14 @@ public class BubblesVisual extends Visual
 			this.parent.fill(curColor[0], curColor[1], curColor[2]);
 			
 			//System.out.println(this.activationOrder.length);
+			//System.out.println(this.bubble[channel].width);
 			if(this.activationOrder.length == 1)
 			{
+				this.bubble[channel].targetx = (int) (((float)450/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
+				
+				//calculate and set goal y
+				this.bubble[channel].targety = (int) (((float)250/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
+				
 				this.moduleDriver.getCanvas().ellipse(450, 250, (int) this.bubble[channel].width*2, (int) this.bubble[channel].width *2);
 				//this.moduleDriver.getCanvas().ellipse((int) (this.parent.width/2 + 2 - this.bubble[channel].leftX), 250, (int) -this.bubble[channel].width*2,(int) this.bubble[channel].width*2);
 			}
@@ -148,12 +155,25 @@ public class BubblesVisual extends Visual
 			{
 				if(channel == 0)
 				{
-					this.moduleDriver.getCanvas().ellipse(250, 250, (int) this.bubble[channel].width*2, (int) this.bubble[channel].width *2);
+					//this.bubble[channel].targetx = 250;
+					
+					//calculate and set goal y
+					//this.bubble[channel].targety = 250;
+					//System.out.println("x = " + this.bubble[channel].x);
+					//System.out.println("y = " + this.bubble[channel].y);
+					
+					
+					this.moduleDriver.getCanvas().ellipse((int) this.bubble[channel].x, (int) this.bubble[channel].y, (int) this.bubble[channel].width*2, (int) this.bubble[channel].width *2);
 					//this.moduleDriver.getCanvas().ellipse((int) (this.parent.width/2 + 2 - this.bubble[channel].leftX), 100, (int) -this.bubble[channel].width*2,(int) this.bubble[channel].width*2);
 				}
 				else if(channel == 1)
 				{
-					this.moduleDriver.getCanvas().ellipse(650, 250, (int) this.bubble[channel].width*2, (int) this.bubble[channel].width *2);
+					//this.bubble[channel].targetx = (int) (((float)650/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
+					
+					//calculate and set goal y
+					//this.bubble[channel].targety = (int) (((float)250/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
+					
+					//this.moduleDriver.getCanvas().ellipse((int) this.bubble[channel].x*2, (int) this.bubble[channel].y*2, (int) this.bubble[channel].width*2, (int) this.bubble[channel].width *2);
 					//this.moduleDriver.getCanvas().ellipse((int) (this.parent.width/2 + 2 - this.bubble[channel].leftX), 250, (int) -this.bubble[channel].width*2,(int) this.bubble[channel].width*2);
 				}
 			}
@@ -229,9 +249,13 @@ public class BubblesVisual extends Visual
 		private float		leftX;
 		private float		width;
 		private float		height;
+		private float		x;
+		private float		y;
 		
 		private int			targetWidth;
 		private int 		targetHeight;
+		private int			targetx;
+		private int			targety;
 		
 		private float		wError;
 		
@@ -246,24 +270,51 @@ public class BubblesVisual extends Visual
 			//this.width = targetWidth;
 			this.targetWidth = 0;
 			this.targetHeight = 0;
+			this.targetx = 450;
+			this.targety = 250;
 			
 			this.speed = 25;
 		}
 		
 		public void pre()
 		{
+			System.out.println("I was called");
+			
 			this.wError = this.targetWidth - this.width;
 			
 			this.width += this.wError/(50 - this.speed);
 			
 			if(Math.abs(this.width) < 1) this.width = 0;
 			//this.width = this.targetWidth;
+			System.out.println("width = " + this.width);
+			System.out.println("targetwidth = " + this.targetWidth);
+			System.out.println("Error = " + this.wError);
+			
 			
 			this.wError = this.targetHeight - this.height;
 			
 			this.height += this.wError/(50 - this.speed);
 			
 			if(Math.abs(this.height) < 1) this.height = 0;
+			
+			
+			this.wError = this.targetx - this.x;
+			
+			this.x += this.wError/(50 - this.speed);
+			
+			if(Math.abs(this.x) < 1) this.x = 0;
+			System.out.println("x = " + this.x);
+			System.out.println("targetx = " + this.targetx);
+			System.out.println("Error = " + this.wError);
+			
+			this.wError = this.targety - this.y;
+			
+			this.y += this.wError/(50 - this.speed);
+			
+			if(Math.abs(this.y) < 1) this.y = 0;
+			System.out.println("y = " + this.y);
+			System.out.println("targety = " + this.targety);
+			System.out.println("Error = " + this.wError);
 		}
 	}
 
