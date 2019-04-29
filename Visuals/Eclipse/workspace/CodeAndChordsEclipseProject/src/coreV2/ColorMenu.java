@@ -40,7 +40,7 @@ public class ColorMenu extends MenuTemplate
 		this.colorSchemes = new ColorScheme[] {new ColorScheme(this.driver)};
 		this.parent.registerMethod("draw", this);
 		this.addChromatic();
-		this.addDannyButtons();
+		this.addButtons();
 		this.addColorCustomizationControls();
 		this.addHeaders();
 		this.setupComplete = true;
@@ -120,7 +120,7 @@ public class ColorMenu extends MenuTemplate
 	}
 	
 	
-	public void addDannyButtons()
+	public void addButtons()
 	{//Danny Buttons are the Note name buttons
 
 		Label.setUpperCaseDefault(false);
