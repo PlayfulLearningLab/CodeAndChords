@@ -24,7 +24,6 @@ public class CoreV2Demo extends PApplet
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new NeonStormVisual(this.driver));
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new GlitchVisual(this.driver));
 		
-		
 
 	}
 	

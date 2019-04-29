@@ -7,8 +7,9 @@ import controlP5.ControllerInterface;
 import controlP5.Toggle;
 
 /**
- * TODO: get particular menus by menuTitle (String)
- * @author emily
+ * Controls the opening, closing, and switching between all menus.
+ * 
+ * @author Danny Mahota
  *
  */
 public class MenuGroup implements ControlListener

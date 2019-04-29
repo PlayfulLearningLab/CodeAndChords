@@ -3,6 +3,14 @@ package coreV2;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
+/**
+ * A utility class that allows for easy, time based fading between colors.  Allows for
+ * customization of attack, release, and transition times in milliseconds.
+ * 
+ * 
+ * @author Danny Mahota
+ *
+ */
 public class ColorFader implements PConstants
 {
 	private PApplet		parent;
@@ -63,7 +71,10 @@ public class ColorFader implements PConstants
 		this(0, 0, 0, 255, parent);
 	}
 
-
+	/**
+	 * Processing library method that is called prior to draw(). This is the method that does
+	 * all of the math involved in the fading.
+	 */
 	public void pre()
 	{
 		//Color - RGB
@@ -118,6 +129,13 @@ public class ColorFader implements PConstants
 
 	//Color methods - RGB
 
+	/**
+	 * Make an immediate change to the color stored by the object.
+	 * 
+	 * @param r
+	 * @param g
+	 * @param b
+	 */
 	public void setCurrentColor(int r, int g, int b)
 	{
 		this.RGB = new int[] {r, g, b};
@@ -125,16 +143,35 @@ public class ColorFader implements PConstants
 		this.lastRGB = this.RGB.clone();
 	}
 
+	/**
+	 * Make an immediate change to the color stored by the object.
+	 * 
+	 * @param RGB
+	 */
 	public void setCurrentColor(int[] RGB)
 	{
 		this.setCurrentColor(RGB[0], RGB[1], RGB[2]);
 	}
 
+	/**
+	 * Set the color that the object is changing to. This will not change the immediate value of the
+	 * color, but rather it changes the target color.
+	 * 
+	 * @param r
+	 * @param g
+	 * @param b
+	 */
 	public void setTargetColor(int r, int g, int b)
 	{
 		this.setTargetColor(new int[] {r, g, b});
 	}
 
+	/**
+	 * Set the color that the object is changing to. This will not change the immediate value of the
+	 * color, but rather it changes the target color.
+	 * 
+	 * @param targetColorRGB
+	 */
 	public void setTargetColor(int[] targetColorRGB)
 	{
 		if(targetColorRGB.length == 4)
@@ -152,16 +189,32 @@ public class ColorFader implements PConstants
 
 	}
 
+	/**
+	 * Get the current color that is stored. This is the color that is updated continuously
+	 * to provide a smooth transition.
+	 * 
+	 * @return
+	 */
 	public int[] getColor()
 	{
 		return new int[] {this.RGB[0], this.RGB[1], this.RGB[2], this.alpha};
 	}
 
+	/**
+	 * Get the target color.  This is the color that the object is changing into.
+	 * 
+	 * @return
+	 */
 	public int[] getTargetColor()
 	{
 		return this.targetRGB.clone();
 	}
 
+	/**
+	 * Set the time it takes to fade from one color to another.
+	 * 
+	 * @param time: Transition time in milliseconds.
+	 */
 	public void setTransitionDuration(int time)
 	{
 		this.transitionDuration = time;
@@ -170,6 +223,11 @@ public class ColorFader implements PConstants
 
 	//Alpha Methods
 
+	/**
+	 * Set the current alpha value.
+	 * 
+	 * @param alpha
+	 */
 	public void setCurrentAlpha(int alpha)
 	{
 		this.targetAlpha = alpha;
@@ -177,6 +235,11 @@ public class ColorFader implements PConstants
 		this.lastAlpha = alpha;
 	}
 
+	/**
+	 * Set the target alpha value.
+	 * 
+	 * @param alpha
+	 */
 	public void setTargetAlpha(int alpha)
 	{
 		if(this.targetAlpha != alpha)
@@ -188,16 +251,31 @@ public class ColorFader implements PConstants
 
 	}
 
+	/**
+	 * Set the time it takes to fade from the canvas color to the target color.
+	 * 
+	 * @param attackDuration: Attack time in milliseconds.
+	 */
 	public void setAttackDuration(int attackDuration)
 	{
 		this.attackDuration = attackDuration;
 	}
 
+	/**
+	 * Set the time it takes to fade from a given color to the canvas color.
+	 * 
+	 * @param releaseDuration: Release time in milliseconds.
+	 */
 	public void setReleaseDuration(int releaseDuration)
 	{
 		this.releaseDuration = releaseDuration;
 	}
 
+	/**
+	 * Get the current alpha value.
+	 * 
+	 * @return Current alpha
+	 */
 	public int getCurrentAlpha()
 	{
 		return this.alpha;
@@ -207,6 +285,13 @@ public class ColorFader implements PConstants
 
 	//Convenience Methods
 
+	/**
+	 * Check if color 1 and color 2 are the same.
+	 * 
+	 * @param color1
+	 * @param color2
+	 * @return
+	 */
 	private boolean sameRGB(int[] color1, int[] color2)
 	{
 		boolean val = true;
