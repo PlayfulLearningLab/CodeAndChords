@@ -1,9 +1,12 @@
-package coreV2;
+package functionSketch_06;
 
 import java.awt.Color;
 
 import controlP5.ControlEvent;
 import core.input.MidiStreamInput;
+import coreV2.Canvas;
+import coreV2.ColorScheme;
+import coreV2.ModuleDriver;
 import processing.core.PApplet;
 import processing.event.KeyEvent;
 

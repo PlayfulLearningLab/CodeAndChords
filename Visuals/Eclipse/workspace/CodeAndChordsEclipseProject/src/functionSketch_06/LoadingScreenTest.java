@@ -1,6 +1,5 @@
 package functionSketch_06;
 
-import coreV2.LogoAnimation;
 import coreV2.ModuleDriver;
 import processing.core.PApplet;
 

@@ -1,4 +1,4 @@
-package coreV2;
+package functionSketch_06;
 
 import java.awt.Color;
 
