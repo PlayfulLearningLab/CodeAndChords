@@ -3,6 +3,7 @@ package core.input;
 import core.input.Input.DisposeHandler;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Gain;
@@ -30,7 +31,17 @@ public class RecordedInput extends Input {
 		}
 		
 		this.pa	= pApplet;
-		this.ac	= new AudioContext();
+		//this.ac	= new AudioContext();
+		
+		JavaSoundAudioIO jsaIO = new JavaSoundAudioIO();
+		
+		System.out.println("******* JSAIO PRINTING NOW ********");
+		//jsaIO.printMixerInfo();
+		
+		jsaIO.selectMixer(3);
+		
+		ac = new AudioContext(jsaIO);
+		
 		this.pause	= false;
 		
 		this.numInputs			= samples.length;

@@ -17,7 +17,9 @@ import core.input.PortAudioAudioIO;
 import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
+
 import net.beadsproject.beads.core.AudioIO;
+
 import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -79,24 +81,32 @@ public class InputHandler extends MenuTemplate
 			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
 					+ "Multiple Inputs will NOT be enabled.");
 
-			ac = new AudioContext();
+			//ac = new AudioContext();
 			numInputs = 1;
 		}
-
+		
+		
+		//Set up audioContext for Cullen
+		
 		JavaSoundAudioIO jsaIO = new JavaSoundAudioIO();
 		
-		jsaIO.selectMixer(4);
+		System.out.println("******* JSAIO PRINTING NOW ********");
+		jsaIO.printMixerInfo();
+		
+		jsaIO.selectMixer(3);
+		
+		ac = new AudioContext(jsaIO);
+		
+		System.out.println("******* AC Check 1 ********");
+		System.out.println(ac.getAudioIO().toString());
 		
 		//System.out.println("Printing mixer info");
 		//JavaSoundAudioIO.printMixerInfo();
-				
-		//ac = jsaIO.getContext();
-		
-		ac = new AudioContext();
-		jsaIO = (JavaSoundAudioIO) ac.getAudioIO();
-		jsaIO.selectMixer(4);
 		
 		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
+		
+		System.out.println("******* AC Check 2 ********");
+		System.out.println(mic.getAudioContext().getAudioIO().toString());
 
 		mic.setInputName("Single Channel");
 		this.addMusicalInput(mic);
@@ -138,7 +148,7 @@ public class InputHandler extends MenuTemplate
 		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
 		
 		
-
+		System.out.println("done with settup");
 	}
 
 	// Setter for useRealTimeInput boolean
