@@ -1,6 +1,7 @@
 package coreV2;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.sound.sampled.AudioFormat;
@@ -91,8 +92,6 @@ public class InputHandler extends MenuTemplate
 			numInputs = 1;
 		}
 		
-		ac = this.getAudioContext();
-
 		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
 		mic.setInputName("Single Channel");
 		this.addMusicalInput(mic);
@@ -198,6 +197,8 @@ public class InputHandler extends MenuTemplate
 			
 			if(mixerIndex != -1) break;
 		}
+		
+		if(mixerIndex == -1) throw new RuntimeException("No valid mixers were found.");
 				
 		return mixerIndex;
 	}
