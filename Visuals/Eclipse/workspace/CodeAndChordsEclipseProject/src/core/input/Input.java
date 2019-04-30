@@ -155,6 +155,8 @@ public abstract class Input implements MusicalInput {
 		this.adjustedFundArray = new float[this.adjustedNumInputs];
 		this.amplitudeArray	= new float[this.adjustedNumInputs];
 
+		System.out.println("calling initInput()");
+		
 		// Gets the ball rolling on analysis:
 		this.setFund();
 	} // initInput(UGen[])

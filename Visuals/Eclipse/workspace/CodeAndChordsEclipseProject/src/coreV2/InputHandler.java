@@ -3,6 +3,14 @@ package coreV2;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
+
 import com.portaudio.PortAudio;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
@@ -17,6 +25,8 @@ import core.input.PortAudioAudioIO;
 import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.IOAudioFormat;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -65,7 +75,7 @@ public class InputHandler extends MenuTemplate
 		boolean skip4to8 = false;
 
 		//Number of Microphone Channels
-		int numInputs = 4;
+		int numInputs = 1;
 
 		System.out.println("starting try");
 
@@ -77,9 +87,11 @@ public class InputHandler extends MenuTemplate
 			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
 					+ "Multiple Inputs will NOT be enabled.");
 
-			ac = new AudioContext();
+			ac = this.getAudioContext();
 			numInputs = 1;
 		}
+		
+		ac = this.getAudioContext();
 
 		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
 		mic.setInputName("Single Channel");
@@ -100,7 +112,7 @@ public class InputHandler extends MenuTemplate
 		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
 				"6_Part_Scale2.wav", 
 				"6_Part_Scale3.wav", 
-				"6_Part_Scale4.wav"});
+		"6_Part_Scale4.wav"});
 
 		recInput1.setInputName("4 Part Scale");
 		this.addMusicalInput(recInput1);
@@ -120,9 +132,74 @@ public class InputHandler extends MenuTemplate
 
 		this.polyMidiButtonText = new String[] {"Polyphonic", "Monophonic"};
 		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
-		
-		
 
+
+
+	}
+
+	private AudioContext getAudioContext()
+	{
+		AudioContext ac = new AudioContext();
+		IOAudioFormat ioFormat = ac.getAudioFormat();
+		AudioFormat defaultFormat = new AudioFormat(ioFormat.sampleRate, ioFormat.bitDepth, ioFormat.inputs, ioFormat.signed, ioFormat.bigEndian);
+		
+		int m = this.getMixerIndex(defaultFormat);
+
+		JavaSoundAudioIO IO = new JavaSoundAudioIO();
+
+		IO.selectMixer(m);
+		//IO.printMixerInfo();		
+		ac = new AudioContext(IO);
+
+		System.out.println("end of getAC()");
+		return ac;
+	}
+
+	private int getMixerIndex(AudioFormat ioFormat)
+	{
+		int index = 0;
+		int mixerIndex = -1;
+		
+		Mixer.Info[] mi = AudioSystem.getMixerInfo();
+
+		for (Mixer.Info info : mi) 
+		{
+			//System.out.println("info: " + info);
+			Mixer m = AudioSystem.getMixer(info);
+
+			//System.out.println("mixer " + m);
+			Line.Info[] sl = m.getSourceLineInfo();
+
+			for (Line.Info info2 : sl) {
+				//System.out.println("    info: " + info2);
+				Line line = null;
+
+				try {
+					line = AudioSystem.getLine(info2);
+				} catch (LineUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				if (line instanceof SourceDataLine) {
+					SourceDataLine source = (SourceDataLine) line;
+
+					DataLine.Info i = (DataLine.Info) source.getLineInfo();
+					for (AudioFormat format : i.getFormats()) {
+						//System.out.println("    format: " + format);
+						if(format.matches(ioFormat)) mixerIndex = index;
+					}
+				}
+			}//for source line info
+
+			index++;
+			
+			//System.out.println("\n\n\n");
+			
+			if(mixerIndex != -1) break;
+		}
+		
+		return mixerIndex;
 	}
 
 	// Setter for useRealTimeInput boolean
@@ -142,30 +219,30 @@ public class InputHandler extends MenuTemplate
 		{
 
 		}
-		
+
 		if(this.driver.getMenuGroup().getActiveMenu() == this)
 		{
 			float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("piano").getValue()/this.controlP5.getController("forte").getValue());
 			float forteWidth = parent.width/3 - 90;
-			
+
 			this.parent.noStroke();
 			this.parent.fill(0);
 			this.parent.rect(30, this.parent.height * 4/9, this.parent.width/3 - 60, 30);
-			
-			
+
+
 			float barWidth = (this.getMaxAmp()/100) * (forteWidth);
 			barWidth = Math.min(barWidth, this.parent.width/3 - 60);
-			
+
 			this.parent.noStroke();
-			
+
 			if(barWidth > forteWidth)
 			{
 				this.parent.fill(255,0,0);
 				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
-				
+
 				this.parent.fill(0,255,0);
 				this.parent.rect(30, this.parent.height * 4/9, forteWidth, 30);
-				
+
 				this.parent.fill(255,255,51);
 				this.parent.rect(30, this.parent.height * 4/9, pianoWidth, 30);
 			}
@@ -173,7 +250,7 @@ public class InputHandler extends MenuTemplate
 			{
 				this.parent.fill(0,255,0);
 				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
-				
+
 				this.parent.fill(255,255,51);
 				this.parent.rect(30, this.parent.height * 4/9, pianoWidth, 30);
 			}
@@ -182,25 +259,25 @@ public class InputHandler extends MenuTemplate
 				this.parent.fill(255,255,51);
 				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
 			}
-			
-			
-			
+
+
+
 			this.parent.noFill();
 			this.parent.stroke(255);
 			this.parent.strokeWeight(2);
 			this.parent.line(30 + forteWidth, 
-							this.parent.height * 4/9, 
-							30 + forteWidth, 
-							this.parent.height * 4/9 + 30);
-			
+					this.parent.height * 4/9, 
+					30 + forteWidth, 
+					this.parent.height * 4/9 + 30);
+
 			this.parent.line(	30 + pianoWidth, 
-								this.parent.height * 4/9, 
-								30 + pianoWidth, 
-								this.parent.height * 4/9 + 30);
-			
+					this.parent.height * 4/9, 
+					30 + pianoWidth, 
+					this.parent.height * 4/9 + 30);
+
 			this.parent.rect(30, this.parent.height * 4/9, this.parent.width/3 - 60, 30);
-			
-			
+
+
 		}
 
 
@@ -252,11 +329,11 @@ public class InputHandler extends MenuTemplate
 		}
 		return answer;
 	}
-	
+
 	private float getMaxAmp()
 	{
 		int[][] notes = new int[this.numChannels][2];
-		
+
 		if(this.getCurInput().getInputType() != "Midi Stream Input")
 		{
 			MusicalInput curInput = this.getCurInput();
@@ -278,9 +355,9 @@ public class InputHandler extends MenuTemplate
 		{
 			notes = this.getAllMidiNotes();
 		}
-		
+
 		float maxAmp = 0;
-		
+
 		for(int i = 0; i < notes.length; i++)
 		{
 			if(notes[i][1] > maxAmp)
@@ -333,7 +410,7 @@ public class InputHandler extends MenuTemplate
 					midiNotes[i][1] = -1;
 				}
 			}
-			
+
 		}
 
 
@@ -466,13 +543,13 @@ public class InputHandler extends MenuTemplate
 			//System.out.println("FRONT");
 			theEvent.getController().bringToFront();
 		}
-		
+
 		if(theEvent.getName() == "numChannels")
 		{
 			theEvent.getController().bringToFront();
 			this.numChannels = (int) (theEvent.getValue() + 1);
 		}
-		
+
 		if(theEvent.getName() == "piano")
 		{
 			float val = this.controlP5.getController("piano").getValue();
@@ -481,7 +558,7 @@ public class InputHandler extends MenuTemplate
 				this.controlP5.getController("forte").setValue(val);
 			}
 		}
-		
+
 		if(theEvent.getName() == "forte" && this.controlP5.getController("piano") != null)
 		{
 			float val = this.controlP5.getController("forte").getValue();
@@ -639,7 +716,7 @@ public class InputHandler extends MenuTemplate
 		.setSize(115, 30)
 		.setTab(this.menuTitle)
 		.setLabel("Last");
-		
+
 		this.controlP5.getController("monoMidiTypeButton").setColorBackground(Color.DARK_GRAY.getRGB());
 		this.controlP5.getController("monoMidiTypeButton").setColorForeground(Color.GRAY.getRGB());
 		this.controlP5.getController("monoMidiTypeButton").setColorActive(Color.LIGHT_GRAY.getRGB());
@@ -674,7 +751,7 @@ public class InputHandler extends MenuTemplate
 		.setPosition(30, this.parent.height * 3/9 + 7)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
-		
+
 		this.controlP5.addToggle("Legend")
 		.setPosition(30, this.parent.height * 2/9)
 		.setSize(50, 25)
@@ -705,7 +782,7 @@ public class InputHandler extends MenuTemplate
 		.setValue(6)
 		.close()
 		.setTab(this.getMenuTitle());
-		
+
 		this.controlP5.addScrollableList("numChannels")
 		.setPosition(170, this.parent.height * 3/18 -10)
 		.setWidth(this.parent.width/3 - (60 + 140))
@@ -716,7 +793,7 @@ public class InputHandler extends MenuTemplate
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());
-		
+
 		this.controlP5.addLabel("Max Number of Channels")
 		.setPosition(30, this.parent.height * 3/18 - 4)
 		.setTab(this.getMenuTitle());
@@ -932,7 +1009,7 @@ public class InputHandler extends MenuTemplate
 
 		return info;
 	}
-	
+
 	public int getNumChannels()
 	{
 		return this.numChannels;

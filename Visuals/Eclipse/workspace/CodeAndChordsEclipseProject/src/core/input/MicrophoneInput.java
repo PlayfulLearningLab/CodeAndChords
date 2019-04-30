@@ -186,6 +186,8 @@ public class MicrophoneInput extends Input {
 			channelPos	= channelPos + 1;
 		} // for
 
+		System.out.println("calling initInput()");
+		
 		initInput(this.uGenArray, 0);
 	} // uGenArrayFromNumInputs
 
