@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import com.portaudio.PortAudio;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+//import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
@@ -17,6 +17,8 @@ import core.input.PortAudioAudioIO;
 import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.AudioIO;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -81,7 +83,21 @@ public class InputHandler extends MenuTemplate
 			numInputs = 1;
 		}
 
+		JavaSoundAudioIO jsaIO = new JavaSoundAudioIO();
+		
+		jsaIO.selectMixer(4);
+		
+		//System.out.println("Printing mixer info");
+		//JavaSoundAudioIO.printMixerInfo();
+				
+		//ac = jsaIO.getContext();
+		
+		ac = new AudioContext();
+		jsaIO = (JavaSoundAudioIO) ac.getAudioIO();
+		jsaIO.selectMixer(4);
+		
 		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
+
 		mic.setInputName("Single Channel");
 		this.addMusicalInput(mic);
 
