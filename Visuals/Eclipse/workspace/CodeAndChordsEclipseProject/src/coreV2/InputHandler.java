@@ -17,6 +17,7 @@ import core.input.PortAudioAudioIO;
 import core.input.MicrophoneInput;
 import core.input.RecordedInput;
 import net.beadsproject.beads.core.AudioContext;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -80,6 +81,19 @@ public class InputHandler extends MenuTemplate
 			ac = new AudioContext();
 			numInputs = 1;
 		}
+		
+		
+		//Set up audioContext for Cullen
+		
+		JavaSoundAudioIO jsaIO = new JavaSoundAudioIO();
+		
+		System.out.println("******* JSAIO PRINTING NOW ********");
+		jsaIO.printMixerInfo();
+		
+		//jsaIO.selectMixer(3);
+		
+		ac = new AudioContext(jsaIO);
+		
 
 		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
 		mic.setInputName("Single Channel");
