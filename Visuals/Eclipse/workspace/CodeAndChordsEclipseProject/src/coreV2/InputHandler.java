@@ -91,7 +91,7 @@ public class InputHandler extends MenuTemplate
 			ac = this.getAudioContext();
 			numInputs = 1;
 		}
-		
+						
 		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
 		mic.setInputName("Single Channel");
 		this.addMusicalInput(mic);
@@ -111,7 +111,7 @@ public class InputHandler extends MenuTemplate
 		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
 				"6_Part_Scale2.wav", 
 				"6_Part_Scale3.wav", 
-		"6_Part_Scale4.wav"}, ac);
+		"6_Part_Scale4.wav"}, this.getAudioContext());
 
 		recInput1.setInputName("4 Part Scale");
 		this.addMusicalInput(recInput1);
@@ -122,7 +122,7 @@ public class InputHandler extends MenuTemplate
 				"WMBass_Later_Quiet.wav",
 				"WantingMemories_Alto.wav",
 				"WantingMemories_Soprano.wav",
-		"WMTenor_Medium.wav"}, ac);
+		"WMTenor_Medium.wav"},this.getAudioContext());
 
 		recInput2.setInputName("Wanting Memories");
 		this.addMusicalInput(recInput2);
@@ -138,19 +138,17 @@ public class InputHandler extends MenuTemplate
 
 	private AudioContext getAudioContext()
 	{
-		AudioContext ac = new AudioContext();
-		IOAudioFormat ioFormat = ac.getAudioFormat();
-		AudioFormat defaultFormat = new AudioFormat(ioFormat.sampleRate, ioFormat.bitDepth, ioFormat.inputs, ioFormat.signed, ioFormat.bigEndian);
+		AudioContext ac;
+
+		AudioFormat defaultFormat = new AudioFormat(44100, 16, 2, true, true);
 		
 		int m = this.getMixerIndex(defaultFormat);
 
 		JavaSoundAudioIO IO = new JavaSoundAudioIO();
-
 		IO.selectMixer(m);
-		//IO.printMixerInfo();		
+		
 		ac = new AudioContext(IO);
 
-		System.out.println("end of getAC()");
 		return ac;
 	}
 
