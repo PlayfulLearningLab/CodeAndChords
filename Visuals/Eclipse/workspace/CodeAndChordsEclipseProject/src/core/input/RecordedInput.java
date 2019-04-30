@@ -18,6 +18,33 @@ public class RecordedInput extends Input {
 		this(pApplet, new String[] { sample } );
 	}
 	
+	public RecordedInput(PApplet pApplet, String[] samples, AudioContext ac)
+	{
+		if(pApplet == null)
+		{
+			throw new IllegalArgumentException("RecordedInput.constructor: PApplet parameter is null.");
+		}
+		if(samples == null)
+		{
+			throw new IllegalArgumentException("RecordedInput.constructor: String[] parameter is null.");
+		}
+		
+		this.pa	= pApplet;
+		this.ac	= ac;
+		this.pause	= false;
+		
+		this.numInputs			= samples.length;
+		this.adjustedNumInputs	= this.numInputs;
+		
+		this.disposeHandler	= new DisposeHandler(this.pa, this);
+		
+		this.uGenArrayFromSamples(samples);
+		
+		this.inputName = samples[0];
+		
+		this.pause(true);
+	}
+	
 	public RecordedInput(PApplet pApplet, String[] samples)
 	{
 		if(pApplet == null)

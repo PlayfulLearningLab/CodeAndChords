@@ -112,7 +112,7 @@ public class InputHandler extends MenuTemplate
 		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
 				"6_Part_Scale2.wav", 
 				"6_Part_Scale3.wav", 
-		"6_Part_Scale4.wav"});
+		"6_Part_Scale4.wav"}, ac);
 
 		recInput1.setInputName("4 Part Scale");
 		this.addMusicalInput(recInput1);
@@ -123,7 +123,7 @@ public class InputHandler extends MenuTemplate
 				"WMBass_Later_Quiet.wav",
 				"WantingMemories_Alto.wav",
 				"WantingMemories_Soprano.wav",
-		"WMTenor_Medium.wav"});
+		"WMTenor_Medium.wav"}, ac);
 
 		recInput2.setInputName("Wanting Memories");
 		this.addMusicalInput(recInput2);
@@ -161,7 +161,7 @@ public class InputHandler extends MenuTemplate
 		int mixerIndex = -1;
 		
 		Mixer.Info[] mi = AudioSystem.getMixerInfo();
-
+		
 		for (Mixer.Info info : mi) 
 		{
 			//System.out.println("info: " + info);
@@ -198,7 +198,7 @@ public class InputHandler extends MenuTemplate
 			
 			if(mixerIndex != -1) break;
 		}
-		
+				
 		return mixerIndex;
 	}
 
