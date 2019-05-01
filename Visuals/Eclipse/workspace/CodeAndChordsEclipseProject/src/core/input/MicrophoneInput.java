@@ -75,7 +75,14 @@ public class MicrophoneInput extends Input {
 		
 		try{
 			PortAudio.getVersion();
-			this.ac = new AudioContext(new PortAudioAudioIO(inputChannels.length), 512, AudioContext.defaultAudioFormat(inputChannels.length, inputChannels.length));
+			
+			int largestChannelIndex = 0;
+			for(int i = 0; i < inputChannels.length; i++)
+			{
+				largestChannelIndex = Math.max(largestChannelIndex, inputChannels[i]);
+			}
+			
+			this.ac = new AudioContext(new PortAudioAudioIO(largestChannelIndex+1), 512, AudioContext.defaultAudioFormat(largestChannelIndex+1, largestChannelIndex+1));
 		}
 		catch( UnsatisfiedLinkError e ){
 			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
