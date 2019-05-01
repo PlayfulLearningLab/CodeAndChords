@@ -62,40 +62,17 @@ public class InputHandler extends MenuTemplate
 	 */
 	public InputHandler(ModuleDriver driver)
 	{
-
 		super("Input Menu", driver, true);
 		this.makeControls();
 
-		this.numChannels = 4;
-
 		this.realTimeInputs = new MusicalInput[0];
 		this.playableInputs = new MusicalInput[0];
-
-		//Setup for Microphone Input
-		AudioContext ac;
-		boolean skip4to8 = false;
-
-		//Number of Microphone Channels
-		int numInputs = 1;
-
-		System.out.println("starting try");
-
-		try{
-			PortAudio.getVersion();
-			ac = new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs));
-		}
-		catch( UnsatisfiedLinkError e ){
-			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
-					+ "Multiple Inputs will NOT be enabled.");
-
-			ac = this.getAudioContext();
-			numInputs = 1;
-		}
 						
-		MicrophoneInput mic = new MicrophoneInput(numInputs, ac, skip4to8, this.driver.getParent());
+		MicrophoneInput mic = new MicrophoneInput(this.driver.getParent(), new int[] {0});
+		
 		mic.setInputName("Single Channel");
 		this.addMusicalInput(mic);
-
+		
 		//Add MIDI Input
 		this.addMusicalInput(new MidiStreamInput());
 		((MidiStreamInput) this.realTimeInputs[1]).setIsPolyphonic(true);
@@ -105,13 +82,11 @@ public class InputHandler extends MenuTemplate
 
 		this.controlP5.get("realTimeInput").setValue(0);
 
-
-
 		//recorded inputs
 		RecordedInput recInput1	= new RecordedInput(driver.getParent(), new String[] {	"6_Part_Scale1.wav", 
 				"6_Part_Scale2.wav", 
 				"6_Part_Scale3.wav", 
-		"6_Part_Scale4.wav"}, this.getAudioContext());
+				"6_Part_Scale4.wav"});
 
 		recInput1.setInputName("4 Part Scale");
 		this.addMusicalInput(recInput1);
@@ -122,7 +97,7 @@ public class InputHandler extends MenuTemplate
 				"WMBass_Later_Quiet.wav",
 				"WantingMemories_Alto.wav",
 				"WantingMemories_Soprano.wav",
-		"WMTenor_Medium.wav"},this.getAudioContext());
+				"WMTenor_Medium.wav"});
 
 		recInput2.setInputName("Wanting Memories");
 		this.addMusicalInput(recInput2);
@@ -132,73 +107,6 @@ public class InputHandler extends MenuTemplate
 		this.polyMidiButtonText = new String[] {"Polyphonic", "Monophonic"};
 		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
 
-
-
-	}
-
-	private AudioContext getAudioContext()
-	{
-		AudioContext ac;
-
-		AudioFormat defaultFormat = new AudioFormat(44100, 16, 2, true, true);
-		
-		int m = this.getMixerIndex(defaultFormat);
-
-		JavaSoundAudioIO IO = new JavaSoundAudioIO();
-		IO.selectMixer(m);
-		
-		ac = new AudioContext(IO);
-
-		return ac;
-	}
-
-	private int getMixerIndex(AudioFormat ioFormat)
-	{
-		int index = 0;
-		int mixerIndex = -1;
-		
-		Mixer.Info[] mi = AudioSystem.getMixerInfo();
-		
-		for (Mixer.Info info : mi) 
-		{
-			//System.out.println("info: " + info);
-			Mixer m = AudioSystem.getMixer(info);
-
-			//System.out.println("mixer " + m);
-			Line.Info[] sl = m.getSourceLineInfo();
-
-			for (Line.Info info2 : sl) {
-				//System.out.println("    info: " + info2);
-				Line line = null;
-
-				try {
-					line = AudioSystem.getLine(info2);
-				} catch (LineUnavailableException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				if (line instanceof SourceDataLine) {
-					SourceDataLine source = (SourceDataLine) line;
-
-					DataLine.Info i = (DataLine.Info) source.getLineInfo();
-					for (AudioFormat format : i.getFormats()) {
-						//System.out.println("    format: " + format);
-						if(format.matches(ioFormat)) mixerIndex = index;
-					}
-				}
-			}//for source line info
-
-			index++;
-			
-			//System.out.println("\n\n\n");
-			
-			if(mixerIndex != -1) break;
-		}
-		
-		if(mixerIndex == -1) throw new RuntimeException("No valid mixers were found.");
-				
-		return mixerIndex;
 	}
 
 	// Setter for useRealTimeInput boolean

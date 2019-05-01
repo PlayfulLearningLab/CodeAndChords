@@ -175,6 +175,8 @@ public class PortAudioAudioIO extends AudioIO {
 	 */
 	private void runRealTime() {		
 		AudioContext context = getContext();
+		
+		//System.out.println("AudioContext run real time num inputs: " + context.);
 
 		int bufferSizeInFrames = context.getBufferSize();
 
@@ -188,7 +190,7 @@ public class PortAudioAudioIO extends AudioIO {
 					interleavedOutput[counter++] = (int) context.out.getValue(j, i);
 				}
 			} // for - i
-
+			
 			// TODO: maybe just write for availableToWrite, not whole buffer?
 			if(outStream == null)
 			{
@@ -252,6 +254,8 @@ public class PortAudioAudioIO extends AudioIO {
 				this.channels[i]	= channels[i];
 				System.out.println("this.channels[" + i + "] = " + this.channels[i]);
 			}
+			
+			System.out.println("checkpoint");
 
 			this.portAudioInitialized = false;
 		} // constructor

@@ -18,33 +18,6 @@ public class RecordedInput extends Input {
 		this(pApplet, new String[] { sample } );
 	}
 	
-	public RecordedInput(PApplet pApplet, String[] samples, AudioContext ac)
-	{
-		if(pApplet == null)
-		{
-			throw new IllegalArgumentException("RecordedInput.constructor: PApplet parameter is null.");
-		}
-		if(samples == null)
-		{
-			throw new IllegalArgumentException("RecordedInput.constructor: String[] parameter is null.");
-		}
-		
-		this.pa	= pApplet;
-		this.ac	= ac;
-		this.pause	= false;
-		
-		this.numInputs			= samples.length;
-		this.adjustedNumInputs	= this.numInputs;
-		
-		this.disposeHandler	= new DisposeHandler(this.pa, this);
-		
-		this.uGenArrayFromSamples(samples);
-		
-		this.inputName = samples[0];
-		
-		this.pause(true);
-	}
-	
 	public RecordedInput(PApplet pApplet, String[] samples)
 	{
 		if(pApplet == null)
@@ -56,14 +29,18 @@ public class RecordedInput extends Input {
 			throw new IllegalArgumentException("RecordedInput.constructor: String[] parameter is null.");
 		}
 		
-		this.pa	= pApplet;
-		this.ac	= new AudioContext();
+		this.parent	= pApplet;
+		this.ac	= this.getNewAudioContext();
 		this.pause	= false;
 		
-		this.numInputs			= samples.length;
-		this.adjustedNumInputs	= this.numInputs;
+		this.inputChannels = new int[samples.length];
 		
-		this.disposeHandler	= new DisposeHandler(this.pa, this);
+		for(int i = 0; i < this.inputChannels.length; i++)
+		{
+			this.inputChannels[i] = i+1;
+		}
+		
+		this.disposeHandler	= new DisposeHandler(this.parent, this);
 		
 		this.uGenArrayFromSamples(samples);
 		
@@ -79,7 +56,9 @@ public class RecordedInput extends Input {
 	public void uGenArrayFromSamples(String[] sampleFilenames)
 	{
 		// Moved this from the constructor:
-		this.numInputs  = sampleFilenames.length;
+		
+		//this.numInputs  = sampleFilenames.length;
+		
 		this.sampleManager  = new SampleManager();
 		Sample[] samples    = new Sample[sampleFilenames.length];  // samples will be initialized in a try/catch in order to determine whether or not the operation was successful.
 		int  semaphore      = 1;
@@ -89,7 +68,7 @@ public class RecordedInput extends Input {
 
 			for (int i = 0; i < samples.length; i++)
 			{
-				samples[i]  = new Sample(this.pa.sketchPath(sampleFilenames[i]));
+				samples[i]  = new Sample(this.parent.sketchPath(sampleFilenames[i]));
 //				samples[i]  = new Sample("./" + sampleFilenames[i]);
 			} // for
 		}
@@ -104,7 +83,7 @@ public class RecordedInput extends Input {
 			try {
 				for (int i = 0; i < samples.length; i++)
 				{
-					samples[i]  = new Sample(this.pa.dataPath(sampleFilenames[i]));
+					samples[i]  = new Sample(this.parent.dataPath(sampleFilenames[i]));
 				} // for
 
 				semaphore  = 1;
@@ -131,8 +110,8 @@ public class RecordedInput extends Input {
 			SampleManager.addToGroup("group", samples[i]);
 		} // for
 
-		this.uGenArray  		= new UGen[this.numInputs];
-		this.gainArray	= new Gain[this.numInputs];
+		this.uGenArray  		= new UGen[this.inputChannels.length];
+		this.gainArray	= new Gain[this.inputChannels.length];
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
@@ -158,7 +137,7 @@ public class RecordedInput extends Input {
 			// TODO: maybe this won't be necessary once the threads are implemented.
 			if(!this.pause)
 			{
-				for (int i = 0; i < this.adjustedNumInputs; i++)
+				for (int i = 0; i < this.inputChannels.length; i++)
 				{
 					//     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
 	
@@ -195,7 +174,7 @@ public class RecordedInput extends Input {
 	
 	public int getMidiNote(int channelIndex) 
 	{
-		if(channelIndex > this.numInputs) throw new IllegalArgumentException("that input does not exist");
+		if(channelIndex > this.inputChannels.length) throw new IllegalArgumentException("that input does not exist");
 		return (int) Math.round(this.getAdjustedFundAsMidiNote(channelIndex));
 	}
 
