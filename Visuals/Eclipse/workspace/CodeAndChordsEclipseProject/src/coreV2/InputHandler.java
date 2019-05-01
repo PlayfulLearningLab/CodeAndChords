@@ -68,7 +68,7 @@ public class InputHandler extends MenuTemplate
 		this.realTimeInputs = new MusicalInput[0];
 		this.playableInputs = new MusicalInput[0];
 						
-		MicrophoneInput mic = new MicrophoneInput(this.driver.getParent(), new int[] {0, 4, 1});
+		MicrophoneInput mic = new MicrophoneInput(this.driver.getParent(), new int[] {0});
 		
 		mic.setInputName("Single Channel");
 		this.addMusicalInput(mic);

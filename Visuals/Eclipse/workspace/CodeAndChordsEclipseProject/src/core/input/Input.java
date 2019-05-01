@@ -67,9 +67,7 @@ public abstract class Input implements MusicalInput {
 	{
 		AudioContext ac;
 
-		AudioFormat defaultFormat = new AudioFormat(44100, 16, 2, true, true);
-		
-		int m = this.getMixerIndex(defaultFormat);
+		int m = this.getMixerIndex();
 
 		JavaSoundAudioIO IO = new JavaSoundAudioIO();
 		IO.selectMixer(m);
@@ -79,7 +77,7 @@ public abstract class Input implements MusicalInput {
 		return ac;
 	}
 
-	private int getMixerIndex(AudioFormat ioFormat)
+	private int getMixerIndex()
 	{
 		int index = 0;
 		int mixerIndex = -1;

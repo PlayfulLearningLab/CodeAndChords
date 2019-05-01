@@ -73,23 +73,28 @@ public class MicrophoneInput extends Input {
 		this.parent = parent;
 		this.inputChannels = inputChannels.clone();
 		
+		int largestChannelIndex = 0;
+		for(int i = 0; i < inputChannels.length; i++)
+		{
+			largestChannelIndex = Math.max(largestChannelIndex, inputChannels[i]);
+		}
+		
+		this.ac = this.getNewAudioContext();
+		
+		if(this.ac.getAudioFormat().inputs < largestChannelIndex)
+		{
+			throw new IllegalArgumentException("Input Channel " + largestChannelIndex + " does not exist.");
+		}
+		
 		try{
 			PortAudio.getVersion();
 			
-			int largestChannelIndex = 0;
-			for(int i = 0; i < inputChannels.length; i++)
-			{
-				largestChannelIndex = Math.max(largestChannelIndex, inputChannels[i]);
-			}
-			
-			this.ac = new AudioContext(new PortAudioAudioIO(largestChannelIndex+1), 512, AudioContext.defaultAudioFormat(largestChannelIndex+1, largestChannelIndex+1));
+			this.ac = new AudioContext(new PortAudioAudioIO(largestChannelIndex+1), ac.getBufferSize(), ac.getAudioFormat());
 		}
 		catch( UnsatisfiedLinkError e ){
-			System.err.println("Port Audio could not be found.  Switching to default audio context.\n"
-					+ "Multiple Inputs will NOT be enabled.");
-
-			this.ac = this.getNewAudioContext();
-			this.inputChannels = new int[] {1};
+			System.err.println("Port Audio could not be found.\n"
+					+ "The default audio context will be used and multiple Inputs will NOT be enabled.");
+			this.inputChannels = new int[] {0};
 		}
 		
 		this.disposeHandler	= new DisposeHandler(this.parent, this);
