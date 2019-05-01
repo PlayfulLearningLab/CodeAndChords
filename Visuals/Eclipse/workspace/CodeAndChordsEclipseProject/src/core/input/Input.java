@@ -623,7 +623,7 @@ public abstract class Input implements MusicalInput {
 	}
 	
 	@Override
-	public int getTotalNumInputs()
+	public int getTotalNumChannels()
 	{
 		return this.inputChannels.length;
 	}

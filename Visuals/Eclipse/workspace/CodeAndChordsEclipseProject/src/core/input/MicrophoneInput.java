@@ -56,14 +56,9 @@ import org.jaudiolibs.beads.AudioServerIO;
 import com.portaudio.PortAudio;
 
 public class MicrophoneInput extends Input {
-	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
-//	private UGen[]                 uGenArray;
-	// TODO: make private after testing
-//	public Gain[]		   gainArray;
-	Gain                   mute;
-//	float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
-	boolean					skip5thru8;
 
+	Gain                   mute;
+	
 	public MicrophoneInput(PApplet parent, int[] inputChannels)
 	{
 		if(inputChannels == null || inputChannels.length < 1)  {
@@ -95,6 +90,37 @@ public class MicrophoneInput extends Input {
 			System.err.println("Port Audio could not be found.\n"
 					+ "The default audio context will be used and multiple Inputs will NOT be enabled.");
 			this.inputChannels = new int[] {0};
+		}
+		
+		this.disposeHandler	= new DisposeHandler(this.parent, this);
+
+		this.makeUGenArray();
+	}
+	
+	public MicrophoneInput(PApplet parent, int[] inputChannels, AudioContext audioContext)
+	{
+		System.err.println("MicrophoneInput(PApplet, int[], AudioContext): Please note that it is only "
+				+ "recommended to make your own AudioContext if the MicrophoneInput(PApplet, int[]) "
+				+ "constructor does not work on your computer.");
+		
+		if(inputChannels == null || inputChannels.length < 1)  {
+			throw new IllegalArgumentException("Input.constructor(PApplet, int[], AudioContext): int[] parameter number of channels is less than 1; at least 1 input must be specified");
+		} // if(numInputs < 1)
+		
+		this.parent = parent;
+		this.inputChannels = inputChannels.clone();
+		
+		int largestChannelIndex = 0;
+		for(int i = 0; i < inputChannels.length; i++)
+		{
+			largestChannelIndex = Math.max(largestChannelIndex, inputChannels[i]);
+		}
+		
+		this.ac = audioContext;
+		
+		if(this.ac.getAudioFormat().inputs < largestChannelIndex)
+		{
+			throw new IllegalArgumentException("Input Channel " + largestChannelIndex + " does not exist.");
 		}
 		
 		this.disposeHandler	= new DisposeHandler(this.parent, this);

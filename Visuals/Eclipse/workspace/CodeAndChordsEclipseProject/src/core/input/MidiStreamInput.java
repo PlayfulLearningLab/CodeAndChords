@@ -405,7 +405,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	}
 
 	@Override
-	public int getTotalNumInputs()
+	public int getTotalNumChannels()
 	{
 		return 1;
 	}

@@ -246,7 +246,7 @@ public class InputHandler extends MenuTemplate
 			MusicalInput curInput = this.getCurInput();
 			for(int i = 0; i < this.numChannels; i++)
 			{
-				if(i < curInput.getTotalNumInputs())
+				if(i < curInput.getTotalNumChannels())
 				{
 					notes[i][0] = ((Input)curInput).getMidiNote(i);
 					notes[i][1] = (int) (((Input)curInput).getAmplitude(i)/this.controlP5.getController("forte").getValue()*100);
@@ -306,7 +306,7 @@ public class InputHandler extends MenuTemplate
 		{	
 			for(int i = 0; i < this.numChannels; i++)
 			{
-				if(i < curInput.getTotalNumInputs() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
+				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
 				{
 					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
 					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100));
@@ -912,7 +912,7 @@ public class InputHandler extends MenuTemplate
 	{
 		String info = "";
 
-		info += "Number of Channels:   " + input.getTotalNumInputs() +"\n\n";
+		info += "Number of Channels:   " + input.getTotalNumChannels() +"\n\n";
 
 		return info;
 	}

@@ -13,7 +13,7 @@ public interface MusicalInput
 	
 	public boolean 	isPolyphonic();
 	
-	public int		getTotalNumInputs();
+	public int		getTotalNumChannels();
 		
 	
 	//Instrument Input
