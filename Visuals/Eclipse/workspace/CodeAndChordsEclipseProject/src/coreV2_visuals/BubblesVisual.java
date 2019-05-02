@@ -119,8 +119,8 @@ public class BubblesVisual extends Visual
 				//calculate and set goal width
 				this.bubble[channel].targetHeight = (int) (((float)this.parent.height/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
 				
-				//this.bubble[channel].targetx = 250;
-				//this.bubble[channel].targety = 250;
+				//this.bubble[channel].x = 450;
+				//this.bubble[channel].y = 250;
 				//setColor
 				int[] targetColor = this.moduleDriver.getColorMenu().getColorSchemes()[0].getPitchColor(midiNotes[channel][0%12]);
 				this.colors[channel].setTargetColor(targetColor);
@@ -130,7 +130,7 @@ public class BubblesVisual extends Visual
 				this.bubble[channel].targetWidth = 0;
 				this.bubble[channel].targetHeight = 0;
 			}
-
+				
 			//update leftX
 			//this.bubble[channel].leftX = xIndex;
 			//xIndex += this.bubble[channel].width;
@@ -247,10 +247,7 @@ public class BubblesVisual extends Visual
 					//this.moduleDriver.getCanvas().ellipse((int) (this.parent.width/2 + 2 - this.bubble[channel].leftX), 250, (int) -this.bubble[channel].width*2,(int) this.bubble[channel].width*2);
 				}
 			}
-			if(this.bubble[channel].width)
-			{
-				this.bubble[channel].blend(0, 0, 33, 100, 67, 0, 33, 100, ADD);
-			}
+
 			//draw
 			//this.moduleDriver.getCanvas().ellipse((int) (this.parent.width/2 + this.bubble[channel].leftX), 250, (int) this.bubble[channel].width*2, (int) this.bubble[channel].width *2);
 			//this.moduleDriver.getCanvas().ellipse((int) (this.parent.width/2 + 2 - this.bubble[channel].leftX), 250, (int) -this.bubble[channel].width*2,(int) this.bubble[channel].width*2);
@@ -303,15 +300,15 @@ public class BubblesVisual extends Visual
 			//this.width = targetWidth;
 			this.targetWidth = 0;
 			this.targetHeight = 0;
-			this.x = 450;
-			this.y = 250;
+			//this.x = 450;
+			//this.y = 250;
 			
 			this.speed = 25;
 		}
 		
 		public void pre()
 		{
-			System.out.println("I was called");
+			//System.out.println("I was called");
 			
 			this.wError = this.targetWidth - this.width;
 			
@@ -319,9 +316,9 @@ public class BubblesVisual extends Visual
 			
 			if(Math.abs(this.width) < 1) this.width = 0;
 			//this.width = this.targetWidth;
-			System.out.println("width = " + this.width);
-			System.out.println("targetwidth = " + this.targetWidth);
-			System.out.println("Error = " + this.wError);
+			//System.out.println("width = " + this.width);
+			//System.out.println("targetwidth = " + this.targetWidth);
+			//System.out.println("Error = " + this.wError);
 			
 			
 			this.wError = this.targetHeight - this.height;
@@ -336,18 +333,18 @@ public class BubblesVisual extends Visual
 			this.x += this.wError/(50 - this.speed);
 			
 			if(Math.abs(this.x) < 1) this.x = 0;
-			System.out.println("x = " + this.x);
-			System.out.println("targetx = " + this.targetx);
-			System.out.println("Error = " + this.wError);
+			//System.out.println("x = " + this.x);
+			//System.out.println("targetx = " + this.targetx);
+			//System.out.println("Error = " + this.wError);
 			
 			this.wError = this.targety - this.y;
 			
 			this.y += this.wError/(50 - this.speed);
 			
 			if(Math.abs(this.y) < 1) this.y = 0;
-			System.out.println("y = " + this.y);
-			System.out.println("targety = " + this.targety);
-			System.out.println("Error = " + this.wError);
+			//System.out.println("y = " + this.y);
+			//System.out.println("targety = " + this.targety);
+			//System.out.println("Error = " + this.wError);
 		}
 	}
 
