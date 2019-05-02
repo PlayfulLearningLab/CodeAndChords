@@ -25,9 +25,10 @@ public class Module_01_02_PitchHue_MultipleInputs extends Module
 	
 	public void setup() 
 	{
-		this.input	= new MicrophoneInput(16, true, this);
-		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 2;
+		this.input	= new MicrophoneInput(this, new int[] {0,1,2,3,8,9,10,11});
+
+		this.totalNumInputs	= 8;
+		this.curNumInputs	= 4;
 		
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
 

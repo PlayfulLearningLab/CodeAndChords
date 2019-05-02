@@ -128,11 +128,11 @@ public class MidiStreamInput implements Receiver, MusicalInput
 					inputFound = false;
 					device.close();
 				}
-				*/
+				
 				
 				inputFound = true;
 				reader.close();
-				
+				*/
 			}
 			
 		}
@@ -142,21 +142,23 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) 
-	{
-		if(((ShortMessage) message).getCommand() == 144)
+	{		
+		if(((ShortMessage) message).getCommand() == 144 || ((ShortMessage) message).getCommand() == 128)
 		{
 			ShortMessage msg = (ShortMessage) message;
 
 			int note = msg.getData1();
 			int amp = msg.getData2();
 
-			boolean noteOn = true;
+			boolean noteOn = false;
+			
+			if(msg.getCommand() == 144) noteOn = true;
 
 			for(int i = 0; i < this.numNotes && noteOn; i++)
 			{
 				if(this.curNotes[i][0] == note) 
 				{
-					noteOn = false;
+					//noteOn = false;
 				}
 			}
 
@@ -403,7 +405,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	}
 
 	@Override
-	public int getTotalNumInputs()
+	public int getTotalNumChannels()
 	{
 		return 1;
 	}

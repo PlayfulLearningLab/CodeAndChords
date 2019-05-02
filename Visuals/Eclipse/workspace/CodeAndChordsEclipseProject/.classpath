@@ -13,6 +13,7 @@
 	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
 	<classpathentry kind="lib" path="sound.jar"/>
 	<classpathentry kind="lib" path="jportaudio.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/rfar3/Desktop/CodeAndChordsLibrary/libs/beads.jar"/>
 	<classpathentry kind="lib" path="C:/Users/rfar3/Desktop/CodeAndChordsLibrary/libs/beads-io.jar"/>
 	<classpathentry kind="lib" path="C:/Users/rfar3/Desktop/CodeAndChordsLibrary/libs/controlP5cc.jar"/>
@@ -20,5 +21,8 @@
 	<classpathentry kind="lib" path="C:/Users/rfar3/Desktop/CodeAndChordsLibrary/libs/jportaudio.jar"/>
 	<classpathentry kind="lib" path="C:/Users/rfar3/Desktop/jogamp-all-platforms/jogamp-all-platforms/jar/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="C:/Users/rfar3/Desktop/jogamp-all-platforms/jogamp-all-platforms/jar/jogl-all.jar"/>
+=======
+	<classpathentry kind="lib" path="data"/>
+>>>>>>> master
 	<classpathentry kind="output" path="bin"/>
 </classpath>

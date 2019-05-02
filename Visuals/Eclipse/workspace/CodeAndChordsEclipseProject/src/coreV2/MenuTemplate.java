@@ -28,7 +28,7 @@ import processing.core.PShape;
  * 
  * Originally from core; moved to coreV2 on 5/25/2018.
  * 
- * @author Dan Mahota, Emily Meuer
+ * @author Danny Mahota, Emily Meuer
  *
  */
 public abstract class MenuTemplate implements ControlListener, ControlP5Constants {

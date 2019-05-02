@@ -43,8 +43,8 @@ public class VerticalRegtanglesVisual extends Visual
 	
 	private void makeControllers()
 	{
-		this.controllers = new String[]{"growthSpeed"};
-		this.labels = new String[]{"Growth Speed"};
+		this.controllers = new String[]{"growthSpeed", "maxWidth"};
+		this.labels = new String[]{"Growth Speed", "Max Width"};
 		
 		this.cp5.addSlider("growthSpeed")
 		.setMin(0)
@@ -53,6 +53,15 @@ public class VerticalRegtanglesVisual extends Visual
 		.getCaptionLabel().setVisible(false);
 		
 		this.cp5.addLabel("Growth Speed");
+		
+		
+		this.cp5.addSlider("maxWidth")
+		.setMin(0)
+		.setMax(100)
+		.setValue(25)
+		.getCaptionLabel().setVisible(false);
+		
+		this.cp5.addLabel("Max Width");
 	}
 
 	@Override
@@ -94,6 +103,8 @@ public class VerticalRegtanglesVisual extends Visual
 	{
 		int[][] midiNotes = this.moduleDriver.getInputHandler().getAllMidiNotes();
 		
+		int widthSum = 0;
+		
 		//update activation order
 		for(int i = 0; i < this.activationOrder.length - 1; i++)
 		{
@@ -106,6 +117,19 @@ public class VerticalRegtanglesVisual extends Visual
 				}
 				this.activationOrder[this.activationOrder.length-1] = num;
 			}
+			else
+			{
+				widthSum += 2*this.bars[this.activationOrder[i]].width;
+			}
+		}
+		
+		widthSum += 2* this.bars[this.activationOrder[this.activationOrder.length-1]].width;
+		
+		float scale = 1;
+		
+		if(widthSum > this.parent.width)
+		{
+			scale = ((float)this.parent.width/ (float) widthSum);
 		}
 		
 		int xIndex = 0;
@@ -118,7 +142,7 @@ public class VerticalRegtanglesVisual extends Visual
 			if(midiNotes[channel][1] != -1)
 			{
 				//calculate and set goal width
-				this.bars[channel].targetWidth = (int) (((float)this.parent.width/2/(float)this.numChannels) * (float)midiNotes[channel][1]/100f);
+				this.bars[channel].targetWidth = (int) ((int) (((float)this.parent.width/2) * ((float)this.cp5.getController("maxWidth").getValue()/100f) * (float)midiNotes[channel][1]/100f) * scale);
 				
 				//setColor
 				int[] targetColor = this.moduleDriver.getColorMenu().getColorSchemes()[0].getPitchColor(midiNotes[channel][0%12]);
@@ -132,7 +156,7 @@ public class VerticalRegtanglesVisual extends Visual
 			
 			//update leftX
 			this.bars[channel].leftX = xIndex;
-			xIndex += this.bars[channel].width;
+			xIndex += this.bars[channel].width*scale;
 			
 			//get current color
 			int[] curColor = this.colors[channel].getColor();
@@ -149,7 +173,7 @@ public class VerticalRegtanglesVisual extends Visual
 	@Override
 	public int getNumControllers() {
 		// TODO Auto-generated method stub
-		return 1;
+		return this.controllers.length;
 	}
 
 	@Override

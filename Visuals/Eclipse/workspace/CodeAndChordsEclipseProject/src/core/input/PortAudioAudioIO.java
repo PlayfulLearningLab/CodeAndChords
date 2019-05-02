@@ -57,6 +57,7 @@ public class PortAudioAudioIO extends AudioIO {
 	 */
 	public PortAudioAudioIO(int numChannels) {
 		//		this.systemBufferSizeInFrames = systemBufferSize;
+		
 		this.numInChannels	= numChannels;
 		this.numOutChannels	= numChannels;
 
@@ -75,7 +76,7 @@ public class PortAudioAudioIO extends AudioIO {
 
 		if(this.numOutChannels > PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels)
 		{
-			System.out.println("PortAudioAudioIO: given number of channels was " + this.numOutChannels + 
+			System.out.println("PortAudioAudioIO: given number of output channels was " + this.numOutChannels + 
 					", which is greater than " + PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels + 
 					", the maximum for the default device. this.numChannels has been changed to the default device maxOutputChannels.");
 			this.numOutChannels	= PortAudio.getDeviceInfo( outParameters.device ).maxOutputChannels;
@@ -175,20 +176,23 @@ public class PortAudioAudioIO extends AudioIO {
 	 */
 	private void runRealTime() {		
 		AudioContext context = getContext();
-
+		
+		//System.out.println("AudioContext run real time num inputs: " + context.);
+		
 		int bufferSizeInFrames = context.getBufferSize();
 
 		float[] interleavedOutput = new float[this.numOutChannels * bufferSizeInFrames];
 
 		while (context.isRunning())
-		{
+		{			
 			update(); // this propagates update call to context
+						
 			for (int i = 0, counter = 0; i < bufferSizeInFrames; ++i) {
 				for (int j = 0; j < this.numOutChannels; ++j) {
 					interleavedOutput[counter++] = (int) context.out.getValue(j, i);
 				}
 			} // for - i
-
+			
 			// TODO: maybe just write for availableToWrite, not whole buffer?
 			if(outStream == null)
 			{
@@ -208,7 +212,7 @@ public class PortAudioAudioIO extends AudioIO {
 		IOAudioFormat ioAudioFormat = getContext().getAudioFormat();
 		AudioFormat audioFormat = 
 				new AudioFormat(ioAudioFormat.sampleRate, ioAudioFormat.bitDepth, ioAudioFormat.inputs, ioAudioFormat.signed, ioAudioFormat.bigEndian);
-		return new PortAudioInput(getContext(), audioFormat, this.inStream, this.numInChannels, channels);
+		return new PortAudioInput(getContext(), audioFormat, this.inStream, channels);
 	}
 
 	/**
@@ -239,10 +243,10 @@ public class PortAudioAudioIO extends AudioIO {
 		 * 				the BlockingStream opened when PortAudio was initialized.
 		 * @param channels the number of channels
 		 */
-		PortAudioInput(AudioContext context, AudioFormat audioFormat, BlockingStream inStream, int numChannels, int[] channels) {
-			super(context, numChannels);
+		PortAudioInput(AudioContext context, AudioFormat audioFormat, BlockingStream inStream, int[] channels) {
+			super(context, channels.length);
 			this.inStream		= inStream;
-			this.numChannels	= numInChannels;
+			this.numChannels	= channels.length;
 
 			System.out.println("PortAudioInput: numChannels = " + this.numChannels);
 
@@ -252,7 +256,7 @@ public class PortAudioAudioIO extends AudioIO {
 				this.channels[i]	= channels[i];
 				System.out.println("this.channels[" + i + "] = " + this.channels[i]);
 			}
-
+			
 			this.portAudioInitialized = false;
 		} // constructor
 
@@ -265,7 +269,7 @@ public class PortAudioAudioIO extends AudioIO {
 			inParameters.device = PortAudio.getDefaultInputDevice();
 			if(this.numChannels > PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels)
 			{
-				System.out.println("PortAudioInput: given number of channels was " + this.numChannels + 
+				System.out.println("PortAudioInput: given number of input channels was " + this.numChannels + 
 						", which is greater than " + PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels + 
 						", the maximum for the default device. this.numChannels has been changed to the default device maxInputChannels.");
 				this.numChannels	= PortAudio.getDeviceInfo( inParameters.device ).maxInputChannels;

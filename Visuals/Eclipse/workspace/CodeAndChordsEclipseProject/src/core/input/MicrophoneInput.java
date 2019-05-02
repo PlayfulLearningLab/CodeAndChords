@@ -53,142 +53,97 @@ import javax.sound.sampled.Mixer;
 
 import org.jaudiolibs.beads.AudioServerIO;
 
+import com.portaudio.PortAudio;
+
 public class MicrophoneInput extends Input {
-	//UGen                   inputsUGen;           // initialized with the input from the AudioContext.
-//	private UGen[]                 uGenArray;
-	// TODO: make private after testing
-//	public Gain[]		   gainArray;
+
 	Gain                   mute;
-//	float                  sensitivity;          // amplitude below which adjustedFreq will not be reset
-	boolean					skip5thru8;
-
-	/**
-	 *  Creates an Input object connected to PortAudio, with the given number of inputs.
-	 *
-	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
-	 */
-	public MicrophoneInput(int numInputs, PApplet pa)
-	{
-//		this(numInputs, new AudioContext(new AudioServerIO.JavaSound(), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)));
-		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), pa);
-		
-	} // constructor - int, AudioContext
 	
-	/**
-	 *  Creates an Input object connected to PortAudio, with the given number of inputs,
-	 * as well as the option to skip inputs 5-8 (this assumes that you will have adjusted for the skip
-	 * and passed in 4 more inputs than you plan to need; e.g., numInputs = 16 for 12 lines).
-	 *
-	 *  @param  numInputs  an int specifying the number of lines in the AudioFormat.
-	 */
-	public MicrophoneInput(int numInputs, boolean skip5thru8, PApplet pa)
+	public MicrophoneInput(PApplet parent, int[] inputChannels)
 	{
-		this(numInputs, new AudioContext(new PortAudioAudioIO(numInputs), 512, AudioContext.defaultAudioFormat(numInputs, numInputs)), skip5thru8, pa);
-
-	} // constructor - int, AudioContext
-
-	/**
-	 *  Creates an Input object with the given number of inputs and particular AudioContext.
-	 *
-	 *  @param  numInputs     an int specifying the number of lines in the AudioFormat.
-	 *  @param  audioContext  an AudioContext whose input lines will be procured as a UGen and used for the analysis calculations.
-	 */
-	public MicrophoneInput(int numInputs, AudioContext audioContext, PApplet pa)
-	{
-		
-		this(numInputs, audioContext, false, pa);
-	} // int, AudioContext
-	
-	/**
-	 * Creates an Input object with the given number of inputs and the particular AudioContext,
-	 * as well as the option to skip inputs 5-8 (this assumes that you will have adjusted for the skip
-	 * and passed in 4 more inputs than you plan to need; e.g., numInputs = 16 for 12 lines).
-	 * @param numInputs
-	 * @param audioContext
-	 * @param skip5thru8
-	 */
-	public MicrophoneInput(int numInputs, AudioContext audioContext, boolean skip5thru8, PApplet pa)
-	{
-		if(numInputs < 1)  {
-			throw new IllegalArgumentException("Input.constructor(int, AudioContext): int parameter " + numInputs + " is less than 1; must be 1 or greater.");
+		if(inputChannels == null || inputChannels.length < 1)  {
+			throw new IllegalArgumentException("Input.constructor(PApplet, int[]): int[] parameter number of channels is less than 1; at least 1 input must be specified");
 		} // if(numInputs < 1)
-		if(audioContext == null) {
-			throw new IllegalArgumentException("Input.constructor(int, AudioContext): AudioContext parameter " + audioContext + " is null.");
-		} // if(numInputs < 1)
-
-		this.numInputs  = numInputs;
-		this.ac 		= audioContext;
-		this.pa			= pa;
-		this.skip5thru8	= skip5thru8;
 		
-		if(this.skip5thru8)
+		this.parent = parent;
+		this.inputChannels = inputChannels.clone();
+		
+		int largestChannelIndex = 0;
+		for(int i = 0; i < inputChannels.length; i++)
 		{
-			this.adjustedNumInputs	= this.numInputs - 4;
-			System.out.println("this.adjustedNumInputs = " + this.adjustedNumInputs);
-		} else {
-			this.adjustedNumInputs	= this.numInputs;
-		} // 
+			largestChannelIndex = Math.max(largestChannelIndex, inputChannels[i]);
+		}
 		
-		this.disposeHandler	= new DisposeHandler(this.pa, this);
-		System.out.println("just registered DisposeHandler for " + pa);
+		this.ac = this.getNewAudioContext();
+		
+		if(this.ac.getAudioFormat().inputs < largestChannelIndex)
+		{
+			throw new IllegalArgumentException("Input Channel " + largestChannelIndex + " does not exist.");
+		}
+		
+		try{
+			PortAudio.getVersion();
+			
+			this.ac = new AudioContext(new PortAudioAudioIO(largestChannelIndex+1), ac.getBufferSize(), ac.getAudioFormat());
+		}
+		catch( UnsatisfiedLinkError e ){
+			System.err.println("Port Audio could not be found.\n"
+					+ "The default audio context will be used and multiple Inputs will NOT be enabled.");
+			this.inputChannels = new int[] {0};
+		}
+		
+		this.disposeHandler	= new DisposeHandler(this.parent, this);
 
-		this.uGenArrayFromNumInputs(this.numInputs);
-	} // constructor(int, AudioContext, boolean)
-
+		this.makeUGenArray();
+	}
 	
-	/**
-	 * Constructor for creating a two-channel Input object 
-	 * from the machine's default audio input device;
-	 * does not require Jack.
-	 */
-	public MicrophoneInput(PApplet pa)
+	public MicrophoneInput(PApplet parent, int[] inputChannels, AudioContext audioContext)
 	{
-		this(2, pa); //, new AudioContext());
-	} // constructor()
-
-	protected void uGenArrayFromNumInputs(int numInputs)
-	{
-		// TODO: make sure we set this everywhere else
-//		this.numInputs  = numInputs;
-
-		// creates an int[] of the input channel numbers - e.g., { 1, 2, 3, 4 } for a 4 channel input.
-		int[][]	inputNums2d	= new int[this.numInputs][1];
-		int[]	inputNums1d	= new int[this.numInputs];
-		for (int i = 0; i < inputNums2d.length; i++)
+		System.err.println("MicrophoneInput(PApplet, int[], AudioContext): Please note that it is only "
+				+ "recommended to make your own AudioContext if the MicrophoneInput(PApplet, int[]) "
+				+ "constructor does not work on your computer.");
+		
+		if(inputChannels == null || inputChannels.length < 1)  {
+			throw new IllegalArgumentException("Input.constructor(PApplet, int[], AudioContext): int[] parameter number of channels is less than 1; at least 1 input must be specified");
+		} // if(numInputs < 1)
+		
+		this.parent = parent;
+		this.inputChannels = inputChannels.clone();
+		
+		int largestChannelIndex = 0;
+		for(int i = 0; i < inputChannels.length; i++)
 		{
-			inputNums2d[i][0]	= (i + 1);
-			inputNums1d[i]		= (i + 1);
-		} // for
+			largestChannelIndex = Math.max(largestChannelIndex, inputChannels[i]);
+		}
+		
+		this.ac = audioContext;
+		
+		if(this.ac.getAudioFormat().inputs < largestChannelIndex)
+		{
+			throw new IllegalArgumentException("Input Channel " + largestChannelIndex + " does not exist.");
+		}
+		
+		this.disposeHandler	= new DisposeHandler(this.parent, this);
 
-		// get the audio lines from the AudioContext:
-		//    this.inputsUGen = ac.getAudioInput(inputNums);
-
+		this.makeUGenArray();
+	}
+	
+	protected void makeUGenArray()
+	{
 		// fill the uGenArray with UGens, each one from a particular line of the AudioContext.
-		this.uGenArray  = new UGen[this.adjustedNumInputs];
-		this.gainArray	= new Gain[this.adjustedNumInputs];
-		System.out.println("uGenArray.length = " + this.uGenArray.length);
+		this.uGenArray  = new UGen[this.inputChannels.length];
+		this.gainArray	= new Gain[this.inputChannels.length];
 		
-		UGen	audioInput	= this.ac.getAudioInput(inputNums1d);
+		UGen	audioInput	= this.ac.getAudioInput(this.inputChannels.clone());
 		
-		int	channelPos	= 0;
 		for (int i = 0; i < this.uGenArray.length; i++)
 		{
-//			uGenArray[i]  = this.ac.getAudioInput(inputNums[i]);
-			if(channelPos == 4 && this.skip5thru8)
-			{
-				channelPos	= 8;
-			}
-			
-			this.uGenArray[i]  = new Plug(this.ac, audioInput, channelPos);
-			System.out.println("Input: uGenArray[" + i + "] = " + uGenArray[i]);
+			this.uGenArray[i]  = new Plug(this.ac, audioInput, this.inputChannels[i]);
 			this.gainArray[i]	= new Gain(this.ac, 0, 0);
-			
-			channelPos	= channelPos + 1;
 		} // for
 
 		initInput(this.uGenArray, 0);
 	} // uGenArrayFromNumInputs
-
 
 	
 	/**
@@ -201,7 +156,7 @@ public class MicrophoneInput extends Input {
 			// TODO: maybe this won't be necessary once the threads are implemented.
 			if(!this.pause)
 			{
-				for (int i = 0; i < this.adjustedNumInputs; i++)
+				for (int i = 0; i < this.inputChannels.length; i++)
 				{
 					//     println("setFund(); this.frequencyArray[i] = " + this.frequencyArray[i].getFeatures());
 	
@@ -221,6 +176,7 @@ public class MicrophoneInput extends Input {
 				} // if: > numInputs
 			}
 		} catch(NullPointerException npe)  {}
+		
 	} // setFund
 
 
@@ -358,7 +314,7 @@ public class MicrophoneInput extends Input {
 	
 	public int getMidiNote(int channelIndex) 
 	{
-		if(channelIndex > this.numInputs) throw new IllegalArgumentException("that input does not exist");
+		if(channelIndex > this.inputChannels.length) throw new IllegalArgumentException("that input does not exist");
 		return (int) Math.round(this.getAdjustedFundAsMidiNote(channelIndex));
 	}
 	

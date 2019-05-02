@@ -1,5 +1,15 @@
 package core.input;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
+
+import com.portaudio.PortAudio;
+
 //import core.input.RealTimeInput.DisposeHandler;
 //import core.input.RealTimeInput.FrequencyEMM;
 import net.beadsproject.beads.analysis.FeatureExtractor;
@@ -9,6 +19,7 @@ import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.TimeStamp;
 import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Pitch;
 import net.beadsproject.beads.ugens.Compressor;
 import net.beadsproject.beads.ugens.Gain;
@@ -24,30 +35,88 @@ public abstract class Input implements MusicalInput {
 	 * with children RealTimeInput, GeneratedInput (will use Melody/Instrument/Note),
 	 * and RecordedInput.
 	 */
-	protected DisposeHandler disposeHandler;
-	protected PApplet pa;
-	protected AudioContext ac;
+	protected DisposeHandler 		disposeHandler;
+	protected PApplet 				parent;
+	protected AudioContext 			ac;
+	protected int[]					inputChannels;
 
-	protected float[] adjustedFundArray;
-	protected Compressor compressor;
-	protected	UGen[]                 uGenArray;
-	// TODO: make private after testing
-	protected	Gain[]		   gainArray;
-	protected FFT[] fftArray;
-	protected FrequencyEMM[] frequencyArray;
-	protected float[] fundamentalArray;
-	protected float[] amplitudeArray;
-	protected int numInputs;
-	protected int adjustedNumInputs;
-	protected PowerSpectrum[] psArray;
-	protected ShortFrameSegmenter[] sfsArray;
-	protected boolean pause;
-	protected	float	sensitivity;
+	protected float[] 				adjustedFundArray;
+	protected Compressor 			compressor;
+	protected UGen[]  				uGenArray;
 	
-	protected String inputName = "";
+	protected Gain[]				gainArray;
+	protected FFT[] 				fftArray;
+	protected FrequencyEMM[] 		frequencyArray;
+	protected float[] 				fundamentalArray;
+	protected float[] 				amplitudeArray;
+	protected PowerSpectrum[] 		psArray;
+	protected ShortFrameSegmenter[] sfsArray;
+	
+	protected boolean 				pause;
+	protected float					sensitivity;
+	
+	protected String 				inputName = "";
 
-	public Input() {
+	public Input() 
+	{		
 		super();
+		
+	}
+	
+	protected AudioContext getNewAudioContext()
+	{
+		AudioContext ac;
+
+		int m = this.getMixerIndex();
+
+		JavaSoundAudioIO IO = new JavaSoundAudioIO();
+		IO.selectMixer(m);
+		
+		ac = new AudioContext(IO);
+
+		return ac;
+	}
+
+	private int getMixerIndex()
+	{
+		int index = 0;
+		int mixerIndex = -1;
+		
+		Mixer.Info[] mi = AudioSystem.getMixerInfo();
+		
+		for (Mixer.Info info : mi) 
+		{
+			Mixer m = AudioSystem.getMixer(info);
+
+			Line.Info[] sl = m.getSourceLineInfo();
+
+			for (Line.Info info2 : sl) {
+				Line line = null;
+
+				try {
+					line = AudioSystem.getLine(info2);
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+				}
+
+				if (line instanceof SourceDataLine) {
+					SourceDataLine source = (SourceDataLine) line;
+
+					DataLine.Info i = (DataLine.Info) source.getLineInfo();
+					for (AudioFormat format : i.getFormats()) {
+						if(format.getSampleRate() > 0) mixerIndex = index;
+					}
+				}
+			}//for source line info
+
+			index++;
+						
+			if(mixerIndex != -1) break;
+		}
+		
+		if(mixerIndex == -1) throw new RuntimeException("No valid mixers were found.");
+				
+		return mixerIndex;
 	}
 
 
@@ -78,7 +147,7 @@ public abstract class Input implements MusicalInput {
 		// add each of the UGens from uGenArray to the Gain, and add the Gain to the AudioContext:
 		//		g = new Gain(this.ac, 1, (float) 0.5);
 
-		this.gainArray	= new Gain[this.adjustedNumInputs];
+		this.gainArray	= new Gain[uGenArray.length];
 			for(int i = 0; i < this.gainArray.length; i++)
 			{
 				if(this.gainArray[i] == null)
@@ -96,7 +165,7 @@ public abstract class Input implements MusicalInput {
 
 		// The ShortFrameSegmenter splits the sound into smaller, manageable portions;
 		// this creates an array of SFS's and adds the UGens to them:
-		this.sfsArray  = new ShortFrameSegmenter[this.adjustedNumInputs];
+		this.sfsArray  = new ShortFrameSegmenter[uGenArray.length];
 		for (int i = 0; i < this.sfsArray.length; i++)
 		{
 			this.sfsArray[i] = new ShortFrameSegmenter(this.ac);
@@ -106,7 +175,7 @@ public abstract class Input implements MusicalInput {
 		}
 
 		// Creates an array of FFTs and adds them to the SFSs:
-		this.fftArray  = new FFT[this.adjustedNumInputs];
+		this.fftArray  = new FFT[uGenArray.length];
 		for (int i = 0; i < this.fftArray.length; i++)
 		{
 			this.fftArray[i] = new FFT();
@@ -117,7 +186,7 @@ public abstract class Input implements MusicalInput {
 
 		// Creates an array of PowerSpectrum's and adds them to the FFTs
 		// (the PowerSpectrum is what will actually perform the FFT):
-		this.psArray  = new PowerSpectrum[this.adjustedNumInputs];
+		this.psArray  = new PowerSpectrum[uGenArray.length];
 		for (int i = 0; i < this.psArray.length; i++)
 		{
 			this.psArray[i] = new PowerSpectrum();
@@ -128,7 +197,7 @@ public abstract class Input implements MusicalInput {
 
 		// Creates an array of FrequencyEMMs and adds them to the PSs
 		// (using my version of the Frequency class - an inner class further down - to allow access to amplitude):
-		this.frequencyArray  = new FrequencyEMM[this.adjustedNumInputs];
+		this.frequencyArray  = new FrequencyEMM[uGenArray.length];
 		for (int i = 0; i < this.frequencyArray.length; i++)
 		{
 			this.frequencyArray[i] = new FrequencyEMM(44100);
@@ -138,7 +207,7 @@ public abstract class Input implements MusicalInput {
 		} // for
 
 		// Adds the SFSs (and everything connected to them) to the AudioContext:
-		for (int i = 0; i < this.adjustedNumInputs; i++)
+		for (int i = 0; i < uGenArray.length; i++)
 		{
 			this.ac.out.addDependent(sfsArray[i]);
 		} // for - addDependent
@@ -151,10 +220,11 @@ public abstract class Input implements MusicalInput {
 		this.sensitivity  = 10;
 
 		// Initializes the arrays that will hold the pitches:
-		this.fundamentalArray = new float[this.adjustedNumInputs];
-		this.adjustedFundArray = new float[this.adjustedNumInputs];
-		this.amplitudeArray	= new float[this.adjustedNumInputs];
+		this.fundamentalArray = new float[uGenArray.length];
+		this.adjustedFundArray = new float[uGenArray.length];
+		this.amplitudeArray	= new float[uGenArray.length];
 
+		
 		// Gets the ball rolling on analysis:
 		this.setFund();
 	} // initInput(UGen[])
@@ -309,17 +379,17 @@ public abstract class Input implements MusicalInput {
 	/**
 	 * @return  int  number of input channels.
 	 */
-	public int  getNumInputs() {
-		return this.numInputs;
-	} // getNumInputs
+	//public int  getNumInputs() {
+		//return this.numInputs;
+	//} // getNumInputs
 
 	/**
 	 * 
 	 * @return	int number of input channels, adjusted for skipping lines 5-8 (if skipped, will be 4 less than this.numInputs)
 	 */
-	public int getAdjustedNumInputs() {
-		return this.adjustedNumInputs;
-	} // getAdjustedNumInputs
+	//public int getAdjustedNumInputs() {
+		//return this.adjustedNumInputs;
+	//} // getAdjustedNumInputs
 
 	/**
 	 *  Error checker for ints sent to methods such as getFund, getAmplitude, etc.;
@@ -329,8 +399,8 @@ public abstract class Input implements MusicalInput {
 	 *  @param   String    name of the method that called this method, used in the exception message.
 	 */
 	protected void inputNumErrorCheck(int inputNum, String method) {
-		if (inputNum >= this.adjustedNumInputs) {
-			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.adjustedNumInputs + ", the number of inputs.");
+		if (inputNum >= this.inputChannels.length) {
+			IllegalArgumentException iae = new IllegalArgumentException("Input.inputNumErrorCheck(int), from " + method + ": int parameter " + inputNum + " is greater than " + this.inputChannels.length + ", the number of inputs.");
 			iae.printStackTrace();
 			throw iae;
 		}
@@ -553,12 +623,11 @@ public abstract class Input implements MusicalInput {
 	}
 	
 	@Override
-	public int getTotalNumInputs()
+	public int getTotalNumChannels()
 	{
-		return this.numInputs;
+		return this.inputChannels.length;
 	}
 	
-
 
 	/**
 	 * 08/01/2017

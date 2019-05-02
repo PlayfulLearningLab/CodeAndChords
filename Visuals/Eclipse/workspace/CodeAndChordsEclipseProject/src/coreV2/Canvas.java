@@ -2,6 +2,15 @@ package coreV2;
 
 import processing.core.PApplet;
 
+/**
+ * 
+ * Canvas is a class that is used to automatically resize and move the visuals when the
+ * menus are open. This prevents stretching of the image by ensuring that it is scaled 
+ * properly, and it eliminates the need to do this math for every new visual.
+ * 
+ * @author Danny Mahota
+ *
+ */
 public class Canvas 
 {
 	private PApplet			parent;
@@ -23,7 +32,19 @@ public class Canvas
 		this.fullScreen();
 	}
 	
+<<<<<<< HEAD
 	public void setDisplay(int xPos, int yPos, int zPos, int width, int height)
+=======
+	/**
+	 * Set the size of the canvas.
+	 * 
+	 * @param xPos: The x coordinate of the top left corner of the canvas.
+	 * @param yPos: The y coordinate of the top left corner of the canvas.
+	 * @param width: The width of the canvas.
+	 * @param height: The height of the canvas.
+	 */
+	public void setDisplay(int xPos, int yPos, int width, int height)
+>>>>>>> master
 	{
 		this.displayX = xPos;
 		this.displayY = yPos;
@@ -36,6 +57,11 @@ public class Canvas
 		this.isFullscreen = false;
 	}
 	
+	/**
+	 * Returns the dimensions of the canvas in an array.
+	 * 
+	 * @return: int[] {displayXPosition, displayYPosition, displayWidth, displayHeight}
+	 */
 	public int[] getCanvasDimensions()
 	{
 		return new int[] { (int)this.displayX, (int)this.displayY, (int)this.displayWidth, (int)this.displayHeight };
@@ -43,6 +69,9 @@ public class Canvas
 	
 	//TODO:  Create a method that returns a PShape covering all of the area not covered by the canvas
 	
+	/**
+	 * Sets the canvas to cover the full PApplet window.
+	 */
 	public void fullScreen()
 	{
 		this.displayX = 0;
@@ -53,12 +82,23 @@ public class Canvas
 		this.isFullscreen = true;
 	}
 	
+	/**
+	 * Works similar to the PApplet method background(). Covers the entire canvas.
+	 */
 	public void background()
 	{
 		this.parent.noStroke();
 		this.parent.rect(this.displayX, this.displayY, this.displayWidth, this.displayHeight);
 	}
 	
+	/**
+	 * Wrapper method for PApplet method rect(a,b,c,d).  Draws a rectangle on the canvas.
+	 * 
+	 * @param xPos: X position of rectangle top left corner.
+	 * @param yPos: Y position of the rectangle top left corner.
+	 * @param width: Rectangle width.
+	 * @param height: Rectangle height.
+	 */
 	public void rect(int xPos, int yPos, int width, int height)
 	{
 		float x = (this.displayWidth/this.parent.width);
@@ -67,6 +107,14 @@ public class Canvas
 		this.parent.rect(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
 	}
 	
+	/**
+	 * Wrapper method for PApplet method ellipse(a,b,c,d). Draws an ellipse on the canvas.
+	 * 
+	 * @param xPos: X position of the ellipse center.
+	 * @param yPos: Y position of the ellipse center.
+	 * @param width: Width of the ellipse.
+	 * @param height: Height of the ellipse.
+	 */
 	public void ellipse(int xPos, int yPos, int width, int height)
 	{
 		float x = (this.displayWidth/this.parent.width);
@@ -75,6 +123,14 @@ public class Canvas
 		this.parent.ellipse(this.displayX + (xPos * x), this.displayY + (yPos * y), width*x, height*y);
 	}
 	
+	/**
+	 * Wrapper method for PApplet method line(a,b,c,d). Draws a line on the canvas.
+	 *  
+	 * @param x1: X position of point 1.
+	 * @param y1: Y position of point 1.
+	 * @param x2: X position of point 2.
+	 * @param y2: Y position of point 2.
+	 */
 	public void line(int x1, int y1, int x2, int y2)
 	{
 		float x = (this.displayWidth/this.parent.width);
@@ -83,6 +139,7 @@ public class Canvas
 		this.parent.line(this.displayX + (x1 * x), this.displayY + (y1 * y), this.displayX + (x2 * x), this.displayY + (y2 * y));
 	}
 	
+<<<<<<< HEAD
 	public void box(int xPos, int yPos, int zPos)
 	{
 		float x = (this.displayWidth/this.parent.width);
@@ -94,6 +151,16 @@ public class Canvas
 		this.parent.sphere(this.displayX + (rPos));
 	}*/
 	
+=======
+	/**
+	 * Wrapper method for PApplet method text(). Draws text on the canvas.
+	 * 
+	 * @param textSize: Size of the text.
+	 * @param text: Text that will be written on the canvas.
+	 * @param x: X position of text.
+	 * @param y: Y position of text.
+	 */
+>>>>>>> master
 	public void text(int textSize, String text, int x, int y)
 	{
 		float Kx = (this.displayWidth/this.parent.width);
@@ -105,6 +172,9 @@ public class Canvas
 		this.parent.text(text, Kx * x + this.displayX, Ky * y + this.displayY);
 	}
 	
+	/**
+	 * Fills the portion of the PApplet window not covered by the canvas with a dark grey color.
+	 */
 	public void drawAppletBackground()
 	{
 		if(!this.isFullscreen)
