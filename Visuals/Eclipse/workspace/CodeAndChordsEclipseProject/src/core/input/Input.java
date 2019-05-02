@@ -39,6 +39,8 @@ public abstract class Input implements MusicalInput {
 	protected PApplet 				parent;
 	protected AudioContext 			ac;
 	protected int[]					inputChannels;
+	
+	private static int				mixerIndex = -1;
 
 	protected float[] 				adjustedFundArray;
 	protected Compressor 			compressor;
@@ -66,11 +68,14 @@ public abstract class Input implements MusicalInput {
 	protected AudioContext getNewAudioContext()
 	{
 		AudioContext ac;
-
-		int m = this.getMixerIndex();
+				
+		if(Input.mixerIndex == -1)
+		{
+			Input.mixerIndex = this.getMixerIndex();
+		}
 
 		JavaSoundAudioIO IO = new JavaSoundAudioIO();
-		IO.selectMixer(m);
+		IO.selectMixer(Input.mixerIndex);
 		
 		ac = new AudioContext(IO);
 
@@ -85,13 +90,20 @@ public abstract class Input implements MusicalInput {
 		Mixer.Info[] mi = AudioSystem.getMixerInfo();
 		
 		for (Mixer.Info info : mi) 
-		{
+		{			
 			Mixer m = AudioSystem.getMixer(info);
 
 			Line.Info[] sl = m.getSourceLineInfo();
 
 			for (Line.Info info2 : sl) {
 				Line line = null;
+				
+				System.out.println(info2.toString());
+				if( info2.toString().toLowerCase().contains("sourcedataline") )
+				{
+					mixerIndex = index;
+					break;
+				}
 
 				try {
 					line = AudioSystem.getLine(info2);
@@ -104,7 +116,7 @@ public abstract class Input implements MusicalInput {
 
 					DataLine.Info i = (DataLine.Info) source.getLineInfo();
 					for (AudioFormat format : i.getFormats()) {
-						if(format.getSampleRate() > 0) mixerIndex = index;
+						//if(format.getSampleRate() > 0) mixerIndex = index;
 					}
 				}
 			}//for source line info
