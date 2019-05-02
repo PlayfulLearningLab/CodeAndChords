@@ -15,6 +15,7 @@ import processing.core.PApplet;
  * @author codeandchords
  *
  */
+
 public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 
@@ -25,9 +26,9 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void setup() 
 	{
-		this.input	= new MicrophoneInput(1, new AudioContext(), this);
+		this.input	= new MicrophoneInput(this, new int[] {0,1,2,3,8,9,10,11});
 		//		this.input	= new RealTimeInput(16, true, this);
-		this.totalNumInputs	= this.input.getAdjustedNumInputs();
+		this.totalNumInputs	= 8;
 		this.curNumInputs	= this.totalNumInputs;
 
 		this.menu	= new ModuleMenu(this, this, this.input, 12);
@@ -45,8 +46,6 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 	public void draw()
 	{
-		//		System.out.println("input.getAdjustedFund() = " + input.getAdjustedFund());
-
 		background(this.menu.getCanvasColor()[0], this.menu.getCanvasColor()[1], this.menu.getCanvasColor()[2]);
 
 		int	scaleDegree;
@@ -59,13 +58,11 @@ public class Module_01_03_PitchHue_MultipleShapes extends Module {
 
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			//			System.out.println("input.getAdjustedFundAsMidiNote(" + (i) + ") = " + input.getAdjustedFundAsMidiNote(i) + 
-			//					"; input.getAmplitude(" + (i) + ") = " + input.getAmplitude(1));
-
 			scaleDegree	= (round(input.getAdjustedFundAsMidiNote(i)) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12;
 
 			// This Module calls fadeColor() but not fill() because drawShape() takes from curHue() automatically:
 			this.menu.fadeColor(scaleDegree, i);
+
 			if(!this.menu.getShapeEditor().getIsRunning())
 			{
 				this.menu.getShapeEditor().drawShape(i);
