@@ -17,6 +17,7 @@ public class Canvas
 	
 	private float			displayX;
 	private float			displayY;
+	private float			displayZ;
 	private float 			displayWidth;
 	private float 			displayHeight;
 	
@@ -31,18 +32,11 @@ public class Canvas
 		this.fullScreen();
 	}
 	
-	/**
-	 * Set the size of the canvas.
-	 * 
-	 * @param xPos: The x coordinate of the top left corner of the canvas.
-	 * @param yPos: The y coordinate of the top left corner of the canvas.
-	 * @param width: The width of the canvas.
-	 * @param height: The height of the canvas.
-	 */
 	public void setDisplay(int xPos, int yPos, int width, int height)
 	{
 		this.displayX = xPos;
 		this.displayY = yPos;
+		this.displayZ = zPos;
 		this.displayWidth = width;
 		this.displayHeight = height;
 		
@@ -133,14 +127,6 @@ public class Canvas
 		this.parent.line(this.displayX + (x1 * x), this.displayY + (y1 * y), this.displayX + (x2 * x), this.displayY + (y2 * y));
 	}
 	
-	/**
-	 * Wrapper method for PApplet method text(). Draws text on the canvas.
-	 * 
-	 * @param textSize: Size of the text.
-	 * @param text: Text that will be written on the canvas.
-	 * @param x: X position of text.
-	 * @param y: Y position of text.
-	 */
 	public void text(int textSize, String text, int x, int y)
 	{
 		float Kx = (this.displayWidth/this.parent.width);
