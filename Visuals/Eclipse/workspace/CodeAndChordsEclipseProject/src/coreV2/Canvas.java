@@ -32,19 +32,7 @@ public class Canvas
 		this.fullScreen();
 	}
 	
-<<<<<<< HEAD
-	public void setDisplay(int xPos, int yPos, int zPos, int width, int height)
-=======
-	/**
-	 * Set the size of the canvas.
-	 * 
-	 * @param xPos: The x coordinate of the top left corner of the canvas.
-	 * @param yPos: The y coordinate of the top left corner of the canvas.
-	 * @param width: The width of the canvas.
-	 * @param height: The height of the canvas.
-	 */
 	public void setDisplay(int xPos, int yPos, int width, int height)
->>>>>>> master
 	{
 		this.displayX = xPos;
 		this.displayY = yPos;
@@ -139,28 +127,6 @@ public class Canvas
 		this.parent.line(this.displayX + (x1 * x), this.displayY + (y1 * y), this.displayX + (x2 * x), this.displayY + (y2 * y));
 	}
 	
-<<<<<<< HEAD
-	public void box(int xPos, int yPos, int zPos)
-	{
-		float x = (this.displayWidth/this.parent.width);
-		float y = (this.displayHeight/this.parent.height);
-		this.parent.box(this.displayX + (xPos * x), this.displayY + (yPos * y), this.displayZ + (zPos));
-	}
-	/*public void sphere(int rPos)
-	{
-		this.parent.sphere(this.displayX + (rPos));
-	}*/
-	
-=======
-	/**
-	 * Wrapper method for PApplet method text(). Draws text on the canvas.
-	 * 
-	 * @param textSize: Size of the text.
-	 * @param text: Text that will be written on the canvas.
-	 * @param x: X position of text.
-	 * @param y: Y position of text.
-	 */
->>>>>>> master
 	public void text(int textSize, String text, int x, int y)
 	{
 		float Kx = (this.displayWidth/this.parent.width);

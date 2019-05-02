@@ -10,146 +10,73 @@ import coreV2.InputHandler;
 import coreV2.ModuleDriver;
 import coreV2.Visual;
 
-public class AmplitudeBarsVisual extends Visual {
-
+public class AmplitudeBarsVisual extends Visual 
+{
 	private Canvas				canvas;
-	private ColorFader[] 		colorFader;
+	private ColorFader 			colorFader;
 	
 	protected String[]			controllers;
 	protected String[]			labels;
-
-	public AmplitudeBarsVisual(ModuleDriver moduleDriver) 
+	
+	public PitchColorVisual(ModuleDriver moduleDriver) 
 	{
-		super(moduleDriver, "Vertical Bars");
+		super(moduleDriver, "Amplitude Bars");
 
 		this.addSliders();
 		this.canvas = this.moduleDriver.getCanvas();
-		
-		this.colorFader = new ColorFader[4];
-		
-		for(int i = 0; i < 4; i++){
-			this.colorFader[i] = new ColorFader(this.parent);
-		}
-		
-		
+		this.colorFader = new ColorFader(this.parent);
 	}
-
-	private void addSliders()
-	{
-		this.controllers = new String[] {"transition", "attack", "release"};
-		this.labels = new String[] {"Transition Time (ms)", "Attack Time (ms)", "Release Time (ms)"};
-
-		for(int i = 0; i < this.labels.length; i++)
-		{
-			this.cp5.addLabel(this.labels[i]).setTab(this.tabName);
-		}
-
-		this.cp5.addSlider("transition")
-		.setMin(30)
-		.setMax(1500)
-		.setDecimalPrecision(0)
-		.setValue(500)
-		.setTab(this.tabName)
-		.getCaptionLabel().setVisible(false);
-
-
-		this.cp5.addSlider("attack")
-		.setMin(30)
-		.setMax(1500)
-		.setDecimalPrecision(0)
-		.setValue(500)
-		.setTab(this.tabName)
-		.getCaptionLabel().setVisible(false);
-
-		this.cp5.addSlider("release")
-		.setMin(30)
-		.setMax(1500)
-		.setDecimalPrecision(0)
-		.setValue(500)
-		.setTab(this.tabName)
-		.getCaptionLabel().setVisible(false);
-
-	}
+}
 
 	@Override
 	public void controlEvent(ControlEvent theEvent) 
 	{
-		if(theEvent.getName() == "transition" && this.colorFader != null)
-		{
-			System.out.println("Setting " + theEvent.getName());
-			
-			for(int i = 0; i < this.colorFader.length; i++){
-				this.colorFader[i].setTransitionDuration((int)theEvent.getValue());
-			}
-			
-			
-		}
 
-		if(theEvent.getName() == "attack" && this.colorFader != null)
-		{
-			System.out.println("Setting " + theEvent.getName());
-			
-			for(int i = 0; i < this.colorFader.length; i++){
-				this.colorFader[i].setAttackDuration((int)theEvent.getValue());
-			}
-			
-			
-		}
-
-		if(theEvent.getName() == "release" && this.colorFader != null)
-		{
-			System.out.println("Setting " + theEvent.getName());
-			
-			for(int i = 0; i < this.colorFader.length; i++){
-				this.colorFader[i].setReleaseDuration((int)theEvent.getValue());
-			}
-			
-			
-		}
 	}
 
 	@Override
 	public void drawVisual() 
 	{
-		//draw the background
-		this.parent.fill(0);
-		this.canvas.background();
-
-
-		int 	note 		= this.moduleDriver.getInputHandler().getAllMidiNotes()[0][0];
-		int[] 	scale 		= this.moduleDriver.getInputHandler().getScale();
-		int[] 	pitchColor 	= new int[] {-1,-1,-1};
-		ColorScheme[] schemes = this.moduleDriver.getColorMenu().getColorSchemes();
-
-		//check if the note is in the scale
-		for(int i = 0; i < scale.length; i++)
-		{ 
-			if((note%12) == i)
+		background(0);
+		int x;
+		int x2;
+		int y;
+		int s1;
+		int s2;
+		int p;
+		
+		x = 200;
+		x2 = 350;
+		y = 100;
+		s1 = 100;
+		p = 4; //This is used to adjust the sensitivity of the getAmplitude() method 
+		s2 = (int) (this.input.getAmplitude())/p;
+		
+		
+		for(int i=0; i<5; i++) //This will draw 5 downward growing rectangles
+		{
+			if(s2>100) //This will cause s2 to not grow past the desired point
 			{
-				pitchColor = schemes[0].getPitchColor(i);
+				s2 = 300;
 			}
+			canvas.rectMode(CORNER); //This is used to draw the rectangle from the upper left corner 
+			canvas.rect(x,y,s1,500+s2); 
+			//this.moduleDriver.getCanvas().rect((int)(this.parent.width/2 + this. x,y,s1,500+s2);
+			x = x + 300;
 		}
-
-		//if the note was in the scale then set the color in the colorFader
-		if(pitchColor[0] != -1)
+		
+		for(int j=0; j<5; j++) //This will draw 5 upward growing rectangles
 		{
-			colorFader.setTargetColor(pitchColor.clone());
+		
+			if(s2>100) //This will cause s2 to not grow past the desired point
+			{
+				s2 = 200;
+			}
+			canvas.rectMode(CORNERS); //This is used to draw the rectangle from the upper left AND lower right corner
+			canvas.rect(x2,300-s2,x2+100,900); 
+		
+			x2 = x2 + 300;
 		}
-
-		//if the velocity is greater than the piano threshold then set the alpha to 255
-		if(this.moduleDriver.getInputHandler().getAllMidiNotes()[0][1] > 0)
-		{
-			colorFader.setTargetAlpha(255);
-		}
-		else // if not, set the alpha to 0
-		{
-			colorFader.setTargetAlpha(0);
-		}
-
-		//get the current color from color fader and fill it into the canvas
-		int[] curColor = colorFader.getColor();
-		this.parent.fill(curColor[0], curColor[1], curColor[2], curColor[3]);
-		this.canvas.background();
 	}
 
 	@Override
