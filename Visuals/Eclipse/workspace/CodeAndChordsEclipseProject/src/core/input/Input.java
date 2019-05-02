@@ -92,33 +92,15 @@ public abstract class Input implements MusicalInput {
 		for (Mixer.Info info : mi) 
 		{			
 			Mixer m = AudioSystem.getMixer(info);
-
 			Line.Info[] sl = m.getSourceLineInfo();
 
 			for (Line.Info info2 : sl) {
-				Line line = null;
 				
 				System.out.println(info2.toString());
-				if( info2.toString().toLowerCase().contains("sourcedataline") )
-				{
+				if(info2.toString().toLowerCase().contains("sourcedataline") ){
 					mixerIndex = index;
-					break;
 				}
 
-				try {
-					line = AudioSystem.getLine(info2);
-				} catch (LineUnavailableException e) {
-					e.printStackTrace();
-				}
-
-				if (line instanceof SourceDataLine) {
-					SourceDataLine source = (SourceDataLine) line;
-
-					DataLine.Info i = (DataLine.Info) source.getLineInfo();
-					for (AudioFormat format : i.getFormats()) {
-						//if(format.getSampleRate() > 0) mixerIndex = index;
-					}
-				}
 			}//for source line info
 
 			index++;
