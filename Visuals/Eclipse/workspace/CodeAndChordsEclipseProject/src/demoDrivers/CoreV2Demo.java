@@ -1,5 +1,6 @@
-package coreV2;
+package demoDrivers;
 
+import coreV2.*;
 import coreV2_visuals.*;
 import processing.core.PApplet;
 
@@ -9,7 +10,7 @@ public class CoreV2Demo extends PApplet
 	
 	public static void main(String[] args)
 	{
-		PApplet.main("coreV2.CoreV2Demo");
+		PApplet.main("demoDrivers.CoreV2Demo");
 	}
 	
 	public void settings()
