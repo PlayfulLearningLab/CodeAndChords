@@ -1,5 +1,6 @@
 package coreV2;
 
+import coreV2_CanvasEffects.Drawable;
 import processing.core.PApplet;
 
 /**
@@ -11,16 +12,16 @@ import processing.core.PApplet;
  * @author Danny Mahota
  *
  */
-public class Canvas 
+public class Canvas implements Drawable
 {
-	private PApplet			parent;
+	private PApplet				parent;
 	
-	private float			displayX;
-	private float			displayY;
-	private float 			displayWidth;
-	private float 			displayHeight;
+	private float				displayX;
+	private float				displayY;
+	private float 				displayWidth;
+	private float 				displayHeight;
 	
-	private boolean			isFullscreen;
+	private boolean				isFullscreen;
 	
 	
 	public Canvas(PApplet parent)

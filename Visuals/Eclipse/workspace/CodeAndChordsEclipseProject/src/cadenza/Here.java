@@ -4,7 +4,7 @@ import core.Module;
 import core.ModuleMenu;
 import core.input.MicrophoneInput;
 import core.input.RecordedInput;
-import coreV2.Follower;
+import coreV2.Seeker;
 import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
@@ -27,8 +27,8 @@ public class Here extends Module
 	private	int			rectHeight;
 	private	int			rectWidth;
 
-	private Follower	ampFollower;
-	private Follower	bbFollower;
+	private Seeker	ampFollower;
+	private Seeker	bbFollower;
 
 	private float		maxAmplitude = 500;
 
@@ -157,13 +157,13 @@ public class Here extends Module
 		this.drawSineFlag[this.soloistIndexNumber] = true;
 		this.skewGenerator[this.beatBoxIndexNumber] = true;
 
-		this.ampFollower = new Follower();
+		this.ampFollower = new Seeker();
 
 		this.ampFollower.setMaxVal(50);
 		this.ampFollower.setMinVal(0);
 		this.ampFollower.setUseLimits(true);
 
-		this.bbFollower = new Follower("beatbox");
+		this.bbFollower = new Seeker("beatbox");
 
 		this.bbFollower.setMaxVal(50);
 		this.bbFollower.setMinVal(0);

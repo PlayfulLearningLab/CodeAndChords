@@ -6,7 +6,7 @@ import processing.core.PApplet;
 import core.Shape;
 import core.ShapeEditor;
 import core.input.MicrophoneInput;
-import coreV2.Follower;
+import coreV2.Seeker;
 import net.beadsproject.beads.core.AudioContext;
 
 /**
@@ -20,7 +20,7 @@ public class Module_02_AmplitudeHSB extends Module {
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
-	private Follower follower;
+	private Seeker follower;
 	
 	
 	public static void main(String[] args) 
@@ -67,7 +67,7 @@ public class Module_02_AmplitudeHSB extends Module {
 		this.menu.getInstrument().setADSR(1000, 500, 0, 0);
 		this.menu.setBPM(30);
 		
-		this.follower = new Follower();
+		this.follower = new Seeker();
 
 		//				this.textSize(32);
 

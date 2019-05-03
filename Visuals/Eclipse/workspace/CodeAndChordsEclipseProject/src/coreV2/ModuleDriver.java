@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import controlP5.ControlP5;
 import controlP5.Tab;
+import coreV2_CanvasEffects.Drawable;
 
 /**
  * 		Danny Mahota
@@ -114,6 +115,8 @@ public class ModuleDriver implements PConstants
 	 */
 	private MenuGroup				menuGroup;
 	
+	private Drawable				drawingChain;
+	
 	
 
 
@@ -128,9 +131,11 @@ public class ModuleDriver implements PConstants
 		this.cp5.getTab("default").hide();
 		
 		this.cp5.hide();
-		
+				
 		//Create the Canvas (The re-sizable part of the screen the visual will go on)
 		this.canvas = new Canvas(this.parent);
+		
+		this.drawingChain = this.canvas;
 		
 		//Create the menu system
 		this.menuGroup = new MenuGroup(this);
