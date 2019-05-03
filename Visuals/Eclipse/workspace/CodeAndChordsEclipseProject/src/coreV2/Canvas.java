@@ -1,6 +1,6 @@
 package coreV2;
 
-import coreV2_CanvasEffects.Drawable;
+import coreV2_EffectsAndFilters.Drawable;
 import processing.core.PApplet;
 
 /**
@@ -185,6 +185,17 @@ public class Canvas implements Drawable
 			
 		}
 	}//drawAppletBackground()
+
+	@Override
+	public int getType() {
+		return Drawable.CANVAS;
+	}
+
+	@Override
+	public void setOutput(Drawable output) {
+		System.err.println("The canvas object draws to the canvas, so it cannot output to another effect.");
+		
+	}
 	
 
 }

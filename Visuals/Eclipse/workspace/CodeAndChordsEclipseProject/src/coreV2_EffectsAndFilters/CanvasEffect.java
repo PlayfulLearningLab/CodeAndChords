@@ -1,4 +1,4 @@
-package coreV2_CanvasEffects;
+package coreV2_EffectsAndFilters;
 
 import java.awt.Color;
 import processing.core.PApplet;
@@ -17,6 +17,11 @@ public abstract class CanvasEffect implements Drawable {
 		this.parent = parent;
 		this.output = output;
 		this.muteEffect = false;
+	}
+	
+	public void setOutput(Drawable output){
+		if(output == null) throw new IllegalArgumentException("output is null");
+		this.output = output;
 	}
 	
 	public void muteEffect(boolean mute){

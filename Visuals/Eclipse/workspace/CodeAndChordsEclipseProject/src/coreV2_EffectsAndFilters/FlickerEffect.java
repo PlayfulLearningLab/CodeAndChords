@@ -1,12 +1,12 @@
-package coreV2_CanvasEffects;
+package coreV2_EffectsAndFilters;
 
 import processing.core.PApplet;
 
-public class FuzzEffect extends CanvasEffect {
-	
+public class FlickerEffect extends CanvasEffect {
 
-	protected FuzzEffect(PApplet parent, Drawable output) {
+	protected FlickerEffect(PApplet parent, Drawable output) {
 		super(parent, output);
+		
 	}
 
 	@Override
@@ -32,6 +32,11 @@ public class FuzzEffect extends CanvasEffect {
 	@Override
 	protected void drawBackground() {
 
+	}
+	
+	@Override
+	public int getType() {
+		return Drawable.EFFECT;
 	}
 
 }

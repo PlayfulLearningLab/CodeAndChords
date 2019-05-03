@@ -1,4 +1,4 @@
-package coreV2_CanvasEffects;
+package coreV2_EffectsAndFilters;
 
 import coreV2.Canvas;
 import processing.core.PApplet;
@@ -49,6 +49,11 @@ public class RGBEffect extends CanvasEffect {
 	@Override
 	protected void drawBackground() {
 
+	}
+	
+	@Override
+	public int getType() {
+		return Drawable.EFFECT;
 	}
 
 }

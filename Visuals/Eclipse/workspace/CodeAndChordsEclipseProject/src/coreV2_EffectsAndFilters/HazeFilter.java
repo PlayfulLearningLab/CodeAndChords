@@ -1,7 +1,7 @@
 /**
  * 
  */
-package coreV2_CanvasEffects;
+package coreV2_EffectsAndFilters;
 
 import processing.core.PApplet;
 
@@ -63,6 +63,11 @@ public class HazeFilter extends CanvasEffect {
 	protected void drawBackground() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public int getType() {
+		return Drawable.FILTER;
 	}
 
 }

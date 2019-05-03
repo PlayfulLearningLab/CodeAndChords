@@ -1,4 +1,4 @@
-package coreV2_CanvasEffects;
+package coreV2_EffectsAndFilters;
 
 import processing.core.PApplet;
 
@@ -32,6 +32,11 @@ public class VintageFilter extends CanvasEffect {
 	@Override
 	protected void drawBackground() {
 
+	}
+	
+	@Override
+	public int getType() {
+		return Drawable.FILTER;
 	}
 
 }
