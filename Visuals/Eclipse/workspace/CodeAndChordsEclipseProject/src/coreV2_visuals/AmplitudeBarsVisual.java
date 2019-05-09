@@ -10,6 +10,14 @@ import coreV2.InputHandler;
 import coreV2.ModuleDriver;
 import coreV2.Visual;
 
+/*
+import processing.core.*;
+import core.Module;
+import core.ModuleMenu;
+import core.input.MicrophoneInput;
+import net.beadsproject.beads.core.AudioContext;
+*/
+
 public class AmplitudeBarsVisual extends Visual 
 {
 	private Canvas				canvas;
@@ -18,15 +26,14 @@ public class AmplitudeBarsVisual extends Visual
 	protected String[]			controllers;
 	protected String[]			labels;
 	
-	public PitchColorVisual(ModuleDriver moduleDriver) 
+	public AmplitudeBarsVisual(ModuleDriver moduleDriver) 
 	{
 		super(moduleDriver, "Amplitude Bars");
 
-		this.addSliders();
+		//this.addSliders();
 		this.canvas = this.moduleDriver.getCanvas();
 		this.colorFader = new ColorFader(this.parent);
 	}
-}
 
 	@Override
 	public void controlEvent(ControlEvent theEvent) 
@@ -37,7 +44,7 @@ public class AmplitudeBarsVisual extends Visual
 	@Override
 	public void drawVisual() 
 	{
-		background(0);
+	    this.canvas.background();
 		int x;
 		int x2;
 		int y;
