@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import controlP5.ControlP5;
 import controlP5.Tab;
+import coreV2_EffectsAndFilters.Drawable;
 
 /**
  * 		Danny Mahota
@@ -81,6 +82,10 @@ import processing.event.MouseEvent;
  * 		- Visual			an abstract class for creating new visuals. These are then easily
  * 								plugged into the visual menu to be included as options.
  * 
+ * 		- Drawable			an interface for creating effect chains. Everything drawn to the
+ * 								effectChain instance variable will be passed through the
+ * 								effects and filters that have been assigned before drawing
+ * 								to the canvas
  * 		- Canvas			an object that automatically scales and translates the visual
  * 		- ColorScheme		a wrapper class for holding groups of colors
  * 
@@ -114,6 +119,11 @@ public class ModuleDriver implements PConstants
 	 */
 	private MenuGroup				menuGroup;
 	
+	/**
+	 * An output object that will apply effects and filters, then draw to the canvas
+	 */
+	private Drawable				effectChain;
+	
 	
 
 
@@ -127,10 +137,14 @@ public class ModuleDriver implements PConstants
 		this.cp5 = new ControlP5(this.parent);
 		this.cp5.getTab("default").hide();
 		
-		this.cp5.hide();
+		//this.cp5.set
 		
+		this.cp5.hide();
+				
 		//Create the Canvas (The re-sizable part of the screen the visual will go on)
 		this.canvas = new Canvas(this.parent);
+		
+		this.effectChain = this.canvas;
 		
 		//Create the menu system
 		this.menuGroup = new MenuGroup(this);
@@ -192,6 +206,47 @@ public class ModuleDriver implements PConstants
 		return this.canvas;
 	}
 	
+	public Drawable getEffectChain(){
+		return this.effectChain;
+	}
+	
+	public void setEffectChain(Drawable[] effects){
+		
+		/*
+		 * Sort effectChain while setting: effects first, then filters, and end with the canvas
+		 * 	- 	The size of this array will always be small so 
+		 * 		runtime and space aren't a concern, but it is important
+		 * 		to maintain the sequence of the effects and the sequence
+		 * 		of the Filters.
+		 */
+		
+		//Set the canvas as the root because it will always be the final output
+		this.effectChain = this.canvas;
+		
+		//Then build the chain backwards
+		//Note: this is similar to a linked list structure
+		
+		//Iterate through the array backwards to preserve the order of the Filters
+		for(int i = effects.length-1; i >= 0; i--)
+		{
+			if(effects[i].getType() == Drawable.FILTER)
+			{
+				effects[i].setOutput(this.effectChain);
+				this.effectChain = effects[i];
+			}
+		}
+
+		//Iterate through the array backwards to preserve the order of the Effects
+		for(int i = effects.length-1; i >= 0; i--)
+		{
+			if(effects[i].getType() == Drawable.EFFECT)
+			{
+				effects[i].setOutput(this.effectChain);
+				this.effectChain = effects[i];
+			}
+		}
+	}
+
 	public MenuGroup getMenuGroup()
 	{	
 		return this.menuGroup;
@@ -206,6 +261,16 @@ public class ModuleDriver implements PConstants
 	public ColorMenu getColorMenu()
 	{			
 		return (ColorMenu) this.menuGroup.getMenus()[1];
+	}
+	
+	public VisualMenu getVisualMenu()
+	{			
+		return (VisualMenu) this.menuGroup.getMenus()[2];
+	}
+	
+	public EffectMenu getEffectMenu()
+	{			
+		return (EffectMenu) this.menuGroup.getMenus()[3];
 	}
 
 

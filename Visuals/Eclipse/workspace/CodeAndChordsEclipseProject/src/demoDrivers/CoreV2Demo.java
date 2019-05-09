@@ -1,5 +1,6 @@
-package coreV2;
+package demoDrivers;
 
+import coreV2.*;
 import coreV2_visuals.*;
 import processing.core.PApplet;
 
@@ -9,12 +10,13 @@ public class CoreV2Demo extends PApplet
 	
 	public static void main(String[] args)
 	{
-		PApplet.main("coreV2.CoreV2Demo");
+		PApplet.main("demoDrivers.CoreV2Demo");
 	}
 	
 	public void settings()
 	{
-		size(925, 520);
+		this.size(925, 520);
+		this.pixelDensity(this.displayDensity());
 	}
 	
 	public void setup()
@@ -25,6 +27,9 @@ public class CoreV2Demo extends PApplet
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new GlitchVisual(this.driver));
 		
 
+		
+		System.out.println("Pixel density: " + this.displayDensity());
+		System.out.println("Pixel width/height: " + this.pixelWidth + ", " + this.pixelHeight);
 	}
 	
 	public void draw()

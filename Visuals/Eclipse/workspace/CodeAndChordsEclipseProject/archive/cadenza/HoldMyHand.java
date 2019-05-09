@@ -11,7 +11,7 @@ import core.ModuleMenu;
 import processing.core.PApplet;
 import core.input.MicrophoneInput;
 import core.input.PortAudioAudioIO;
-import coreV2.Follower;
+import coreV2.Seeker;
 import net.beadsproject.beads.core.AudioContext;
 
 public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
@@ -51,7 +51,7 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 	/**	holds the y values for all Controllers	*/
 	private	int[]	yVals;
 
-	private Follower[] follower;
+	private Seeker[] follower;
 
 
 	public static void main(String[] args) 
@@ -144,11 +144,11 @@ public class HoldMyHand extends Module /*implements ShapeEditorInterface */{
 		
 		this.menu.getOutsideButtonsCP5().hide();
 
-		this.follower = new Follower[this.curNumInputs];
+		this.follower = new Seeker[this.curNumInputs];
 		
 		for(int i = 0; i < this.curNumInputs; i++)
 		{
-			this.follower[i] = new Follower();
+			this.follower[i] = new Seeker();
 			this.follower[i].setType("average");
 			this.follower[i].setMaxVal(this.maxAmp);
 			this.follower[i].setMinVal(0);

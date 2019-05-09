@@ -1,6 +1,6 @@
 package coreV2;
 
-public class Follower 
+public class Seeker 
 {
 	private float 		val = 0;
 
@@ -18,12 +18,12 @@ public class Follower
 	private float		scalar = 1;
 
 
-	public Follower()
+	public Seeker()
 	{
 		this.setType("average");
 	}
 
-	public Follower(String type)
+	public Seeker(String type)
 	{
 		this.setType(type);
 	}
