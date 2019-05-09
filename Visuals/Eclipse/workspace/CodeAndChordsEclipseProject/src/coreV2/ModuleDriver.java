@@ -137,6 +137,8 @@ public class ModuleDriver implements PConstants
 		this.cp5 = new ControlP5(this.parent);
 		this.cp5.getTab("default").hide();
 		
+		//this.cp5.set
+		
 		this.cp5.hide();
 				
 		//Create the Canvas (The re-sizable part of the screen the visual will go on)
@@ -264,6 +266,11 @@ public class ModuleDriver implements PConstants
 	public VisualMenu getVisualMenu()
 	{			
 		return (VisualMenu) this.menuGroup.getMenus()[2];
+	}
+	
+	public EffectMenu getEffectMenu()
+	{			
+		return (EffectMenu) this.menuGroup.getMenus()[3];
 	}
 
 

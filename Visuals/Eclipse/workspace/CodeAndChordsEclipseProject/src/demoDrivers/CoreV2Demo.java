@@ -15,7 +15,8 @@ public class CoreV2Demo extends PApplet
 	
 	public void settings()
 	{
-		size(925, 520);
+		this.size(925, 520);
+		this.pixelDensity(this.displayDensity());
 	}
 	
 	public void setup()
@@ -26,6 +27,9 @@ public class CoreV2Demo extends PApplet
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new GlitchVisual(this.driver));
 		
 
+		
+		System.out.println("Pixel density: " + this.displayDensity());
+		System.out.println("Pixel width/height: " + this.pixelWidth + ", " + this.pixelHeight);
 	}
 	
 	public void draw()
