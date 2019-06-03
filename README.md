@@ -1,4 +1,4 @@
-# CodeAndChords
+# Code + Chords
 
 Live music visualization project (in-progress) using Java, the Processing language, and PortAudio API's;
 see this video for a 3-minute overview:
