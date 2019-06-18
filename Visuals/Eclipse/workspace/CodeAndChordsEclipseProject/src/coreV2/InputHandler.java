@@ -223,7 +223,7 @@ public class InputHandler extends MenuTemplate
 		return curInput.getMidiNote();
 	}
 
-	private float getAmplitude()
+	public float getAmplitude()
 	{
 		MusicalInput curInput = this.getCurInput();		
 		if(curInput == null) throw new IllegalArgumentException("Current input is null");
@@ -275,59 +275,6 @@ public class InputHandler extends MenuTemplate
 
 		return maxAmp;
 	}
-
-	public int[][] getAllMidiNotes()
-	{
-		MusicalInput curInput = this.getCurInput();
-		if(curInput == null) throw new IllegalArgumentException("Current input is null");
-
-		int[][] midiNotes = new int[this.numChannels][2];
-
-		if(curInput.getInputType() == "Midi Stream Input")
-		{
-			int[][] notes = ((MidiStreamInput) curInput).getAllNotesAndAmps().clone();
-
-			for(int i = 0; i < midiNotes.length; i++)
-			{
-				if(i < notes.length)
-				{
-					midiNotes[i][0] = notes[i][0];
-					midiNotes[i][1] = (int) Math.min(100, (((float)notes[i][1])/127f*100f));
-
-				}
-				else
-				{
-					midiNotes[i][0] = 0;
-					midiNotes[i][1] = -1;
-				}
-			}
-		}
-		else
-		{	
-			for(int i = 0; i < this.numChannels; i++)
-			{
-				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
-				{
-					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
-					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100));
-				}
-				else
-				{
-					midiNotes[i][0] = 0;
-					midiNotes[i][1] = -1;
-				}
-			}
-
-		}
-
-
-		return midiNotes;
-	}
-
-
-
-
-
 
 	@Override
 	public void controlEvent(ControlEvent theEvent)
@@ -476,6 +423,54 @@ public class InputHandler extends MenuTemplate
 		}
 
 	}//ControlEvent
+
+	public int[][] getAllMidiNotes()
+	{
+		MusicalInput curInput = this.getCurInput();
+		if(curInput == null) throw new IllegalArgumentException("Current input is null");
+	
+		int[][] midiNotes = new int[this.numChannels][2];
+	
+		if(curInput.getInputType() == "Midi Stream Input")
+		{
+			int[][] notes = ((MidiStreamInput) curInput).getAllNotesAndAmps().clone();
+	
+			for(int i = 0; i < midiNotes.length; i++)
+			{
+				if(i < notes.length)
+				{
+					midiNotes[i][0] = notes[i][0];
+					midiNotes[i][1] = (int) Math.min(100, (((float)notes[i][1])/127f*100f));
+	
+				}
+				else
+				{
+					midiNotes[i][0] = 0;
+					midiNotes[i][1] = -1;
+				}
+			}
+		}
+		else
+		{	
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
+				{
+					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
+					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100));
+				}
+				else
+				{
+					midiNotes[i][0] = 0;
+					midiNotes[i][1] = -1;
+				}
+			}
+	
+		}
+	
+	
+		return midiNotes;
+	}
 
 	@Override
 	public void sliderEvent(int id, float val) {

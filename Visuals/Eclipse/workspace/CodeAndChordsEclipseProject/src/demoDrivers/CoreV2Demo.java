@@ -15,6 +15,7 @@ public class CoreV2Demo extends PApplet
 	
 	public void settings()
 	{
+		//fullScreen();
 		this.size(925, 520);
 		this.pixelDensity(this.displayDensity());
 	}
@@ -25,7 +26,7 @@ public class CoreV2Demo extends PApplet
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new VerticalRegtanglesVisual(this.driver));
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new NeonStormVisual(this.driver));
 		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new GlitchVisual(this.driver));
-		
+		((VisualMenu)this.driver.getMenuGroup().getMenus()[2]).addVisual(new StarsVisual(this.driver));
 
 		
 		System.out.println("Pixel density: " + this.displayDensity());

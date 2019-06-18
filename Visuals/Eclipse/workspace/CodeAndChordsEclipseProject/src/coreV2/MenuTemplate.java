@@ -481,7 +481,7 @@ public abstract class MenuTemplate implements ControlListener, ControlP5Constant
 	 */
 	protected Controller[] addColorWheelGroup(int x, int y, int buttonWidth, String buttonLabel, Color color, String tab)
 	{
-		if(!this.isTab()) throw new IllegalArgumentException ("PANIC!!!");
+		if(!this.isTab()) throw new IllegalArgumentException ("PANIC!!!");//I dont know what this does but Im terrified to ever see it
 		
 		Button		button;
 		ColorWheel	colorWheel;

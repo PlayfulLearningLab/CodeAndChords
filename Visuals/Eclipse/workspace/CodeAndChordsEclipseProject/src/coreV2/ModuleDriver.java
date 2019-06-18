@@ -273,5 +273,8 @@ public class ModuleDriver implements PConstants
 		return (EffectMenu) this.menuGroup.getMenus()[3];
 	}
 
+	public float getAmplitude() {
+		return this.getInputHandler().getAmplitude();
+	}
 
 }

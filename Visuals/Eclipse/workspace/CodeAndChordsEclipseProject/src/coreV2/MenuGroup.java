@@ -30,6 +30,7 @@ public class MenuGroup implements ControlListener
 
 		this.menuGroup = new MenuTemplate[0];
 
+		
 		this.canvasMenu = new CanvasMenu(driver);
 		this.activeMenu = this.canvasMenu;
 		
