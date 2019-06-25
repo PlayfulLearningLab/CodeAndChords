@@ -15,8 +15,8 @@ public class CoreV2Demo extends PApplet
 	
 	public void settings()
 	{
-		//fullScreen();
-		this.size(925, 520);
+		fullScreen();
+		//this.size(925, 520);
 		this.pixelDensity(this.displayDensity());
 	}
 	

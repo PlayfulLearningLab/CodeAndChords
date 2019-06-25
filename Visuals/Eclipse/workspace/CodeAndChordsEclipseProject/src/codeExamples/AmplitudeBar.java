@@ -3,7 +3,7 @@ package codeExamples;
 //These are import libraries, they are programs that we use that are stored outside this program
 import coreV2.ModuleDriver;
 import processing.core.PApplet;
-import processing.event.KeyEvent;
+
 
 public class AmplitudeBar extends PApplet{//This class too extends PApplet so we can have the program draw on the computer screen.
 	
@@ -14,7 +14,6 @@ public class AmplitudeBar extends PApplet{//This class too extends PApplet so we
 	
 	//ModuleDriver is what runs alot of things in Code + Chords
 	ModuleDriver module;
-	KeyEvent key;
 	
 	public static void main(String[] args)
 	{

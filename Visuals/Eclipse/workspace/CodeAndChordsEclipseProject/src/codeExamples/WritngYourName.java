@@ -8,7 +8,7 @@ public class WritngYourName extends PApplet{
 	public static void main(String[] args)
 	{
 		//In the main all you need to write is the package.className
-		//where pachage is the 
+		//where package is the 
 		PApplet.main("codeExamples.WritngYourName");
 	}
 	/*

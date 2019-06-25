@@ -26,7 +26,7 @@ public class ColorMenu extends MenuTemplate
 	private int xPos = 10;
 
 	private int yStart = 240;
-	private int yIncrament = buttonHeight + 6;
+	private int yIncrament = buttonHeight + (6);
 	
 	private int[][]  colors = new int[3][3];
 	
