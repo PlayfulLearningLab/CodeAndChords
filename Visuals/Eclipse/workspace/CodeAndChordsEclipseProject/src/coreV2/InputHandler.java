@@ -92,7 +92,7 @@ public class InputHandler extends MenuTemplate
 		this.addMusicalInput(recInput1);
 
 
-
+		/*
 		RecordedInput recInput2	= new RecordedInput(driver.getParent(), new String[] {	"WantingMemories_Melody.wav",
 				"WMBass_Later_Quiet.wav",
 				"WantingMemories_Alto.wav",
@@ -106,7 +106,7 @@ public class InputHandler extends MenuTemplate
 
 		this.polyMidiButtonText = new String[] {"Polyphonic", "Monophonic"};
 		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
-
+	*/
 	}
 
 	// Setter for useRealTimeInput boolean
