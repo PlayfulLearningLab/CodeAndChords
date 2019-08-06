@@ -1,5 +1,6 @@
 package coreV2;
 
+import coreV2_EffectsAndFilters.Drawable;
 import processing.core.PApplet;
 
 /**
@@ -11,16 +12,16 @@ import processing.core.PApplet;
  * @author Danny Mahota
  *
  */
-public class Canvas 
+public class Canvas implements Drawable
 {
-	private PApplet			parent;
+	private PApplet				parent;
 	
-	private float			displayX;
-	private float			displayY;
-	private float 			displayWidth;
-	private float 			displayHeight;
+	private float				displayX;
+	private float				displayY;
+	private float 				displayWidth;
+	private float 				displayHeight;
 	
-	private boolean			isFullscreen;
+	private boolean				isFullscreen;
 	
 	
 	public Canvas(PApplet parent)
@@ -184,6 +185,17 @@ public class Canvas
 			
 		}
 	}//drawAppletBackground()
+
+	@Override
+	public int getType() {
+		return Drawable.CANVAS;
+	}
+
+	@Override
+	public void setOutput(Drawable output) {
+		System.err.println("The canvas object draws to the canvas, so it cannot output to another effect.");
+		
+	}
 	
 
 }

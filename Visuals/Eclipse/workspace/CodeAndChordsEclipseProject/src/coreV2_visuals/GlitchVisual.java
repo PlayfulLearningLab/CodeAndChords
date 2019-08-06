@@ -1,85 +1,115 @@
 package coreV2_visuals;
 
 import java.lang.reflect.Array;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import controlP5.ControlEvent;
+import controlP5.ControlListener;
 import coreV2.ColorFader;
 import coreV2.ModuleDriver;
 import coreV2.Visual;
+import processing.core.PConstants;
 
 public class GlitchVisual extends Visual{
 
-	private int[][]			shapes;
-
-	private ColorFader[]	fader;
-	private int[][][]		colorHistory;
-	private int				colorIndex;
-
-	private int[]			nextUpdateTime;
+	private String[] 				controllers;
+	private String[] 				labels;
 	
-	private String[]		controllers;
-	private String[]		labels;
+	private int 					numChannels;
+	private int[]					xPos;
+	
+	private LinkedList<int[]>[]		colors;
+	
+	private int						timeColorAddedLast;
+	private int						rectSize;
+	
+	private int						numShapes;
+	private int						colorFade;
+	private int						sizeIncrease;
+	private int						randomness;
+	
 
 	public GlitchVisual(ModuleDriver moduleDriver) 
 	{
 		super(moduleDriver, "Glitch");
-
-		this.shapes = new int[1][4];
-		this.shapes[0] = new int[]{(int)this.parent.width/2 - 100, (int)this.parent.height/2 - 100, 200, 200};
-
-		this.fader = new ColorFader[] {new ColorFader(this.parent)};
-
-		this.colorHistory = new int[1][10][3];
-		for(int i = 0; i < this.colorHistory.length; i++)
-		{
-			this.colorHistory[0][i] = new int[] {0,0,0};
-		}
 		
-		this.controllers = new String[] {"numRects", "chanceVisibility", "colorDelay", "scatter", "alpha"};
-		this.labels = new String[] {"Number of Rectangles", "Chance of Visibility", "Color Delay", 
-										"Scatter Size", "Alpha"};
-
-		this.colorIndex = 0;
-		this.nextUpdateTime = new int[] {0};
+		this.controllers = new String[] {"numRects", "colorFade", "sizeIncrease", "randomness"};
+		this.labels = new String[] {"Number of Rectangles", "Color Fade", 
+										"Size Increase", "Randomness2"};
 		
+		this.numChannels = 1;
+		this.colors = new LinkedList[] {new LinkedList<int[]>()};
+		
+		this.xPos = new int[] {this.parent.width/2};
+		this.rectSize = 100;
+		this.timeColorAddedLast = 0;
+		
+		this.numShapes = 30;
+		this.colorFade = 50;
+		this.sizeIncrease = 10;
+		this.randomness = 10;
 		
 		this.makeControls();
 	}
 	
 	private void makeControls()
 	{
-		this.cp5.addSlider(this.controllers[0], 50, 200)
-		.setValue(80)
+		this.cp5.addSlider(this.controllers[0], 10, 100)
+		.setValue(30)
 		.getCaptionLabel().hide();
 		this.cp5.addLabel(this.labels[0]);
 		
-		this.cp5.addSlider(this.controllers[1], 50, 200)
-		.setValue(150)
+		this.cp5.addSlider(this.controllers[1], 10, 200)
+		.setValue(50)
 		.getCaptionLabel().hide();
 		this.cp5.addLabel(this.labels[1]);
 		
-		this.cp5.addSlider(this.controllers[2], 0, 100)
-		.setValue(80)
+		this.cp5.addSlider(this.controllers[2], 0, 25)
+		.setValue(10)
 		.getCaptionLabel().hide();
 		this.cp5.addLabel(this.labels[2]);
 		
-		this.cp5.addSlider(this.controllers[3], 100, 255)
-		.setValue(150)
+		this.cp5.addSlider(this.controllers[3], 0, 50)
+		.setValue(0)
 		.getCaptionLabel().hide();
 		this.cp5.addLabel(this.labels[3]);
-		
-		this.cp5.addSlider(this.controllers[4], 0, 100)
-		.setValue(50)
-		.getCaptionLabel().hide();
-		this.cp5.addLabel(this.labels[4]);
+	
 	}
 
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
-		if(theEvent.getName()=="numChannels")
+		if(theEvent.getName()=="numChannels"){
+			this.numChannels = (int) theEvent.getValue() + 1;
+			this.xPos = new int[this.numChannels];
+			
+			int xVal = this.parent.width / this.numChannels;
+			
+			this.colors = new LinkedList[this.numChannels];
+			
+			for(int i = 0; i < this.numChannels; i++) {
+				this.xPos[i] = i*xVal + (xVal/2);
+				this.colors[i] = new LinkedList<int[]>();
+			}
+			
+			this.rectSize = xVal/2;
+		}
+		else if(theEvent.getName()==  this.controllers[0]) //number of rectangles
 		{
-			System.out.println(this.moduleDriver.getInputHandler().getNumChannels());
-			this.setNumChannels(this.moduleDriver.getInputHandler().getNumChannels());
+			this.numShapes = (int) theEvent.getValue();
+		}
+		else if(theEvent.getName()==  this.controllers[1]) //color fade
+		{
+			this.colorFade = (int) theEvent.getValue();
+		}
+		else if(theEvent.getName()==  this.controllers[2]) //size increase
+		{
+			this.sizeIncrease = (int) theEvent.getValue();
+		}
+		else if(theEvent.getName()==  this.controllers[3]) //randomness
+		{
+			this.randomness = (int) theEvent.getValue();
 		}
 
 	}
@@ -87,115 +117,62 @@ public class GlitchVisual extends Visual{
 	@Override
 	public void drawVisual() 
 	{
-		int[][] midiNotes = this.moduleDriver.getInputHandler().getAllMidiNotes();
+		this.parent.rectMode(PConstants.CENTER);
 		
-		for(int channel = 0; channel < this.fader.length; channel++)
-		{
-			this.updateColorHistory(channel, this.colorIndex);
+		int[][] note = this.moduleDriver.getInputHandler().getAllMidiNotes();
+		
+		boolean addNewColor = false;
+		if(this.parent.millis() > this.timeColorAddedLast + this.colorFade) {
+			addNewColor = true;
+			this.timeColorAddedLast = this.parent.millis();
+		}
+		
+		for(int i = 0; i < this.numChannels; i++) {
 			
-			int[] newColor = this.moduleDriver.getColorMenu().getColorSchemes()[0].getPitchColor(midiNotes[channel][0]);
-			this.fader[channel].setTargetColor(newColor);
-
-			if(midiNotes[0][1] == -1){
-				this.fader[channel].setTargetAlpha(0);
-			}
-			else{
-				this.fader[channel].setTargetAlpha(255);
-			}
-
-
-			this.drawGlitchedObjects(channel);
-
-			this.drawObject(channel);
-			this.glitch();
-		}
-		
-		this.colorIndex++;
-		this.colorIndex = this.colorIndex%10;
-
-	}
-
-	private void updateColorHistory(int channelNum, int colorIndex)
-	{
-		int[] newColor = this.fader[channelNum].getColor();
-		for(int i = 0; i < 3; i++)
-		{
-			this.colorHistory[channelNum][colorIndex][i] = newColor[i];
-		}
-
-
-	}
-
-	private void drawGlitchedObjects(int channelNum)
-	{
-		int[][] midiNotes = this.moduleDriver.getInputHandler().getAllMidiNotes();
-
-		this.parent.noFill();
-		this.parent.strokeWeight(6);
-
-		//get current color
-		int curColorIndex;
-
-		for(int i = 0; i < this.colorHistory[channelNum].length && midiNotes[channelNum][1] != -1; i++)
-		{
-			curColorIndex = (this.colorIndex - i + this.colorHistory[channelNum].length)%this.colorHistory.length;
-
-			int rand1 = (int) ((Math.random() - .5) * (100 + i*i));
-			int rand2 = (int) ((Math.random() - .5) * (100 + i*i));
-
-			this.parent.stroke(this.colorHistory[channelNum][curColorIndex][0], this.colorHistory[channelNum][curColorIndex][1], this.colorHistory[channelNum][curColorIndex][2], (int)(150 - 15*i));
-
-			this.moduleDriver.getCanvas().rect(this.shapes[channelNum][0] + rand1, this.shapes[channelNum][1] + rand2, this.shapes[channelNum][2], this.shapes[channelNum][3]);
-		}
-
-	}
-
-	private void drawObject(int channelNum)
-	{
-		this.parent.stroke(255, 255);
-		this.parent.strokeWeight(6);
-		this.parent.noFill();
-
-		int[][] midiNotes = this.moduleDriver.getInputHandler().getAllMidiNotes();
-		int rand1 = 0;
-		int rand2 = 0;
-
-		if(midiNotes[channelNum][1] != -1)
-		{
-			rand1 = (int) ((Math.random() - .5) * 20);
-			rand2 = (int) ((Math.random() - .5) * 20);
-		}
-
-		this.moduleDriver.getCanvas().rect(this.shapes[channelNum][0] + rand1, this.shapes[channelNum][1] + rand2, this.shapes[channelNum][2], this.shapes[channelNum][3]);
-	}
-
-	private void glitch()
-	{
-
-	}
-
-	public void setNumChannels(int numChannels)
-	{
-		this.shapes = new int[numChannels][4];
-		this.colorHistory = new int[numChannels][10][3];
-		this.fader = new ColorFader[numChannels];
-		this.nextUpdateTime = new int[numChannels];
-		
-		for(int i = 0; i < numChannels; i++)
-		{
-			int width = this.parent.width/(2*numChannels);
-			width = Math.min(width, 200);
-			this.shapes[i] = new int[]{(int)(i*this.parent.width/(numChannels+1) + width), (int)this.parent.height/2 - width/2, width, width};
-			
-			for(int i2 = 0; i2 < 10; i2++)
-			{
-				this.colorHistory[i][i2] = new int[] {0,0,0};
-			}
+			if(addNewColor) {
+				int[] color = this.moduleDriver.getColorMenu().getColorSchemes()[0].getPitchColor(note[i][0]%12);
+				this.colors[i].addFirst(color);
 				
-			this.fader[i] = new ColorFader(this.parent);
-			this.nextUpdateTime[i] = 0;
+				while(this.colors[i].size() > this.numShapes) {
+					this.colors[i].removeLast();
+				}
+			}
 			
+			this.drawVisualForInput(i, this.xPos[i], this.parent.height/2);
 		}
+		
+		this.parent.rectMode(PConstants.CORNER);
+	}
+	
+	private void drawVisualForInput(int channelNumber, int centerX, int centerY) 
+	{	
+		Iterator<int[]> iter = this.colors[channelNumber].iterator();
+		int[] color;
+		
+		int i = 0;
+		
+		int size = this.rectSize;
+		int alpha = 255;
+		int randX = 0;
+		int randY = 0;
+		
+		this.parent.noFill();
+		
+		while(iter.hasNext()) {
+			color = iter.next();
+			this.parent.stroke(color[0], color[1], color[2], alpha);
+			
+			this.moduleDriver.getCanvas().rect(centerX + randX, centerY + randY, size, size);
+			
+			i++;
+			
+			size += this.sizeIncrease;
+			
+			randX = (int) ((Math.random() - .5) * (float)this.randomness);
+			randY = (int) ((Math.random() - .5) * (float)this.randomness);
+			alpha = (int) (255 - 255*((float)i/(float)this.numShapes));
+		}
+		
 	}
 
 	@Override
