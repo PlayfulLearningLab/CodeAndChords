@@ -101,12 +101,12 @@ public class InputHandler extends MenuTemplate
 
 		recInput2.setInputName("Wanting Memories");
 		this.addMusicalInput(recInput2);
-
+		*/
 		this.controlP5.get("playableInput").setValue(0);
 
 		this.polyMidiButtonText = new String[] {"Polyphonic", "Monophonic"};
 		this.monoMidiTypeButtonText = new String[] {"Last", "Loudest", "First"};
-	*/
+	
 	}
 
 	// Setter for useRealTimeInput boolean
@@ -567,7 +567,7 @@ public class InputHandler extends MenuTemplate
 
 	private void makeControls()
 	{
-		this.controlP5.addLabel("Real Time Inputs", 30, this.parent.height * 5/9)
+		this.controlP5.addLabel("Real Time Inputs", 30, this.parent.height * 5/9 - 5)
 		.setTab(this.getMenuTitle());
 
 		this.controlP5.addLabel("realTimeInfo")
@@ -578,10 +578,10 @@ public class InputHandler extends MenuTemplate
 		.setText("info here");
 
 		this.controlP5.addScrollableList("realTimeInput")
-		.setPosition(30, this.parent.height * 5/9 + 15)
+		.setPosition(30, this.parent.height * 5/9 + 10)
 		.setWidth(250)
-		.setBarHeight(30)
-		.setItemHeight(30)
+		.setBarHeight(25)
+		.setItemHeight(25)
 		.setItems(new String[] {})
 		.setValue(0)
 		.close()
@@ -593,7 +593,7 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.addLabel("playableInfo")
 		.setTab(this.getMenuTitle())
 		.setMultiline(true)
-		.setPosition(40, this.parent.height*7/9 + 60)
+		.setPosition(40, this.parent.height*7/9 + 65)
 		.setSize(this.parent.width/3 - 50, this.parent.height * 1/9)
 		.setText("info here");
 
@@ -608,14 +608,14 @@ public class InputHandler extends MenuTemplate
 		.setTab(this.getMenuTitle());
 
 		this.controlP5.addButton("polyMidiButton")
-		.setPosition(30, this.parent.height * 5/9 + 60)
-		.setSize(115, 30)
+		.setPosition(30, this.parent.height * 5/9 + 88)
+		.setSize(115, 25)
 		.setTab(this.menuTitle)
 		.setLabel("Polyphonic");
 
 		this.controlP5.addButton("monoMidiTypeButton")
-		.setPosition(165, this.parent.height * 5/9 + 60)
-		.setSize(115, 30)
+		.setPosition(165, this.parent.height * 5/9 + 88)
+		.setSize(115, 25)
 		.setTab(this.menuTitle)
 		.setLabel("Last");
 
@@ -629,9 +629,16 @@ public class InputHandler extends MenuTemplate
 		.setPosition(this.parent.width/3 - (30 + 150), this.parent.height * 7/18)
 		.setSize(150, 20)
 		.setValue(1000)
+		.setCaptionLabel("")
+		.setColorActive(Color.PINK.getRGB())
+		.setColorForeground(Color.RED.getRGB())
 		.setDecimalPrecision(0)
 		.setTab(this.getMenuTitle())
-		.getCaptionLabel().setVisible(false);
+		.getValueLabel().setVisible(false);
+		
+		
+		
+		
 
 		this.controlP5.addLabel("Forte Threshold")
 		.setPosition(30, this.parent.height * 7/18 + 7)
@@ -645,9 +652,14 @@ public class InputHandler extends MenuTemplate
 		.setPosition(this.parent.width/3 - (30 + 150), this.parent.height * 3/9)
 		.setSize(150, 20)
 		.setValue(1)
+		.setCaptionLabel("")
+		.setColorActive(new Color(0,255,100).getRGB())//THis is Lime
+		.setColorForeground(Color.GREEN.getRGB())
 		.setDecimalPrecision(0)
+		
 		.setTab(this.getMenuTitle())
-		.getCaptionLabel().setVisible(false);
+		.getValueLabel().setVisible(false);
+		
 
 		this.controlP5.addLabel("Piano Threshold")
 		.setPosition(30, this.parent.height * 3/9 + 7)
@@ -666,7 +678,7 @@ public class InputHandler extends MenuTemplate
 		.setPosition(100, this.parent.height * 2/9)
 		.setWidth(50)
 		.setBarHeight(25)
-		.setItemHeight(25)
+		.setItemHeight(30)
 		.setHeight(100)
 		.setItems(new String[] {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"})
 		.setValue(0)
@@ -689,7 +701,7 @@ public class InputHandler extends MenuTemplate
 		.setPosition(170, this.parent.height * 3/18 -10)
 		.setWidth(this.parent.width/3 - (60 + 140))
 		.setBarHeight(25)
-		.setItemHeight(25)
+		.setItemHeight(30)
 		.setHeight(100)
 		.setItems(new String[] {"1", "2", "3", "4", "5", "6", "7", "8",})
 		.setValue(0)

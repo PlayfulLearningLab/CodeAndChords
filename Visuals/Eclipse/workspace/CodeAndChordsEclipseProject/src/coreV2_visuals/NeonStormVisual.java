@@ -62,7 +62,7 @@ public class NeonStormVisual extends Visual {
 	@Override
 	public void controlEvent(ControlEvent theEvent) 
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

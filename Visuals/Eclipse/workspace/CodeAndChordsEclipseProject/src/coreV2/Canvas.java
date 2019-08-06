@@ -181,8 +181,9 @@ public class Canvas implements Drawable
 			this.parent.fill(255);
 			this.parent.textSize(28);
 			this.parent.textAlign(this.parent.CENTER, this.parent.CENTER);
-			this.parent.text("CODE+CHORDS", this.displayX/2, this.parent.height/18);
-			
+			this.parent.text("CODE+CHORDS", this.displayX/2, this.parent.height/25);
+			this.parent.textSize(7);
+			this.parent.text("1.0.0", this.displayX/2, this.parent.height/12);
 		}
 	}//drawAppletBackground()
 

@@ -98,7 +98,7 @@ public class VisualMenu extends MenuTemplate {
 		for(int i = 0; i < visual.getNumControllers(); i++)
 		{
 			controller = this.controlP5.getController(visual.getControllerName(i));
-
+			System.out.println(i);
 			controller.setSize(this.controllerWH[0], this.controllerWH[1]);
 			controller.setPosition(this.controllerXY[i][0], this.controllerXY[i][1]);
 			controller.setTab(this.getMenuTitle());
