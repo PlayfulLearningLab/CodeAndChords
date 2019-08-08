@@ -66,4 +66,20 @@ public abstract class Visual implements ControlListener
 			this.cp5.getController(this.getLabelName(i)).show();
 		}
 	}
+	
+	protected int getMidiNote(int channel) {
+		return this.moduleDriver.getInputHandler().getMidiNote(channel);
+	}
+	
+	protected float getAmplitude(int channel) {
+		return this.moduleDriver.getInputHandler().getAmplitude(channel);
+	}
+	
+	protected int[] getCanvasColor() {
+		return this.moduleDriver.getColorMenu().getColorSchemes()[0].getCanvasColor();
+	}
+	
+	protected int[] getPitchColor(int midiNote) {
+		return this.moduleDriver.getColorMenu().getColorSchemes()[0].getPitchColor(midiNote%12);
+	}
 }

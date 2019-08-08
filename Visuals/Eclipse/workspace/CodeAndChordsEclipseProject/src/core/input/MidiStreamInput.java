@@ -303,6 +303,39 @@ public class MidiStreamInput implements Receiver, MusicalInput
 
 		return val;
 	}
+	
+	@Override
+	public int getTotalNumChannels()
+	{
+		int numNotes = 0;
+		while(this.curNotes[numNotes][1] != -1) {
+			numNotes++;
+		}
+		
+		return numNotes;
+	}
+	
+	@Override
+	public int getMidiNote(int channel) 
+	{
+		int val = -1;
+
+		if(this.numNotes != 0)
+			val = this.curNotes[channel][0];
+
+		return val;
+	}
+
+	@Override
+	public float getAmplitude(int channel) 
+	{
+		float val = 0;
+
+		if(this.numNotes != 0)
+			val = this.curNotes[channel][1];
+
+		return val;
+	}
 
 	public int[] getAllMidiNotes()
 	{
@@ -405,13 +438,6 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	public String getInputName() {
 		return this.inputName;
 	}
-
-	@Override
-	public int getTotalNumChannels()
-	{
-		return 1;
-	}
-
 
 	@Override
 	public void setInputName(String inputName) 

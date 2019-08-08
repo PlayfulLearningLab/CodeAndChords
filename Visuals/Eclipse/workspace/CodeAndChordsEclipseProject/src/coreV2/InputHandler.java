@@ -215,7 +215,7 @@ public class InputHandler extends MenuTemplate
 		return curInput;
 	}
 
-	private int getMidiNote()
+	public int getMidiNote()
 	{
 		MusicalInput curInput = this.getCurInput();		
 		if(curInput == null) throw new IllegalArgumentException("Current input is null");
@@ -229,6 +229,28 @@ public class InputHandler extends MenuTemplate
 		if(curInput == null) throw new IllegalArgumentException("Current input is null");
 
 		float answer = curInput.getAmplitude();
+
+		if(this.controlP5.getController("piano").getValue() > answer)
+		{
+			answer = 0;
+		}
+		return answer;
+	}
+	
+	public int getMidiNote(int channel)
+	{
+		MusicalInput curInput = this.getCurInput();		
+		if(curInput == null) throw new IllegalArgumentException("Current input is null");
+
+		return curInput.getMidiNote(channel);
+	}
+
+	public float getAmplitude(int channel)
+	{
+		MusicalInput curInput = this.getCurInput();		
+		if(curInput == null) throw new IllegalArgumentException("Current input is null");
+
+		float answer = curInput.getAmplitude(channel);
 
 		if(this.controlP5.getController("piano").getValue() > answer)
 		{

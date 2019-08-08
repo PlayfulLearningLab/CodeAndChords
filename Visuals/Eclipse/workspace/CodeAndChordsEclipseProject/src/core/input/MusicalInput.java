@@ -21,6 +21,10 @@ public interface MusicalInput
 	
 	public float 	getAmplitude();
 	
+	public int 		getMidiNote(int channel);
+	
+	public float 	getAmplitude(int channel);
+	
 	
 
 }
