@@ -113,23 +113,24 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			{
 				
 				System.out.println("Use this input?");
-				String input = reader.nextLine();
+				//String input = reader.nextLine();
 				
-				System.out.println("Input = [" + input + "]");
-				
+				//System.out.println("Input = [" + input + "]");
+				/*
 				if(input.contains("y"))
 				{
 					inputFound = true;
 					reader.close();
 					System.out.println("\n\ninput selected");
 				}
+				
 				else
 				{
 					inputFound = false;
 					device.close();
 				}
 				
-				
+				*/
 				inputFound = true;
 				reader.close();
 				

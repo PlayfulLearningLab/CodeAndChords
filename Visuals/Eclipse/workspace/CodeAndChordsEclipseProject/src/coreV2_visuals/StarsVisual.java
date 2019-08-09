@@ -11,7 +11,7 @@ import coreV2.Visual;
 
 /**
  * @author Cullen Kittams
- * This visual 
+ * 
  */
 public class StarsVisual extends Visual{
 	private Canvas canvas;
@@ -25,12 +25,21 @@ public class StarsVisual extends Visual{
 	private int numOfStars = 600;
 	private Star[] stars = new Star[numOfStars];
 	
+	private int speed = 30;
+	private int crawlSpeed = 50;
+	private int streakThreshold = 500;
+	private int starSize = 4;
+	
 	private Random generator = new Random();
 	
 	
 	public StarsVisual (ModuleDriver moduleDriver) {
 		
 		super(moduleDriver, "Stars");
+		
+		this.controllers = new String[] {"speed", "crawlSpeed", "starSize", "streakThreshold"};
+		this.labels = new String[] {"Speed", "Crawl Speed", "Star Size (in pixels)","Streak Threshold"};
+		
 		this.canvas = this.moduleDriver.getCanvas();
 		this.colorFader = new ColorFader(this.parent);
 		this.colorFader.setReleaseDuration(300);
@@ -38,19 +47,73 @@ public class StarsVisual extends Visual{
 		canvasDimensions = canvas.getCanvasDimensions();
 		
 		
+		System.out.println(controllers[0]);
+
 		
 		for (int i = 0; i < stars.length; i++) {
 			stars[i] = new Star();
 		}
 		
-	}
-
-	@Override
-	public void controlEvent(ControlEvent theEvent) {
-		// TODO Auto-generated method stub
+		this.addSliders();
 		
 	}
+	
+	private void addSliders()
+	{	
+		this.cp5.addSlider(this.controllers[0], 1, 100)
+		.setValue(30)
+		.setDecimalPrecision(0)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[0]);
+		
+		this.cp5.addSlider(this.controllers[1], 0, 100)
+		.setValue(50)
+		.setDecimalPrecision(0)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[1]);
+		
+		this.cp5.addSlider(this.controllers[2], 1, 25)
+		.setValue(4)
+		.setDecimalPrecision(0)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[2]);
+		
+		this.cp5.addSlider(this.controllers[3], 1, 100)
+		.setValue(50)
+		.setDecimalPrecision(0)
+		.getCaptionLabel().hide();
+		this.cp5.addLabel(this.labels[3]);
+		
 
+	}
+	
+	
+	@Override
+	public void controlEvent(ControlEvent theEvent) {
+		
+		
+		if(theEvent.getName() == "speed"){
+			System.out.println("Setting " + theEvent.getName());
+			speed = (int)theEvent.getValue();	
+		}
+		
+		if(theEvent.getName() == "crawlSpeed"){
+			System.out.println("Setting " + theEvent.getName());
+			crawlSpeed = (int)theEvent.getValue();	
+		}
+
+		if(theEvent.getName() == "starSize"){
+			System.out.println("Setting " + theEvent.getName());
+			starSize = (int)theEvent.getValue();
+		}	
+		if(theEvent.getName() == "streakThreshold"){
+			System.out.println("Setting " + theEvent.getName());
+			streakThreshold = (int)theEvent.getValue();
+		}		
+		
+		
+	}
+	
 	@Override
 	public void drawVisual() {
 		
@@ -105,7 +168,7 @@ public class StarsVisual extends Visual{
 			
 			//update the stars
 			
-			stars[i].zPos = (float) ((int) stars[i].zPos - (this.moduleDriver.getAmplitude()* 0.15) - .01);// the size of the
+			stars[i].zPos = (float) ((int) stars[i].zPos - (this.moduleDriver.getAmplitude()* (speed/100.0)) - crawlSpeed/100.0);// the size of the
 			
 			
 			if (stars[i].zPos < 1) {
@@ -119,7 +182,7 @@ public class StarsVisual extends Visual{
 			
 			int newX = (int)((stars[i].xPos/stars[i].zPos) * canvasDimensions[2]/2 );
 			int newY = (int)((stars[i].yPos/stars[i].zPos) * canvasDimensions[3]/2);
-			radius =  4 - (stars[i].zPos/canvasDimensions[2])* 4; // takes the 
+			radius =  starSize - (stars[i].zPos/canvasDimensions[2])* starSize; // takes the 
 			 
 			canvas.ellipse(newX, newY , (int)radius, (int)radius);
 			prevX = (int) ((stars[i].xPos/stars[i].prevZ) * canvasDimensions[2]/2);
@@ -128,7 +191,7 @@ public class StarsVisual extends Visual{
 			//System.out.println("Y" + prevY);
 			
 			//drawing the lines
-			if(this.moduleDriver.getAmplitude() > 500) {
+			if(this.moduleDriver.getAmplitude() > streakThreshold) {
 				int length;
 				this.parent.stroke(curColor[0], curColor[1], curColor[2]);
 				length = ((newX - prevX)*(newX - prevX)) + ((newY - prevY)*(newY - prevY));
@@ -152,21 +215,22 @@ public class StarsVisual extends Visual{
 	}
 
 	@Override
-	public int getNumControllers() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getNumControllers() 
+	{
+		return this.controllers.length;
 	}
 
 	@Override
-	public String getControllerName(int controllerNum) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getControllerName(int controllerNum) 
+	{
+		
+		return this.controllers[controllerNum];
 	}
 
 	@Override
-	public String getLabelName(int controllerNum) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getLabelName(int controllerNum) 
+	{
+		return this.labels[controllerNum];
 	}
 	
 	public class Star{
@@ -189,5 +253,8 @@ public class StarsVisual extends Visual{
 		
 		
 	}
+
+	
+	
 }
 
