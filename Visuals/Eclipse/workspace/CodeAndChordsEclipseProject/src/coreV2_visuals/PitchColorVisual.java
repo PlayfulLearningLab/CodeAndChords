@@ -24,7 +24,8 @@ public class PitchColorVisual extends Visual {
 
 		this.addSliders();
 		this.canvas = this.moduleDriver.getCanvas();
-		this.colorFader = new ColorFader(this.parent);
+		//this.colorFader = new ColorFader(this.parent);
+		this.colorFader = new ColorFader(0,0,0,255,this.parent);
 	}
 
 	private void addSliders()

@@ -87,10 +87,15 @@ public class ColorFader implements PConstants
 			for(int i = 0; i < 3; i++)
 			{
 				transitionDistance = this.targetRGB[i] - this.lastRGB[i];
+				System.out.println(targetRGB[i]);
+				//System.out.println("transition distance: " +transitionDistance);
+				//System.out.println("curTansitionTime: " + curTransitionTime);
 				this.RGB[i] = this.lastRGB[i] + (int)(transitionDistance * (float)((float)curTransitionTime / (float)this.transitionDuration));
-
+				//System.out.println(i + " ," +this.RGB[i]);
 				this.RGB[i] = Math.max(0, this.RGB[i]);
+				//System.out.println(i + " ," +this.RGB[i]);
 				this.RGB[i] = Math.min(255, this.RGB[i]);
+				//System.out.println(i + " ," +this.RGB[i]);
 			}
 		}
 		else

@@ -1,5 +1,7 @@
 package controlP5;
 
+import java.awt.Color;
+
 /**
  * controlP5 is a processing gui library.
  * 
@@ -40,6 +42,10 @@ import controlP5.ControlP5.Invisible;
  * @example controllers/ControlP5range
  * @nosuperclasses Controller Controller
  */
+/**
+ * @author cckit
+ *
+ */
 public class Range extends Controller< Range > {
 
 	/* TODO if range value is int, value labels do initialize as floats. first click makes them
@@ -70,7 +76,11 @@ public class Range extends Controller< Range > {
 	public int alignValueLabel = CENTER;
 	protected int _myColorTickMark = 0xffffffff;
 	private int mode = -1;
-
+	
+	//PLL variables
+			private int leftColor = color.getActive();
+			private int rightColor = color.getActive();
+			private int centerColor = color.getActive();
 	/**
 	 * Convenience constructor to extend Range.
 	 * 
@@ -413,6 +423,7 @@ public class Range extends Controller< Range > {
 	}
 
 	class RangeView implements ControllerView< Range > {
+		
 
 		public void display( PGraphics theGraphics , Range theController ) {
 
@@ -440,20 +451,24 @@ public class Range extends Controller< Range > {
 
 			theGraphics.rect( 0 , 0 , getWidth( ) , getHeight( ) );
 
-			theGraphics.fill( high == CENTER ? color.getActive( ) : color.getForeground( ) );
+			theGraphics.fill( high == CENTER ? color.getActive( ) : NAVY );
+			
+			this.setLeftColor(RED);
 
 			if ( isShowTickMarks ) {
 				int n = handleSize / 2;
 				theGraphics.rect( minHandle - n , 0 , mr + handleSize , getHeight( ) );
-				theGraphics.fill( ( isMinHandle || high == LEFT ) ? color.getActive( ) : color.getForeground( ) );
+				theGraphics.fill( ( isMinHandle || high == LEFT ) ? this.getLeftColor() : this.getLeftColor()  );
 				theGraphics.triangle( minHandle - handleSize , 0 , minHandle , 0 , minHandle - n , getHeight( ) );
-				theGraphics.fill( ( isMaxHandle || high == RIGHT ) ? color.getActive( ) : color.getForeground( ) );
+				theGraphics.fill( ( isMaxHandle || high == RIGHT ) ? this.getRightColor() : this.getLeftColor() );
 				theGraphics.triangle( maxHandle , 0 , maxHandle + handleSize , 0 , maxHandle + n , getHeight( ) );
 			} else {
 				theGraphics.rect( minHandle , 0 , mr , getHeight( ) );
-				theGraphics.fill( ( isMinHandle || high == LEFT ) ? color.getActive( ) : color.getForeground( ) );
+				color.setForeground(RED);
+				theGraphics.fill( ( isMinHandle || high == LEFT ) ?  color.getForeground( ) :new Color(255,10,10).getRGB());
 				theGraphics.rect( ( minHandle - handleSize ) , 0 , handleSize , getHeight( ) );
-				theGraphics.fill( ( isMaxHandle || high == RIGHT ) ? color.getActive( ) : color.getForeground( ) );
+				color.setForeground(GREEN);
+				theGraphics.fill( ( isMaxHandle || high == RIGHT ) ?  new Color(0,255,100).getRGB() :color.getForeground( ) );
 				theGraphics.rect( maxHandle , 0 , handleSize , getHeight( ) );
 
 			}
@@ -477,6 +492,30 @@ public class Range extends Controller< Range > {
 				}
 				theGraphics.popMatrix( );
 			}
+		}
+		
+		public void setLeftColor(int theColor) {
+			
+			leftColor = theColor;
+		}
+		
+		public void setRightColor(int theColor) {
+			rightColor = theColor;
+		}
+		
+		public void setCenterColor(int theColor) {
+			centerColor = theColor;
+		}
+		
+		public int getRightColor() {
+			return rightColor;
+		}
+		
+		public int getLeftColor() {
+			return leftColor;
+		}
+		public int getLCenterColor() {
+			return centerColor;
 		}
 	}
 
@@ -516,4 +555,11 @@ public class Range extends Controller< Range > {
 		return _myArrayValue;
 	}
 
+	
+	/**
+	 * methods added by The Playful Learning lab to increase functionality
+	 * 
+	 */
+	
+	
 }
