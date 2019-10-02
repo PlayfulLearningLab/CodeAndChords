@@ -61,7 +61,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 		
 		Scanner reader = new Scanner(System.in);
 		boolean inputFound = false;
-		for (int i = 0; !inputFound && i < infos.length; i++) 
+		for (int i = 2; !inputFound && i < infos.length; i++) 
 		{
 			inputFound = true;
 			try 
@@ -75,7 +75,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				List<Transmitter> transmitters = device.getTransmitters();
 				//and for each transmitter
 
-				for(int j = 0; j<transmitters.size();j++) 
+				for(int j = 2; j<transmitters.size();j++) 
 				{
 					//create a new receiver
 					transmitters.get(j).setReceiver(this);
@@ -111,25 +111,26 @@ public class MidiStreamInput implements Receiver, MusicalInput
 			
 			if(inputFound)
 			{
-				/*
+				
 				System.out.println("Use this input?");
-				String input = reader.nextLine();
+				//String input = reader.nextLine();
 				
-				System.out.println("Input = [" + input + "]");
-				
+				//System.out.println("Input = [" + input + "]");
+				/*
 				if(input.contains("y"))
 				{
 					inputFound = true;
 					reader.close();
 					System.out.println("\n\ninput selected");
 				}
+				
 				else
 				{
 					inputFound = false;
 					device.close();
 				}
-				*/
 				
+				*/
 				inputFound = true;
 				reader.close();
 				
@@ -168,7 +169,8 @@ public class MidiStreamInput implements Receiver, MusicalInput
 				this.curNotes[this.numNotes][1] = amp;
 				this.numNotes++;
 
-				//this.midiChannels[0].noteOn(note, amp);
+				
+				this.midiChannels[0].noteOn(note, amp);
 			}
 			else
 			{
@@ -405,7 +407,7 @@ public class MidiStreamInput implements Receiver, MusicalInput
 	}
 
 	@Override
-	public int getTotalNumInputs()
+	public int getTotalNumChannels()
 	{
 		return 1;
 	}

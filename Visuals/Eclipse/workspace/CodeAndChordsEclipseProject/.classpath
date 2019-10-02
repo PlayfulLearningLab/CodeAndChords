@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="org-jaudiolibs-audioservers.jar"/>
 	<classpathentry kind="lib" path="sound.jar"/>
 	<classpathentry kind="lib" path="jportaudio.jar"/>
+	<classpathentry kind="lib" path="data"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
