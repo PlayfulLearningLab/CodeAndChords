@@ -451,9 +451,9 @@ public class Range extends Controller< Range > {
 
 			theGraphics.rect( 0 , 0 , getWidth( ) , getHeight( ) );
 
-			theGraphics.fill( high == CENTER ? color.getActive( ) : NAVY );
+			theGraphics.fill( high == CENTER ? color.getActive( ) : GREEN );
 			
-			this.setLeftColor(RED);
+			this.setLeftColor(YELLOW);
 
 			if ( isShowTickMarks ) {
 				int n = handleSize / 2;
@@ -464,11 +464,11 @@ public class Range extends Controller< Range > {
 				theGraphics.triangle( maxHandle , 0 , maxHandle + handleSize , 0 , maxHandle + n , getHeight( ) );
 			} else {
 				theGraphics.rect( minHandle , 0 , mr , getHeight( ) );
-				color.setForeground(RED);
-				theGraphics.fill( ( isMinHandle || high == LEFT ) ?  color.getForeground( ) :new Color(255,10,10).getRGB());
+				color.setForeground(YELLOW);
+				theGraphics.fill( ( isMinHandle || high == LEFT ) ?  color.getForeground( ) :new Color( 255,255,100).getRGB());
 				theGraphics.rect( ( minHandle - handleSize ) , 0 , handleSize , getHeight( ) );
-				color.setForeground(GREEN);
-				theGraphics.fill( ( isMaxHandle || high == RIGHT ) ?  new Color(0,255,100).getRGB() :color.getForeground( ) );
+				color.setForeground(RED);
+				theGraphics.fill( ( isMaxHandle || high == RIGHT ) ?  new Color(255,10,10).getRGB() :color.getForeground( ) );
 				theGraphics.rect( maxHandle , 0 , handleSize , getHeight( ) );
 
 			}
@@ -556,10 +556,7 @@ public class Range extends Controller< Range > {
 	}
 
 	
-	/**
-	 * methods added by The Playful Learning lab to increase functionality
-	 * 
-	 */
+	
 	
 	
 }

@@ -39,7 +39,7 @@ public class InputHandler extends MenuTemplate
 	//Using a the real time input or playable input?
 	private boolean					useRealTimeInput;
 
-	private int						numChannels;
+	private int						numChannels;// numChannels in the number of visual outputs 
 
 	//Real Time Inputs
 	private	MusicalInput[]			realTimeInputs;
@@ -138,7 +138,7 @@ public class InputHandler extends MenuTemplate
 			this.parent.fill(0);
 			this.parent.rect(30, this.parent.height * 4/9, this.parent.width/3 - 60, 30);
 
-
+			//sound bar for theresholds
 			float barWidth = (this.getMaxAmp()/100) * (forteWidth);
 			barWidth = Math.min(barWidth, this.parent.width/3 - 60);
 
@@ -405,25 +405,25 @@ public class InputHandler extends MenuTemplate
 			theEvent.getController().bringToFront();
 			this.numChannels = (int) (theEvent.getValue() + 1);
 		}
-
-		if(theEvent.getName() == "piano")
+		
+		if(theEvent.getName() == "pianoForte")
 		{
 			float val = this.controlP5.getController("fortePiano").getArrayValue(0);
 			if(val > this.controlP5.getController("fortePiano").getArrayValue(1))
 			{
-				this.controlP5.getController("forte").setValue(val);
+				this.controlP5.getController("fortePiano").setArrayValue(1, val);
 			}
-		}
-
-		if(theEvent.getName() == "forte" && this.controlP5.getController("piano") != null)
-		{
-			float val = this.controlP5.getController("fortePiano").getArrayValue(1);
+		
+			 val = this.controlP5.getController("fortePiano").getArrayValue(1);
 			if(val < this.controlP5.getController("fortePiano").getArrayValue(0))
 			{
-				this.controlP5.getController("piano").setValue(val);
+				this.controlP5.getController("fortePiano").setArrayValue(0,val);
 			}
 		}
-
+		
+		
+		
+		
 	}//ControlEvent
 
 	public int[][] getAllMidiNotes()
@@ -456,12 +456,13 @@ public class InputHandler extends MenuTemplate
 		{	
 			for(int i = 0; i < this.numChannels; i++)
 			{
-				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("fortePiano").getArrayValue(0))//this.controlP5.getController("piano").getValue())
+				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("fortePiano").getArrayValue(0))
 				{
+					System.out.println("Forte Thresh " + this.controlP5.getController("fortePiano").getArrayValue(1));
 					System.out.println("Piano Thresh " + this.controlP5.getController("fortePiano").getArrayValue(0));
 					System.out.println(((Input)curInput).getAmplitude(i));
 					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
-					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/this.controlP5.getController("fortePiano").getArrayValue(1)));//(float)this.controlP5.getController("forte").getValue()*100));
+					midiNotes[i][1] = (int) Math.min(100, (float)(((Input)curInput).getAmplitude(i)/this.controlP5.getController("fortePiano").getArrayValue(1)));//(float)this.controlP5.getController("forte").getValue()*100));
 				}
 				else
 				{
@@ -579,7 +580,7 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.addLabel("realTimeInfo")
 		.setTab(this.getMenuTitle())
 		.setMultiline(true)
-		.setPosition(40, this.parent.height * 5/9 + 60)
+		.setPosition(200, this.parent.height * 5/9 - 5)
 		.setSize(this.parent.width/3 - 50, this.parent.height * 1/9)
 		.setText("info here");
 
@@ -599,7 +600,7 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.addLabel("playableInfo")
 		.setTab(this.getMenuTitle())
 		.setMultiline(true)
-		.setPosition(40, this.parent.height*7/9 + 65)
+		.setPosition(200, this.parent.height*7/9)
 		.setSize(this.parent.width/3 - 50, this.parent.height * 1/9)
 		.setText("info here");
 
@@ -690,7 +691,7 @@ public class InputHandler extends MenuTemplate
 		.setTab(this.getMenuTitle());
 		 */
 		this.controlP5.addToggle("Legend")
-		.setPosition(30, this.parent.height * 2/9)
+		.setPosition(30, this.parent.height * 5/18)
 		.setSize(50, 25)
 		.setValue(1)
 		.setCaptionLabel("Legend")
@@ -698,7 +699,7 @@ public class InputHandler extends MenuTemplate
 		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.controlP5.addScrollableList("Key Change")
-		.setPosition(100, this.parent.height * 2/9)
+		.setPosition(100, this.parent.height * 5/18)
 		.setWidth(50)
 		.setBarHeight(25)
 		.setItemHeight(30)
@@ -708,9 +709,21 @@ public class InputHandler extends MenuTemplate
 		.close()
 		.setTab(this.getMenuTitle());
 
+		
+		this.controlP5.addLabel("Key")
+		.setColor(255)
+		.setPosition(100,  this.parent.height * 1/4)
+		.setTab(this.getMenuTitle());
+		
+		
+		
+		this.controlP5.addLabel("Scale")
+		.setColor(255)
+		.setPosition(170,  this.parent.height * 1/4)
+		.setTab(this.getMenuTitle());
 
 		this.controlP5.addScrollableList("Keys")
-		.setPosition(170, this.parent.height * 2/9)
+		.setPosition(170, this.parent.height * 5/18)
 		.setWidth(this.parent.width/3 - (60 + 140))
 		.setBarHeight(25)
 		.setItemHeight(25)
@@ -718,8 +731,10 @@ public class InputHandler extends MenuTemplate
 		.setItems(new String[] {"Major", "Minor", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic", "Chromatic"})
 		.setValue(6)
 		.close()
+		
 		.setTab(this.getMenuTitle());
 
+		
 		this.controlP5.addScrollableList("numChannels")
 		.setPosition(170, this.parent.height * 3/18 -10)
 		.setWidth(this.parent.width/3 - (60 + 140))
@@ -731,9 +746,10 @@ public class InputHandler extends MenuTemplate
 		.close()
 		.setTab(this.getMenuTitle());
 
-		this.controlP5.addLabel("Max Number of Channels")
+		this.controlP5.addLabel("Total Visual Outputs")
 		.setPosition(30, this.parent.height * 3/18 - 4)
 		.setTab(this.getMenuTitle());
+		
 	}
 
 	public int[] getScale()
@@ -864,7 +880,7 @@ public class InputHandler extends MenuTemplate
 
 		boolean noteIsActive;
 
-		for(int i = 0; i < inputNum; i++)
+		for(int i = 0; i < scale.length; i++)
 		{ 
 			ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
 			int[] colors = schemes[0].getPitchColor(scale[i]);
@@ -875,9 +891,8 @@ public class InputHandler extends MenuTemplate
 
 			noteIsActive = false;
 			for(int i2 = 0; i2 < notes.length; i2++)
-
 			{
-				if(i == notes[i2]) noteIsActive = true;
+				if(scale[i] == notes[i2]) noteIsActive = true;
 			}
 
 			if(noteIsActive)
@@ -942,7 +957,7 @@ public class InputHandler extends MenuTemplate
 	{
 		String info = "";
 
-		info += "Number of Channels:   " + input.getTotalNumChannels() +"\n\n";
+		info += "Number of Inputs:   " + input.getTotalNumChannels() +"\n\n";
 
 		return info;
 	}
@@ -952,5 +967,13 @@ public class InputHandler extends MenuTemplate
 		return this.numChannels;
 	}
 
+	public float getForteThreshold() {
+		return this.controlP5.getController("fortePiano").getArrayValue(1);
+	}
+	
+	public float getPianoThreshold() {
+		return this.controlP5.getController("fortePiano").getArrayValue(0);
+	}
+	
 }
 

@@ -41,11 +41,12 @@ public class AmplitudeBar extends PApplet{//This class too extends PApplet so we
 		background(0);
 		
 		//module.getAmplitude get how loud the input is.
-		noteAmplitude = module.getAmplitude();
+		noteAmplitude = 100;
 		
 		
-		//This draws the rectangle and makes it so that the louder the input, the taller the rectangle.
-		rect(400,520,100,-4 * noteAmplitude); // we multiply by negative 4 so the rectangle is a taller and moves upward because 0 for y coordinate is at the top.
+		//This draws the rectangle and makes it so that the louder the input, the taller the rectangle.//
+		//rect(400,520,100,-4 * noteAmplitude); // we multiply by negative 4 so the rectangle is a taller and moves upward because 0 for y coordinate is at the top.
+		rect(400,520,0,520);
 	}
 	
 	

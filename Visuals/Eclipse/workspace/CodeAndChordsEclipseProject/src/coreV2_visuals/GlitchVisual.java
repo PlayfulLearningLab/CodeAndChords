@@ -35,9 +35,10 @@ public class GlitchVisual extends Visual{
 	{
 		super(moduleDriver, "Glitch");
 		
-		this.controllers = new String[] {"numRects", "colorFade", "sizeIncrease", "randomness"};
+		this.controllers = new String[] {"numRects", "colorFade", "sizeIncrease", "randomness", "glitchNumChannels"};
 		this.labels = new String[] {"Number of Rectangles", "Color Fade", 
-										"Size Increase", "Randomness2"};
+										"Size Increase", "Randomness2","glitchNumChannels"};
+										
 		
 		this.numChannels = 1;
 		this.colors = new LinkedList[] {new LinkedList<int[]>()};
@@ -76,11 +77,23 @@ public class GlitchVisual extends Visual{
 		.getCaptionLabel().hide();
 		this.cp5.addLabel(this.labels[3]);
 	
+		this.cp5.addSlider("glitchNumChannels")
+		.getCaptionLabel().hide();
+		//.setPosition(170, this.parent.height * 3/18 -10)
+		//.setWidth(this.parent.width/3 - (60 + 140))
+		//.setBarHeight(25)
+		//.setItemHeight(30)
+		//.setHeight(100)
+		//.setItems(new String[] {"1", "2", "3", "4", "5", "6", "7", "8",});
+		//.setValue(0);
+		
+		//.close();
+		this.cp5.addLabel(this.labels[4]);
 	}
 
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
-		if(theEvent.getName()=="numChannels"){
+		if(theEvent.getName()=="glitchNumChannels"){
 			this.numChannels = (int) theEvent.getValue() + 1;
 			this.xPos = new int[this.numChannels];
 			

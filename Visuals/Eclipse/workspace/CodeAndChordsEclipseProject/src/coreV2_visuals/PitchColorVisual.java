@@ -31,13 +31,27 @@ public class PitchColorVisual extends Visual {
 	private void addSliders()
 	{
 		this.controllers = new String[] {"transition", "attack", "release"};
-		this.labels = new String[] {"Transition Time (ms)", "Attack Time (ms)", "Release Time (ms)"};
+		this.labels = new String[] {
+				"Transition Time (ms)", "Attack Time (ms)", "Release Time (ms)"};
 
 		for(int i = 0; i < this.labels.length; i++)
 		{
 			this.cp5.addLabel(this.labels[i]).setTab(this.tabName);
 		}
-
+		
+		
+		/*
+		this.cp5.addScrollableList("numChannels")
+		//.setPosition(170, this.parent.height * 3/18 -10)
+		.setWidth(this.parent.width/3 - (60 + 140))
+		.setBarHeight(25)
+		.setItemHeight(30)
+		.setHeight(100)
+		.setItems(new String[] {"1", "2", "3", "4", "5", "6", "7", "8",})
+		.setValue(0)
+		.close();
+		
+		*/
 		this.cp5.addSlider("transition")
 		.setMin(30)
 		.setMax(1500)
@@ -63,6 +77,7 @@ public class PitchColorVisual extends Visual {
 		.setTab(this.tabName)
 		.getCaptionLabel().setVisible(false);
 
+		
 	}
 
 	@Override
@@ -103,9 +118,9 @@ public class PitchColorVisual extends Visual {
 		//check if the note is in the scale
 		for(int i = 0; i < scale.length; i++)
 		{ 
-			if((note%12) == i)
+			if((note%12) == scale[i])
 			{
-				pitchColor = schemes[0].getPitchColor(i);
+				pitchColor = schemes[0].getPitchColor(scale[i]);
 			}
 		}
 
@@ -113,17 +128,19 @@ public class PitchColorVisual extends Visual {
 		if(pitchColor[0] != -1)
 		{
 			colorFader.setTargetColor(pitchColor.clone());
+		} else {
+			colorFader.setTargetColor(0, 0, 0);
 		}
 
 		//if the velocity is greater than the piano threshold then set the alpha to 255
-		if(this.moduleDriver.getInputHandler().getAllMidiNotes()[0][1] > 0)
-		{
+		//if(this.moduleDriver.getInputHandler().getAllMidiNotes()[0][1] > 0)
+		//{
 			colorFader.setTargetAlpha(255);
-		}
-		else // if not, set the alpha to 0
-		{
-			colorFader.setTargetAlpha(0);
-		}
+		//}
+		//else // if not, set the alpha to 0
+		//{
+			//colorFader.setTargetAlpha(0);
+		//}
 
 		//get the current color from color fader and fill it into the canvas
 		int[] curColor = colorFader.getColor();
