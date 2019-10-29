@@ -94,7 +94,7 @@ public class NeonStormVisual extends Visual {
 
 
 		this.parent.noStroke();
-		int rectHeight = this.parent.height/(5*10);
+		int rectHeight = this.parent.height/(5*10);//50?
 		for(int i = 0; i < 10; i++)
 		{
 			this.parent.fill(0, 255 - 20*i);

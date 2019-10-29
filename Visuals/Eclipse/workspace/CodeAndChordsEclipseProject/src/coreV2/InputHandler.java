@@ -1,3 +1,4 @@
+
 package coreV2;
 
 import java.awt.Color;
@@ -17,6 +18,7 @@ import com.portaudio.PortAudio;
 
 import controlP5.ControlEvent;
 import controlP5.ControlP5;
+import controlP5.Range;
 import controlP5.ScrollableList;
 import controlP5.Textlabel;
 import core.input.Input;
@@ -37,7 +39,7 @@ public class InputHandler extends MenuTemplate
 	//Using a the real time input or playable input?
 	private boolean					useRealTimeInput;
 
-	private int						numChannels;
+	private int						numChannels;// numChannels in the number of visual outputs 
 
 	//Real Time Inputs
 	private	MusicalInput[]			realTimeInputs;
@@ -53,8 +55,8 @@ public class InputHandler extends MenuTemplate
 	protected	int	yVals;
 	protected	int	rectWidths;
 	protected	int	rectHeights;
-
-
+	protected float [] RMSarray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	protected float	[] RMSarray2 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	/**
 	 * Constructor
 	 * 
@@ -129,14 +131,14 @@ public class InputHandler extends MenuTemplate
 
 		if(this.driver.getMenuGroup().getActiveMenu() == this)
 		{
-			float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("piano").getValue()/this.controlP5.getController("forte").getValue());
+			float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("fortePiano").getArrayValue(0)/this.controlP5.getController("fortePiano").getArrayValue(1));
 			float forteWidth = parent.width/3 - 90;
 
 			this.parent.noStroke();
 			this.parent.fill(0);
 			this.parent.rect(30, this.parent.height * 4/9, this.parent.width/3 - 60, 30);
 
-
+			//sound bar for theresholds
 			float barWidth = (this.getMaxAmp()/100) * (forteWidth);
 			barWidth = Math.min(barWidth, this.parent.width/3 - 60);
 
@@ -166,6 +168,8 @@ public class InputHandler extends MenuTemplate
 				this.parent.fill(255,255,51);
 				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
 			}
+			
+			
 
 
 
@@ -186,8 +190,116 @@ public class InputHandler extends MenuTemplate
 
 
 		}
+		// bar 2
+		
+		float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("fortePiano").getArrayValue(0)/this.controlP5.getController("fortePiano").getArrayValue(1));
+		float forteWidth = parent.width/3 - 90;
+
+		this.parent.noStroke();
+		this.parent.fill(0);
+		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
+
+		//sound bar for theresholds
+		float barWidth = (this.getMaxAmpRMS()/100) * (forteWidth);
+		barWidth = Math.min(barWidth, this.parent.width/3 - 60);
+
+		this.parent.noStroke();
+
+		if(barWidth > forteWidth)
+		{
+			this.parent.fill(255,0,0);
+			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
+
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 1/2, forteWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 1/2, pianoWidth, 30);
+		}
+		else if(barWidth > pianoWidth)
+		{
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 1/2, pianoWidth, 30);
+		}
+		else
+		{
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
+		}
+		
+		
 
 
+
+		this.parent.noFill();
+		this.parent.stroke(255);
+		this.parent.strokeWeight(2);
+		this.parent.line(30 + forteWidth, 
+				this.parent.height * 1/2, 
+				30 + forteWidth, 
+				this.parent.height * 1/2 + 30);
+
+		this.parent.line(	30 + pianoWidth, 
+				this.parent.height * 1/2, 
+				30 + pianoWidth, 
+				this.parent.height * 1/2 + 30);
+
+		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
+		
+		//bar 3
+		
+		
+		barWidth = (this.getMaxAmpRMS2()/100) * (forteWidth);
+		barWidth = Math.min(barWidth, this.parent.width/3 - 60);
+
+		if(barWidth > forteWidth)
+		{
+			this.parent.fill(255,0,0);
+			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
+
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 5/9, forteWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 5/9, pianoWidth, 30);
+		}
+		else if(barWidth > pianoWidth)
+		{
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 5/9, pianoWidth, 30);
+		}
+		else
+		{
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
+		}
+		
+		
+
+
+
+		this.parent.noFill();
+		this.parent.stroke(255);
+		this.parent.strokeWeight(2);
+		this.parent.line(30 + forteWidth, 
+				this.parent.height * 5/9, 
+				30 + forteWidth, 
+				this.parent.height * 5/9 + 30);
+
+		this.parent.line(	30 + pianoWidth, 
+				this.parent.height * 5/9, 
+				30 + pianoWidth, 
+				this.parent.height * 5/9 + 30);
+
+		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
+	
+	
 	}
 
 
@@ -230,7 +342,7 @@ public class InputHandler extends MenuTemplate
 
 		float answer = curInput.getAmplitude();
 
-		if(this.controlP5.getController("piano").getValue() > answer)
+		if(this.controlP5.getController("fortePiano").getArrayValue(0) > answer)
 		{
 			answer = 0;
 		}
@@ -249,7 +361,7 @@ public class InputHandler extends MenuTemplate
 				if(i < curInput.getTotalNumChannels())
 				{
 					notes[i][0] = ((Input)curInput).getMidiNote(i);
-					notes[i][1] = (int) (((Input)curInput).getAmplitude(i)/this.controlP5.getController("forte").getValue()*100);
+					notes[i][1] = (int) (((Input)curInput).getAmplitude(i)/this.controlP5.getController("fortePiano").getArrayValue(1)*100);
 				}
 				else
 				{
@@ -274,6 +386,136 @@ public class InputHandler extends MenuTemplate
 		}
 
 		return maxAmp;
+	}
+	private float getMaxAmpRMS() {
+		
+		int[][] notes = new int[this.numChannels][2];
+
+		if(this.getCurInput().getInputType() != "Midi Stream Input")
+		{
+			MusicalInput curInput = this.getCurInput();
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumChannels())
+				{
+					notes[i][0] = ((Input)curInput).getMidiNote(i);
+					int amp = (int)((Input)curInput).getAmplitude(i);
+							
+							
+							
+							
+					notes[i][1] = (int) (amp/this.controlP5.getController("fortePiano").getArrayValue(1)*100);
+				}
+				else
+				{
+					notes[i][0] = -1;
+					notes[i][1] = 0;
+				}
+			}
+		}
+		else
+		{
+			notes = this.getAllMidiNotes();
+		}
+
+		float maxAmp = 0;
+
+		for(int i = 0; i < notes.length; i++)
+		{
+			if(notes[i][1] > maxAmp)
+			{
+				maxAmp = notes[i][1];
+			}
+		}
+
+		//return maxAmp;
+		
+		
+		//this.setFund();
+		setFirstRMSarray(maxAmp);
+		
+		float sum = 0;
+		for (int i = 0; i < RMSarray.length; i++) {
+			sum = sum + RMSarray[i] * RMSarray[i];
+		}
+		float RMSaverage = sum/ RMSarray.length;
+		//System.out.println("going");
+		return (float) Math.sqrt(RMSaverage);
+		
+	}
+	
+private float getMaxAmpRMS2() {
+		
+		int[][] notes = new int[this.numChannels][2];
+
+		if(this.getCurInput().getInputType() != "Midi Stream Input")
+		{
+			MusicalInput curInput = this.getCurInput();
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumChannels())
+				{
+					notes[i][0] = ((Input)curInput).getMidiNote(i);
+					int amp = (int)((Input)curInput).getAmplitude(i);
+							
+							
+							
+							
+					notes[i][1] = (int) (amp/this.controlP5.getController("fortePiano").getArrayValue(1)*100);
+				}
+				else
+				{
+					notes[i][0] = -1;
+					notes[i][1] = 0;
+				}
+			}
+		}
+		else
+		{
+			notes = this.getAllMidiNotes();
+		}
+
+		float maxAmp = 0;
+
+		for(int i = 0; i < notes.length; i++)
+		{
+			if(notes[i][1] > maxAmp)
+			{
+				maxAmp = notes[i][1];
+			}
+		}
+
+		//return maxAmp;
+		
+		
+		//this.setFund();
+		setFirstRMSarray2(maxAmp);
+		
+		float sum = 0;
+		for (int i = 0; i < RMSarray.length; i++) {
+			sum = sum + RMSarray[i] * RMSarray[i];
+		}
+		float RMSaverage = sum/ RMSarray.length;
+		//System.out.println("going");
+		return (float) Math.sqrt(RMSaverage);
+		
+	}
+	public void setFirstRMSarray(float amplitude) {
+		for (int i = RMSarray.length - 1; i > 0; i--) {
+			RMSarray[i-1] = RMSarray[i];
+		}
+		RMSarray[0] = amplitude;
+		
+		return;
+	}
+	
+	public void setFirstRMSarray2(float amplitude) {
+		for (int i = RMSarray2.length - 1; i > 0; i--) {
+			RMSarray2[i-1] = RMSarray2[i];
+		}
+		RMSarray2[0] = amplitude;
+		
+		return;
 	}
 
 	@Override
@@ -403,25 +645,25 @@ public class InputHandler extends MenuTemplate
 			theEvent.getController().bringToFront();
 			this.numChannels = (int) (theEvent.getValue() + 1);
 		}
-
-		if(theEvent.getName() == "piano")
+		
+		if(theEvent.getName() == "pianoForte")
 		{
-			float val = this.controlP5.getController("piano").getValue();
-			if(val > this.controlP5.getController("forte").getValue())
+			float val = this.controlP5.getController("fortePiano").getArrayValue(0);
+			if(val > this.controlP5.getController("fortePiano").getArrayValue(1))
 			{
-				this.controlP5.getController("forte").setValue(val);
+				this.controlP5.getController("fortePiano").setArrayValue(1, val);
+			}
+		
+			 val = this.controlP5.getController("fortePiano").getArrayValue(1);
+			if(val < this.controlP5.getController("fortePiano").getArrayValue(0))
+			{
+				this.controlP5.getController("fortePiano").setArrayValue(0,val);
 			}
 		}
-
-		if(theEvent.getName() == "forte" && this.controlP5.getController("piano") != null)
-		{
-			float val = this.controlP5.getController("forte").getValue();
-			if(val < this.controlP5.getController("piano").getValue())
-			{
-				this.controlP5.getController("piano").setValue(val);
-			}
-		}
-
+		
+		
+		
+		
 	}//ControlEvent
 
 	public int[][] getAllMidiNotes()
@@ -454,10 +696,13 @@ public class InputHandler extends MenuTemplate
 		{	
 			for(int i = 0; i < this.numChannels; i++)
 			{
-				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("piano").getValue())
+				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > this.controlP5.getController("fortePiano").getArrayValue(0))
 				{
+					System.out.println("Forte Thresh " + this.controlP5.getController("fortePiano").getArrayValue(1));
+					System.out.println("Piano Thresh " + this.controlP5.getController("fortePiano").getArrayValue(0));
+					System.out.println(((Input)curInput).getAmplitude(i));
 					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
-					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/(float)this.controlP5.getController("forte").getValue()*100));
+					midiNotes[i][1] = (int) Math.min(100, (float)(((Input)curInput).getAmplitude(i)/this.controlP5.getController("fortePiano").getArrayValue(1)));//(float)this.controlP5.getController("forte").getValue()*100));
 				}
 				else
 				{
@@ -475,7 +720,7 @@ public class InputHandler extends MenuTemplate
 	@Override
 	public void sliderEvent(int id, float val) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 
@@ -569,11 +814,13 @@ public class InputHandler extends MenuTemplate
 	{
 		this.controlP5.addLabel("Real Time Inputs", 30, this.parent.height * 5/9 - 5)
 		.setTab(this.getMenuTitle());
+		
+	
 
 		this.controlP5.addLabel("realTimeInfo")
 		.setTab(this.getMenuTitle())
 		.setMultiline(true)
-		.setPosition(40, this.parent.height * 5/9 + 60)
+		.setPosition(200, this.parent.height * 5/9 - 5)
 		.setSize(this.parent.width/3 - 50, this.parent.height * 1/9)
 		.setText("info here");
 
@@ -593,7 +840,7 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.addLabel("playableInfo")
 		.setTab(this.getMenuTitle())
 		.setMultiline(true)
-		.setPosition(40, this.parent.height*7/9 + 65)
+		.setPosition(200, this.parent.height*7/9)
 		.setSize(this.parent.width/3 - 50, this.parent.height * 1/9)
 		.setText("info here");
 
@@ -622,7 +869,9 @@ public class InputHandler extends MenuTemplate
 		this.controlP5.getController("monoMidiTypeButton").setColorBackground(Color.DARK_GRAY.getRGB());
 		this.controlP5.getController("monoMidiTypeButton").setColorForeground(Color.GRAY.getRGB());
 		this.controlP5.getController("monoMidiTypeButton").setColorActive(Color.LIGHT_GRAY.getRGB());
-
+		
+		/*
+		 * Old way of setting forte threshold 
 		this.controlP5.addSlider("forte")
 		.setMin(20)
 		.setMax(5000)
@@ -635,25 +884,40 @@ public class InputHandler extends MenuTemplate
 		.setDecimalPrecision(0)
 		.setTab(this.getMenuTitle())
 		.getValueLabel().setVisible(false);
+		*/
 		
-		
-		
-		
+		 this.controlP5.addRange("fortePiano")
+		.setMin(0)
+		.setMax(1000)
+		.setPosition(this.parent.width/3 - (30 + 150), this.parent.height * 7/18)
+		.setSize(150, 20)
+		.setColorValue(this.controlP5.YELLOW)
+		.setCaptionLabel("")
+		//.setColorActive(Color.PINK.getRGB())
+		.setColorForeground(Color.blue.getRGB())
+		.setDecimalPrecision(0)
+		.setHighValue(100)
+		.setLowValue(1)
+		.setLabelVisible(false)
+		.setTab(this.getMenuTitle())
+		.getValueLabel().setVisible(false);
 
-		this.controlP5.addLabel("Forte Threshold")
+		this.controlP5.addLabel("Thresholds")//change this back
 		.setPosition(30, this.parent.height * 7/18 + 7)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
 
-
+		/*
+		 * Old way of setting Piano threshold
 		this.controlP5.addSlider("piano")
 		.setMin(0)
+		
 		.setMax(100)
 		.setPosition(this.parent.width/3 - (30 + 150), this.parent.height * 3/9)
 		.setSize(150, 20)
 		.setValue(1)
 		.setCaptionLabel("")
-		.setColorActive(new Color(0,255,100).getRGB())//THis is Lime
+		.setColorActive(new Color(0,255,100).getRGB())//This is Lime Green
 		.setColorForeground(Color.GREEN.getRGB())
 		.setDecimalPrecision(0)
 		
@@ -665,9 +929,9 @@ public class InputHandler extends MenuTemplate
 		.setPosition(30, this.parent.height * 3/9 + 7)
 		.setColor(255)
 		.setTab(this.getMenuTitle());
-
+		 */
 		this.controlP5.addToggle("Legend")
-		.setPosition(30, this.parent.height * 2/9)
+		.setPosition(30, this.parent.height * 5/18)
 		.setSize(50, 25)
 		.setValue(1)
 		.setCaptionLabel("Legend")
@@ -675,7 +939,7 @@ public class InputHandler extends MenuTemplate
 		.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 
 		this.controlP5.addScrollableList("Key Change")
-		.setPosition(100, this.parent.height * 2/9)
+		.setPosition(100, this.parent.height * 5/18)
 		.setWidth(50)
 		.setBarHeight(25)
 		.setItemHeight(30)
@@ -685,9 +949,21 @@ public class InputHandler extends MenuTemplate
 		.close()
 		.setTab(this.getMenuTitle());
 
+		
+		this.controlP5.addLabel("Key")
+		.setColor(255)
+		.setPosition(100,  this.parent.height * 1/4)
+		.setTab(this.getMenuTitle());
+		
+		
+		
+		this.controlP5.addLabel("Scale")
+		.setColor(255)
+		.setPosition(170,  this.parent.height * 1/4)
+		.setTab(this.getMenuTitle());
 
 		this.controlP5.addScrollableList("Keys")
-		.setPosition(170, this.parent.height * 2/9)
+		.setPosition(170, this.parent.height * 5/18)
 		.setWidth(this.parent.width/3 - (60 + 140))
 		.setBarHeight(25)
 		.setItemHeight(25)
@@ -695,8 +971,10 @@ public class InputHandler extends MenuTemplate
 		.setItems(new String[] {"Major", "Minor", "Harmonic Minor", "Melodic Minor", "Major Pentatonic", "Minor Pentatonic", "Chromatic"})
 		.setValue(6)
 		.close()
+		
 		.setTab(this.getMenuTitle());
 
+		
 		this.controlP5.addScrollableList("numChannels")
 		.setPosition(170, this.parent.height * 3/18 -10)
 		.setWidth(this.parent.width/3 - (60 + 140))
@@ -708,9 +986,10 @@ public class InputHandler extends MenuTemplate
 		.close()
 		.setTab(this.getMenuTitle());
 
-		this.controlP5.addLabel("Max Number of Channels")
+		this.controlP5.addLabel("Total Visual Outputs")
 		.setPosition(30, this.parent.height * 3/18 - 4)
 		.setTab(this.getMenuTitle());
+		
 	}
 
 	public int[] getScale()
@@ -841,7 +1120,7 @@ public class InputHandler extends MenuTemplate
 
 		boolean noteIsActive;
 
-		for(int i = 0; i < inputNum; i++)
+		for(int i = 0; i < scale.length; i++)
 		{ 
 			ColorScheme[] schemes = this.driver.getColorMenu().getColorSchemes();
 			int[] colors = schemes[0].getPitchColor(scale[i]);
@@ -852,9 +1131,8 @@ public class InputHandler extends MenuTemplate
 
 			noteIsActive = false;
 			for(int i2 = 0; i2 < notes.length; i2++)
-
 			{
-				if(i == notes[i2]) noteIsActive = true;
+				if(scale[i] == notes[i2]) noteIsActive = true;
 			}
 
 			if(noteIsActive)
@@ -919,7 +1197,7 @@ public class InputHandler extends MenuTemplate
 	{
 		String info = "";
 
-		info += "Number of Channels:   " + input.getTotalNumChannels() +"\n\n";
+		info += "Number of Inputs:   " + input.getTotalNumChannels() +"\n\n";
 
 		return info;
 	}
@@ -929,4 +1207,13 @@ public class InputHandler extends MenuTemplate
 		return this.numChannels;
 	}
 
+	public float getForteThreshold() {
+		return this.controlP5.getController("fortePiano").getArrayValue(1);
+	}
+	
+	public float getPianoThreshold() {
+		return this.controlP5.getController("fortePiano").getArrayValue(0);
+	}
+	
 }
+

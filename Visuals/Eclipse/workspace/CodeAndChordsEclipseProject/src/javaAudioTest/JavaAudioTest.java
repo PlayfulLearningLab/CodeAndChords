@@ -15,10 +15,11 @@ public class JavaAudioTest
 	{
 		
 		Mixer.Info[] mi = AudioSystem.getMixerInfo();
-		
+		int ii = 0;
 		for (Mixer.Info info : mi) 
 		{
-			System.out.println("info: " + info);
+			System.out.println(ii + " info: " + info);
+			ii++;
 			Mixer m = AudioSystem.getMixer(info);
 			
 			System.out.println("mixer " + m);

@@ -3,6 +3,7 @@ package core.input;
 import core.input.Input.DisposeHandler;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
 import net.beadsproject.beads.ugens.Gain;
@@ -29,8 +30,10 @@ public class RecordedInput extends Input {
 			throw new IllegalArgumentException("RecordedInput.constructor: String[] parameter is null.");
 		}
 		
+
 		this.parent	= pApplet;
 		this.ac	= this.getNewAudioContext();
+
 		this.pause	= false;
 		
 		this.inputChannels = new int[samples.length];

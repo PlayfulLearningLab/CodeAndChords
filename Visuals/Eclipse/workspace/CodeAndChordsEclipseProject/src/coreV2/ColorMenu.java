@@ -72,11 +72,14 @@ public class ColorMenu extends MenuTemplate
 		.setTab(this.getMenuTitle());
 		//.getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER);
 		
-		
+		/*
 		this.controlP5.addColorWheel("Wheel", 190, 95, 105)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel()
 		.setVisible(false);
+		*/
+		//_____
+		
 		
 		this.controlP5.addToggle("1st Color")
 		.setPosition(115, 125)
@@ -192,7 +195,7 @@ public class ColorMenu extends MenuTemplate
 	
 	private void addColorCustomizationControls()
 	{
-		this.controlP5.addColorWheel("colorPicker", 150, yStart, 140)
+		this.controlP5.addColorWheel("colorPicker", 150, yStart -25, 140)
 		.setTab(this.getMenuTitle())
 		.getCaptionLabel()
 		.setVisible(false);
@@ -368,6 +371,8 @@ public class ColorMenu extends MenuTemplate
 				this.controlP5.getController("blueSlider").setValue(cw.b());
 		}
 		
+		
+		
 		if(this.getActivePitchColor() != -1 && this.isNewColor())
 		{			
 			int newColor = ((ColorWheel)this.controlP5.getController("colorPicker")).getRGB();
@@ -444,9 +449,9 @@ public class ColorMenu extends MenuTemplate
 			}
 		}
 		
-		if(theEvent.getName() == "Wheel")
+		if(theEvent.getName() == "colorPicker")
 		{
-			ColorWheel wheel = (ColorWheel) this.controlP5.getController("Wheel");
+			ColorWheel wheel = (ColorWheel) this.controlP5.getController("colorPicker");
 			if(this.controlP5.getController("1st Color").getValue() == 1)
 			{
 				colors[0][0] = wheel.r();
@@ -465,6 +470,7 @@ public class ColorMenu extends MenuTemplate
 				colors[2][1] = wheel.g();
 				colors[2][2] = wheel.b();				
 			}
+			
 		}
 		if(theEvent.getName() == "Generate" && setupComplete != false)
 		{

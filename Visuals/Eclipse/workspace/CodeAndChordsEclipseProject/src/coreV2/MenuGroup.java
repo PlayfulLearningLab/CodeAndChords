@@ -74,6 +74,10 @@ public class MenuGroup implements ControlListener
 	{
 		return (ColorMenu) this.menuGroup[1];
 	}
+	
+	public InputHandler getInputMenu() {
+		return (InputHandler) this.menuGroup[0];
+	}
 
 	public boolean canvasMenuActive()
 	{

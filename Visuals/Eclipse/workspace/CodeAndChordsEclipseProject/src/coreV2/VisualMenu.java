@@ -72,6 +72,8 @@ public class VisualMenu extends MenuTemplate {
 		.setValue(0)
 		.close()
 		.setTab(this.getMenuTitle());
+		
+		
 	}
 
 	public void addVisual(Visual visual)

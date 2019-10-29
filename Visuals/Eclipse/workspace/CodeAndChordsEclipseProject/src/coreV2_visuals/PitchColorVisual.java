@@ -24,19 +24,34 @@ public class PitchColorVisual extends Visual {
 
 		this.addSliders();
 		this.canvas = this.moduleDriver.getCanvas();
-		this.colorFader = new ColorFader(this.parent);
+		//this.colorFader = new ColorFader(this.parent);
+		this.colorFader = new ColorFader(0,0,0,255,this.parent);
 	}
 
 	private void addSliders()
 	{
 		this.controllers = new String[] {"transition", "attack", "release"};
-		this.labels = new String[] {"Transition Time (ms)", "Attack Time (ms)", "Release Time (ms)"};
+		this.labels = new String[] {
+				"Transition Time (ms)", "Attack Time (ms)", "Release Time (ms)"};
 
 		for(int i = 0; i < this.labels.length; i++)
 		{
 			this.cp5.addLabel(this.labels[i]).setTab(this.tabName);
 		}
-
+		
+		
+		/*
+		this.cp5.addScrollableList("numChannels")
+		//.setPosition(170, this.parent.height * 3/18 -10)
+		.setWidth(this.parent.width/3 - (60 + 140))
+		.setBarHeight(25)
+		.setItemHeight(30)
+		.setHeight(100)
+		.setItems(new String[] {"1", "2", "3", "4", "5", "6", "7", "8",})
+		.setValue(0)
+		.close();
+		
+		*/
 		this.cp5.addSlider("transition")
 		.setMin(30)
 		.setMax(1500)
@@ -62,6 +77,7 @@ public class PitchColorVisual extends Visual {
 		.setTab(this.tabName)
 		.getCaptionLabel().setVisible(false);
 
+		
 	}
 
 	@Override
@@ -102,9 +118,9 @@ public class PitchColorVisual extends Visual {
 		//check if the note is in the scale
 		for(int i = 0; i < scale.length; i++)
 		{ 
-			if((note%12) == i)
+			if((note%12) == scale[i])
 			{
-				pitchColor = schemes[0].getPitchColor(i);
+				pitchColor = schemes[0].getPitchColor(scale[i]);
 			}
 		}
 
@@ -112,6 +128,8 @@ public class PitchColorVisual extends Visual {
 		if(pitchColor[0] != -1)
 		{
 			colorFader.setTargetColor(pitchColor.clone());
+		} else {
+			colorFader.setTargetColor(0, 0, 0);
 		}
 
 		//if the velocity is greater than the piano threshold then set the alpha to 255

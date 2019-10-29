@@ -27,7 +27,7 @@ public class StarsVisual extends Visual{
 	
 	private int speed = 30;
 	private int crawlSpeed = 50;
-	private int streakThreshold = 500;
+	private int streakThreshold = (int)super.cp5.getController("fortePiano").getArrayValue(0);
 	private int starSize = 4;
 	
 	private Random generator = new Random();
@@ -41,14 +41,14 @@ public class StarsVisual extends Visual{
 		this.labels = new String[] {"Speed", "Crawl Speed", "Star Size (in pixels)","Streak Threshold"};
 		
 		this.canvas = this.moduleDriver.getCanvas();
-		this.colorFader = new ColorFader(this.parent);
+		this.colorFader = new ColorFader(0,0,0,255,this.parent);
 		this.colorFader.setReleaseDuration(300);
 		this.colorFader.setAttackDuration(300);
 		canvasDimensions = canvas.getCanvasDimensions();
 		
 		
 		System.out.println(controllers[0]);
-
+		System.out.println(colorFader.getColor());
 		
 		for (int i = 0; i < stars.length; i++) {
 			stars[i] = new Star();
@@ -84,7 +84,7 @@ public class StarsVisual extends Visual{
 		.getCaptionLabel().hide();
 		this.cp5.addLabel(this.labels[3]);
 		
-
+		
 	}
 	
 	
