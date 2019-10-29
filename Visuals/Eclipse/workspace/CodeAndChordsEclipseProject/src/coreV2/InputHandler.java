@@ -55,8 +55,8 @@ public class InputHandler extends MenuTemplate
 	protected	int	yVals;
 	protected	int	rectWidths;
 	protected	int	rectHeights;
-
-
+	protected float [] RMSarray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	protected float	[] RMSarray2 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	/**
 	 * Constructor
 	 * 
@@ -168,6 +168,8 @@ public class InputHandler extends MenuTemplate
 				this.parent.fill(255,255,51);
 				this.parent.rect(30, this.parent.height * 4/9, barWidth, 30);
 			}
+			
+			
 
 
 
@@ -188,8 +190,116 @@ public class InputHandler extends MenuTemplate
 
 
 		}
+		// bar 2
+		
+		float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("fortePiano").getArrayValue(0)/this.controlP5.getController("fortePiano").getArrayValue(1));
+		float forteWidth = parent.width/3 - 90;
+
+		this.parent.noStroke();
+		this.parent.fill(0);
+		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
+
+		//sound bar for theresholds
+		float barWidth = (this.getMaxAmpRMS()/100) * (forteWidth);
+		barWidth = Math.min(barWidth, this.parent.width/3 - 60);
+
+		this.parent.noStroke();
+
+		if(barWidth > forteWidth)
+		{
+			this.parent.fill(255,0,0);
+			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
+
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 1/2, forteWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 1/2, pianoWidth, 30);
+		}
+		else if(barWidth > pianoWidth)
+		{
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 1/2, pianoWidth, 30);
+		}
+		else
+		{
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
+		}
+		
+		
 
 
+
+		this.parent.noFill();
+		this.parent.stroke(255);
+		this.parent.strokeWeight(2);
+		this.parent.line(30 + forteWidth, 
+				this.parent.height * 1/2, 
+				30 + forteWidth, 
+				this.parent.height * 1/2 + 30);
+
+		this.parent.line(	30 + pianoWidth, 
+				this.parent.height * 1/2, 
+				30 + pianoWidth, 
+				this.parent.height * 1/2 + 30);
+
+		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
+		
+		//bar 3
+		
+		
+		barWidth = (this.getMaxAmpRMS2()/100) * (forteWidth);
+		barWidth = Math.min(barWidth, this.parent.width/3 - 60);
+
+		if(barWidth > forteWidth)
+		{
+			this.parent.fill(255,0,0);
+			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
+
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 5/9, forteWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 5/9, pianoWidth, 30);
+		}
+		else if(barWidth > pianoWidth)
+		{
+			this.parent.fill(0,255,0);
+			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
+
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 5/9, pianoWidth, 30);
+		}
+		else
+		{
+			this.parent.fill(255,255,51);
+			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
+		}
+		
+		
+
+
+
+		this.parent.noFill();
+		this.parent.stroke(255);
+		this.parent.strokeWeight(2);
+		this.parent.line(30 + forteWidth, 
+				this.parent.height * 5/9, 
+				30 + forteWidth, 
+				this.parent.height * 5/9 + 30);
+
+		this.parent.line(	30 + pianoWidth, 
+				this.parent.height * 5/9, 
+				30 + pianoWidth, 
+				this.parent.height * 5/9 + 30);
+
+		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
+	
+	
 	}
 
 
@@ -276,6 +386,136 @@ public class InputHandler extends MenuTemplate
 		}
 
 		return maxAmp;
+	}
+	private float getMaxAmpRMS() {
+		
+		int[][] notes = new int[this.numChannels][2];
+
+		if(this.getCurInput().getInputType() != "Midi Stream Input")
+		{
+			MusicalInput curInput = this.getCurInput();
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumChannels())
+				{
+					notes[i][0] = ((Input)curInput).getMidiNote(i);
+					int amp = (int)((Input)curInput).getAmplitude(i);
+							
+							
+							
+							
+					notes[i][1] = (int) (amp/this.controlP5.getController("fortePiano").getArrayValue(1)*100);
+				}
+				else
+				{
+					notes[i][0] = -1;
+					notes[i][1] = 0;
+				}
+			}
+		}
+		else
+		{
+			notes = this.getAllMidiNotes();
+		}
+
+		float maxAmp = 0;
+
+		for(int i = 0; i < notes.length; i++)
+		{
+			if(notes[i][1] > maxAmp)
+			{
+				maxAmp = notes[i][1];
+			}
+		}
+
+		//return maxAmp;
+		
+		
+		//this.setFund();
+		setFirstRMSarray(maxAmp);
+		
+		float sum = 0;
+		for (int i = 0; i < RMSarray.length; i++) {
+			sum = sum + RMSarray[i] * RMSarray[i];
+		}
+		float RMSaverage = sum/ RMSarray.length;
+		//System.out.println("going");
+		return (float) Math.sqrt(RMSaverage);
+		
+	}
+	
+private float getMaxAmpRMS2() {
+		
+		int[][] notes = new int[this.numChannels][2];
+
+		if(this.getCurInput().getInputType() != "Midi Stream Input")
+		{
+			MusicalInput curInput = this.getCurInput();
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumChannels())
+				{
+					notes[i][0] = ((Input)curInput).getMidiNote(i);
+					int amp = (int)((Input)curInput).getAmplitude(i);
+							
+							
+							
+							
+					notes[i][1] = (int) (amp/this.controlP5.getController("fortePiano").getArrayValue(1)*100);
+				}
+				else
+				{
+					notes[i][0] = -1;
+					notes[i][1] = 0;
+				}
+			}
+		}
+		else
+		{
+			notes = this.getAllMidiNotes();
+		}
+
+		float maxAmp = 0;
+
+		for(int i = 0; i < notes.length; i++)
+		{
+			if(notes[i][1] > maxAmp)
+			{
+				maxAmp = notes[i][1];
+			}
+		}
+
+		//return maxAmp;
+		
+		
+		//this.setFund();
+		setFirstRMSarray2(maxAmp);
+		
+		float sum = 0;
+		for (int i = 0; i < RMSarray.length; i++) {
+			sum = sum + RMSarray[i] * RMSarray[i];
+		}
+		float RMSaverage = sum/ RMSarray.length;
+		//System.out.println("going");
+		return (float) Math.sqrt(RMSaverage);
+		
+	}
+	public void setFirstRMSarray(float amplitude) {
+		for (int i = RMSarray.length - 1; i > 0; i--) {
+			RMSarray[i-1] = RMSarray[i];
+		}
+		RMSarray[0] = amplitude;
+		
+		return;
+	}
+	
+	public void setFirstRMSarray2(float amplitude) {
+		for (int i = RMSarray2.length - 1; i > 0; i--) {
+			RMSarray2[i-1] = RMSarray2[i];
+		}
+		RMSarray2[0] = amplitude;
+		
+		return;
 	}
 
 	@Override

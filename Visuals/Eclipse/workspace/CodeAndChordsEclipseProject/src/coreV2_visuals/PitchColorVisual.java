@@ -133,14 +133,14 @@ public class PitchColorVisual extends Visual {
 		}
 
 		//if the velocity is greater than the piano threshold then set the alpha to 255
-		//if(this.moduleDriver.getInputHandler().getAllMidiNotes()[0][1] > 0)
-		//{
+		if(this.moduleDriver.getInputHandler().getAllMidiNotes()[0][1] > 0)
+		{
 			colorFader.setTargetAlpha(255);
-		//}
-		//else // if not, set the alpha to 0
-		//{
-			//colorFader.setTargetAlpha(0);
-		//}
+		}
+		else // if not, set the alpha to 0
+		{
+			colorFader.setTargetAlpha(0);
+		}
 
 		//get the current color from color fader and fill it into the canvas
 		int[] curColor = colorFader.getColor();
