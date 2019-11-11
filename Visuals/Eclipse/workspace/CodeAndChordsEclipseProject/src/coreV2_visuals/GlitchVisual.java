@@ -138,7 +138,24 @@ public class GlitchVisual extends Visual{
 				}
 			}
 			
-			this.drawVisualForInput(i, this.xPos[i], this.parent.height/2);
+			if(this.numChannels == 8)
+			{
+				int xVal = this.parent.width / 4;
+				int iVal = i%4;
+				
+				if(i <= 3)
+				{
+					this.drawVisualForInput(i, (iVal*xVal + (xVal/2)), this.parent.height/4);
+				}
+				else
+				{
+					this.drawVisualForInput(i, (iVal*xVal + (xVal/2)), (this.parent.height/4 + this.parent.height/2));
+				}
+			}
+			else
+			{
+				this.drawVisualForInput(i, this.xPos[i], this.parent.height/2);
+			}
 		}
 		
 		this.parent.rectMode(PConstants.CORNER);
@@ -168,6 +185,7 @@ public class GlitchVisual extends Visual{
 			
 			size += this.sizeIncrease;
 			
+
 			randX = (int) ((Math.random() - .5) * (float)this.randomness);
 			randY = (int) ((Math.random() - .5) * (float)this.randomness);
 			alpha = (int) (255 - 255*((float)i/(float)this.numShapes));
