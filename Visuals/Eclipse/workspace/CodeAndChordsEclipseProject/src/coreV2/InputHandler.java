@@ -34,6 +34,9 @@ import processing.core.PFont;
 
 public class InputHandler extends MenuTemplate
 {
+	//temp variable
+	private boolean					useControllerForLevelControl = false;
+	
 	//Using a the real time input or playable input?
 	private boolean					useRealTimeInput;
 
@@ -450,7 +453,7 @@ public class InputHandler extends MenuTemplate
 				}
 			}
 		}
-		else
+		else if(this.useControllerForLevelControl)
 		{	
 			for(int i = 0; i < this.numChannels; i++)
 			{
@@ -466,6 +469,44 @@ public class InputHandler extends MenuTemplate
 				}
 			}
 	
+		}
+		else
+		{
+			float[] customForteThreshold = new float[] {
+					100f,
+					100f,
+					100f,
+					100f,
+					100f,
+					100f,
+					100f,
+					100f
+			};
+			
+			float[] customPianoThreshold = new float[] {
+					10f,
+					10f,
+					10f,
+					10f,
+					10f,
+					10f,
+					10f,
+					10f
+			};
+			
+			for(int i = 0; i < this.numChannels; i++)
+			{
+				if(i < curInput.getTotalNumChannels() && ((Input)curInput).getAmplitude(i) > customPianoThreshold[i])
+				{
+					midiNotes[i][0] = ((Input)curInput).getMidiNote(i);
+					midiNotes[i][1] = (int) Math.min(100, ((float)((Input)curInput).getAmplitude(i)/customForteThreshold[i]*100));
+				}
+				else
+				{
+					midiNotes[i][0] = 0;
+					midiNotes[i][1] = -1;
+				}
+			}
 		}
 	
 	

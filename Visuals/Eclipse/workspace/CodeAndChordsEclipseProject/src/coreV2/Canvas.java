@@ -198,5 +198,9 @@ public class Canvas implements Drawable
 		
 	}
 	
+	public boolean isFullscreen() {
+		return this.isFullscreen;
+	}
+	
 
 }
