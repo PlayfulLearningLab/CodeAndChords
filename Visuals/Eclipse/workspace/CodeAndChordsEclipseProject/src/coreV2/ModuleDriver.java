@@ -3,6 +3,7 @@ package coreV2;
 import java.awt.Color;
 
 import controlP5.ControlP5;
+import controlP5.ScrollableList;
 import controlP5.Tab;
 import coreV2_EffectsAndFilters.Drawable;
 
@@ -185,6 +186,14 @@ public class ModuleDriver implements PConstants
 			{
 				this.cp5.show();
 			}
+		}
+		
+		int numVisuals = ((ScrollableList)this.cp5.getController("VisualSelect")).getItems().size();
+		int valFor1 = '1';
+		
+		if(e.getKeyCode() >= valFor1 &&  e.getKeyCode() < valFor1 + numVisuals) {
+			//System.out.println("setting VisualSelect value to " + (e.getKeyCode()-valFor1));
+			((ScrollableList)this.cp5.getController("VisualSelect")).setValue(e.getKeyCode()-valFor1);
 		}
 
 	}
