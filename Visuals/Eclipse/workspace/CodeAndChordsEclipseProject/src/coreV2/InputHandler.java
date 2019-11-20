@@ -55,8 +55,10 @@ public class InputHandler extends MenuTemplate
 	protected	int	yVals;
 	protected	int	rectWidths;
 	protected	int	rectHeights;
-	protected float [] RMSarray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	protected float	[] RMSarray2 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	
+	//These are from experiments with Root Mean Square Audio. RMS works but we chose to remain with peak audio
+	//protected float [] RMSarray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	//protected float	[] RMSarray2 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	/**
 	 * Constructor
 	 * 
@@ -192,113 +194,7 @@ public class InputHandler extends MenuTemplate
 		}
 		// bar 2
 		
-		float pianoWidth = (parent.width/3 - 90)*(this.controlP5.getController("fortePiano").getArrayValue(0)/this.controlP5.getController("fortePiano").getArrayValue(1));
-		float forteWidth = parent.width/3 - 90;
-
-		this.parent.noStroke();
-		this.parent.fill(0);
-		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
-
-		//sound bar for theresholds
-		float barWidth = (this.getMaxAmpRMS()/100) * (forteWidth);
-		barWidth = Math.min(barWidth, this.parent.width/3 - 60);
-
-		this.parent.noStroke();
-
-		if(barWidth > forteWidth)
-		{
-			this.parent.fill(255,0,0);
-			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
-
-			this.parent.fill(0,255,0);
-			this.parent.rect(30, this.parent.height * 1/2, forteWidth, 30);
-
-			this.parent.fill(255,255,51);
-			this.parent.rect(30, this.parent.height * 1/2, pianoWidth, 30);
-		}
-		else if(barWidth > pianoWidth)
-		{
-			this.parent.fill(0,255,0);
-			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
-
-			this.parent.fill(255,255,51);
-			this.parent.rect(30, this.parent.height * 1/2, pianoWidth, 30);
-		}
-		else
-		{
-			this.parent.fill(255,255,51);
-			this.parent.rect(30, this.parent.height * 1/2, barWidth, 30);
-		}
 		
-		
-
-
-
-		this.parent.noFill();
-		this.parent.stroke(255);
-		this.parent.strokeWeight(2);
-		this.parent.line(30 + forteWidth, 
-				this.parent.height * 1/2, 
-				30 + forteWidth, 
-				this.parent.height * 1/2 + 30);
-
-		this.parent.line(	30 + pianoWidth, 
-				this.parent.height * 1/2, 
-				30 + pianoWidth, 
-				this.parent.height * 1/2 + 30);
-
-		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
-		
-		//bar 3
-		
-		
-		barWidth = (this.getMaxAmpRMS2()/100) * (forteWidth);
-		barWidth = Math.min(barWidth, this.parent.width/3 - 60);
-
-		if(barWidth > forteWidth)
-		{
-			this.parent.fill(255,0,0);
-			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
-
-			this.parent.fill(0,255,0);
-			this.parent.rect(30, this.parent.height * 5/9, forteWidth, 30);
-
-			this.parent.fill(255,255,51);
-			this.parent.rect(30, this.parent.height * 5/9, pianoWidth, 30);
-		}
-		else if(barWidth > pianoWidth)
-		{
-			this.parent.fill(0,255,0);
-			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
-
-			this.parent.fill(255,255,51);
-			this.parent.rect(30, this.parent.height * 5/9, pianoWidth, 30);
-		}
-		else
-		{
-			this.parent.fill(255,255,51);
-			this.parent.rect(30, this.parent.height * 5/9, barWidth, 30);
-		}
-		
-		
-
-
-
-		this.parent.noFill();
-		this.parent.stroke(255);
-		this.parent.strokeWeight(2);
-		this.parent.line(30 + forteWidth, 
-				this.parent.height * 5/9, 
-				30 + forteWidth, 
-				this.parent.height * 5/9 + 30);
-
-		this.parent.line(	30 + pianoWidth, 
-				this.parent.height * 5/9, 
-				30 + pianoWidth, 
-				this.parent.height * 5/9 + 30);
-
-		this.parent.rect(30, this.parent.height * 1/2, this.parent.width/3 - 60, 30);
-	
 	
 	}
 
@@ -387,6 +283,15 @@ public class InputHandler extends MenuTemplate
 
 		return maxAmp;
 	}
+	
+	
+	/*
+	 * These are the RMS audio functions. The first one tests RMS a smaller array of saved values, the second one
+	 * on a larger array.
+	 * 
+	 * Cullen Kittams
+	 * 
+	 * 
 	private float getMaxAmpRMS() {
 		
 		int[][] notes = new int[this.numChannels][2];
@@ -517,7 +422,7 @@ private float getMaxAmpRMS2() {
 		
 		return;
 	}
-
+	*/
 	@Override
 	public void controlEvent(ControlEvent theEvent)
 	{
